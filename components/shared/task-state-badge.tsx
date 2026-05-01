@@ -12,23 +12,17 @@ interface TaskStateBadgeProps {
 }
 
 const STATE_STYLES: Record<TaskState, string> = {
-  DRAFT:       "bg-muted text-muted-foreground border-transparent",
-  OPEN:        "bg-success/10 text-success border-success/20",
-  IN_PROGRESS: "bg-info/10 text-info border-info/20",
+  NEW:         "bg-info/10 text-info border-info/20",
+  IN_PROGRESS: "bg-success/10 text-success border-success/20",
   PAUSED:      "bg-warning/10 text-warning border-warning/20",
-  BLOCKED:     "bg-destructive/10 text-destructive border-destructive/20",
-  COMPLETED:   "bg-success/10 text-success border-success/20",
-  ARCHIVED:    "bg-muted text-muted-foreground border-transparent",
+  COMPLETED:   "bg-muted text-muted-foreground border-transparent",
 }
 
 const STATE_KEY: Record<TaskState, string> = {
-  DRAFT:       "draft",
-  OPEN:        "open",
+  NEW:         "new",
   IN_PROGRESS: "in_progress",
   PAUSED:      "paused",
-  BLOCKED:     "blocked",
   COMPLETED:   "completed",
-  ARCHIVED:    "archived",
 }
 
 export function TaskStateBadge({ state, size = "md", className }: TaskStateBadgeProps) {
@@ -42,6 +36,12 @@ export function TaskStateBadge({ state, size = "md", className }: TaskStateBadge
         className
       )}
     >
+      {state === "IN_PROGRESS" && (
+        <span
+          aria-hidden="true"
+          className="mr-1 inline-block size-1.5 rounded-full bg-success animate-pulse"
+        />
+      )}
       {t(STATE_KEY[state])}
     </Badge>
   )

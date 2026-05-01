@@ -124,36 +124,41 @@
     "aiGenerated": "AI generated",
 
     "state": {
-      "draft": "Draft",
-      "open": "Open",
+      "new": "New",
       "in_progress": "In progress",
       "paused": "Paused",
-      "blocked": "Blocked",
-      "completed": "Completed",
-      "archived": "Archived"
+      "completed": "Completed"
     },
 
     "review": {
       "none": "No review",
-      "pending": "Pending review",
-      "approved": "Approved",
-      "rejected": "Rejected",
-      "needs_revision": "Needs revision"
+      "on_review": "On review",
+      "accepted": "Accepted",
+      "rejected": "Rejected"
     },
 
     "type": {
-      "regular": "Regular",
-      "bonus": "Bonus",
-      "urgent": "Urgent",
+      "planned": "Planned",
+      "additional": "Additional",
+      "bonus": "Bonus"
+    },
+
+    "kind": {
+      "single": "Single",
       "chain": "Chain"
     },
 
+    "source": {
+      "manager": "Created manually",
+      "ai": "AI suggested",
+      "planned": "Planned"
+    },
+
     "archiveReason_values": {
-      "completed": "Completed",
-      "cancelled": "Cancelled",
+      "closed": "Closed",
       "duplicate": "Duplicate",
-      "irrelevant": "Irrelevant",
-      "merged": "Merged",
+      "wrong_data": "Wrong data",
+      "obsolete": "Obsolete",
       "other": "Other"
     }
   },
@@ -162,16 +167,11 @@
     "title": "Permission",
     "titlePlural": "Permissions",
     "zone": "Store zone",
-
-    "zones": {
-      "cashier": "Cashier",
-      "sales_floor": "Sales floor",
-      "warehouse": "Warehouse",
-      "office": "Office",
-      "production": "Production",
-      "receiving": "Receiving",
-      "cleaning": "Cleaning"
-    }
+    "cashier": "Cashier",
+    "sales_floor": "Sales floor",
+    "self_checkout": "Self-checkout",
+    "warehouse": "Warehouse",
+    "production_line": "Production line"
   },
 
   "role": {
@@ -208,21 +208,20 @@
     "owner": "Owner",
 
     "category": {
-      "sales": "Sales",
-      "operations": "Operations",
-      "quality": "Quality",
-      "efficiency": "Efficiency",
-      "customer": "Customer",
-      "inventory": "Inventory"
+      "oos_reduction": "OOS Reduction",
+      "write_offs": "Write-offs",
+      "promo_quality": "Promo quality",
+      "price_accuracy": "Price accuracy",
+      "impulse_zones": "Impulse zones",
+      "productivity": "Productivity",
+      "custom": "Custom"
     },
 
     "status": {
-      "draft": "Draft",
+      "proposed": "Proposed",
       "active": "Active",
-      "at_risk": "At risk",
-      "achieved": "Achieved",
-      "missed": "Missed",
-      "paused": "Paused"
+      "completed": "Completed",
+      "archived": "Archived"
     }
   },
 
@@ -282,12 +281,10 @@
     "break": "Break",
     "duration": "Duration",
 
-    "state": {
-      "scheduled": "Scheduled",
-      "in_progress": "In progress",
-      "completed": "Completed",
-      "cancelled": "Cancelled",
-      "no_show": "No show"
+    "status": {
+      "new": "New",
+      "opened": "Opened",
+      "closed": "Closed"
     }
   },
 

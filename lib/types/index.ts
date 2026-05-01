@@ -5,9 +5,46 @@
 export type Locale = "ru" | "en";
 
 // ═══════════════════════════════════════════════════════════════════
-// FUNCTIONAL ROLES
+// CORE ENUMS
 // ═══════════════════════════════════════════════════════════════════
 
+export type TaskState = "NEW" | "IN_PROGRESS" | "PAUSED" | "COMPLETED";
+
+export type TaskReviewState = "NONE" | "ON_REVIEW" | "ACCEPTED" | "REJECTED";
+
+/** BONUS — задачи на 10% KPI */
+export type TaskType = "PLANNED" | "ADDITIONAL" | "BONUS";
+
+/** SINGLE — обычная, CHAIN — задача в конвейере (производство, передача) */
+export type TaskKind = "SINGLE" | "CHAIN";
+
+export type AcceptancePolicy = "AUTO" | "MANUAL";
+
+export type ShiftStatus = "NEW" | "OPENED" | "CLOSED";
+
+/** Тип объекта (магазин/цех/отдел/офис/распределительный центр) — экран один, отличается label */
+export type ObjectType =
+  | "STORE"
+  | "WORKSHOP"
+  | "DEPARTMENT"
+  | "OFFICE"
+  | "WAREHOUSE_HUB";
+
+export type Permission =
+  | "CASHIER"
+  | "SALES_FLOOR"
+  | "SELF_CHECKOUT"
+  | "WAREHOUSE"
+  | "PRODUCTION_LINE";
+
+/** 1=worker, 2=manager в БД */
+export type DbRoleId = 1 | 2;
+
+/**
+ * UI-сценарная sub-role; все non-WORKER → role_id=2.
+ * AGENT — внешняя роль (видит только свой кабинет на /agent).
+ * PLATFORM_ADMIN — наш staff (Beyond Violet), cross-tenant, меняет договорные настройки организации.
+ */
 export type FunctionalRole =
   | "STORE_DIRECTOR"
   | "SUPERVISOR"
@@ -19,100 +56,64 @@ export type FunctionalRole =
   | "AGENT"
   | "PLATFORM_ADMIN";
 
-// ═══════════════════════════════════════════════════════════════════
-// EMPLOYEE TYPE
-// ═══════════════════════════════════════════════════════════════════
-
+/** STAFF=штатный, FREELANCE=внештатный (документы обязательны) */
 export type EmployeeType = "STAFF" | "FREELANCE";
 
-// ═══════════════════════════════════════════════════════════════════
-// STORE ZONES (permissions)
-// ═══════════════════════════════════════════════════════════════════
+/**
+ * FREELANCE_APPLICATION_PENDING — заявка на согласование
+ * FREELANCE_BUDGET_OVERLIMIT — перерасход
+ * FREELANCE_NO_TASKS — внештат согласован но задач не назначено
+ * FREELANCE_SERVICE_NOT_CONFIRMED — директор не подтвердил услугу в конце дня
+ * FREELANCE_NO_SHOW — невыход
+ * FREELANCE_EXTERNAL_SYNC — пришли заявки из внешней HR
+ * FREELANCE_PAYOUT_DONE — выплата исполнителю прошла
+ */
+export type NotificationCategory =
+  | "TASK_REVIEW"
+  | "TASK_REJECTED"
+  | "TASK_STATE_CHANGED"
+  | "BONUS_AVAILABLE"
+  | "GOAL_UPDATE"
+  | "AI_SUGGESTION_NEW"
+  | "AI_ANOMALY"
+  | "FREELANCE_APPLICATION_PENDING"
+  | "FREELANCE_BUDGET_OVERLIMIT"
+  | "FREELANCE_NO_TASKS"
+  | "FREELANCE_SERVICE_NOT_CONFIRMED"
+  | "FREELANCE_NO_SHOW"
+  | "FREELANCE_EXTERNAL_SYNC"
+  | "FREELANCE_PAYOUT_DONE"
+  | "GENERIC";
 
-export type StoreZone =
-  | "CASHIER"
-  | "SALES_FLOOR"
-  | "WAREHOUSE"
-  | "OFFICE"
-  | "PRODUCTION"
-  | "RECEIVING"
-  | "CLEANING";
-
-// ═══════════════════════════════════════════════════════════════════
-// TASK
-// ═══════════════════════════════════════════════════════════════════
-
-export type TaskState =
-  | "DRAFT"
-  | "OPEN"
-  | "IN_PROGRESS"
-  | "PAUSED"
-  | "BLOCKED"
-  | "COMPLETED"
-  | "ARCHIVED";
-
-export type TaskReviewState =
-  | "NONE"
-  | "PENDING"
-  | "APPROVED"
-  | "REJECTED"
-  | "NEEDS_REVISION";
-
-export type TaskType = "REGULAR" | "BONUS" | "URGENT" | "CHAIN";
+/** Подзадачи (ранее operations) — статус модерации */
+export type SubtaskReviewState = "PENDING" | "ACCEPTED" | "REJECTED";
 
 export type ArchiveReason =
-  | "COMPLETED"
-  | "CANCELLED"
+  | "CLOSED"
   | "DUPLICATE"
-  | "IRRELEVANT"
-  | "MERGED"
+  | "WRONG_DATA"
+  | "OBSOLETE"
   | "OTHER";
 
-// ═══════════════════════════════════════════════════════════════════
-// GOAL
-// ═══════════════════════════════════════════════════════════════════
-
+/** CUSTOM — для произвольных целей под любую вертикаль (fashion, production) */
 export type GoalCategory =
-  | "SALES"
-  | "OPERATIONS"
-  | "QUALITY"
-  | "EFFICIENCY"
-  | "CUSTOMER"
-  | "INVENTORY";
+  | "OOS_REDUCTION"
+  | "WRITE_OFFS"
+  | "PROMO_QUALITY"
+  | "PRICE_ACCURACY"
+  | "IMPULSE_ZONES"
+  | "PRODUCTIVITY"
+  | "CUSTOM";
 
-export type GoalStatus =
-  | "DRAFT"
-  | "ACTIVE"
-  | "AT_RISK"
-  | "ACHIEVED"
-  | "MISSED"
-  | "PAUSED";
+export type GoalStatus = "PROPOSED" | "ACTIVE" | "COMPLETED" | "ARCHIVED";
 
-// ═══════════════════════════════════════════════════════════════════
-// SHIFT
-// ═══════════════════════════════════════════════════════════════════
-
-export type ShiftState =
-  | "SCHEDULED"
-  | "IN_PROGRESS"
-  | "COMPLETED"
-  | "CANCELLED"
-  | "NO_SHOW";
-
-// ═══════════════════════════════════════════════════════════════════
-// NOTIFICATION
-// ═══════════════════════════════════════════════════════════════════
-
-export type NotificationCategory =
-  | "TASK"
-  | "GOAL"
-  | "SCHEDULE"
-  | "SYSTEM"
-  | "AI";
-
-// ═══════════════════════════════════════════════════════════════════
-// AI SUGGESTION
-// ═══════════════════════════════════════════════════════════════════
+/**
+ * Источник создания задачи:
+ * MANAGER — создал менеджер руками
+ * AI — предложил ИИ (приняли)
+ * PLANNED — плановая (из настройки системы / планировщика)
+ */
+export type TaskSource = "MANAGER" | "AI" | "PLANNED";
 
 export type AISuggestionType =
   | "TASK_SUGGESTION"
@@ -120,14 +121,966 @@ export type AISuggestionType =
   | "BONUS_TASK_SUGGESTION"
   | "INSIGHT";
 
-export type AISuggestionStatus =
+export type AISuggestionStatus = "PENDING" | "ACCEPTED" | "REJECTED" | "EDITED";
+
+export type AISuggestionPriority = "high" | "medium" | "low";
+
+export type AIChatContextType =
+  | "general"
+  | "suggestion"
+  | "goal"
+  | "task"
+  | "chart";
+
+export type AIChatRole = "user" | "assistant";
+
+/**
+ * PLANNER — generic коннектор расписания/смен/задач
+ * (для текущего клиента SPAR это LAMA-инстанс, для других может быть Verme / Kronos / собственный)
+ */
+export type DataConnectorType =
+  | "POS"
+  | "INVENTORY"
+  | "SUPPLY"
+  | "PROMO"
+  | "MARKETING_CHANNEL"
+  | "UNIVERSAL"
+  | "PLANNER"
+  | "EXCEL"
+  | "WEBHOOKS"
+  | "PUBLIC_API";
+
+export type DataConnectorStatus =
+  | "NOT_CONFIGURED"
+  | "CONFIGURED"
+  | "ACTIVE"
+  | "DEGRADED"
+  | "DISCONNECTED";
+
+/**
+ * Вертикаль = что за бизнес.
+ * Размер компании отдельно: Organization.type ('RETAIL' / 'PRODUCTION' / 'SMALL_BUSINESS').
+ * Малый бизнес может быть FMCG_RETAIL или FASHION_RETAIL — не путать вертикаль с размером.
+ */
+export type BusinessVertical =
+  | "FMCG_RETAIL"
+  | "FASHION_RETAIL"
+  | "PRODUCTION"
+  | "OTHER";
+
+// ═══════════════════════════════════════════════════════════════════
+// FREELANCE MODULE ENUMS
+// ═══════════════════════════════════════════════════════════════════
+
+/** INTERNAL — заявку создали в нашей админке; EXTERNAL — пришла синхронизацией из HR-системы клиента */
+export type ApplicationSource = "INTERNAL" | "EXTERNAL";
+
+/**
+ * MIXED = часть внештат + часть бонусом
+ * REPLACED_WITH_BONUS = вся заявка ушла в бонусный пул
+ */
+export type ApplicationStatus =
+  | "DRAFT"
   | "PENDING"
-  | "ACCEPTED"
+  | "APPROVED_FULL"
+  | "APPROVED_PARTIAL"
   | "REJECTED"
-  | "EDITED";
+  | "REPLACED_WITH_BONUS"
+  | "MIXED"
+  | "CANCELLED";
+
+/**
+ * Настройка организации:
+ * NOMINAL_ACCOUNT — платим через сервис «Номинальный счёт» (полный финансовый контур + агенты)
+ * CLIENT_DIRECT — клиент платит сам, у нас только управленческий контур
+ */
+export type PaymentMode = "NOMINAL_ACCOUNT" | "CLIENT_DIRECT";
+
+/** Статус внештатного исполнителя. ACTIVE — допущен к работе и оферта подписана */
+export type FreelancerStatus =
+  | "NEW"
+  | "VERIFICATION"
+  | "ACTIVE"
+  | "BLOCKED"
+  | "ARCHIVED";
+
+/**
+ * Жизненный цикл оказанной услуги:
+ * CONFIRMED — директор подтвердил в мобиле
+ * READY_TO_PAY — попала в реестр выплат
+ * PAID — деньги ушли
+ * NO_SHOW — исполнитель не вышел
+ */
+export type ServiceStatus =
+  | "PLANNED"
+  | "IN_PROGRESS"
+  | "COMPLETED"
+  | "CONFIRMED"
+  | "READY_TO_PAY"
+  | "PAID"
+  | "NO_SHOW"
+  | "DISPUTED";
+
+/** Статус выплаты в реестре (NOMINAL_ACCOUNT режим) */
+export type PayoutStatus = "PENDING" | "PROCESSING" | "PAID" | "FAILED";
+
+export type AgentStatus = "ACTIVE" | "BLOCKED" | "ARCHIVED";
+
+/** Используется в BudgetLimit и BudgetUsage */
+export type BudgetPeriod = "DAY" | "WEEK" | "MONTH";
 
 // ═══════════════════════════════════════════════════════════════════
-// EMPLOYEE STATUS
+// INTERFACES
 // ═══════════════════════════════════════════════════════════════════
 
-export type EmployeeStatus = "ACTIVE" | "ON_LEAVE" | "SICK" | "TERMINATED";
+/**
+ * User interface.
+ * email — для Email magic link auth (опционально)
+ * preferred_locale/timezone — настройка профиля
+ * totp_enabled — включён ли TOTP
+ * freelancer_status / agent_id / oferta_accepted_at / source — релевантны только для type='FREELANCE'
+ * source — как заведён исполнитель (руками или из внешней HR)
+ * rating — общий рейтинг (для STAFF и FREELANCE), агенту НЕ показывается
+ */
+export interface User {
+  id: number;
+  sso_id: string;
+  phone: string;
+  email?: string | null;
+  first_name: string;
+  last_name: string;
+  middle_name?: string;
+  avatar_url?: string;
+  type: EmployeeType;
+  hired_at?: string;
+  archived: boolean;
+  archive_reason?: ArchiveReason;
+  preferred_locale?: Locale;
+  preferred_timezone?: string;
+  totp_enabled?: boolean;
+  freelancer_status?: FreelancerStatus;
+  agent_id?: string | null;
+  oferta_accepted_at?: string | null;
+  rating?: number;
+  source?: "MANUAL" | "EXTERNAL_SYNC";
+}
+
+/** ФОРМАЛЬНАЯ должность из штатки */
+export interface Position {
+  id: number;
+  code: string;
+  name: string;
+  description?: string;
+  role_id: DbRoleId;
+  default_rank?: number;
+}
+
+/**
+ * ФУНКЦИОНАЛЬНАЯ роль и scope.
+ * scope_ids — числа для STORE/STORE_LIST (store.id), строки для ORGANIZATION (organization.id) и REGION (region code).
+ * Для PLATFORM_ADMIN — пустой массив (cross-tenant) или массив organization.id если ограничен подмножеством.
+ */
+export interface FunctionalRoleAssignment {
+  id: number;
+  user_id: number;
+  functional_role: FunctionalRole;
+  scope_type: "STORE" | "STORE_LIST" | "REGION" | "ORGANIZATION";
+  scope_ids: Array<number | string>;
+}
+
+export interface Assignment {
+  id: number;
+  user_id: number;
+  position_id: number;
+  position_name: string;
+  store_id: number;
+  store_name: string;
+  rank: {
+    id: number;
+    code: string;
+    name: string;
+  };
+  external_id?: string;
+  active: boolean;
+}
+
+export interface WorkerPermission {
+  id: number;
+  user_id: number;
+  permission: Permission;
+  granted_at: string;
+  granted_by_name: string;
+  revoked_at?: string;
+  revoked_by_name?: string;
+}
+
+/**
+ * Юр.лица внутри организации (для retail-сетей с несколькими ИП).
+ * Поля inn/kpp/ogrn — для tax_jurisdiction='RU'
+ * companies_house/vat_number — для 'UK'
+ */
+export interface LegalEntity {
+  id: number;
+  name: string;
+  organization_id: string;
+  tax_jurisdiction: "RU" | "UK" | "OTHER";
+  inn?: string;
+  kpp?: string;
+  ogrn?: string;
+  companies_house?: string;
+  vat_number?: string;
+}
+
+export type ObjectFormat =
+  | "SUPERMARKET"
+  | "HYPERMARKET"
+  | "CONVENIENCE"
+  | "SMALL_SHOP"
+  | "SEWING_WORKSHOP"
+  | "PRODUCTION_LINE"
+  | "WAREHOUSE_HUB"
+  | "OFFICE";
+
+/**
+ * object_type — тип объекта (STORE/WORKSHOP/DEPARTMENT/OFFICE), один и тот же UI экран.
+ * organization_id — прямая связь с организацией (помимо legal_entity_id),
+ * чтобы фильтрация по тенанту не зависела от вычислений через legal_entity.
+ * object_format — формат объекта (нужен для маппинга на ServiceNorm в модуле внештата)
+ */
+export interface Store {
+  id: number;
+  name: string;
+  external_code: string;
+  address: string;
+  city: string;
+  store_type: string;
+  object_type: ObjectType;
+  organization_id: string;
+  manager_id?: number;
+  supervisor_id?: number;
+  region: string;
+  legal_entity_id: number;
+  lama_synced_at?: string;
+  active: boolean;
+  archived: boolean;
+  archive_reason?: ArchiveReason;
+  geo?: {
+    lat: number;
+    lng: number;
+  };
+  object_format?: ObjectFormat;
+}
+
+/** store_id=null → глобальная; локальная ждёт approve от supervisor + main director */
+export interface Zone {
+  id: number;
+  name: string;
+  code: string;
+  store_id?: number | null;
+  icon: string;
+  approved: boolean;
+  approved_by?: number;
+}
+
+/** group вместо category — НЕ путать с категорией товара */
+export interface WorkType {
+  id: number;
+  code: string;
+  name: string;
+  description?: string;
+  group: string;
+  default_duration_min: number;
+  requires_photo_default: boolean;
+  requires_report_default: boolean;
+  acceptance_policy_default: AcceptancePolicy;
+  allow_new_subtasks: boolean;
+  hints_count: number;
+}
+
+export interface Hint {
+  id: number;
+  work_type_id: number;
+  zone_id: number;
+  text: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TaskHistoryBrief {
+  opened_at?: string;
+  paused_intervals: Array<{ from: string; to: string }>;
+  completed_at?: string;
+  work_intervals: Array<{ from: string; to: string }>;
+  transferred_at?: string;
+  transferred_to?: number;
+}
+
+/**
+ * Task interface.
+ * id — UUID (string).
+ * assignee_id, creator_id, store_id, zone_id, work_type_id — internal int (number).
+ *
+ * ПОЛЯ В РАЗРАБОТКЕ (модуль внештата + AI extensions):
+ * - goal_id — ссылка на Goal (модуль AI-целей)
+ * - bonus_points — баллы премии (модуль бонусов)
+ * - marketing_channel_target — название канала маркетинга для fashion-кейса
+ * - freelance_application_id / freelance_assignment_id / service_id — связка с модулем внештата
+ * - ai_suggestion_id — ссылка на исходное предложение AI если source='AI'
+ */
+export interface Task {
+  id: string;
+  title: string;
+  description: string;
+  type: TaskType;
+  kind: TaskKind;
+  source: TaskSource;
+  ai_suggestion_id?: string | null;
+  planned_minutes: number;
+  store_id: number;
+  store_name: string;
+  zone_id: number;
+  zone_name: string;
+  work_type_id: number;
+  work_type_name: string;
+  product_category_id?: number | null;
+  product_category_name?: string | null;
+  creator_id: number;
+  creator_name: string;
+  assignee_id?: number | null;
+  assignee_name?: string | null;
+  /** Задача может быть назначена на зону (permission) вместо конкретного исполнителя */
+  assigned_to_permission?: Permission | null;
+  next_assignee_id?: number | null;
+  next_assignee_name?: string | null;
+  chain_position?: number;
+  state: TaskState;
+  review_state: TaskReviewState;
+  acceptance_policy: AcceptancePolicy;
+  requires_photo: boolean;
+  requires_photo_override?: boolean;
+  comment?: string;
+  review_comment?: string;
+  report_text?: string;
+  report_image_url?: string;
+  time_start?: string;
+  time_end?: string;
+  archived: boolean;
+  archive_reason?: ArchiveReason;
+  archived_at?: string;
+  archived_by?: number;
+  /** Краткая история: когда открыта, интервалы пауз, когда завершена */
+  history_brief?: TaskHistoryBrief;
+  goal_id?: string | null;
+  bonus_points?: number | null;
+  marketing_channel_target?: string | null;
+  freelance_application_id?: string | null;
+  freelance_assignment_id?: string | null;
+  service_id?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TaskEvent {
+  id: number;
+  task_id: string;
+  event_type:
+    | "START"
+    | "PAUSE"
+    | "RESUME"
+    | "COMPLETE"
+    | "SEND_TO_REVIEW"
+    | "AUTO_ACCEPT"
+    | "ACCEPT"
+    | "REJECT"
+    | "TRANSFER"
+    | "ARCHIVE"
+    | "RESTORE";
+  actor_id: number;
+  actor_name: string;
+  actor_role: FunctionalRole;
+  payload: Record<string, unknown>;
+  occurred_at: string;
+}
+
+/** Ранее Operation — это шаги выполнения внутри задачи */
+export interface Subtask {
+  id: number;
+  task_id: string;
+  name: string;
+  review_state: SubtaskReviewState;
+  hints_count: number;
+  duration_min?: number;
+  order: number;
+}
+
+/**
+ * Shift interface.
+ * ВАЖНО: id, plan_id — number (int в backend, не UUID).
+ * Не путать с Task.id (UUID = string).
+ */
+export interface Shift {
+  id: number;
+  plan_id: number;
+  status: ShiftStatus;
+  user_id: number;
+  user_name: string;
+  store_id: number;
+  store_name: string;
+  zone_id?: number;
+  zone_name?: string;
+  shift_date: string;
+  planned_start: string;
+  planned_end: string;
+  actual_start?: string;
+  actual_end?: string;
+  late_minutes: number;
+  overtime_minutes: number;
+}
+
+export interface Notification {
+  id: string;
+  user_id: number;
+  category: NotificationCategory;
+  title: string;
+  body: string;
+  data: Record<string, unknown>;
+  link?: string;
+  is_read: boolean;
+  is_archived: boolean;
+  created_at: string;
+}
+
+export interface AuditEntry {
+  id: string;
+  occurred_at: string;
+  actor: {
+    id: number;
+    name: string;
+    avatar_url?: string;
+    role: FunctionalRole;
+    email?: string;
+  };
+  action: string;
+  action_label: string;
+  entity_type: string;
+  entity_id: string;
+  entity_name: string;
+  entity_url?: string;
+  payload: Record<string, unknown>;
+  diff?: Array<{
+    field: string;
+    before: unknown;
+    after: unknown;
+  }>;
+  ip_address?: string;
+  user_agent?: string;
+  device_type?: "desktop" | "mobile" | "tablet";
+}
+
+/**
+ * Organization interface.
+ * business_vertical — conditional UI
+ * ai_module_enabled — флаг AI-аддона
+ * freelance_module_enabled — флаг модуля внештата (если false — раздел внештата скрыт целиком)
+ * payment_mode — как платим исполнителям (NOMINAL_ACCOUNT / CLIENT_DIRECT), меняется только PLATFORM_ADMIN
+ * external_hr_enabled — включена ли синхронизация заявок из внешней HR-системы клиента
+ */
+export interface Organization {
+  id: string;
+  name: string;
+  type: "RETAIL" | "PRODUCTION" | "SMALL_BUSINESS";
+  business_vertical: BusinessVertical;
+  partner_id?: string;
+  default_locale: Locale;
+  default_timezone: string;
+  default_currency: "RUB" | "GBP" | "USD";
+  ai_module_enabled: boolean;
+  freelance_module_enabled: boolean;
+  payment_mode: PaymentMode;
+  external_hr_enabled: boolean;
+}
+
+/** 53 категории товаров из LAMA — для тегирования задач, НЕ путать с group в WorkType */
+export interface ProductCategory {
+  id: number;
+  code: string;
+  name: string;
+}
+
+/** AI-Assistant цель + ручная */
+export interface Goal {
+  id: string;
+  category: GoalCategory;
+  title: string;
+  description: string;
+  target_value: number;
+  target_unit: string;
+  current_value: number;
+  status: GoalStatus;
+  store_id?: number | null;
+  scope: "STORE" | "NETWORK";
+  proposed_by: "AI" | "MANAGER";
+  selected_by?: number;
+  selected_at?: string;
+  period_start: string;
+  period_end: string;
+}
+
+/** Источник бонуса. GOAL_LINKED — бонус привязан к active Goal */
+export type BonusTaskSource =
+  | "YESTERDAY_INCOMPLETE"
+  | "SUPERVISOR_BUDGET"
+  | "GOAL_LINKED";
+
+export interface BonusBudget {
+  id: string;
+  store_id?: number;
+  supervisor_id?: number;
+  period_start: string;
+  period_end: string;
+  total_points: number;
+  spent_points: number;
+  source: BonusTaskSource;
+}
+
+/**
+ * Предложение от внешнего аналитического модуля.
+ * proposed_payload содержит готовую структуру задачи/цели/бонуса.
+ */
+export interface AISuggestion {
+  id: string;
+  type: AISuggestionType;
+  title: string;
+  description: string;
+  rationale: string;
+  proposed_payload: Record<string, unknown>;
+  context_data?: {
+    chart_data?: unknown;
+    related_skus?: unknown;
+    related_tasks?: string[];
+    anomaly_metric?: string;
+  };
+  status: AISuggestionStatus;
+  priority: AISuggestionPriority;
+  target_object_type: "STORE" | "STORE_LIST" | "NETWORK" | "WORKSHOP";
+  target_object_ids: number[];
+  created_at: string;
+  decided_at?: string;
+  decided_by?: number;
+  decision_reason?: string;
+  decision_comment?: string;
+}
+
+export interface AIChatThread {
+  id: string;
+  user_id: number;
+  title?: string;
+  context_type: AIChatContextType;
+  context_id?: string | null;
+  last_message_at: string;
+  message_count: number;
+  created_at: string;
+}
+
+export interface AIChatMessage {
+  id: string;
+  thread_id: string;
+  role: AIChatRole;
+  content: string;
+  attached_data?: {
+    data_type:
+      | "chart"
+      | "task_preview"
+      | "table"
+      | "document_excerpt"
+      | "suggestion_preview";
+    payload: Record<string, unknown>;
+  };
+  helpful?: boolean | null;
+  created_at: string;
+}
+
+/** Загруженные регламенты, ИИ грузит в контекст когда работник просит «подробнее» */
+export interface Regulation {
+  id: string;
+  name: string;
+  description?: string;
+  file_url: string;
+  file_type: "PDF" | "WORD" | "TXT";
+  file_size_bytes: number;
+  work_type_ids?: number[];
+  zone_ids?: number[];
+  version: number;
+  is_archived: boolean;
+  replaces_id?: string | null;
+  uploaded_by: number;
+  uploaded_at: string;
+  ai_usage_count_30d: number;
+}
+
+/**
+ * Data connector for external systems.
+ * POS / Остатки / Поставки / Промо / Маркетинг — внешние коннекторы данных.
+ * UNIVERSAL = один master-ключ к нескольким источникам.
+ */
+export interface DataConnector {
+  id: string;
+  type: DataConnectorType;
+  name: string;
+  status: DataConnectorStatus;
+  config?: Record<string, unknown>;
+  stats?: {
+    records_per_day?: number;
+    last_sync_at?: string;
+    total_records?: number;
+  };
+  organization_id: string;
+  scope?: {
+    store_ids?: number[];
+  };
+}
+
+/** Метрики работы ИИ для дашборда контроля */
+export interface AIPerformanceMetrics {
+  scope_type: "NETWORK" | "REGION" | "SUPERVISOR_LIST" | "STORE";
+  scope_id?: string | number;
+  period_start: string;
+  period_end: string;
+  suggestions_generated: number;
+  suggestions_accepted: number;
+  suggestions_rejected: number;
+  accept_rate_pct: number;
+  average_decision_time_min: number;
+  helpful_rate_pct?: number;
+  top_reject_reasons: Array<{
+    reason: string;
+    count: number;
+  }>;
+  anomalies?: Array<{
+    type: string;
+    description: string;
+    severity: "low" | "med" | "high";
+  }>;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// FREELANCE MODULE INTERFACES
+// ═══════════════════════════════════════════════════════════════════
+
+/**
+ * Freelance application.
+ * urgent — заявка <3 дней до выхода (только SUPERVISOR+)
+ * retroactive — задним числом (только SUPERVISOR+)
+ * external_ref — ID заявки в HR-системе клиента (только source=EXTERNAL)
+ * replaced_with_bonus_budget_id — если status=REPLACED_WITH_BONUS / MIXED
+ * approved_hours — часы которые согласовали
+ * mixed_* — для MIXED заявки распределение
+ */
+export interface FreelanceApplication {
+  id: string;
+  source: ApplicationSource;
+  status: ApplicationStatus;
+  store_id: number;
+  store_name: string;
+  planned_date: string;
+  requested_hours: number;
+  approved_hours?: number | null;
+  work_type_id: number;
+  work_type_name: string;
+  comment?: string;
+  created_by: number;
+  created_by_name: string;
+  created_by_role: FunctionalRole;
+  created_at: string;
+  decided_by?: number | null;
+  decided_by_name?: string | null;
+  decided_at?: string | null;
+  decision_comment?: string | null;
+  replaced_with_bonus_budget_id?: string | null;
+  mixed_bonus_hours?: number | null;
+  mixed_freelance_hours?: number | null;
+  external_ref?: string | null;
+  urgent: boolean;
+  retroactive: boolean;
+}
+
+/** Привязка исполнителя к заявке. geo_check_in_match=false блокирует открытие смены */
+export interface FreelancerAssignment {
+  id: string;
+  application_id: string;
+  freelancer_id: number;
+  freelancer_name: string;
+  freelancer_phone: string;
+  agent_id?: string | null;
+  agent_name?: string | null;
+  scheduled_start: string;
+  scheduled_end: string;
+  actual_start?: string | null;
+  actual_end?: string | null;
+  geo_check_in?: {
+    lat: number;
+    lng: number;
+    occurred_at: string;
+  } | null;
+  geo_check_in_match: boolean | null;
+  oferta_accepted_at?: string | null;
+  status: "SCHEDULED" | "CHECKED_IN" | "WORKING" | "DONE" | "NO_SHOW";
+}
+
+/**
+ * Оказанная услуга.
+ * scheduled_hours — обещано часов (заявлено в application)
+ * actual_hours — фактически отработано (по геолокации check-in / check-out)
+ * payable_hours — к оплате (обычно = scheduled_hours; если был дозагрузка не по вине исполнителя, payable_hours остаётся = scheduled_hours)
+ * underload_not_fault — если true, исполнителю заплатят за обещанные часы, не за фактические
+ * total_amount = payable_hours × hourly_rate (для NOMINAL_ACCOUNT)
+ * total_amount_indicative — справочно для CLIENT_DIRECT (по нормативам)
+ * manually_adjusted — корректировка ИТОГОВОЙ суммы (только REGIONAL+)
+ * task_ids — список Task.id, выполненных в рамках этой услуги
+ */
+export interface Service {
+  id: string;
+  freelancer_id: number;
+  freelancer_name: string;
+  freelancer_phone: string;
+  agent_id?: string | null;
+  agent_name?: string | null;
+  application_id?: string | null;
+  assignment_id?: string | null;
+  task_ids?: string[];
+  store_id: number;
+  store_name: string;
+  service_date: string;
+  work_type_id: number;
+  work_type_name: string;
+  scheduled_hours: number;
+  actual_hours: number;
+  payable_hours: number;
+  underload_not_fault?: boolean;
+  adjustment_reason?: string | null;
+  normative_volume: number;
+  normative_unit: string;
+  hourly_rate?: number | null;
+  total_amount?: number | null;
+  total_amount_indicative?: number | null;
+  status: ServiceStatus;
+  confirmed_by?: number | null;
+  confirmed_at?: string | null;
+  no_show_reason?: string | null;
+  dispute_reason?: string | null;
+  payout_id?: string | null;
+  manually_adjusted?: {
+    adjusted_by: number;
+    adjusted_by_name: string;
+    adjusted_at: string;
+    from_amount: number;
+    to_amount: number;
+    reason: string;
+  } | null;
+  created_at: string;
+  updated_at: string;
+}
+
+/**
+ * Запись в реестре выплат.
+ * Один день × один исполнитель = одна запись (агрегирует все его сервисы за день).
+ * nominal_account_fee=5%.
+ * Релевантно только для payment_mode=NOMINAL_ACCOUNT
+ */
+export interface Payout {
+  id: string;
+  payout_date: string;
+  freelancer_id: number;
+  freelancer_name: string;
+  agent_id?: string | null;
+  services: string[];
+  gross_amount: number;
+  nominal_account_fee: number;
+  net_amount: number;
+  agent_commission?: number | null;
+  status: PayoutStatus;
+  nominal_account_ref?: string | null;
+  closing_doc_url?: string | null;
+  paid_at?: string | null;
+  failure_reason?: string | null;
+  created_at: string;
+}
+
+/** Лимит бюджета на внештат для объекта. Управляется REGIONAL+ */
+export interface BudgetLimit {
+  id: string;
+  store_id: number;
+  store_name: string;
+  period: BudgetPeriod;
+  amount: number;
+  currency: "RUB" | "GBP" | "USD";
+  valid_from: string;
+  valid_to?: string | null;
+  set_by: number;
+  set_by_name: string;
+  set_at: string;
+}
+
+/** Вычисляется на лету: planned_amount = pro-rata по дням, overspend = actual - planned (если > 0) */
+export interface BudgetUsage {
+  store_id: number;
+  store_name: string;
+  period: BudgetPeriod;
+  period_start: string;
+  period_end: string;
+  limit_amount: number;
+  planned_amount: number;
+  actual_amount: number;
+  overspend: number;
+  overspend_pct: number;
+  currency: "RUB" | "GBP" | "USD";
+}
+
+export type ServiceNormUnit =
+  | "SKU"
+  | "PCS"
+  | "KG"
+  | "PALLETS"
+  | "POSITIONS"
+  | "BOXES"
+  | "M2"
+  | "CHECKS";
+
+/**
+ * Справочник «формат объекта × тип работ → норматив».
+ * unit включает M2 (квадратные метры — для уборки) и CHECKS (чеки на кассе).
+ * hourly_rate — для расчёта стоимости (используется в обоих режимах оплаты, в CLIENT_DIRECT справочно).
+ * Утверждает SUPERVISOR+
+ */
+export interface ServiceNorm {
+  id: string;
+  object_format: ObjectFormat;
+  work_type_id: number;
+  work_type_name: string;
+  normative_per_hour: number;
+  unit: ServiceNormUnit;
+  hourly_rate?: number | null;
+  currency: "RUB" | "GBP" | "USD";
+  approved_by: number;
+  approved_by_name: string;
+  approved_at: string;
+  archived: boolean;
+}
+
+/**
+ * Справочник агентов.
+ * Скрыт целиком в payment_mode=CLIENT_DIRECT
+ */
+export interface Agent {
+  id: string;
+  name: string;
+  type: "INDIVIDUAL" | "COMPANY";
+  inn?: string;
+  kpp?: string;
+  ogrn?: string;
+  contact_person_name?: string;
+  contact_phone?: string;
+  contact_email?: string;
+  contract_url?: string | null;
+  contract_signed_at?: string | null;
+  commission_pct: number;
+  status: AgentStatus;
+  freelancers_count: number;
+  total_earned_30d: number;
+  total_earned_all_time: number;
+  created_at: string;
+}
+
+/**
+ * Запись начисления агентского.
+ * Создаётся в момент выплаты исполнителю (одновременно), не отдельно раз в месяц
+ */
+export interface AgentEarning {
+  id: string;
+  agent_id: string;
+  period_date: string;
+  freelancer_id: number;
+  freelancer_name: string;
+  service_id: string;
+  gross_amount_base: number;
+  commission_pct: number;
+  commission_amount: number;
+  payout_id?: string | null;
+  status: "CALCULATED" | "PAID";
+  created_at: string;
+}
+
+/** Лог синхронизаций с внешней HR. Виден в карточке интеграции */
+export interface ExternalHrSyncLog {
+  id: string;
+  occurred_at: string;
+  applications_received: number;
+  freelancers_created: number;
+  errors_count: number;
+  errors?: Array<{
+    external_ref: string;
+    error: string;
+  }>;
+  triggered_by: "SCHEDULE" | "MANUAL";
+  triggered_by_user?: number;
+}
+
+/**
+ * Запись о невыходе для юридической работы.
+ * Это preset фильтра реестра услуг (status=NO_SHOW), хранится как агрегатная сущность для удобства юристов
+ */
+export interface NoShowReport {
+  id: string;
+  service_id: string;
+  freelancer_id: number;
+  freelancer_name: string;
+  agent_id?: string | null;
+  store_id: number;
+  store_name: string;
+  scheduled_date: string;
+  scheduled_hours: number;
+  actual_hours: 0;
+  reported_at: string;
+  status: "OPEN" | "IN_LEGAL" | "RESOLVED" | "WRITTEN_OFF";
+  legal_comment?: string;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// API WRAPPERS
+// ═══════════════════════════════════════════════════════════════════
+
+export interface ApiResponse<T> {
+  data: T;
+}
+
+export interface ApiListResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  page_size: number;
+}
+
+/**
+ * warning — мягкое предупреждение когда операция прошла успешно, но требует внимания.
+ * Например: «Заявка из внешней HR-системы, бюджет справочный».
+ * UI показывает warning в info-toast, не destructive.
+ */
+export interface ApiMutationResponse {
+  success: boolean;
+  id?: string;
+  warning?: string;
+  error?: {
+    code: string;
+    message: string;
+  };
+}
+
+export interface ApiListParams {
+  search?: string;
+  status?: string;
+  page?: number;
+  page_size?: number;
+  sort_by?: string;
+  sort_dir?: "asc" | "desc";
+  [key: string]: unknown;
+}

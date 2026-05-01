@@ -23,7 +23,7 @@ import { RoleBadge } from "@/components/shared/role-badge"
 
 import { InboxIcon, AlertTriangle } from "lucide-react"
 import type { ColumnDef } from "@tanstack/react-table"
-import type { TaskState, TaskReviewState, ShiftState, StoreZone, FunctionalRole } from "@/lib/types"
+import type { TaskState, TaskReviewState, ShiftStatus, Permission, FunctionalRole } from "@/lib/types"
 
 // ═══════════════════════════════════════════════════════════════════
 // MOCK DATA
@@ -82,7 +82,7 @@ interface MockTableRow {
   store: string
   status: TaskState
   review: TaskReviewState
-  zone: StoreZone
+  zone: Permission
 }
 
 const TABLE_DATA: MockTableRow[] = [
@@ -91,14 +91,14 @@ const TABLE_DATA: MockTableRow[] = [
     name: "Переоценить товары в отделе Fashion",
     store: "SPAR Томск",
     status: "IN_PROGRESS",
-    review: "PENDING",
+    review: "ON_REVIEW",
     zone: "SALES_FLOOR",
   },
   {
     id: "2",
     name: "Проверить остатки в хранилище",
     store: "SPAR Новосибирск",
-    status: "OPEN",
+    status: "NEW",
     review: "NONE",
     zone: "WAREHOUSE",
   },
@@ -107,8 +107,8 @@ const TABLE_DATA: MockTableRow[] = [
     name: "Оформить приём товара",
     store: "Food City Томск",
     status: "COMPLETED",
-    review: "APPROVED",
-    zone: "RECEIVING",
+    review: "ACCEPTED",
+    zone: "WAREHOUSE",
   },
   {
     id: "4",
@@ -120,19 +120,19 @@ const TABLE_DATA: MockTableRow[] = [
   },
   {
     id: "5",
-    name: "Уборка торгового зала",
+    name: "Обслуживание касс самообслуживания",
     store: "SPAR Новосибирск",
-    status: "DRAFT",
-    review: "NEEDS_REVISION",
-    zone: "CLEANING",
+    status: "NEW",
+    review: "NONE",
+    zone: "SELF_CHECKOUT",
   },
   {
     id: "6",
-    name: "Подготовка отчёта по продажам",
+    name: "Подготовка производственной линии",
     store: "Food City Томск",
-    status: "BLOCKED",
+    status: "IN_PROGRESS",
     review: "REJECTED",
-    zone: "OFFICE",
+    zone: "PRODUCTION_LINE",
   },
 ]
 
@@ -201,7 +201,7 @@ const columns: ColumnDef<MockTableRow>[] = [
     accessorKey: "zone",
     header: "Зона",
     cell: ({ row }) => (
-      <PermissionPill permission={row.getValue("zone") as StoreZone} />
+      <PermissionPill permission={row.getValue("zone") as Permission} />
     ),
   },
 ]
@@ -213,7 +213,7 @@ const columns: ColumnDef<MockTableRow>[] = [
 export default function SharedDisplayPage() {
   const t = useTranslations()
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
-  const [filters, setFilters] = useState<{ zone: StoreZone; status: TaskState }>({
+  const [filters, setFilters] = useState<{ zone: Permission; status: TaskState }>({
     zone: "SALES_FLOOR",
     status: "IN_PROGRESS",
   })
@@ -245,13 +245,10 @@ export default function SharedDisplayPage() {
             <div className="flex flex-wrap gap-2">
               {(
                 [
-                  "DRAFT",
-                  "OPEN",
+                  "NEW",
                   "IN_PROGRESS",
                   "PAUSED",
-                  "BLOCKED",
                   "COMPLETED",
-                  "ARCHIVED",
                 ] as TaskState[]
               ).map((state) => (
                 <TaskStateBadge key={state} state={state} />
@@ -263,7 +260,7 @@ export default function SharedDisplayPage() {
           <div className="bg-card rounded-lg p-4 border border-border space-y-2">
             <p className="text-sm font-medium text-muted-foreground">Статусы проверки</p>
             <div className="flex flex-wrap gap-2">
-              {(["PENDING", "APPROVED", "REJECTED", "NEEDS_REVISION"] as TaskReviewState[]).map(
+              {(["ON_REVIEW", "ACCEPTED", "REJECTED"] as TaskReviewState[]).map(
                 (state) => (
                   <ReviewStateBadge key={state} reviewState={state} />
                 )
@@ -271,13 +268,13 @@ export default function SharedDisplayPage() {
             </div>
           </div>
 
-          {/* Shift State */}
+          {/* Shift Status */}
           <div className="bg-card rounded-lg p-4 border border-border space-y-2">
             <p className="text-sm font-medium text-muted-foreground">Статусы смен</p>
             <div className="flex flex-wrap gap-2">
-              {(["SCHEDULED", "IN_PROGRESS", "COMPLETED", "CANCELLED", "NO_SHOW"] as ShiftState[]).map(
-                (state) => (
-                  <ShiftStateBadge key={state} state={state} />
+              {(["NEW", "OPENED", "CLOSED"] as ShiftStatus[]).map(
+                (status) => (
+                  <ShiftStateBadge key={status} status={status} />
                 )
               )}
             </div>
@@ -291,14 +288,12 @@ export default function SharedDisplayPage() {
                 [
                   "CASHIER",
                   "SALES_FLOOR",
+                  "SELF_CHECKOUT",
                   "WAREHOUSE",
-                  "OFFICE",
-                  "PRODUCTION",
-                  "RECEIVING",
-                  "CLEANING",
-                ] as StoreZone[]
-              ).map((zone) => (
-                <PermissionPill key={zone} permission={zone} />
+                  "PRODUCTION_LINE",
+                ] as Permission[]
+              ).map((permission) => (
+                <PermissionPill key={permission} permission={permission} />
               ))}
             </div>
           </div>
@@ -394,7 +389,7 @@ export default function SharedDisplayPage() {
           </div>
         </section>
 
-        {/* ═══════════════════════════════════════════════════════════════════
+        {/* ═════════════════��═════════════════════════════════════════════════
             SECTION 4: ACTIVITY FEED
             ═══════════════════════════════════════════════════════════════════ */}
         <section className="space-y-3">
@@ -456,7 +451,7 @@ export default function SharedDisplayPage() {
               <FilterChip
                 label="Статус"
                 value="В работе"
-                onRemove={() => setFilters({ ...filters, status: "OPEN" })}
+                onRemove={() => setFilters({ ...filters, status: "NEW" })}
               />
               <span className="text-xs text-muted-foreground pt-1.5">
                 <button className="text-primary hover:underline">Очистить все</button>

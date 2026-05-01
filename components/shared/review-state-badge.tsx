@@ -12,19 +12,17 @@ interface ReviewStateBadgeProps {
 }
 
 const REVIEW_STYLES: Record<TaskReviewState, string | null> = {
-  NONE:           null,
-  PENDING:        "bg-info/10 text-info border-info/20",
-  APPROVED:       "bg-success/10 text-success border-success/20",
-  REJECTED:       "bg-destructive/10 text-destructive border-destructive/20",
-  NEEDS_REVISION: "bg-warning/10 text-warning border-warning/20",
+  NONE:      null,
+  ON_REVIEW: "bg-warning/10 text-warning border-warning/20",
+  ACCEPTED:  "bg-success/10 text-success border-success/20",
+  REJECTED:  "bg-destructive/10 text-destructive border-destructive/20",
 }
 
 const REVIEW_KEY: Record<TaskReviewState, string | null> = {
-  NONE:           null,
-  PENDING:        "pending",
-  APPROVED:       "approved",
-  REJECTED:       "rejected",
-  NEEDS_REVISION: "needs_revision",
+  NONE:      null,
+  ON_REVIEW: "on_review",
+  ACCEPTED:  "accepted",
+  REJECTED:  "rejected",
 }
 
 export function ReviewStateBadge({ reviewState, size = "md", className }: ReviewStateBadgeProps) {
