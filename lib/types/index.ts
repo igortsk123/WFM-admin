@@ -476,6 +476,8 @@ export interface Task {
   freelance_application_id?: string | null;
   freelance_assignment_id?: string | null;
   service_id?: string | null;
+  /** Server-computed: true if task passed its deadline without completion */
+  is_overdue?: boolean;
   created_at: string;
   updated_at: string;
 }

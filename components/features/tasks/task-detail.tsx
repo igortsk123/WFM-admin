@@ -255,13 +255,17 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
   const isNetworkOps = user.role === "NETWORK_OPS"
   const canReview = isManager && task?.review_state === "ON_REVIEW"
   const canTransfer = isManager && (task?.state === "IN_PROGRESS" || task?.state === "PAUSED")
-  const isOverdue = !!task && !!task.time_end && task.state !== "COMPLETED" && (() => {
-    const now = new Date()
-    const [h, m] = task.time_end!.split(":").map(Number)
-    const deadline = new Date(task.created_at)
-    deadline.setHours(h, m, 0, 0)
-    return now > deadline
-  })()
+  // Server-computed flag; falls back to runtime check for non-t-1042 tasks
+  const isOverdue = !!task && (
+    task.is_overdue === true ||
+    (task.state !== "COMPLETED" && !!task.time_end && (() => {
+      const now = new Date()
+      const [h, m] = task.time_end!.split(":").map(Number)
+      const deadline = new Date(task.created_at)
+      deadline.setHours(h, m, 0, 0)
+      return now > deadline
+    })())
+  )
 
   // ── actions ───────────────────────────────────────────────────────
   async function handleApprove(comment?: string) {
@@ -392,13 +396,18 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
   const overdueDiff = isOverdue && task?.time_end
     ? (() => {
         const [h, m] = task.time_end.split(":").map(Number)
-        const deadline = new Date(task.created_at)
+        // For completed tasks anchor to completion time, not now
+        const refTime = task.history_brief?.completed_at
+          ? new Date(task.history_brief.completed_at)
+          : new Date()
+        const deadline = new Date(refTime)
         deadline.setHours(h, m, 0, 0)
-        return Math.floor((Date.now() - deadline.getTime()) / 60000)
+        if (refTime < deadline) deadline.setDate(deadline.getDate() - 1)
+        return Math.max(0, Math.floor((refTime.getTime() - deadline.getTime()) / 60000))
       })()
     : null
 
-  // ── LOADING ───────────────────────────────────────────────────────
+  // ── LOADING ─────��─────────────────────────────────────────────────
   if (loading) {
     return (
       <div className="flex flex-col gap-6">
