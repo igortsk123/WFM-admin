@@ -91,6 +91,44 @@
   },
 
   "nav": {
+    "groups": {
+      "main": "Main",
+      "tasks": "Tasks",
+      "ai": "AI Assistant",
+      "goals": "Goals & Bonuses",
+      "schedule": "Schedule",
+      "employees": "Employees",
+      "stores": "Stores",
+      "taxonomy": "Taxonomy",
+      "freelance": "Freelance",
+      "reports": "Reports",
+      "stretch": "Stretch",
+      "settings": "Settings"
+    },
+    "role": {
+      "STORE_DIRECTOR": "Store Director",
+      "SUPERVISOR": "Supervisor",
+      "REGIONAL": "Regional Manager",
+      "NETWORK_OPS": "Operations Director",
+      "HR_MANAGER": "HR Manager",
+      "OPERATOR": "Operator",
+      "WORKER": "Worker",
+      "AGENT": "Agent",
+      "PLATFORM_ADMIN": "Platform Admin"
+    },
+    "hub": {
+      "operations": "Operations",
+      "efficiency": "Efficiency & AI",
+      "freelance": "Freelance & Gigs",
+      "configuration": "Configuration"
+    },
+    "view_all": "View all →",
+    "exit_impersonation": "Exit view mode",
+    "impersonating_as": "Viewing as {name}",
+    "returned_to_account": "Returned to your account",
+    "view_as_user": "View as user",
+    "beta": "Beta",
+    "scope_all_my": "All my",
     "dashboard": "Dashboard",
     "tasks": "Tasks",
     "task_new": "New task",

@@ -26,3 +26,9 @@ export { ResponsiveDataTable } from "./responsive-data-table"
 export { MobileFilterSheet } from "./mobile-filter-sheet"
 export { MobileBottomNav } from "./mobile-bottom-nav"
 export { TouchInlineEdit } from "./touch-inline-edit"
+
+// Admin shell components
+export { AdminSidebar } from "./admin-sidebar"
+export { AdminTopBar } from "./admin-topbar"
+export { ImpersonationBanner } from "./impersonation-banner"
+export { RoleSwitcher } from "./role-switcher"

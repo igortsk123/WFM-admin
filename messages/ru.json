@@ -91,6 +91,44 @@
   },
 
   "nav": {
+    "groups": {
+      "main": "Главное",
+      "tasks": "Задачи",
+      "ai": "ИИ-помощник",
+      "goals": "Цели и бонусы",
+      "schedule": "Расписание",
+      "employees": "Сотрудники",
+      "stores": "Магазины",
+      "taxonomy": "Таксономия",
+      "freelance": "Внештат",
+      "reports": "Отчёты",
+      "stretch": "Stretch",
+      "settings": "Настройки"
+    },
+    "role": {
+      "STORE_DIRECTOR": "Директор магазина",
+      "SUPERVISOR": "Супервайзер",
+      "REGIONAL": "Региональный менеджер",
+      "NETWORK_OPS": "Операционный директор",
+      "HR_MANAGER": "HR-менеджер",
+      "OPERATOR": "Оператор",
+      "WORKER": "Работник",
+      "AGENT": "Агент",
+      "PLATFORM_ADMIN": "Администратор платформы"
+    },
+    "hub": {
+      "operations": "Операционка",
+      "efficiency": "Эффективность и ИИ",
+      "freelance": "Внештат и подработки",
+      "configuration": "Конфигурация"
+    },
+    "view_all": "Все →",
+    "exit_impersonation": "Выйти из режима",
+    "impersonating_as": "Вы вошли как {name}",
+    "returned_to_account": "Вы вернулись в свой аккаунт",
+    "view_as_user": "Войти как пользователь",
+    "beta": "Beta",
+    "scope_all_my": "Все мои",
     "dashboard": "Главная",
     "tasks": "Задачи",
     "task_new": "Новая задача",
