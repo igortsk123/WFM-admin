@@ -5,3 +5,13 @@ export { ShiftStateBadge } from "./shift-state-badge"
 export { PermissionPill } from "./permission-pill"
 export { RoleBadge } from "./role-badge"
 export { WorkTypeBadge } from "./work-type-badge"
+
+// Layout & feedback primitives
+export { PageHeader } from "./page-header"
+export type { BreadcrumbItem } from "./page-header"
+export { KpiCard } from "./kpi-card"
+export { EntitySummaryCard } from "./entity-summary-card"
+export type { EntityBadgeItem } from "./entity-summary-card"
+export { ActivityFeed } from "./activity-feed"
+export type { ActivityItem, ActivityType } from "./activity-feed"
+export { EmptyState } from "./empty-state"
