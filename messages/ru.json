@@ -124,36 +124,41 @@
     "aiGenerated": "Создана ИИ",
 
     "state": {
-      "draft": "Черновик",
-      "open": "Открыта",
+      "new": "Новая",
       "in_progress": "В работе",
       "paused": "На паузе",
-      "blocked": "Заблокирована",
-      "completed": "Завершена",
-      "archived": "В архиве"
+      "completed": "Завершена"
     },
 
     "review": {
       "none": "Без проверки",
-      "pending": "На проверке",
-      "approved": "Одобрена",
-      "rejected": "Отклонена",
-      "needs_revision": "Требует доработки"
+      "on_review": "На проверке",
+      "accepted": "Принята",
+      "rejected": "Отклонена"
     },
 
     "type": {
-      "regular": "Регулярная",
-      "bonus": "Бонусная",
-      "urgent": "Срочная",
-      "chain": "Цепочка"
+      "planned": "Плановая",
+      "additional": "Дополнительная",
+      "bonus": "Бонусная"
+    },
+
+    "kind": {
+      "single": "Обычная",
+      "chain": "Конвейер"
+    },
+
+    "source": {
+      "manager": "Создана вручную",
+      "ai": "Предложена ИИ",
+      "planned": "Плановая"
     },
 
     "archiveReason_values": {
-      "completed": "Выполнена",
-      "cancelled": "Отменена",
+      "closed": "Закрыта",
       "duplicate": "Дубликат",
-      "irrelevant": "Неактуальна",
-      "merged": "Объединена",
+      "wrong_data": "Ошибочные данные",
+      "obsolete": "Устарела",
       "other": "Другое"
     }
   },
@@ -162,16 +167,11 @@
     "title": "Разрешение",
     "titlePlural": "Разрешения",
     "zone": "Зона магазина",
-
-    "zones": {
-      "cashier": "Касса",
-      "sales_floor": "Торговый зал",
-      "warehouse": "Склад",
-      "office": "Офис",
-      "production": "Производство",
-      "receiving": "Приёмка",
-      "cleaning": "Клининг"
-    }
+    "cashier": "Касса",
+    "sales_floor": "Торговый зал",
+    "self_checkout": "Самообслуживание",
+    "warehouse": "Склад",
+    "production_line": "Производственная линия"
   },
 
   "role": {
@@ -208,21 +208,20 @@
     "owner": "Ответственный",
 
     "category": {
-      "sales": "Продажи",
-      "operations": "Операции",
-      "quality": "Качество",
-      "efficiency": "Эффективность",
-      "customer": "Клиенты",
-      "inventory": "Запасы"
+      "oos_reduction": "Снижение OOS",
+      "write_offs": "Списания",
+      "promo_quality": "Качество промо",
+      "price_accuracy": "Точность цен",
+      "impulse_zones": "Импульсные зоны",
+      "productivity": "Производительность",
+      "custom": "Произвольная"
     },
 
     "status": {
-      "draft": "Черновик",
+      "proposed": "Предложена",
       "active": "Активна",
-      "at_risk": "Под угрозой",
-      "achieved": "Достигнута",
-      "missed": "Не достигнута",
-      "paused": "Приостановлена"
+      "completed": "Завершена",
+      "archived": "В архиве"
     }
   },
 
@@ -282,12 +281,10 @@
     "break": "Перерыв",
     "duration": "Длительность",
 
-    "state": {
-      "scheduled": "Запланирована",
-      "in_progress": "В процессе",
-      "completed": "Завершена",
-      "cancelled": "Отменена",
-      "no_show": "Неявка"
+    "status": {
+      "new": "Новая",
+      "opened": "Открыта",
+      "closed": "Закрыта"
     }
   },
 
