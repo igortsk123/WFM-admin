@@ -124,6 +124,7 @@
     "dashboard": "Dashboard",
     "tasks": "Tasks",
     "task_new": "New task",
+    "task_detail_demo": "Example task (T-1042)",
     "tasks_review": "Under review",
     "tasks_archive": "Task archive",
     "subtasks_moderation": "Subtask moderation",
