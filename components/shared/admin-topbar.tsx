@@ -317,7 +317,7 @@ function UserMenu() {
           <div className="flex flex-col gap-1">
             <p className="text-sm font-medium leading-none">{fullName}</p>
             <p className="text-xs text-muted-foreground">
-              {tRole(user.role, { defaultValue: user.role })}
+              {tRole(user.role as Parameters<typeof tRole>[0])}
             </p>
           </div>
         </DropdownMenuLabel>

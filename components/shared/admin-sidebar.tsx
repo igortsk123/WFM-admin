@@ -645,7 +645,7 @@ export function AdminSidebar() {
               {user.middle_name ? ` ${user.middle_name[0]}.` : ""}
             </span>
             <span className="text-xs text-muted-foreground truncate">
-              {t(`role.${user.role}` as never, { defaultValue: user.role })}
+              {t(`role.${user.role}` as Parameters<typeof t>[0])}
             </span>
           </div>
         </div>

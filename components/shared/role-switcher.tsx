@@ -51,7 +51,7 @@ export function RoleSwitcher() {
           >
             <span className="text-xs text-muted-foreground">DEV</span>
             <Badge variant="secondary" className="font-medium">
-              {t(user.role, { defaultValue: user.role })}
+              {t(user.role as Parameters<typeof t>[0])}
             </Badge>
           </Button>
         </PopoverTrigger>
@@ -82,7 +82,7 @@ export function RoleSwitcher() {
                     htmlFor={`role-${role}`}
                     className="flex-1 cursor-pointer text-sm"
                   >
-                    {t(role, { defaultValue: role })}
+                    {t(role as Parameters<typeof t>[0])}
                   </Label>
                 </div>
               ))}
