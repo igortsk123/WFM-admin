@@ -5,42 +5,66 @@
     "back": "Back",
     "close": "Close",
     "delete": "Delete",
+    "archive": "Archive",
+    "restore": "Restore",
+    "transfer": "Transfer",
+    "confirm": "Confirm",
     "edit": "Edit",
     "create": "Create",
     "add": "Add",
     "remove": "Remove",
+    "submit": "Submit",
     "search": "Search",
     "filter": "Filter",
     "filters": "Filters",
+    "filters_count": "{count, plural, one {Filter ({count})} other {Filters ({count})}}",
+    "clear_all": "Clear all",
     "clearAll": "Clear all",
     "apply": "Apply",
     "reset": "Reset",
+    "export": "Export",
+    "import": "Import",
+    "copy": "Copy",
+    "copied": "Copied",
+    "download": "Download",
+    "upload": "Upload",
+    "print": "Print",
+    "share": "Share",
     "loading": "Loading...",
-    "error": "Error",
-    "retry": "Retry",
+    "no_data": "No data",
     "empty": "No data",
     "noResults": "No results found",
+    "retry": "Retry",
+    "required": "Required",
+    "optional": "Optional",
+    "open_more": "Show more",
+    "hide_more": "Hide",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information",
     "actions": "Actions",
     "more": "More",
     "details": "Details",
     "view": "View",
-    "archive": "Archive",
-    "restore": "Restore",
-    "confirm": "Confirm",
-    "yes": "Yes",
-    "no": "No",
-    "all": "All",
-    "selected": "Selected",
-    "of": "of",
-    "page": "Page",
-    "perPage": "Per page",
     "next": "Next",
     "previous": "Previous",
     "first": "First",
     "last": "Last",
+    "yes": "Yes",
+    "no": "No",
+    "on": "On",
+    "off": "Off",
+    "all": "All",
+    "none": "None",
+    "selected": "Selected",
+    "of": "of",
+    "page": "Page",
+    "perPage": "Per page",
     "today": "Today",
     "yesterday": "Yesterday",
     "tomorrow": "Tomorrow",
+    "days_ago": "{n, plural, one {# day ago} other {# days ago}}",
     "week": "Week",
     "month": "Month",
     "year": "Year",
@@ -57,19 +81,6 @@
     "count": "Count",
     "amount": "Amount",
     "percent": "Percent",
-    "required": "Required",
-    "optional": "Optional",
-    "success": "Success",
-    "warning": "Warning",
-    "info": "Information",
-    "copy": "Copy",
-    "copied": "Copied",
-    "download": "Download",
-    "upload": "Upload",
-    "export": "Export",
-    "import": "Import",
-    "print": "Print",
-    "share": "Share",
     "settings": "Settings",
     "profile": "Profile",
     "logout": "Log out",
@@ -82,23 +93,58 @@
   "nav": {
     "dashboard": "Dashboard",
     "tasks": "Tasks",
+    "task_new": "New task",
+    "tasks_review": "Under review",
+    "tasks_archive": "Task archive",
+    "subtasks_moderation": "Subtask moderation",
     "goals": "Goals",
+    "network_goals": "Network goals",
+    "bonus_tasks": "Bonus tasks",
+    "payouts": "Payouts",
+    "ai_suggestions": "AI suggestions",
+    "ai_chat": "AI chat",
     "schedule": "Schedule",
     "employees": "Employees",
+    "permissions": "Permissions",
     "stores": "Stores",
-    "reports": "Reports",
+    "taxonomy_work_types": "Work types",
+    "taxonomy_zones": "Zones",
+    "taxonomy_positions": "Positions",
+    "taxonomy_hints": "Hints (workers)",
+    "taxonomy_hints_manager": "Hints (managers)",
+    "regulations": "Regulations",
+    "taxonomy_service_norms": "Service norms",
+    "reports_plan_fact": "Plan vs fact",
+    "reports_kpi": "KPI",
+    "reports_compare": "Comparison",
+    "settings_profile": "Profile",
+    "settings_organization": "Organisation",
+    "integrations": "Integrations",
+    "audit": "Audit",
     "notifications": "Notifications",
+    "ai_coach": "AI coach",
+    "risk_rules": "Risk rules",
+    "leaderboards": "Leaderboards",
+    "freelance_dashboard": "Freelance",
+    "freelance_applications": "Freelance applications",
+    "freelance_application_new": "New application",
+    "freelance_services": "Services",
+    "freelance_payouts": "Freelance payouts",
+    "freelance_no_shows": "No-shows",
+    "freelance_budget_limits": "Budget limits",
+    "freelance_agents": "Agents",
+    "agent_dashboard": "Agent portal",
+    "agent_freelancers": "My freelancers",
+    "agent_earnings": "Earnings",
+    "agent_documents": "Documents",
     "ai": "AI Analytics",
     "aiChat": "AI Chat",
     "aiSuggestions": "AI Suggestions",
-    "integrations": "Integrations",
     "documents": "Documents",
-    "settings": "Settings",
     "help": "Help",
     "users": "Users",
-    "permissions": "Permissions",
-    "audit": "Audit",
-    "organization": "Organization"
+    "reports": "Reports",
+    "organization": "Organisation"
   },
 
   "task": {
@@ -124,6 +170,10 @@
     "aiGenerated": "AI generated",
 
     "state": {
+      "NEW": "New",
+      "IN_PROGRESS": "In progress",
+      "PAUSED": "Paused",
+      "COMPLETED": "Completed",
       "new": "New",
       "in_progress": "In progress",
       "paused": "Paused",
@@ -131,6 +181,10 @@
     },
 
     "review": {
+      "NONE": "No review",
+      "ON_REVIEW": "On review",
+      "ACCEPTED": "Accepted",
+      "REJECTED": "Rejected",
       "none": "No review",
       "on_review": "On review",
       "accepted": "Accepted",
@@ -138,14 +192,27 @@
     },
 
     "type": {
+      "PLANNED": "Planned",
+      "ADDITIONAL": "Additional",
+      "BONUS": "Bonus",
       "planned": "Planned",
       "additional": "Additional",
       "bonus": "Bonus"
     },
 
     "kind": {
+      "SINGLE": "Single",
+      "CHAIN": "Chain",
       "single": "Single",
       "chain": "Chain"
+    },
+
+    "archive_reason": {
+      "CLOSED": "Closed",
+      "DUPLICATE": "Duplicate",
+      "WRONG_DATA": "Wrong data",
+      "OBSOLETE": "Obsolete",
+      "OTHER": "Other"
     },
 
     "source": {
@@ -163,10 +230,42 @@
     }
   },
 
+  "subtask": {
+    "title": "Subtask",
+    "titlePlural": "Subtasks",
+    "review": {
+      "PENDING": "Pending review",
+      "ACCEPTED": "Accepted",
+      "REJECTED": "Rejected"
+    }
+  },
+
+  "shift": {
+    "title": "Shift",
+    "titlePlural": "Shifts",
+    "start": "Start",
+    "end": "End",
+    "break": "Break",
+    "duration": "Duration",
+    "status": {
+      "NEW": "New",
+      "OPENED": "Opened",
+      "CLOSED": "Closed",
+      "new": "New",
+      "opened": "Opened",
+      "closed": "Closed"
+    }
+  },
+
   "permission": {
     "title": "Permission",
     "titlePlural": "Permissions",
     "zone": "Store zone",
+    "CASHIER": "Cashier",
+    "SALES_FLOOR": "Sales floor",
+    "SELF_CHECKOUT": "Self-checkout",
+    "WAREHOUSE": "Warehouse",
+    "PRODUCTION_LINE": "Production line",
     "cashier": "Cashier",
     "sales_floor": "Sales floor",
     "self_checkout": "Self-checkout",
@@ -177,7 +276,15 @@
   "role": {
     "title": "Role",
     "titlePlural": "Roles",
-
+    "STORE_DIRECTOR": "Store Director",
+    "SUPERVISOR": "Supervisor",
+    "REGIONAL": "Regional Manager",
+    "NETWORK_OPS": "Operations Director",
+    "HR_MANAGER": "HR Manager",
+    "OPERATOR": "Operator",
+    "WORKER": "Worker",
+    "AGENT": "Agent",
+    "PLATFORM_ADMIN": "Platform Admin",
     "functional": {
       "store_director": "Store Director",
       "supervisor": "Supervisor",
@@ -191,10 +298,36 @@
     }
   },
 
+  "employee_type": {
+    "title": "Employment type",
+    "STAFF": "Staff",
+    "FREELANCE": "Freelance"
+  },
+
   "employeeType": {
     "title": "Employment type",
     "staff": "Staff",
     "freelance": "Freelance"
+  },
+
+  "freelancer": {
+    "title": "Freelancer",
+    "titlePlural": "Freelancers",
+    "status": {
+      "NEW": "New",
+      "VERIFICATION": "Under verification",
+      "ACTIVE": "Active",
+      "BLOCKED": "Blocked",
+      "ARCHIVED": "Archived"
+    }
+  },
+
+  "object_type": {
+    "STORE": "Store",
+    "WORKSHOP": "Workshop",
+    "DEPARTMENT": "Department",
+    "OFFICE": "Office",
+    "WAREHOUSE_HUB": "Warehouse hub"
   },
 
   "goal": {
@@ -206,8 +339,14 @@
     "baseline": "Baseline",
     "deadline": "Deadline",
     "owner": "Owner",
-
     "category": {
+      "OOS_REDUCTION": "OOS Reduction",
+      "WRITE_OFFS": "Write-offs",
+      "PROMO_QUALITY": "Promo quality",
+      "PRICE_ACCURACY": "Price accuracy",
+      "IMPULSE_ZONES": "Impulse zones",
+      "PRODUCTIVITY": "Productivity",
+      "CUSTOM": "Custom",
       "oos_reduction": "OOS Reduction",
       "write_offs": "Write-offs",
       "promo_quality": "Promo quality",
@@ -216,12 +355,24 @@
       "productivity": "Productivity",
       "custom": "Custom"
     },
-
     "status": {
+      "PROPOSED": "Proposed",
+      "ACTIVE": "Active",
+      "COMPLETED": "Completed",
+      "ARCHIVED": "Archived",
       "proposed": "Proposed",
       "active": "Active",
       "completed": "Completed",
       "archived": "Archived"
+    }
+  },
+
+  "bonus": {
+    "title": "Bonus task",
+    "source": {
+      "YESTERDAY_INCOMPLETE": "Incomplete yesterday",
+      "SUPERVISOR_BUDGET": "Supervisor budget",
+      "GOAL_LINKED": "Linked to goal"
     }
   },
 
@@ -232,14 +383,193 @@
     "markAllAsRead": "Mark all as read",
     "unread": "Unread",
     "all": "All",
-
     "category": {
+      "TASK_REVIEW": "Task review",
+      "TASK_REJECTED": "Task rejected",
+      "TASK_STATE_CHANGED": "Task status changed",
+      "BONUS_AVAILABLE": "Bonus task available",
+      "GOAL_UPDATE": "Goal update",
+      "AI_SUGGESTION_NEW": "New AI suggestion",
+      "AI_ANOMALY": "AI anomaly",
+      "FREELANCE_APPLICATION_PENDING": "Application pending",
+      "FREELANCE_BUDGET_OVERLIMIT": "Budget over limit",
+      "FREELANCE_NO_TASKS": "No tasks for freelancer",
+      "FREELANCE_SERVICE_NOT_CONFIRMED": "Service not confirmed",
+      "FREELANCE_NO_SHOW": "Freelancer no-show",
+      "FREELANCE_EXTERNAL_SYNC": "External system sync",
+      "FREELANCE_PAYOUT_DONE": "Payout completed",
+      "GENERIC": "General",
       "task": "Tasks",
       "goal": "Goals",
       "schedule": "Schedule",
       "system": "System",
       "ai": "AI"
     }
+  },
+
+  "freelance": {
+    "title": "Freelance",
+    "application": {
+      "title": "Application",
+      "titlePlural": "Applications",
+      "source": {
+        "INTERNAL": "Internal",
+        "EXTERNAL": "External"
+      },
+      "status": {
+        "DRAFT": "Draft",
+        "PENDING": "Pending",
+        "APPROVED_FULL": "Fully approved",
+        "APPROVED_PARTIAL": "Partially approved",
+        "REJECTED": "Rejected",
+        "REPLACED_WITH_BONUS": "Replaced with bonus",
+        "MIXED": "Mixed",
+        "CANCELLED": "Cancelled"
+      }
+    },
+    "service": {
+      "title": "Service",
+      "titlePlural": "Services",
+      "status": {
+        "PLANNED": "Planned",
+        "IN_PROGRESS": "In progress",
+        "COMPLETED": "Completed",
+        "CONFIRMED": "Confirmed",
+        "READY_TO_PAY": "Ready to pay",
+        "PAID": "Paid",
+        "NO_SHOW": "No-show",
+        "DISPUTED": "Disputed"
+      }
+    },
+    "payout": {
+      "title": "Payout",
+      "titlePlural": "Payouts",
+      "status": {
+        "PENDING": "Pending",
+        "PROCESSING": "Processing",
+        "PAID": "Paid",
+        "FAILED": "Failed"
+      }
+    },
+    "payment_mode": {
+      "NOMINAL_ACCOUNT": "Nominal account",
+      "CLIENT_DIRECT": "Client direct"
+    },
+    "budget": {
+      "period": {
+        "DAY": "Day",
+        "WEEK": "Week",
+        "MONTH": "Month"
+      }
+    },
+    "object_format": {
+      "SUPERMARKET": "Supermarket",
+      "HYPERMARKET": "Hypermarket",
+      "CONVENIENCE": "Convenience store",
+      "SMALL_SHOP": "Small shop",
+      "SEWING_WORKSHOP": "Sewing workshop",
+      "PRODUCTION_LINE": "Production line",
+      "WAREHOUSE_HUB": "Warehouse hub",
+      "OFFICE": "Office"
+    },
+    "normative": {
+      "unit": {
+        "SKU": "SKU",
+        "PCS": "pcs",
+        "KG": "kg",
+        "PALLETS": "pallets",
+        "POSITIONS": "positions",
+        "BOXES": "boxes",
+        "M2": "m²",
+        "CHECKS": "receipts"
+      }
+    },
+    "agent": {
+      "title": "Agent",
+      "titlePlural": "Agents",
+      "status": {
+        "ACTIVE": "Active",
+        "BLOCKED": "Blocked",
+        "ARCHIVED": "Archived"
+      },
+      "type": {
+        "INDIVIDUAL": "Sole trader",
+        "COMPANY": "Company"
+      }
+    },
+    "no_show": {
+      "title": "No-show",
+      "titlePlural": "No-shows",
+      "status": {
+        "OPEN": "Open",
+        "IN_LEGAL": "In dispute",
+        "RESOLVED": "Resolved",
+        "WRITTEN_OFF": "Written off"
+      }
+    }
+  },
+
+  "auth": {
+    "login": "Login",
+    "logout": "Log out",
+    "phone": "Phone",
+    "email": "Email",
+    "code": "Verification code",
+    "sendCode": "Send code",
+    "resendCode": "Resend code",
+    "enterCode": "Enter code",
+    "verifyCode": "Verify",
+    "chooseMethod": "Choose login method",
+    "phoneMethod": "Phone number",
+    "emailMethod": "Email",
+    "totpMethod": "Authenticator app",
+    "channel": "Code delivery channel",
+    "method": {
+      "phone": "Phone + code",
+      "email": "Email link",
+      "totp": "TOTP Authenticator"
+    },
+    "channel_label": {
+      "telegram": "Telegram",
+      "max": "Max (VK)",
+      "call": "Phone call",
+      "sms_fallback": "SMS (fallback)"
+    },
+    "email_sent_to": "Link sent to {email}",
+    "code_sent_via": "Code sent via {channel}",
+    "channels": {
+      "telegram": "Telegram",
+      "max": "Max (VK)",
+      "call": "Phone call",
+      "sms": "SMS"
+    },
+    "codeExpires": "Code expires in {minutes} min",
+    "wrongCode": "Wrong code",
+    "codeSent": "Code sent",
+    "sessionExpired": "Session expired",
+    "forbidden": "Access denied"
+  },
+
+  "archive": {
+    "tab_label": "Archive"
+  },
+
+  "states": {
+    "loading": "Loading...",
+    "empty_title": "No data",
+    "empty_description": "Nothing here yet",
+    "error_title": "Something went wrong",
+    "error_description": "Failed to load data. Please try again.",
+    "retry": "Retry",
+    "conflict_message": "Data has changed — please refresh",
+    "forbidden_title": "Access denied"
+  },
+
+  "format": {
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "tomorrow": "Tomorrow",
+    "days_ago": "{n, plural, one {# day ago} other {# days ago}}"
   },
 
   "store": {
@@ -264,7 +594,6 @@
     "position": "Position",
     "hireDate": "Hire date",
     "status": "Status",
-
     "status_values": {
       "active": "Active",
       "on_leave": "On leave",
@@ -273,24 +602,9 @@
     }
   },
 
-  "shift": {
-    "title": "Shift",
-    "titlePlural": "Shifts",
-    "start": "Start",
-    "end": "End",
-    "break": "Break",
-    "duration": "Duration",
-
-    "status": {
-      "new": "New",
-      "opened": "Opened",
-      "closed": "Closed"
-    }
-  },
-
   "ai": {
     "title": "AI Analytics",
-    "analyzing": "AI is analyzing...",
+    "analyzing": "AI is analysing...",
     "suggestion": "AI Suggestion",
     "suggestions": "AI Suggestions",
     "accept": "Accept",
@@ -299,48 +613,18 @@
     "rationale": "Rationale",
     "confidence": "Confidence",
     "learnMore": "Learn more",
-
     "suggestionType": {
       "task": "Create task",
       "goal": "Select goal",
       "bonus_task": "Bonus task",
       "insight": "Insight"
     },
-
     "suggestionStatus": {
       "pending": "Pending",
       "accepted": "Accepted",
       "rejected": "Rejected",
       "edited": "Accepted with edits"
     }
-  },
-
-  "auth": {
-    "login": "Login",
-    "logout": "Logout",
-    "phone": "Phone",
-    "email": "Email",
-    "code": "Verification code",
-    "sendCode": "Send code",
-    "resendCode": "Resend code",
-    "enterCode": "Enter code",
-    "verifyCode": "Verify",
-    "chooseMethod": "Choose login method",
-    "phoneMethod": "Phone number",
-    "emailMethod": "Email",
-    "totpMethod": "Authenticator",
-    "channel": "Code delivery channel",
-    "channels": {
-      "telegram": "Telegram",
-      "max": "Max (VK)",
-      "call": "Phone call",
-      "sms": "SMS"
-    },
-    "codeExpires": "Code expires in {minutes} min",
-    "wrongCode": "Wrong code",
-    "codeSent": "Code sent",
-    "sessionExpired": "Session expired",
-    "forbidden": "Access denied"
   },
 
   "validation": {

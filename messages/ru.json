@@ -5,42 +5,66 @@
     "back": "Назад",
     "close": "Закрыть",
     "delete": "Удалить",
+    "archive": "Архивировать",
+    "restore": "Восстановить",
+    "transfer": "Передать",
+    "confirm": "Подтвердить",
     "edit": "Редактировать",
     "create": "Создать",
     "add": "Добавить",
     "remove": "Удалить",
+    "submit": "Отправить",
     "search": "Поиск",
     "filter": "Фильтр",
     "filters": "Фильтры",
+    "filters_count": "{count, plural, one {Фильтр ({count})} few {Фильтры ({count})} other {Фильтры ({count})}}",
+    "clear_all": "Очистить все",
     "clearAll": "Очистить все",
     "apply": "Применить",
     "reset": "Сбросить",
+    "export": "Экспорт",
+    "import": "Импорт",
+    "copy": "Копировать",
+    "copied": "Скопировано",
+    "download": "Скачать",
+    "upload": "Загрузить",
+    "print": "Печать",
+    "share": "Поделиться",
     "loading": "Загрузка...",
-    "error": "Ошибка",
-    "retry": "Повторить",
+    "no_data": "Нет данных",
     "empty": "Нет данных",
     "noResults": "Ничего не найдено",
+    "retry": "Повторить",
+    "required": "Обязательное поле",
+    "optional": "Необязательно",
+    "open_more": "Показать ещё",
+    "hide_more": "Скрыть",
+    "error": "Ошибка",
+    "success": "Успешно",
+    "warning": "Внимание",
+    "info": "Информация",
     "actions": "Действия",
     "more": "Ещё",
     "details": "Подробнее",
     "view": "Просмотр",
-    "archive": "Архивировать",
-    "restore": "Восстановить",
-    "confirm": "Подтвердить",
-    "yes": "Да",
-    "no": "Нет",
-    "all": "Все",
-    "selected": "Выбрано",
-    "of": "из",
-    "page": "Страница",
-    "perPage": "На странице",
     "next": "Далее",
     "previous": "Назад",
     "first": "Первая",
     "last": "Последняя",
+    "yes": "Да",
+    "no": "Нет",
+    "on": "Вкл",
+    "off": "Выкл",
+    "all": "Все",
+    "none": "Нет",
+    "selected": "Выбрано",
+    "of": "из",
+    "page": "Страница",
+    "perPage": "На странице",
     "today": "Сегодня",
     "yesterday": "Вчера",
     "tomorrow": "Завтра",
+    "days_ago": "{n, plural, one {# день назад} few {# дня назад} other {# дней назад}}",
     "week": "Неделя",
     "month": "Месяц",
     "year": "Год",
@@ -57,19 +81,6 @@
     "count": "Количество",
     "amount": "Сумма",
     "percent": "Процент",
-    "required": "Обязательное поле",
-    "optional": "Необязательно",
-    "success": "Успешно",
-    "warning": "Внимание",
-    "info": "Информация",
-    "copy": "Копировать",
-    "copied": "Скопировано",
-    "download": "Скачать",
-    "upload": "Загрузить",
-    "export": "Экспорт",
-    "import": "Импорт",
-    "print": "Печать",
-    "share": "Поделиться",
     "settings": "Настройки",
     "profile": "Профиль",
     "logout": "Выйти",
@@ -82,22 +93,57 @@
   "nav": {
     "dashboard": "Главная",
     "tasks": "Задачи",
+    "task_new": "Новая задача",
+    "tasks_review": "На проверке",
+    "tasks_archive": "Архив задач",
+    "subtasks_moderation": "Модерация подзадач",
     "goals": "Цели",
+    "network_goals": "Цели сети",
+    "bonus_tasks": "Бонусные задачи",
+    "payouts": "Выплаты",
+    "ai_suggestions": "Предложения ИИ",
+    "ai_chat": "ИИ-чат",
     "schedule": "Расписание",
     "employees": "Сотрудники",
+    "permissions": "Права доступа",
     "stores": "Магазины",
-    "reports": "Отчёты",
+    "taxonomy_work_types": "Типы работ",
+    "taxonomy_zones": "Зоны",
+    "taxonomy_positions": "Должности",
+    "taxonomy_hints": "Подсказки (работники)",
+    "taxonomy_hints_manager": "Подсказки (менеджеры)",
+    "regulations": "Регламенты",
+    "taxonomy_service_norms": "Нормативы",
+    "reports_plan_fact": "План-факт",
+    "reports_kpi": "KPI",
+    "reports_compare": "Сравнение",
+    "settings_profile": "Профиль",
+    "settings_organization": "Организация",
+    "integrations": "Интеграции",
+    "audit": "Аудит",
     "notifications": "Уведомления",
+    "ai_coach": "ИИ-коуч",
+    "risk_rules": "Правила рисков",
+    "leaderboards": "Рейтинги",
+    "freelance_dashboard": "Фриланс",
+    "freelance_applications": "Заявки на фриланс",
+    "freelance_application_new": "Новая заявка",
+    "freelance_services": "Услуги",
+    "freelance_payouts": "Выплаты фрилансерам",
+    "freelance_no_shows": "Невыходы",
+    "freelance_budget_limits": "Бюджетные лимиты",
+    "freelance_agents": "Агенты",
+    "agent_dashboard": "Кабинет агента",
+    "agent_freelancers": "Мои фрилансеры",
+    "agent_earnings": "Заработок",
+    "agent_documents": "Документы",
     "ai": "ИИ-аналитика",
     "aiChat": "ИИ-чат",
     "aiSuggestions": "Предложения ИИ",
-    "integrations": "Интеграции",
     "documents": "Документы",
-    "settings": "Настройки",
     "help": "Помощь",
     "users": "Пользователи",
-    "permissions": "Права доступа",
-    "audit": "Аудит",
+    "reports": "Отчёты",
     "organization": "Организация"
   },
 
@@ -124,6 +170,10 @@
     "aiGenerated": "Создана ИИ",
 
     "state": {
+      "NEW": "Новая",
+      "IN_PROGRESS": "В работе",
+      "PAUSED": "На паузе",
+      "COMPLETED": "Завершена",
       "new": "Новая",
       "in_progress": "В работе",
       "paused": "На паузе",
@@ -131,6 +181,10 @@
     },
 
     "review": {
+      "NONE": "Без проверки",
+      "ON_REVIEW": "На проверке",
+      "ACCEPTED": "Принята",
+      "REJECTED": "Отклонена",
       "none": "Без проверки",
       "on_review": "На проверке",
       "accepted": "Принята",
@@ -138,14 +192,27 @@
     },
 
     "type": {
+      "PLANNED": "Плановая",
+      "ADDITIONAL": "Дополнительная",
+      "BONUS": "Бонусная",
       "planned": "Плановая",
       "additional": "Дополнительная",
       "bonus": "Бонусная"
     },
 
     "kind": {
+      "SINGLE": "Обычная",
+      "CHAIN": "Конвейер",
       "single": "Обычная",
       "chain": "Конвейер"
+    },
+
+    "archive_reason": {
+      "CLOSED": "Закрыта",
+      "DUPLICATE": "Дубликат",
+      "WRONG_DATA": "Ошибочные данные",
+      "OBSOLETE": "Устарела",
+      "OTHER": "Другое"
     },
 
     "source": {
@@ -163,10 +230,42 @@
     }
   },
 
+  "subtask": {
+    "title": "Подзадача",
+    "titlePlural": "Подзадачи",
+    "review": {
+      "PENDING": "Ожидает проверки",
+      "ACCEPTED": "Принята",
+      "REJECTED": "Отклонена"
+    }
+  },
+
+  "shift": {
+    "title": "Смена",
+    "titlePlural": "Смены",
+    "start": "Начало",
+    "end": "Окончание",
+    "break": "Перерыв",
+    "duration": "Длительность",
+    "status": {
+      "NEW": "Новая",
+      "OPENED": "Открыта",
+      "CLOSED": "Закрыта",
+      "new": "Новая",
+      "opened": "Открыта",
+      "closed": "Закрыта"
+    }
+  },
+
   "permission": {
     "title": "Разрешение",
     "titlePlural": "Разрешения",
     "zone": "Зона магазина",
+    "CASHIER": "Касса",
+    "SALES_FLOOR": "Торговый зал",
+    "SELF_CHECKOUT": "Самообслуживание",
+    "WAREHOUSE": "Склад",
+    "PRODUCTION_LINE": "Производственная линия",
     "cashier": "Касса",
     "sales_floor": "Торговый зал",
     "self_checkout": "Самообслуживание",
@@ -177,7 +276,15 @@
   "role": {
     "title": "Роль",
     "titlePlural": "Роли",
-
+    "STORE_DIRECTOR": "Директор магазина",
+    "SUPERVISOR": "Супервайзер",
+    "REGIONAL": "Региональный менеджер",
+    "NETWORK_OPS": "Операционный директор",
+    "HR_MANAGER": "HR-менеджер",
+    "OPERATOR": "Оператор",
+    "WORKER": "Работник",
+    "AGENT": "Агент",
+    "PLATFORM_ADMIN": "Администратор платформы",
     "functional": {
       "store_director": "Директор магазина",
       "supervisor": "Супервайзер",
@@ -191,10 +298,36 @@
     }
   },
 
+  "employee_type": {
+    "title": "Тип занятости",
+    "STAFF": "Штатный",
+    "FREELANCE": "Внештатный"
+  },
+
   "employeeType": {
     "title": "Тип занятости",
     "staff": "Штатный",
     "freelance": "Внештатный"
+  },
+
+  "freelancer": {
+    "title": "Фрилансер",
+    "titlePlural": "Фрилансеры",
+    "status": {
+      "NEW": "Новый",
+      "VERIFICATION": "На верификации",
+      "ACTIVE": "Активен",
+      "BLOCKED": "Заблокирован",
+      "ARCHIVED": "В архиве"
+    }
+  },
+
+  "object_type": {
+    "STORE": "Магазин",
+    "WORKSHOP": "Цех",
+    "DEPARTMENT": "Отдел",
+    "OFFICE": "Офис",
+    "WAREHOUSE_HUB": "Склад-хаб"
   },
 
   "goal": {
@@ -206,8 +339,14 @@
     "baseline": "Базовое значение",
     "deadline": "Дедлайн",
     "owner": "Ответственный",
-
     "category": {
+      "OOS_REDUCTION": "Снижение OOS",
+      "WRITE_OFFS": "Списания",
+      "PROMO_QUALITY": "Качество промо",
+      "PRICE_ACCURACY": "Точность цен",
+      "IMPULSE_ZONES": "Импульсные зоны",
+      "PRODUCTIVITY": "Производительность",
+      "CUSTOM": "Произвольная",
       "oos_reduction": "Снижение OOS",
       "write_offs": "Списания",
       "promo_quality": "Качество промо",
@@ -216,12 +355,24 @@
       "productivity": "Производительность",
       "custom": "Произвольная"
     },
-
     "status": {
+      "PROPOSED": "Предложена",
+      "ACTIVE": "Активна",
+      "COMPLETED": "Завершена",
+      "ARCHIVED": "В архиве",
       "proposed": "Предложена",
       "active": "Активна",
       "completed": "Завершена",
       "archived": "В архиве"
+    }
+  },
+
+  "bonus": {
+    "title": "Бонусная задача",
+    "source": {
+      "YESTERDAY_INCOMPLETE": "Незавершённые вчера",
+      "SUPERVISOR_BUDGET": "Бюджет супервайзера",
+      "GOAL_LINKED": "Связана с целью"
     }
   },
 
@@ -232,14 +383,193 @@
     "markAllAsRead": "Прочитать все",
     "unread": "Непрочитанные",
     "all": "Все",
-
     "category": {
+      "TASK_REVIEW": "Проверка задачи",
+      "TASK_REJECTED": "Задача отклонена",
+      "TASK_STATE_CHANGED": "Изменение статуса задачи",
+      "BONUS_AVAILABLE": "Доступна бонусная задача",
+      "GOAL_UPDATE": "Обновление цели",
+      "AI_SUGGESTION_NEW": "Новое предложение ИИ",
+      "AI_ANOMALY": "Аномалия ИИ",
+      "FREELANCE_APPLICATION_PENDING": "Заявка на рассмотрении",
+      "FREELANCE_BUDGET_OVERLIMIT": "Превышен бюджет",
+      "FREELANCE_NO_TASKS": "Нет задач для фрилансера",
+      "FREELANCE_SERVICE_NOT_CONFIRMED": "Услуга не подтверждена",
+      "FREELANCE_NO_SHOW": "Невыход фрилансера",
+      "FREELANCE_EXTERNAL_SYNC": "Синхронизация с внешней системой",
+      "FREELANCE_PAYOUT_DONE": "Выплата завершена",
+      "GENERIC": "Общее",
       "task": "Задачи",
       "goal": "Цели",
       "schedule": "Расписание",
       "system": "Система",
       "ai": "ИИ"
     }
+  },
+
+  "freelance": {
+    "title": "Фриланс",
+    "application": {
+      "title": "Заявка",
+      "titlePlural": "Заявки",
+      "source": {
+        "INTERNAL": "Внутренняя",
+        "EXTERNAL": "Внешняя"
+      },
+      "status": {
+        "DRAFT": "Черновик",
+        "PENDING": "На рассмотрении",
+        "APPROVED_FULL": "Одобрена полностью",
+        "APPROVED_PARTIAL": "Одобрена частично",
+        "REJECTED": "Отклонена",
+        "REPLACED_WITH_BONUS": "Заменена бонусом",
+        "MIXED": "Смешанная",
+        "CANCELLED": "Отменена"
+      }
+    },
+    "service": {
+      "title": "Услуга",
+      "titlePlural": "Услуги",
+      "status": {
+        "PLANNED": "Запланирована",
+        "IN_PROGRESS": "В работе",
+        "COMPLETED": "Завершена",
+        "CONFIRMED": "Подтверждена",
+        "READY_TO_PAY": "Готова к выплате",
+        "PAID": "Оплачена",
+        "NO_SHOW": "Невыход",
+        "DISPUTED": "Оспаривается"
+      }
+    },
+    "payout": {
+      "title": "Выплата",
+      "titlePlural": "Выплаты",
+      "status": {
+        "PENDING": "Ожидает",
+        "PROCESSING": "Обрабатывается",
+        "PAID": "Выплачено",
+        "FAILED": "Ошибка"
+      }
+    },
+    "payment_mode": {
+      "NOMINAL_ACCOUNT": "Номинальный счёт",
+      "CLIENT_DIRECT": "Прямой расчёт клиента"
+    },
+    "budget": {
+      "period": {
+        "DAY": "День",
+        "WEEK": "Неделя",
+        "MONTH": "Месяц"
+      }
+    },
+    "object_format": {
+      "SUPERMARKET": "Супермаркет",
+      "HYPERMARKET": "Гипермаркет",
+      "CONVENIENCE": "Магазин у дома",
+      "SMALL_SHOP": "Малый магазин",
+      "SEWING_WORKSHOP": "Швейный цех",
+      "PRODUCTION_LINE": "Производственная линия",
+      "WAREHOUSE_HUB": "Склад-хаб",
+      "OFFICE": "Офис"
+    },
+    "normative": {
+      "unit": {
+        "SKU": "SKU",
+        "PCS": "шт.",
+        "KG": "кг",
+        "PALLETS": "паллет",
+        "POSITIONS": "позиций",
+        "BOXES": "коробок",
+        "M2": "м²",
+        "CHECKS": "чеков"
+      }
+    },
+    "agent": {
+      "title": "Агент",
+      "titlePlural": "Агенты",
+      "status": {
+        "ACTIVE": "Активен",
+        "BLOCKED": "Заблокирован",
+        "ARCHIVED": "В архиве"
+      },
+      "type": {
+        "INDIVIDUAL": "ИП",
+        "COMPANY": "Юридическое лицо"
+      }
+    },
+    "no_show": {
+      "title": "Невыход",
+      "titlePlural": "Невыходы",
+      "status": {
+        "OPEN": "Открыт",
+        "IN_LEGAL": "В претензионном порядке",
+        "RESOLVED": "Урегулирован",
+        "WRITTEN_OFF": "Списан"
+      }
+    }
+  },
+
+  "auth": {
+    "login": "Вход",
+    "logout": "Выход",
+    "phone": "Телефон",
+    "email": "Email",
+    "code": "Код подтверждения",
+    "sendCode": "Отправить код",
+    "resendCode": "Отправить повторно",
+    "enterCode": "Введите код",
+    "verifyCode": "Подтвердить",
+    "chooseMethod": "Выберите способ входа",
+    "phoneMethod": "По номеру телефона",
+    "emailMethod": "По email",
+    "totpMethod": "Authenticator-приложение",
+    "channel": "Канал получения кода",
+    "method": {
+      "phone": "Телефон + код",
+      "email": "Email-ссылка",
+      "totp": "TOTP Authenticator"
+    },
+    "channel_label": {
+      "telegram": "Telegram",
+      "max": "Max (ВКонтакте)",
+      "call": "Звонок",
+      "sms_fallback": "SMS (резервный)"
+    },
+    "email_sent_to": "Ссылка отправлена на {email}",
+    "code_sent_via": "Код отправлен через {channel}",
+    "channels": {
+      "telegram": "Telegram",
+      "max": "Max (VK)",
+      "call": "Звонок",
+      "sms": "SMS"
+    },
+    "codeExpires": "Код действителен {minutes} мин",
+    "wrongCode": "Неверный код",
+    "codeSent": "Код отправлен",
+    "sessionExpired": "Сессия истекла",
+    "forbidden": "Недостаточно прав"
+  },
+
+  "archive": {
+    "tab_label": "Архив"
+  },
+
+  "states": {
+    "loading": "Загрузка...",
+    "empty_title": "Нет данных",
+    "empty_description": "Здесь пока ничего нет",
+    "error_title": "Произошла ошибка",
+    "error_description": "Не удалось загрузить данные. Попробуйте ещё раз.",
+    "retry": "Повторить",
+    "conflict_message": "Данные изменились — обновите страницу",
+    "forbidden_title": "Недостаточно прав"
+  },
+
+  "format": {
+    "today": "Сегодня",
+    "yesterday": "Вчера",
+    "tomorrow": "Завтра",
+    "days_ago": "{n, plural, one {# день назад} few {# дня назад} other {# дней назад}}"
   },
 
   "store": {
@@ -264,27 +594,11 @@
     "position": "Должность",
     "hireDate": "Дата приёма",
     "status": "Статус",
-
     "status_values": {
       "active": "Активен",
       "on_leave": "В отпуске",
       "sick": "На больничном",
       "terminated": "Уволен"
-    }
-  },
-
-  "shift": {
-    "title": "Смена",
-    "titlePlural": "Смены",
-    "start": "Начало",
-    "end": "Окончание",
-    "break": "Перерыв",
-    "duration": "Длительность",
-
-    "status": {
-      "new": "Новая",
-      "opened": "Открыта",
-      "closed": "Закрыта"
     }
   },
 
@@ -299,48 +613,18 @@
     "rationale": "Обоснование",
     "confidence": "Уверенность",
     "learnMore": "Узнать подробнее",
-
     "suggestionType": {
       "task": "Создать задачу",
       "goal": "Выбрать цель",
       "bonus_task": "Бонусная задача",
       "insight": "Инсайт"
     },
-
     "suggestionStatus": {
       "pending": "Ожидает решения",
       "accepted": "Принято",
       "rejected": "Отклонено",
       "edited": "Принято с правками"
     }
-  },
-
-  "auth": {
-    "login": "Вход",
-    "logout": "Выход",
-    "phone": "Телефон",
-    "email": "Email",
-    "code": "Код подтверждения",
-    "sendCode": "Отправить код",
-    "resendCode": "Отправить повторно",
-    "enterCode": "Введите код",
-    "verifyCode": "Подтвердить",
-    "chooseMethod": "Выберите способ входа",
-    "phoneMethod": "По номеру телефона",
-    "emailMethod": "По email",
-    "totpMethod": "Authenticator",
-    "channel": "Канал получения кода",
-    "channels": {
-      "telegram": "Telegram",
-      "max": "Max (VK)",
-      "call": "Звонок",
-      "sms": "SMS"
-    },
-    "codeExpires": "Код действителен {minutes} мин",
-    "wrongCode": "Неверный код",
-    "codeSent": "Код отправлен",
-    "sessionExpired": "Сессия истекла",
-    "forbidden": "Недостаточно прав"
   },
 
   "validation": {
