@@ -263,7 +263,7 @@ export {
   type PayoutRow,
   type PayoutPeriodStatus,
   getPayoutPeriods,
-  getPayoutById,
+  getBonusPayoutById,
   createPayoutPeriod,
   calculatePayout,
   finalizePayout,

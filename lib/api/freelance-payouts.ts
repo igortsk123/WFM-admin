@@ -126,7 +126,7 @@ export async function getPayouts(
  */
 export async function getPayoutById(
   id: string
-): Promise<ApiResponse<Payout & { services: Service[]; agent_earning?: AgentEarning }>> {
+): Promise<ApiResponse<Omit<Payout, "services"> & { services: Service[]; agent_earning?: AgentEarning | null }>> {
   await delay(rand(250, 450));
 
   if (isClientDirect()) {
@@ -141,9 +141,10 @@ export async function getPayoutById(
   );
   const agent_earning = MOCK_AGENT_EARNINGS.find(
     (ae) => ae.payout_id === id && ae.agent_id === payout.agent_id
-  );
+  ) ?? null;
 
-  return { data: { ...payout, services, agent_earning } };
+  const { services: _serviceIds, ...payoutRest } = payout;
+  return { data: { ...payoutRest, services, agent_earning } };
 }
 
 /**
