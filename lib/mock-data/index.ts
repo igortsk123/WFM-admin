@@ -18,3 +18,18 @@ export * from "./tasks";
 export * from "./shifts";
 export * from "./subtasks";
 export * from "./hints";
+
+// ── Freelance module ─────────────────────────────────────────────────
+export * from "./_today";
+export * from "./freelance-agents";
+export * from "./freelance-freelancers";
+export * from "./freelance-applications";
+export * from "./freelance-assignments";
+export * from "./freelance-services";
+export * from "./freelance-payouts";
+export * from "./freelance-agent-earnings";
+export * from "./freelance-budget-limits";
+export * from "./freelance-budget-usage";
+export * from "./freelance-service-norms";
+export * from "./freelance-no-shows";
+export * from "./freelance-external-sync-logs";
