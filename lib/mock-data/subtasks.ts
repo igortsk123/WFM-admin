@@ -775,10 +775,65 @@ const subtasksSco: Subtask[] = [
 ];
 
 // ══════════════════════════════════════════════════════════════════
+// work_type 4 — Выкладка (t-1042) — задача-демо для TaskDetail
+// ══════════════════════════════════════════════════════════════════
+
+const DETAIL_DEMO_TASK_ID = "t-1042";
+
+const subtasksDetailDemo: Subtask[] = [
+  {
+    id: 101,
+    task_id: DETAIL_DEMO_TASK_ID,
+    name: "Проверить температуру в секции холодильника 2",
+    review_state: "ACCEPTED",
+    hints_count: 1,
+    duration_min: 4,
+    order: 1,
+  },
+  {
+    id: 102,
+    task_id: DETAIL_DEMO_TASK_ID,
+    name: "Убрать просроченные и предсрочные позиции",
+    review_state: "ACCEPTED",
+    hints_count: 2,
+    duration_min: 8,
+    order: 2,
+  },
+  {
+    id: 103,
+    task_id: DETAIL_DEMO_TASK_ID,
+    name: "Пополнить полки по планограмме от 27 апр и выставить фронт",
+    review_state: "ACCEPTED",
+    hints_count: 2,
+    duration_min: 28,
+    order: 3,
+  },
+  {
+    id: 104,
+    task_id: DETAIL_DEMO_TASK_ID,
+    name: "Проверить и актуализировать ценники",
+    review_state: "PENDING",
+    hints_count: 1,
+    duration_min: 7,
+    order: 4,
+  },
+  {
+    id: 105,
+    task_id: DETAIL_DEMO_TASK_ID,
+    name: "Сделать итоговое фото секции",
+    review_state: "REJECTED",
+    hints_count: 0,
+    duration_min: 2,
+    order: 5,
+  },
+];
+
+// ══════════════════════════════════════════════════════════════════
 // EXPORT
 // ══════════════════════════════════════════════════════════════════
 
 export const MOCK_SUBTASKS: Subtask[] = [
+  ...subtasksDetailDemo,
   ...subtasksMerch1,
   ...subtasksMerch2,
   ...subtasksReprice1,

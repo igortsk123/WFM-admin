@@ -229,97 +229,115 @@ export async function getTaskById(id: string): Promise<ApiResponse<TaskDetail>> 
   const history: TaskEvent[] = [];
   let eventId = 1;
 
-  if (task.history_brief?.opened_at) {
-    history.push({
-      id: eventId++,
-      task_id: task.id,
-      event_type: "START",
-      actor_id: task.assignee_id ?? task.creator_id,
-      actor_name: task.assignee_name ?? task.creator_name,
-      actor_role: "WORKER",
-      payload: {},
-      occurred_at: task.history_brief.opened_at,
-    });
-  }
-
-  if (
-    task.history_brief?.paused_intervals &&
-    task.history_brief.paused_intervals.length > 0
-  ) {
-    task.history_brief.paused_intervals.forEach((interval) => {
+  // Rich history for demo task t-1042
+  if (task.id === "t-1042") {
+    const base = "2026-04-28T";
+    const tz = "+07:00";
+    history.push(
+      { id: eventId++, task_id: task.id, event_type: "START", actor_id: 5, actor_name: "Иванов Александр Сергеевич", actor_role: "SUPERVISOR", payload: {}, occurred_at: `${base}07:00:00${tz}` },
+      { id: eventId++, task_id: task.id, event_type: "TRANSFER", actor_id: 5, actor_name: "Иванов Александр Сергеевич", actor_role: "SUPERVISOR", payload: { to_name: "Козлова Дарья Андреевна" }, occurred_at: `${base}07:02:00${tz}` },
+      { id: eventId++, task_id: task.id, event_type: "START", actor_id: 15, actor_name: "Козлова Дарья Андреевна", actor_role: "WORKER", payload: {}, occurred_at: `${base}09:38:00${tz}` },
+      { id: eventId++, task_id: task.id, event_type: "PAUSE", actor_id: 15, actor_name: "Козлова Дарья Андреевна", actor_role: "WORKER", payload: { reason: "Перерыв на 7 мин" }, occurred_at: `${base}10:05:00${tz}` },
+      { id: eventId++, task_id: task.id, event_type: "RESUME", actor_id: 15, actor_name: "Козлова Дарья Андреевна", actor_role: "WORKER", payload: {}, occurred_at: `${base}10:12:00${tz}` },
+      { id: eventId++, task_id: task.id, event_type: "COMPLETE", actor_id: 15, actor_name: "Козлова Дарья Андреевна", actor_role: "WORKER", payload: {}, occurred_at: `${base}10:30:00${tz}` },
+      { id: eventId++, task_id: task.id, event_type: "SEND_TO_REVIEW", actor_id: 15, actor_name: "Козлова Дарья Андреевна", actor_role: "WORKER", payload: {}, occurred_at: `${base}10:32:00${tz}` },
+      { id: eventId++, task_id: task.id, event_type: "START", actor_id: 5, actor_name: "Иванов Александр Сергеевич", actor_role: "SUPERVISOR", payload: { note: "Задача создана из планировщика, назначена менеджером" }, occurred_at: `${base}07:00:00${tz}` },
+    );
+    // Sort newest first
+    history.sort((a, b) => b.occurred_at.localeCompare(a.occurred_at));
+  } else {
+    if (task.history_brief?.opened_at) {
       history.push({
         id: eventId++,
         task_id: task.id,
-        event_type: "PAUSE",
+        event_type: "START",
         actor_id: task.assignee_id ?? task.creator_id,
         actor_name: task.assignee_name ?? task.creator_name,
         actor_role: "WORKER",
         payload: {},
-        occurred_at: interval.from,
+        occurred_at: task.history_brief.opened_at,
       });
+    }
+
+    if (
+      task.history_brief?.paused_intervals &&
+      task.history_brief.paused_intervals.length > 0
+    ) {
+      task.history_brief.paused_intervals.forEach((interval) => {
+        history.push({
+          id: eventId++,
+          task_id: task.id,
+          event_type: "PAUSE",
+          actor_id: task.assignee_id ?? task.creator_id,
+          actor_name: task.assignee_name ?? task.creator_name,
+          actor_role: "WORKER",
+          payload: {},
+          occurred_at: interval.from,
+        });
+        history.push({
+          id: eventId++,
+          task_id: task.id,
+          event_type: "RESUME",
+          actor_id: task.assignee_id ?? task.creator_id,
+          actor_name: task.assignee_name ?? task.creator_name,
+          actor_role: "WORKER",
+          payload: {},
+          occurred_at: interval.to,
+        });
+      });
+    }
+
+    if (task.state === "COMPLETED") {
       history.push({
         id: eventId++,
         task_id: task.id,
-        event_type: "RESUME",
+        event_type: "COMPLETE",
         actor_id: task.assignee_id ?? task.creator_id,
         actor_name: task.assignee_name ?? task.creator_name,
         actor_role: "WORKER",
         payload: {},
-        occurred_at: interval.to,
+        occurred_at: task.history_brief?.completed_at ?? task.updated_at,
       });
-    });
-  }
+    }
 
-  if (task.state === "COMPLETED") {
-    history.push({
-      id: eventId++,
-      task_id: task.id,
-      event_type: "COMPLETE",
-      actor_id: task.assignee_id ?? task.creator_id,
-      actor_name: task.assignee_name ?? task.creator_name,
-      actor_role: "WORKER",
-      payload: {},
-      occurred_at: task.history_brief?.completed_at ?? task.updated_at,
-    });
-  }
+    if (task.review_state === "ON_REVIEW") {
+      history.push({
+        id: eventId++,
+        task_id: task.id,
+        event_type: "SEND_TO_REVIEW",
+        actor_id: task.assignee_id ?? task.creator_id,
+        actor_name: task.assignee_name ?? task.creator_name,
+        actor_role: "WORKER",
+        payload: {},
+        occurred_at: task.updated_at,
+      });
+    }
 
-  if (task.review_state === "ON_REVIEW") {
-    history.push({
-      id: eventId++,
-      task_id: task.id,
-      event_type: "SEND_TO_REVIEW",
-      actor_id: task.assignee_id ?? task.creator_id,
-      actor_name: task.assignee_name ?? task.creator_name,
-      actor_role: "WORKER",
-      payload: {},
-      occurred_at: task.updated_at,
-    });
-  }
+    if (task.review_state === "ACCEPTED") {
+      history.push({
+        id: eventId++,
+        task_id: task.id,
+        event_type: task.acceptance_policy === "AUTO" ? "AUTO_ACCEPT" : "ACCEPT",
+        actor_id: task.creator_id,
+        actor_name: task.creator_name,
+        actor_role: "SUPERVISOR",
+        payload: {},
+        occurred_at: task.updated_at,
+      });
+    }
 
-  if (task.review_state === "ACCEPTED") {
-    history.push({
-      id: eventId++,
-      task_id: task.id,
-      event_type: task.acceptance_policy === "AUTO" ? "AUTO_ACCEPT" : "ACCEPT",
-      actor_id: task.creator_id,
-      actor_name: task.creator_name,
-      actor_role: "SUPERVISOR",
-      payload: {},
-      occurred_at: task.updated_at,
-    });
-  }
-
-  if (task.review_state === "REJECTED") {
-    history.push({
-      id: eventId++,
-      task_id: task.id,
-      event_type: "REJECT",
-      actor_id: task.creator_id,
-      actor_name: task.creator_name,
-      actor_role: "SUPERVISOR",
-      payload: { reason: task.review_comment },
-      occurred_at: task.updated_at,
-    });
+    if (task.review_state === "REJECTED") {
+      history.push({
+        id: eventId++,
+        task_id: task.id,
+        event_type: "REJECT",
+        actor_id: task.creator_id,
+        actor_name: task.creator_name,
+        actor_role: "SUPERVISOR",
+        payload: { reason: task.review_comment },
+        occurred_at: task.updated_at,
+      });
+    }
   }
 
   return {
