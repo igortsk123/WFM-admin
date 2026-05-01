@@ -92,18 +92,11 @@
 
   "nav": {
     "groups": {
-      "main": "Main",
-      "tasks": "Tasks",
-      "ai": "AI Assistant",
-      "goals": "Goals & Bonuses",
-      "schedule": "Schedule",
-      "employees": "Employees",
-      "stores": "Stores",
-      "taxonomy": "Taxonomy",
-      "freelance": "Freelance",
-      "reports": "Reports",
-      "stretch": "Stretch",
-      "settings": "Settings"
+      "operations": "Operations",
+      "efficiency": "Efficiency & AI",
+      "flexible": "Freelance & Gigs",
+      "config": "Configuration",
+      "future": "Coming up"
     },
     "role": {
       "STORE_DIRECTOR": "Store Director",
@@ -145,6 +138,8 @@
     "employees": "Employees",
     "permissions": "Permissions",
     "stores": "Stores",
+    "taxonomy": "Taxonomy",
+    "settings": "Settings",
     "taxonomy_work_types": "Work types",
     "taxonomy_zones": "Zones",
     "taxonomy_positions": "Positions",
