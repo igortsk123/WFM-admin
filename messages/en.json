@@ -743,6 +743,11 @@
       "error_invalid_code": "Invalid code",
       "error_invalid_phone": "Invalid phone number",
       "error_invalid_email": "Invalid email"
+    },
+
+    "platform_admin_banner": {
+      "text": "You are signed in as a platform administrator · Beyond Violet staff",
+      "dismiss": "Dismiss"
     }
   }
 }

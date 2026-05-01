@@ -20,13 +20,14 @@ import {
 } from "@/components/ui/form"
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
 import { verifyTotp } from "@/lib/api/auth"
+import type { FunctionalRole } from "@/lib/types"
 
 type TotpStep = "totp-identifier" | "totp-code"
 type IdentifierType = "phone" | "email"
 
 interface LoginTotpFlowProps {
   onBack: () => void
-  onSuccess: () => void
+  onSuccess: (role?: FunctionalRole) => void
 }
 
 const phoneSchemaRu = z.object({

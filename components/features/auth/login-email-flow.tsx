@@ -20,12 +20,13 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { requestEmailMagicLink, verifyEmailMagicLink } from "@/lib/api/auth"
+import type { FunctionalRole } from "@/lib/types"
 
 type EmailStep = "email-input" | "email-sent"
 
 interface LoginEmailFlowProps {
   onBack: () => void
-  onSuccess: () => void
+  onSuccess: (role?: FunctionalRole) => void
 }
 
 const emailSchema = z.object({

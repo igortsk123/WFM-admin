@@ -2,16 +2,18 @@
 
 import { useState } from "react"
 import { useTranslations } from "next-intl"
-import { ListChecks, Users, BarChart3 } from "lucide-react"
+import { ListChecks, Users, BarChart3, X, ShieldCheck } from "lucide-react"
 
 import { useRouter } from "@/i18n/navigation"
 import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { LanguageSwitcher } from "@/components/shared/language-switcher"
 import { LoginMethodStep, type AuthMethod } from "./login-method-step"
 import { LoginPhoneFlow } from "./login-phone-flow"
 import { LoginEmailFlow } from "./login-email-flow"
 import { LoginTotpFlow } from "./login-totp-flow"
-import { ADMIN_ROUTES } from "@/lib/constants/routes"
+import { ADMIN_ROUTES, AGENT_ROUTES } from "@/lib/constants/routes"
+import type { FunctionalRole } from "@/lib/types"
 
 type Step = "method-select" | "phone" | "email" | "totp"
 
@@ -23,6 +25,7 @@ const valueProps = [
 
 export function LoginForm() {
   const t = useTranslations("screen.login")
+  const tCommon = useTranslations("common")
   const router = useRouter()
   const [step, setStep] = useState<Step>("method-select")
 
@@ -34,10 +37,17 @@ export function LoginForm() {
     setStep("method-select")
   }
 
-  function handleSuccess() {
+  function handleSuccess(role: FunctionalRole = "SUPERVISOR") {
+    // Persist role in cookie so middleware route guards can read it
+    document.cookie = `wfm-current-role=${role}; path=/; samesite=lax; max-age=86400`;
+
     // Small delay for UX before redirect
     setTimeout(() => {
-      router.push(ADMIN_ROUTES.dashboard)
+      if (role === "AGENT") {
+        router.push(AGENT_ROUTES.dashboard)
+      } else {
+        router.push(ADMIN_ROUTES.dashboard)
+      }
     }, 300)
   }
 

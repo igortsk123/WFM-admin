@@ -26,13 +26,14 @@ import {
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
 import { cn } from "@/lib/utils"
 import { requestPhoneCode, verifyPhoneCode } from "@/lib/api/auth"
+import type { FunctionalRole } from "@/lib/types"
 
 type PhoneStep = "phone-input" | "channel-select" | "code-verify"
 type Channel = "telegram" | "max" | "call"
 
 interface LoginPhoneFlowProps {
   onBack: () => void
-  onSuccess: () => void
+  onSuccess: (role?: FunctionalRole) => void
 }
 
 const channelConfig: Record<Channel, { icon: typeof Send }> = {
