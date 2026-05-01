@@ -1215,12 +1215,16 @@ export function TaskForm({ mode, taskId, initialTask }: TaskFormProps) {
                         </FormLabel>
                         <FormControl>
                           <Input
-                            {...field}
                             type="number"
                             min={1}
                             max={960}
                             className="w-32"
                             disabled={loadingData}
+                            value={field.value}
+                            onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                            onBlur={field.onBlur}
+                            name={field.name}
+                            ref={field.ref}
                           />
                         </FormControl>
                         <FormMessage />
@@ -1691,8 +1695,56 @@ function SummarySidebar({
   );
 }
 
-function MobileSummarySidebar(props: SummarySidebarProps) {
+function MobileSummarySidebar({
+  t,
+  selectedStore,
+  selectedZone,
+  selectedWorkType,
+  summaryAssignee,
+  watchedPlannedMinutes,
+  watchedScheduledDate,
+  watchedScheduledTime,
+  watchedDueDate,
+  watchedDueTime,
+  watchedPolicy,
+  watchedPhoto,
+}: SummarySidebarProps) {
   const [open, setOpen] = useState(false);
+  const notSet = t("summary_not_set");
+
+  const formatDt = (date?: Date, time?: string) => {
+    if (!date) return notSet;
+    const d = format(date, "d MMM", { locale: ru });
+    return time ? `${d} ${time}` : d;
+  };
+
+  const rows: { label: string; value: string }[] = [
+    { label: t("summary_store"), value: selectedStore?.name ?? notSet },
+    { label: t("summary_zone"), value: selectedZone?.name ?? notSet },
+    { label: t("summary_work_type"), value: selectedWorkType?.name ?? notSet },
+    { label: t("summary_assignee"), value: summaryAssignee },
+    {
+      label: t("summary_plan"),
+      value: watchedPlannedMinutes
+        ? t("summary_minutes", { min: watchedPlannedMinutes })
+        : notSet,
+    },
+    { label: t("summary_scheduled"), value: formatDt(watchedScheduledDate, watchedScheduledTime) },
+    { label: t("summary_due"), value: formatDt(watchedDueDate, watchedDueTime) },
+    {
+      label: t("summary_policy"),
+      value:
+        watchedPolicy === "AUTO"
+          ? t("policy_auto")
+          : watchedPolicy === "MANUAL"
+          ? t("policy_manual")
+          : notSet,
+    },
+    {
+      label: t("summary_photo"),
+      value: watchedPhoto ? t("summary_photo_yes") : t("summary_photo_no"),
+    },
+  ];
 
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
@@ -1700,17 +1752,24 @@ function MobileSummarySidebar(props: SummarySidebarProps) {
         <CollapsibleTrigger asChild>
           <button
             type="button"
-            className="w-full flex items-center justify-between p-4 text-sm font-medium text-foreground"
+            className="w-full flex items-center justify-between px-4 py-3 text-sm font-medium text-foreground"
           >
-            {props.t("sidebar_summary")}
+            {t("sidebar_summary")}
             <ChevronDown
               className={cn("h-4 w-4 text-muted-foreground transition-transform", open && "rotate-180")}
             />
           </button>
         </CollapsibleTrigger>
         <CollapsibleContent>
-          <div className="px-4 pb-4">
-            <SummarySidebar {...props} />
+          <div className="px-4 pb-4 border-t border-border">
+            <dl className="space-y-2 pt-3">
+              {rows.map((row) => (
+                <div key={row.label} className="flex justify-between gap-2 text-sm">
+                  <dt className="text-muted-foreground shrink-0">{row.label}</dt>
+                  <dd className="text-foreground text-right truncate max-w-[160px]">{row.value}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </CollapsibleContent>
       </Card>
