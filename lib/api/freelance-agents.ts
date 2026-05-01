@@ -224,7 +224,7 @@ export async function updateAgent(
 
 // ═══════════════════════════════════════════════════════════════════
 // BLOCK / ARCHIVE
-// ═══════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════════��══
 
 /**
  * Block an agent (prevents new assignments from being created for their freelancers).
@@ -345,7 +345,7 @@ export async function getAgentEarnings(
 
   const { page = 1, page_size = 20, sort_by = "period_date", sort_dir = "desc" } = params;
 
-  let filtered = MOCK_AGENT_EARNINGS.filter((e) => e.agent_id === agentId);
+  const filtered = MOCK_AGENT_EARNINGS.filter((e) => e.agent_id === agentId);
 
   filtered.sort((a, b) => {
     const aVal = String(a[sort_by as keyof AgentEarning] ?? "");
