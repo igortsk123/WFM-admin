@@ -1,0 +1,195 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* ===== Primitive Color Palette (OKLCH) ===== */
+
+  /* Brand (Violet) - Primary brand color */
+  --color-brand-0: oklch(0.99 0.01 286);
+  --color-brand-100: oklch(0.95 0.04 286);
+  --color-brand-200: oklch(0.88 0.08 286);
+  --color-brand-300: oklch(0.78 0.13 286);
+  --color-brand-400: oklch(0.65 0.18 286);
+  --color-brand-500: oklch(0.45 0.225 286); /* #6738DD - Main brand */
+  --color-brand-600: oklch(0.38 0.20 286);
+  --color-brand-700: oklch(0.32 0.17 286);
+  --color-brand-800: oklch(0.26 0.14 286);
+  --color-brand-900: oklch(0.20 0.10 286);
+
+  /* Neutral (Gray) */
+  --color-neutral-0: oklch(1.0 0 0);
+  --color-neutral-100: oklch(0.97 0 0);
+  --color-neutral-200: oklch(0.93 0 0);
+  --color-neutral-300: oklch(0.87 0 0);
+  --color-neutral-400: oklch(0.71 0 0);
+  --color-neutral-500: oklch(0.55 0 0);
+  --color-neutral-600: oklch(0.45 0 0);
+  --color-neutral-700: oklch(0.37 0 0);
+  --color-neutral-800: oklch(0.27 0 0);
+  --color-neutral-900: oklch(0.15 0 0);
+
+  /* Red (Destructive) */
+  --color-red-0: oklch(0.99 0.01 25);
+  --color-red-100: oklch(0.95 0.04 25);
+  --color-red-200: oklch(0.88 0.10 25);
+  --color-red-300: oklch(0.78 0.15 25);
+  --color-red-400: oklch(0.68 0.20 25);
+  --color-red-500: oklch(0.55 0.22 25);
+  --color-red-600: oklch(0.48 0.20 25);
+  --color-red-700: oklch(0.40 0.17 25);
+  --color-red-800: oklch(0.32 0.13 25);
+  --color-red-900: oklch(0.24 0.09 25);
+
+  /* Green (Success) */
+  --color-green-0: oklch(0.99 0.01 145);
+  --color-green-100: oklch(0.95 0.04 145);
+  --color-green-200: oklch(0.88 0.10 145);
+  --color-green-300: oklch(0.78 0.14 145);
+  --color-green-400: oklch(0.68 0.17 145);
+  --color-green-500: oklch(0.55 0.18 145);
+  --color-green-600: oklch(0.48 0.16 145);
+  --color-green-700: oklch(0.40 0.13 145);
+  --color-green-800: oklch(0.32 0.10 145);
+  --color-green-900: oklch(0.24 0.07 145);
+
+  /* Blue (Info) */
+  --color-blue-0: oklch(0.99 0.01 240);
+  --color-blue-100: oklch(0.95 0.04 240);
+  --color-blue-200: oklch(0.88 0.10 240);
+  --color-blue-300: oklch(0.78 0.14 240);
+  --color-blue-400: oklch(0.68 0.17 240);
+  --color-blue-500: oklch(0.55 0.18 240);
+  --color-blue-600: oklch(0.48 0.16 240);
+  --color-blue-700: oklch(0.40 0.13 240);
+  --color-blue-800: oklch(0.32 0.10 240);
+  --color-blue-900: oklch(0.24 0.07 240);
+
+  /* Yellow (Warning) */
+  --color-yellow-0: oklch(0.99 0.02 85);
+  --color-yellow-100: oklch(0.96 0.06 85);
+  --color-yellow-200: oklch(0.92 0.12 85);
+  --color-yellow-300: oklch(0.86 0.16 85);
+  --color-yellow-400: oklch(0.80 0.18 85);
+  --color-yellow-500: oklch(0.72 0.18 85);
+  --color-yellow-600: oklch(0.62 0.16 85);
+  --color-yellow-700: oklch(0.52 0.13 85);
+  --color-yellow-800: oklch(0.42 0.10 85);
+  --color-yellow-900: oklch(0.32 0.07 85);
+
+  /* Pink */
+  --color-pink-0: oklch(0.99 0.01 350);
+  --color-pink-100: oklch(0.95 0.04 350);
+  --color-pink-200: oklch(0.88 0.10 350);
+  --color-pink-300: oklch(0.78 0.15 350);
+  --color-pink-400: oklch(0.68 0.18 350);
+  --color-pink-500: oklch(0.58 0.20 350);
+  --color-pink-600: oklch(0.50 0.18 350);
+  --color-pink-700: oklch(0.42 0.15 350);
+  --color-pink-800: oklch(0.34 0.11 350);
+  --color-pink-900: oklch(0.26 0.08 350);
+
+  /* Orange */
+  --color-orange-0: oklch(0.99 0.01 55);
+  --color-orange-100: oklch(0.95 0.05 55);
+  --color-orange-200: oklch(0.88 0.11 55);
+  --color-orange-300: oklch(0.78 0.16 55);
+  --color-orange-400: oklch(0.70 0.19 55);
+  --color-orange-500: oklch(0.62 0.20 55);
+  --color-orange-600: oklch(0.54 0.18 55);
+  --color-orange-700: oklch(0.46 0.15 55);
+  --color-orange-800: oklch(0.38 0.11 55);
+  --color-orange-900: oklch(0.28 0.08 55);
+
+  /* ===== Semantic Design Tokens ===== */
+
+  /* Background */
+  --color-background: var(--color-neutral-0);
+  --color-foreground: var(--color-neutral-900);
+
+  /* Card */
+  --color-card: var(--color-neutral-0);
+  --color-card-foreground: var(--color-neutral-900);
+
+  /* Popover */
+  --color-popover: var(--color-neutral-0);
+  --color-popover-foreground: var(--color-neutral-900);
+
+  /* Primary */
+  --color-primary: var(--color-brand-500);
+  --color-primary-foreground: var(--color-neutral-0);
+
+  /* Secondary */
+  --color-secondary: var(--color-neutral-100);
+  --color-secondary-foreground: var(--color-neutral-900);
+
+  /* Muted */
+  --color-muted: var(--color-neutral-100);
+  --color-muted-foreground: var(--color-neutral-500);
+
+  /* Accent */
+  --color-accent: var(--color-neutral-100);
+  --color-accent-foreground: var(--color-neutral-900);
+
+  /* Destructive */
+  --color-destructive: var(--color-red-500);
+  --color-destructive-foreground: var(--color-neutral-0);
+
+  /* Success */
+  --color-success: var(--color-green-500);
+  --color-success-foreground: var(--color-neutral-0);
+
+  /* Warning */
+  --color-warning: var(--color-yellow-500);
+  --color-warning-foreground: var(--color-neutral-900);
+
+  /* Info */
+  --color-info: var(--color-blue-500);
+  --color-info-foreground: var(--color-neutral-0);
+
+  /* Border */
+  --color-border: var(--color-neutral-200);
+  --color-input: var(--color-neutral-200);
+  --color-ring: var(--color-brand-500);
+
+  /* Sidebar */
+  --color-sidebar: var(--color-neutral-100);
+  --color-sidebar-foreground: var(--color-neutral-900);
+  --color-sidebar-primary: var(--color-brand-500);
+  --color-sidebar-primary-foreground: var(--color-neutral-0);
+  --color-sidebar-accent: var(--color-neutral-200);
+  --color-sidebar-accent-foreground: var(--color-neutral-900);
+  --color-sidebar-border: var(--color-neutral-200);
+  --color-sidebar-ring: var(--color-brand-500);
+
+  /* Chart Colors */
+  --color-chart-1: var(--color-brand-500);
+  --color-chart-2: var(--color-blue-500);
+  --color-chart-3: var(--color-green-500);
+  --color-chart-4: var(--color-yellow-500);
+  --color-chart-5: var(--color-pink-500);
+
+  /* ===== Radius ===== */
+  --radius: 16px;
+  --radius-sm: calc(var(--radius) - 8px);
+  --radius-md: calc(var(--radius) - 6px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* ===== Typography ===== */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, monospace;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+
