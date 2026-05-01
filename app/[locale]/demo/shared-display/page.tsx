@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useTranslations } from "next-intl"
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { Trash2 } from "lucide-react"
@@ -211,7 +210,6 @@ const columns: ColumnDef<MockTableRow>[] = [
 // ═══════════════════════════════════════════════════════════════════
 
 export default function SharedDisplayPage() {
-  const t = useTranslations()
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [filters, setFilters] = useState<{ zone: Permission; status: TaskState }>({
     zone: "SALES_FLOOR",
@@ -381,7 +379,7 @@ export default function SharedDisplayPage() {
                   title={store.name}
                   subtitle={store.addr}
                   badges={[{ label: "5 задач", variant: "secondary" }]}
-                  status={{ label: "Открыт", className: "bg-success/10 text-success border-success/20" }}
+                  status={{ label: "Откр��т", className: "bg-success/10 text-success border-success/20" }}
                   link="#"
                 />
               ))}
