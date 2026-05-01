@@ -7,6 +7,7 @@
 export const ADMIN_ROUTES = {
   // Core
   dashboard: "/dashboard",
+  navigation: "/navigation",
 
   // Tasks
   tasks: "/tasks",
