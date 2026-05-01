@@ -36,7 +36,7 @@ import {
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/lib/contexts/auth-context"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
-import type { FunctionalRole, GoalCategory, ActivityType } from "@/lib/types"
+import type { FunctionalRole, GoalCategory } from "@/lib/types"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
