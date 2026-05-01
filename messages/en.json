@@ -89,7 +89,6 @@
     "russian": "Русский",
     "english": "English"
   },
-
   "nav": {
     "groups": {
       "operations": "Operations",
@@ -179,7 +178,6 @@
     "reports": "Reports",
     "organization": "Organisation"
   },
-
   "task": {
     "title": "Task",
     "titlePlural": "Tasks",
@@ -201,7 +199,6 @@
     "updatedAt": "Updated",
     "createdBy": "Created by",
     "aiGenerated": "AI generated",
-
     "state": {
       "NEW": "New",
       "IN_PROGRESS": "In progress",
@@ -212,7 +209,6 @@
       "paused": "Paused",
       "completed": "Completed"
     },
-
     "review": {
       "NONE": "No review",
       "ON_REVIEW": "On review",
@@ -223,7 +219,6 @@
       "accepted": "Accepted",
       "rejected": "Rejected"
     },
-
     "type": {
       "PLANNED": "Planned",
       "ADDITIONAL": "Additional",
@@ -232,14 +227,12 @@
       "additional": "Additional",
       "bonus": "Bonus"
     },
-
     "kind": {
       "SINGLE": "Single",
       "CHAIN": "Chain",
       "single": "Single",
       "chain": "Chain"
     },
-
     "archive_reason": {
       "CLOSED": "Closed",
       "DUPLICATE": "Duplicate",
@@ -247,13 +240,11 @@
       "OBSOLETE": "Obsolete",
       "OTHER": "Other"
     },
-
     "source": {
       "manager": "Created manually",
       "ai": "AI suggested",
       "planned": "Planned"
     },
-
     "archiveReason_values": {
       "closed": "Closed",
       "duplicate": "Duplicate",
@@ -262,7 +253,6 @@
       "other": "Other"
     }
   },
-
   "subtask": {
     "title": "Subtask",
     "titlePlural": "Subtasks",
@@ -272,7 +262,6 @@
       "REJECTED": "Rejected"
     }
   },
-
   "shift": {
     "title": "Shift",
     "titlePlural": "Shifts",
@@ -289,7 +278,6 @@
       "closed": "Closed"
     }
   },
-
   "permission": {
     "title": "Permission",
     "titlePlural": "Permissions",
@@ -305,7 +293,6 @@
     "warehouse": "Warehouse",
     "production_line": "Production line"
   },
-
   "role": {
     "title": "Role",
     "titlePlural": "Roles",
@@ -330,19 +317,16 @@
       "platform_admin": "Platform Admin"
     }
   },
-
   "employee_type": {
     "title": "Employment type",
     "STAFF": "Staff",
     "FREELANCE": "Freelance"
   },
-
   "employeeType": {
     "title": "Employment type",
     "staff": "Staff",
     "freelance": "Freelance"
   },
-
   "freelancer": {
     "title": "Freelancer",
     "titlePlural": "Freelancers",
@@ -354,7 +338,6 @@
       "ARCHIVED": "Archived"
     }
   },
-
   "object_type": {
     "STORE": "Store",
     "WORKSHOP": "Workshop",
@@ -362,7 +345,6 @@
     "OFFICE": "Office",
     "WAREHOUSE_HUB": "Warehouse hub"
   },
-
   "goal": {
     "title": "Goal",
     "titlePlural": "Goals",
@@ -399,7 +381,6 @@
       "archived": "Archived"
     }
   },
-
   "bonus": {
     "title": "Bonus task",
     "source": {
@@ -408,7 +389,6 @@
       "GOAL_LINKED": "Linked to goal"
     }
   },
-
   "notification": {
     "title": "Notification",
     "titlePlural": "Notifications",
@@ -439,7 +419,6 @@
       "ai": "AI"
     }
   },
-
   "freelance": {
     "title": "Freelance",
     "application": {
@@ -541,7 +520,6 @@
       }
     }
   },
-
   "auth": {
     "login": "Login",
     "logout": "Log out",
@@ -582,11 +560,9 @@
     "sessionExpired": "Session expired",
     "forbidden": "Access denied"
   },
-
   "archive": {
     "tab_label": "Archive"
   },
-
   "states": {
     "loading": "Loading...",
     "empty_title": "No data",
@@ -597,14 +573,12 @@
     "conflict_message": "Data has changed — please refresh",
     "forbidden_title": "Access denied"
   },
-
   "format": {
     "today": "Today",
     "yesterday": "Yesterday",
     "tomorrow": "Tomorrow",
     "days_ago": "{n, plural, one {# day ago} other {# days ago}}"
   },
-
   "store": {
     "title": "Store",
     "titlePlural": "Stores",
@@ -615,7 +589,6 @@
     "workingHours": "Working hours",
     "employeeCount": "Employees"
   },
-
   "employee": {
     "title": "Employee",
     "titlePlural": "Employees",
@@ -634,7 +607,6 @@
       "terminated": "Terminated"
     }
   },
-
   "ai": {
     "title": "AI Analytics",
     "analyzing": "AI is analysing...",
@@ -659,7 +631,6 @@
       "edited": "Accepted with edits"
     }
   },
-
   "validation": {
     "required": "This field is required",
     "minLength": "Minimum {min} characters",
@@ -675,7 +646,6 @@
     "min": "Minimum {min}",
     "max": "Maximum {max}"
   },
-
   "error": {
     "generic": "An error occurred",
     "network": "Network error",
@@ -686,14 +656,12 @@
     "tryAgain": "Please try again",
     "contactSupport": "Contact support"
   },
-
   "screen": {
     "login": {
       "tagline": "Store command centre",
       "value_tasks": "Tasks under control",
       "value_team": "Team and permissions",
       "value_analytics": "Payroll and productivity analytics",
-
       "method_title": "Sign in to WFM Admin",
       "method_subtitle": "Choose your sign-in method",
       "method_phone_title": "Phone",
@@ -704,11 +672,9 @@
       "method_totp_subtitle": "6-digit code from your app",
       "method_continue": "Continue",
       "method_hint": "Having trouble? Contact your administrator",
-
       "phone_title": "Enter your phone number",
       "phone_placeholder": "+44 (0) XXXX XXXXXX",
       "phone_remember": "Remember me",
-
       "channel_title": "Where should we send the code?",
       "channel_telegram": "Telegram",
       "channel_telegram_hint": "Fastest if you have Telegram",
@@ -718,13 +684,11 @@
       "channel_call_hint": "A robot will read out the code",
       "channel_sms_fallback": "If the code doesn't arrive within 60 seconds, we'll send an SMS automatically",
       "channel_send": "Send code",
-
       "code_title": "Enter the code",
       "code_sent_via": "Code sent via {channel} to {phone}",
       "code_resend_in": "Resend in {time}",
       "code_resend": "Resend code",
       "code_sign_in": "Sign in",
-
       "email_title": "Enter your email",
       "email_placeholder": "example@company.com",
       "email_send_link": "Send link",
@@ -732,24 +696,20 @@
       "email_sent_body": "We've sent a sign-in link to {email}. Click it within 15 minutes.",
       "email_spam_hint": "Didn't receive the email? Check your spam folder",
       "email_simulate_click": "Simulate link click",
-
       "totp_identifier_title": "Enter your phone or email",
       "totp_tab_phone": "Phone",
       "totp_tab_email": "Email",
       "totp_code_title": "Open your authenticator app",
       "totp_code_subtitle": "Enter the code for {identifier}",
       "totp_code_hint": "Code refreshes every 30 seconds",
-
       "error_invalid_code": "Invalid code",
       "error_invalid_phone": "Invalid phone number",
       "error_invalid_email": "Invalid email"
     },
-
     "platform_admin_banner": {
       "text": "You are signed in as a platform administrator · Beyond Violet staff",
       "dismiss": "Dismiss"
     },
-
     "dashboard": {
       "greeting_morning": "Good morning",
       "greeting_afternoon": "Good afternoon",
@@ -826,6 +786,24 @@
           "week": "Week",
           "month": "Month"
         }
+      },
+      "resource_balance": {
+        "title": "Resource balance today",
+        "title_no_freelance": "Shift efficiency today",
+        "details_link": "Details",
+        "stat_staff_label": "Closed by staff",
+        "stat_staff_subtext": "Primary resource",
+        "stat_bonus_label": "Closed by bonus",
+        "stat_bonus_subtext": "About 2× cheaper than freelance",
+        "stat_freelance_label": "Needs freelance",
+        "stat_freelance_subtext": "When in-house resources are insufficient",
+        "stat_savings_label": "Saved vs freelance",
+        "stat_savings_subtext": "Saved by replacing freelance with bonus tasks",
+        "pending_applications": "Pending approvals ({n})",
+        "overspend": "Budget overspends ({n})",
+        "external_unassigned": "External unassigned ({n})",
+        "empty_title": "All covered by staff today",
+        "empty_description": "Today's work is covered by staff. No freelance needed."
       }
     }
   }

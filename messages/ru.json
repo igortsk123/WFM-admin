@@ -89,7 +89,6 @@
     "russian": "Русский",
     "english": "English"
   },
-
   "nav": {
     "groups": {
       "operations": "Операционка",
@@ -179,7 +178,6 @@
     "reports": "Отчёты",
     "organization": "Организация"
   },
-
   "task": {
     "title": "Задача",
     "titlePlural": "Задачи",
@@ -201,7 +199,6 @@
     "updatedAt": "Обновлена",
     "createdBy": "Автор",
     "aiGenerated": "Создана ИИ",
-
     "state": {
       "NEW": "Новая",
       "IN_PROGRESS": "В работе",
@@ -212,7 +209,6 @@
       "paused": "На паузе",
       "completed": "Завершена"
     },
-
     "review": {
       "NONE": "Без проверки",
       "ON_REVIEW": "На проверке",
@@ -223,7 +219,6 @@
       "accepted": "Принята",
       "rejected": "Отклонена"
     },
-
     "type": {
       "PLANNED": "Плановая",
       "ADDITIONAL": "Дополнительная",
@@ -232,14 +227,12 @@
       "additional": "Дополнительная",
       "bonus": "Бонусная"
     },
-
     "kind": {
       "SINGLE": "Обычная",
       "CHAIN": "Конвейер",
       "single": "Обычная",
       "chain": "Конвейер"
     },
-
     "archive_reason": {
       "CLOSED": "Закрыта",
       "DUPLICATE": "Дубликат",
@@ -247,13 +240,11 @@
       "OBSOLETE": "Устарела",
       "OTHER": "Другое"
     },
-
     "source": {
       "manager": "Создана вручную",
       "ai": "Предложена ИИ",
       "planned": "Плановая"
     },
-
     "archiveReason_values": {
       "closed": "Закрыта",
       "duplicate": "Дубликат",
@@ -262,7 +253,6 @@
       "other": "Другое"
     }
   },
-
   "subtask": {
     "title": "Подзадача",
     "titlePlural": "Подзадачи",
@@ -272,7 +262,6 @@
       "REJECTED": "Отклонена"
     }
   },
-
   "shift": {
     "title": "Смена",
     "titlePlural": "Смены",
@@ -289,7 +278,6 @@
       "closed": "Закрыта"
     }
   },
-
   "permission": {
     "title": "Разрешение",
     "titlePlural": "Разрешения",
@@ -305,7 +293,6 @@
     "warehouse": "Склад",
     "production_line": "Производственная линия"
   },
-
   "role": {
     "title": "Роль",
     "titlePlural": "Роли",
@@ -330,19 +317,16 @@
       "platform_admin": "Администратор платформы"
     }
   },
-
   "employee_type": {
     "title": "Тип занятости",
     "STAFF": "Штатный",
     "FREELANCE": "Внештатный"
   },
-
   "employeeType": {
     "title": "Тип занятости",
     "staff": "Штатный",
     "freelance": "Внештатный"
   },
-
   "freelancer": {
     "title": "Фрилансер",
     "titlePlural": "Фрилансеры",
@@ -354,7 +338,6 @@
       "ARCHIVED": "В архиве"
     }
   },
-
   "object_type": {
     "STORE": "Магазин",
     "WORKSHOP": "Цех",
@@ -362,7 +345,6 @@
     "OFFICE": "Офис",
     "WAREHOUSE_HUB": "Склад-хаб"
   },
-
   "goal": {
     "title": "Цель",
     "titlePlural": "Цели",
@@ -399,7 +381,6 @@
       "archived": "В архиве"
     }
   },
-
   "bonus": {
     "title": "Бонусная задача",
     "source": {
@@ -408,7 +389,6 @@
       "GOAL_LINKED": "Связана с целью"
     }
   },
-
   "notification": {
     "title": "Уведомление",
     "titlePlural": "Уведомления",
@@ -439,7 +419,6 @@
       "ai": "ИИ"
     }
   },
-
   "freelance": {
     "title": "Фриланс",
     "application": {
@@ -541,7 +520,6 @@
       }
     }
   },
-
   "auth": {
     "login": "Вход",
     "logout": "Выход",
@@ -582,11 +560,9 @@
     "sessionExpired": "Сессия истекла",
     "forbidden": "Недостаточно прав"
   },
-
   "archive": {
     "tab_label": "Архив"
   },
-
   "states": {
     "loading": "Загрузка...",
     "empty_title": "Нет данных",
@@ -597,14 +573,12 @@
     "conflict_message": "Данные изменились — обновите страницу",
     "forbidden_title": "Недостаточно прав"
   },
-
   "format": {
     "today": "Сегодня",
     "yesterday": "Вчера",
     "tomorrow": "Завтра",
     "days_ago": "{n, plural, one {# день назад} few {# дня назад} other {# дней назад}}"
   },
-
   "store": {
     "title": "Магазин",
     "titlePlural": "Магазины",
@@ -615,7 +589,6 @@
     "workingHours": "Часы работы",
     "employeeCount": "Сотрудников"
   },
-
   "employee": {
     "title": "Сотрудник",
     "titlePlural": "Сотрудники",
@@ -634,7 +607,6 @@
       "terminated": "Уволен"
     }
   },
-
   "ai": {
     "title": "ИИ-аналитика",
     "analyzing": "ИИ анализирует...",
@@ -659,7 +631,6 @@
       "edited": "Принято с правками"
     }
   },
-
   "validation": {
     "required": "Обязательное поле",
     "minLength": "Минимум {min} символов",
@@ -675,7 +646,6 @@
     "min": "Минимум {min}",
     "max": "Максимум {max}"
   },
-
   "error": {
     "generic": "Произошла ошибка",
     "network": "Ошибка сети",
@@ -686,14 +656,12 @@
     "tryAgain": "Попробуйте ещё раз",
     "contactSupport": "Обратитесь в поддержку"
   },
-
   "screen": {
     "login": {
       "tagline": "Командный центр магазина",
       "value_tasks": "Задачи под контролем",
       "value_team": "Команда и привилегии",
       "value_analytics": "Аналитика ФОТ и продуктивности",
-
       "method_title": "Войти в WFM Admin",
       "method_subtitle": "Выберите способ входа",
       "method_phone_title": "Телефон",
@@ -704,11 +672,9 @@
       "method_totp_subtitle": "6-значный код от приложения",
       "method_continue": "Продолжить",
       "method_hint": "Возникли проблемы? Обратитесь к администратору",
-
       "phone_title": "Введите телефон",
       "phone_placeholder": "+7 (___) ___-__-__",
       "phone_remember": "Запомнить меня",
-
       "channel_title": "Куда прислать код?",
       "channel_telegram": "Telegram",
       "channel_telegram_hint": "Быстрее всего, если есть Telegram",
@@ -718,13 +684,11 @@
       "channel_call_hint": "Робот продиктует код голосом",
       "channel_sms_fallback": "Если код не придёт в течение 60 секунд — автоматически отправим SMS",
       "channel_send": "Отправить код",
-
       "code_title": "Введите код",
       "code_sent_via": "Код отправлен в {channel} на {phone}",
       "code_resend_in": "Отправить ещё раз через {time}",
       "code_resend": "Отправить код ещё раз",
       "code_sign_in": "Войти",
-
       "email_title": "Введите email",
       "email_placeholder": "example@company.ru",
       "email_send_link": "Отправить ссылку",
@@ -732,24 +696,20 @@
       "email_sent_body": "Мы отправили ссылку для входа на {email}. Перейдите по ней в течение 15 минут.",
       "email_spam_hint": "Письмо не пришло? Проверьте папку Спам",
       "email_simulate_click": "Симулировать клик по ссылке",
-
       "totp_identifier_title": "Введите телефон или email",
       "totp_tab_phone": "Телефон",
       "totp_tab_email": "Email",
       "totp_code_title": "Откройте authenticator-приложение",
       "totp_code_subtitle": "Введите код для {identifier}",
       "totp_code_hint": "Код обновляется каждые 30 секунд",
-
       "error_invalid_code": "Неверный код",
       "error_invalid_phone": "Неверный номер телефона",
       "error_invalid_email": "Неверный email"
     },
-
     "platform_admin_banner": {
       "text": "Вы зашли как платформенный администратор · Beyond Violet staff",
       "dismiss": "Скрыть"
     },
-
     "dashboard": {
       "greeting_morning": "Доброе утро",
       "greeting_afternoon": "Добрый день",
@@ -826,6 +786,24 @@
           "week": "Неделя",
           "month": "Месяц"
         }
+      },
+      "resource_balance": {
+        "title": "Ресурсный баланс сегодня",
+        "title_no_freelance": "Эффективность смены сегодня",
+        "details_link": "Подробнее",
+        "stat_staff_label": "Закрыто штатными",
+        "stat_staff_subtext": "Основной ресурс",
+        "stat_bonus_label": "Закрыто бонусами",
+        "stat_bonus_subtext": "Дешевле внештата примерно в 2 раза",
+        "stat_freelance_label": "Требует внештат",
+        "stat_freelance_subtext": "Когда своих ресурсов недостаточно",
+        "stat_savings_label": "Экономия vs внештат",
+        "stat_savings_subtext": "Сэкономлено за счёт замены внештата бонусами",
+        "pending_applications": "Заявки на согласовании ({n})",
+        "overspend": "Перерасходы бюджета ({n})",
+        "external_unassigned": "External без назначения ({n})",
+        "empty_title": "Отлично — день закрывается штатными",
+        "empty_description": "Сегодня работа закрывается штатными ресурсами. Внештат не требуется."
       }
     }
   }
