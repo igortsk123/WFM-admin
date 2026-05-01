@@ -1,0 +1,182 @@
+{
+  "common": {
+    "save": "Сохранить",
+    "cancel": "Отменить",
+    "back": "Назад",
+    "next": "Далее",
+    "submit": "Отправить",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "archive": "Архивировать",
+    "restore": "Восстановить",
+    "search": "Поиск",
+    "filter": "Фильтр",
+    "filters_count": "Фильтры ({count})",
+    "loading": "Загрузка…",
+    "no_data": "Нет данных",
+    "retry": "Повторить",
+    "required": "Обязательно",
+    "open_more": "Подробнее",
+    "clear_all": "Очистить все",
+    "close": "Закрыть",
+    "confirm": "Подтвердить",
+    "yes": "Да",
+    "no": "Нет",
+    "all": "Все",
+    "none": "Нет",
+    "select": "Выбрать",
+    "selected": "Выбрано",
+    "actions": "Действия",
+    "view": "Просмотр",
+    "create": "Создать",
+    "add": "Добавить",
+    "remove": "Удалить",
+    "copy": "Копировать",
+    "download": "Скачать",
+    "upload": "Загрузить",
+    "export": "Экспорт",
+    "import": "Импорт",
+    "refresh": "Обновить",
+    "settings": "Настройки",
+    "help": "Помощь",
+    "logout": "Выйти",
+    "error": "Ошибка",
+    "success": "Успешно",
+    "warning": "Предупреждение",
+    "info": "Информация"
+  },
+  "nav": {
+    "dashboard": "Главная",
+    "tasks": "Задачи",
+    "tasks_review": "На проверке",
+    "subtasks_moderation": "Модерация подзадач",
+    "tasks_archive": "Архив задач",
+    "goals": "Цели",
+    "bonus_tasks": "Бонусные задачи",
+    "payouts": "Выплаты",
+    "schedule": "Расписание",
+    "employees": "Сотрудники",
+    "permissions": "Привилегии",
+    "stores": "Магазины",
+    "taxonomy_work_types": "Типы работ",
+    "taxonomy_zones": "Зоны",
+    "taxonomy_positions": "Должности",
+    "taxonomy_hints": "Подсказки",
+    "reports_plan_fact": "План-факт",
+    "reports_kpi": "KPI",
+    "reports_compare": "Сравнение магазинов",
+    "settings_profile": "Профиль",
+    "settings_organization": "Организация",
+    "integrations": "Интеграции",
+    "audit": "Аудит",
+    "notifications": "Уведомления",
+    "ai_suggestions": "ИИ-предложения",
+    "ai_chat": "ИИ-чат"
+  },
+  "task": {
+    "state": {
+      "NEW": "Новая",
+      "IN_PROGRESS": "В работе",
+      "PAUSED": "На паузе",
+      "COMPLETED": "Выполнена"
+    },
+    "review": {
+      "NONE": "—",
+      "ON_REVIEW": "На проверке",
+      "ACCEPTED": "Принята",
+      "REJECTED": "Отклонена"
+    },
+    "type": {
+      "PLANNED": "Плановая",
+      "ADDITIONAL": "Дополнительная",
+      "BONUS": "Бонусная"
+    },
+    "archive_reason": {
+      "CLOSED": "Закрыт",
+      "DUPLICATE": "Дубль",
+      "WRONG_DATA": "Ошибочные данные",
+      "OBSOLETE": "Устарело",
+      "OTHER": "Другое"
+    }
+  },
+  "permission": {
+    "CASHIER": "Касса",
+    "SALES_FLOOR": "Торговый зал",
+    "SELF_CHECKOUT": "Самокассы",
+    "WAREHOUSE": "Склад",
+    "PRODUCTION_LINE": "Производственная линия"
+  },
+  "role": {
+    "STORE_DIRECTOR": "Директор магазина",
+    "SUPERVISOR": "Супервайзер",
+    "REGIONAL": "Региональный директор",
+    "NETWORK_OPS": "Директор по операциям сети",
+    "HR_MANAGER": "HR-менеджер",
+    "OPERATOR": "Оператор",
+    "WORKER": "Работник",
+    "AGENT": "Агент",
+    "PLATFORM_ADMIN": "Администратор платформы"
+  },
+  "employee_type": {
+    "STAFF": "Штатный",
+    "FREELANCE": "Внештатный"
+  },
+  "goal": {
+    "category": {
+      "OOS_REDUCTION": "Снижение OOS",
+      "WRITE_OFFS": "Списания и просрочка",
+      "PROMO_QUALITY": "Качество промо",
+      "PRICE_ACCURACY": "Точность цен",
+      "IMPULSE_ZONES": "Импульсные зоны",
+      "PRODUCTIVITY": "Продуктивность"
+    },
+    "status": {
+      "DRAFT": "Черновик",
+      "ACTIVE": "Активна",
+      "PAUSED": "На паузе",
+      "COMPLETED": "Выполнена",
+      "CANCELLED": "Отменена"
+    }
+  },
+  "notification": {
+    "category": {
+      "TASK": "Задачи",
+      "GOAL": "Цели",
+      "SYSTEM": "Система",
+      "AI": "ИИ-предложения",
+      "SCHEDULE": "Расписание"
+    }
+  },
+  "shift": {
+    "state": {
+      "SCHEDULED": "Запланирована",
+      "STARTED": "Начата",
+      "COMPLETED": "Завершена",
+      "CANCELLED": "Отменена",
+      "NO_SHOW": "Неявка"
+    }
+  },
+  "validation": {
+    "required": "Обязательное поле",
+    "invalid_email": "Некорректный email",
+    "invalid_phone": "Некорректный номер телефона",
+    "min_length": "Минимум {min} символов",
+    "max_length": "Максимум {max} символов",
+    "min_value": "Минимум {min}",
+    "max_value": "Максимум {max}"
+  },
+  "empty": {
+    "title": "Нет данных",
+    "description": "Здесь пока ничего нет"
+  },
+  "error": {
+    "title": "Произошла ошибка",
+    "description": "Что-то пошло не так. Попробуйте ещё раз.",
+    "forbidden_title": "Доступ запрещён",
+    "forbidden_description": "У вас недостаточно прав для просмотра этой страницы",
+    "not_found_title": "Страница не найдена",
+    "not_found_description": "Запрашиваемая страница не существует",
+    "conflict_title": "Данные изменились",
+    "conflict_description": "Данные были изменены другим пользователем. Обновите страницу."
+  }
+}

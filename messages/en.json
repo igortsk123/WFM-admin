@@ -1,0 +1,182 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "delete": "Delete",
+    "edit": "Edit",
+    "archive": "Archive",
+    "restore": "Restore",
+    "search": "Search",
+    "filter": "Filter",
+    "filters_count": "Filters ({count})",
+    "loading": "Loading…",
+    "no_data": "No data",
+    "retry": "Retry",
+    "required": "Required",
+    "open_more": "More",
+    "clear_all": "Clear all",
+    "close": "Close",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "all": "All",
+    "none": "None",
+    "select": "Select",
+    "selected": "Selected",
+    "actions": "Actions",
+    "view": "View",
+    "create": "Create",
+    "add": "Add",
+    "remove": "Remove",
+    "copy": "Copy",
+    "download": "Download",
+    "upload": "Upload",
+    "export": "Export",
+    "import": "Import",
+    "refresh": "Refresh",
+    "settings": "Settings",
+    "help": "Help",
+    "logout": "Log out",
+    "error": "Error",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "tasks": "Tasks",
+    "tasks_review": "Review queue",
+    "subtasks_moderation": "Subtasks moderation",
+    "tasks_archive": "Tasks archive",
+    "goals": "Goals",
+    "bonus_tasks": "Bonus tasks",
+    "payouts": "Payouts",
+    "schedule": "Schedule",
+    "employees": "Employees",
+    "permissions": "Permissions",
+    "stores": "Stores",
+    "taxonomy_work_types": "Work types",
+    "taxonomy_zones": "Zones",
+    "taxonomy_positions": "Positions",
+    "taxonomy_hints": "Hints",
+    "reports_plan_fact": "Plan vs Fact",
+    "reports_kpi": "KPI",
+    "reports_compare": "Store comparison",
+    "settings_profile": "Profile",
+    "settings_organization": "Organization",
+    "integrations": "Integrations",
+    "audit": "Audit log",
+    "notifications": "Notifications",
+    "ai_suggestions": "AI Suggestions",
+    "ai_chat": "AI Chat"
+  },
+  "task": {
+    "state": {
+      "NEW": "New",
+      "IN_PROGRESS": "In progress",
+      "PAUSED": "Paused",
+      "COMPLETED": "Completed"
+    },
+    "review": {
+      "NONE": "—",
+      "ON_REVIEW": "On review",
+      "ACCEPTED": "Accepted",
+      "REJECTED": "Rejected"
+    },
+    "type": {
+      "PLANNED": "Planned",
+      "ADDITIONAL": "Additional",
+      "BONUS": "Bonus"
+    },
+    "archive_reason": {
+      "CLOSED": "Closed",
+      "DUPLICATE": "Duplicate",
+      "WRONG_DATA": "Wrong data",
+      "OBSOLETE": "Obsolete",
+      "OTHER": "Other"
+    }
+  },
+  "permission": {
+    "CASHIER": "Cashier",
+    "SALES_FLOOR": "Sales floor",
+    "SELF_CHECKOUT": "Self-checkout",
+    "WAREHOUSE": "Warehouse",
+    "PRODUCTION_LINE": "Production line"
+  },
+  "role": {
+    "STORE_DIRECTOR": "Store director",
+    "SUPERVISOR": "Supervisor",
+    "REGIONAL": "Regional director",
+    "NETWORK_OPS": "Network ops director",
+    "HR_MANAGER": "HR manager",
+    "OPERATOR": "Network merchandiser",
+    "WORKER": "Worker",
+    "AGENT": "Agent",
+    "PLATFORM_ADMIN": "Platform admin"
+  },
+  "employee_type": {
+    "STAFF": "Staff",
+    "FREELANCE": "Freelance"
+  },
+  "goal": {
+    "category": {
+      "OOS_REDUCTION": "OOS reduction",
+      "WRITE_OFFS": "Write-offs",
+      "PROMO_QUALITY": "Promo quality",
+      "PRICE_ACCURACY": "Price accuracy",
+      "IMPULSE_ZONES": "Impulse zones",
+      "PRODUCTIVITY": "Productivity"
+    },
+    "status": {
+      "DRAFT": "Draft",
+      "ACTIVE": "Active",
+      "PAUSED": "Paused",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled"
+    }
+  },
+  "notification": {
+    "category": {
+      "TASK": "Tasks",
+      "GOAL": "Goals",
+      "SYSTEM": "System",
+      "AI": "AI Suggestions",
+      "SCHEDULE": "Schedule"
+    }
+  },
+  "shift": {
+    "state": {
+      "SCHEDULED": "Scheduled",
+      "STARTED": "Started",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled",
+      "NO_SHOW": "No show"
+    }
+  },
+  "validation": {
+    "required": "Required field",
+    "invalid_email": "Invalid email",
+    "invalid_phone": "Invalid phone number",
+    "min_length": "Minimum {min} characters",
+    "max_length": "Maximum {max} characters",
+    "min_value": "Minimum {min}",
+    "max_value": "Maximum {max}"
+  },
+  "empty": {
+    "title": "No data",
+    "description": "Nothing here yet"
+  },
+  "error": {
+    "title": "An error occurred",
+    "description": "Something went wrong. Please try again.",
+    "forbidden_title": "Access denied",
+    "forbidden_description": "You do not have permission to view this page",
+    "not_found_title": "Page not found",
+    "not_found_description": "The requested page does not exist",
+    "conflict_title": "Data changed",
+    "conflict_description": "Data was modified by another user. Please refresh the page."
+  }
+}
