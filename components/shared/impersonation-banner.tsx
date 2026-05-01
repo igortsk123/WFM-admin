@@ -24,9 +24,7 @@ export function ImpersonationBanner() {
     impersonatingUser.middle_name ? ` ${impersonatingUser.middle_name[0]}.` : ""
   }`;
 
-  const roleName = tRole(impersonatingUser.role, {
-    defaultValue: impersonatingUser.role,
-  });
+  const roleName = tRole(impersonatingUser.role as Parameters<typeof tRole>[0]);
 
   const storeName =
     impersonatingUser.stores.length > 0
