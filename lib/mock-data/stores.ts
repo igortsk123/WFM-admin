@@ -1,0 +1,236 @@
+import type { Store } from "@/lib/types";
+
+/**
+ * @endpoint GET /api/stores
+ * 11 objects: 8 FMCG stores (SPAR Томск/НСК/Кемерово + Food City) +
+ * 1 fashion store (ALFA-TOM-001, обязателен для AI fashion-кейса и маркетинг-канала) +
+ * 1 workshop (WORKSHOP-TOM-001, демо production) +
+ * 1 archived store (FC-TOM-003).
+ *
+ * manager_id / supervisor_id ссылаются на User.id из users.ts.
+ * lama_synced_at — дата последней синхронизации с планировщиком.
+ */
+
+const now = new Date();
+const daysAgo = (d: number) =>
+  new Date(now.getTime() - d * 24 * 60 * 60 * 1000).toISOString();
+
+export const MOCK_STORES: Store[] = [
+  // ── SPAR Томск ──────────────────────────────────────────────────────
+  {
+    id: 1,
+    name: "СПАР Томск, пр. Ленина 80",
+    external_code: "SPAR-TOM-001",
+    address: "пр. Ленина, 80",
+    city: "Томск",
+    store_type: "Супермаркет",
+    object_type: "STORE",
+    object_format: "SUPERMARKET",
+    organization_id: "org-spar",
+    legal_entity_id: 1,
+    region: "Томская обл.",
+    manager_id: 5,   // Иванов А. С. — STORE_DIRECTOR
+    supervisor_id: 3, // Романов И. А. — SUPERVISOR
+    lama_synced_at: daysAgo(0),
+    active: true,
+    archived: false,
+    geo: { lat: 56.4846, lng: 84.9576 },
+  },
+  {
+    id: 2,
+    name: "СПАР Томск, ул. Красноармейская 99",
+    external_code: "SPAR-TOM-002",
+    address: "ул. Красноармейская, 99",
+    city: "Томск",
+    store_type: "Магазин у дома",
+    object_type: "STORE",
+    object_format: "CONVENIENCE",
+    organization_id: "org-spar",
+    legal_entity_id: 1,
+    region: "Томская обл.",
+    manager_id: 6,   // Петрова Е. В.
+    supervisor_id: 3,
+    lama_synced_at: daysAgo(1),
+    active: true,
+    archived: false,
+    geo: { lat: 56.4752, lng: 84.9482 },
+  },
+  {
+    /** Empty state demo: нет директора магазина */
+    id: 3,
+    name: "СПАР Томск, пр. Фрунзе 92а",
+    external_code: "SPAR-TOM-003",
+    address: "пр. Фрунзе, 92а",
+    city: "Томск",
+    store_type: "Супермаркет",
+    object_type: "STORE",
+    object_format: "SUPERMARKET",
+    organization_id: "org-spar",
+    legal_entity_id: 1,
+    region: "Томская обл.",
+    supervisor_id: 3,
+    lama_synced_at: daysAgo(0),
+    active: true,
+    archived: false,
+    geo: { lat: 56.4694, lng: 84.9807 },
+  },
+  // ── SPAR Новосибирск ────────────────────────────────────────────────
+  {
+    id: 4,
+    name: "СПАР Новосибирск, ул. Ленина 55",
+    external_code: "SPAR-NSK-001",
+    address: "ул. Ленина, 55",
+    city: "Новосибирск",
+    store_type: "Гипермаркет",
+    object_type: "STORE",
+    object_format: "HYPERMARKET",
+    organization_id: "org-spar",
+    legal_entity_id: 2,
+    region: "Новосибирская обл.",
+    manager_id: 7,   // Сидоров К. М.
+    supervisor_id: 3,
+    lama_synced_at: daysAgo(0),
+    active: true,
+    archived: false,
+    geo: { lat: 54.9893, lng: 82.9201 },
+  },
+  {
+    /** lama_synced_at 2 дня назад → overdue indicator в UI */
+    id: 5,
+    name: "СПАР Новосибирск, Красный пр. 200",
+    external_code: "SPAR-NSK-002",
+    address: "Красный проспект, 200",
+    city: "Новосибирск",
+    store_type: "Супермаркет",
+    object_type: "STORE",
+    object_format: "SUPERMARKET",
+    organization_id: "org-spar",
+    legal_entity_id: 2,
+    region: "Новосибирская обл.",
+    manager_id: 8,   // Васильев Д. О.
+    supervisor_id: 3,
+    lama_synced_at: daysAgo(2),
+    active: true,
+    archived: false,
+    geo: { lat: 55.0302, lng: 82.9204 },
+  },
+  // ── SPAR Кемерово — нужен для EXTERNAL-заявок из freelance-mock ──
+  {
+    id: 6,
+    name: "СПАР Кемерово, пр. Советский 50",
+    external_code: "SPAR-KEM-001",
+    address: "пр. Советский, 50",
+    city: "Кемерово",
+    store_type: "Супермаркет",
+    object_type: "STORE",
+    object_format: "SUPERMARKET",
+    organization_id: "org-spar",
+    legal_entity_id: 1,
+    region: "Кемеровская обл.",
+    manager_id: 9,   // Никитин Б. С.
+    supervisor_id: 3,
+    lama_synced_at: daysAgo(0),
+    active: true,
+    archived: false,
+    geo: { lat: 55.3544, lng: 86.0740 },
+  },
+  // ── Food City Томск ─────────────────────────────────────────────────
+  {
+    id: 7,
+    name: "Food City Томск Global Market, пр. Ленина 217",
+    external_code: "FC-TOM-001",
+    address: "пр. Ленина, 217",
+    city: "Томск",
+    store_type: "Гипермаркет",
+    object_type: "STORE",
+    object_format: "HYPERMARKET",
+    organization_id: "org-foodcity",
+    legal_entity_id: 3,
+    region: "Томская обл.",
+    manager_id: 10,  // Смирнова О. И.
+    supervisor_id: 4, // Тарасова О. В. — SUPERVISOR
+    lama_synced_at: daysAgo(0),
+    active: true,
+    archived: false,
+    geo: { lat: 56.4977, lng: 84.9945 },
+  },
+  {
+    id: 8,
+    name: "Food City Томск, ул. Учебная 39",
+    external_code: "FC-TOM-002",
+    address: "ул. Учебная, 39",
+    city: "Томск",
+    store_type: "Супермаркет",
+    object_type: "STORE",
+    object_format: "SUPERMARKET",
+    organization_id: "org-foodcity",
+    legal_entity_id: 3,
+    region: "Томская обл.",
+    supervisor_id: 4,
+    lama_synced_at: daysAgo(1),
+    active: true,
+    archived: false,
+    geo: { lat: 56.4613, lng: 84.9518 },
+  },
+  {
+    /** Архивирован — закрыт. Демо archive_reason=CLOSED */
+    id: 9,
+    name: "Food City Томск, ул. Иркутский тракт 122",
+    external_code: "FC-TOM-003",
+    address: "ул. Иркутский тракт, 122",
+    city: "Томск",
+    store_type: "Магазин у дома",
+    object_type: "STORE",
+    object_format: "CONVENIENCE",
+    organization_id: "org-foodcity",
+    legal_entity_id: 3,
+    region: "Томская обл.",
+    supervisor_id: 4,
+    active: false,
+    archived: true,
+    archive_reason: "CLOSED",
+    geo: { lat: 56.4401, lng: 85.0011 },
+  },
+  // ── Fashion Alfa — обязательный для AI fashion-кейса ─────────────
+  {
+    /**
+     * Обязателен для: демо AI-кейса (сарафан), маркетинг-канал, сценарий «малый бизнес».
+     * 3000 SKU. Владелец/директор = Никитина А. Н. (NETWORK_OPS, id=11).
+     */
+    id: 10,
+    name: "Магазин одежды Альфа, Томск, пр. Ленина 50",
+    external_code: "ALFA-TOM-001",
+    address: "пр. Ленина, 50",
+    city: "Томск",
+    store_type: "Магазин одежды",
+    object_type: "STORE",
+    object_format: "SMALL_SHOP",
+    organization_id: "org-fashion-alfa",
+    legal_entity_id: 4,
+    region: "Томская обл.",
+    manager_id: 11,  // Никитина А. Н. — NETWORK_OPS (малый бизнес, без STORE_DIRECTOR)
+    lama_synced_at: daysAgo(0),
+    active: true,
+    archived: false,
+    geo: { lat: 56.4812, lng: 84.9563 },
+  },
+  // ── Workshop — демо production ───────────────────────────────────
+  {
+    /** Опциональный: work_type 21-25 видны только если в org есть WORKSHOP */
+    id: 11,
+    name: "Швейный цех №1, Томск, ул. Карташова 25",
+    external_code: "WORKSHOP-TOM-001",
+    address: "ул. Карташова, 25",
+    city: "Томск",
+    store_type: "Производственный цех",
+    object_type: "WORKSHOP",
+    object_format: "SEWING_WORKSHOP",
+    organization_id: "org-fashion-alfa",
+    legal_entity_id: 4,
+    region: "Томская обл.",
+    manager_id: 11,
+    active: true,
+    archived: false,
+    geo: { lat: 56.4723, lng: 84.9632 },
+  },
+];
