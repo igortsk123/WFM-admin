@@ -748,6 +748,85 @@
     "platform_admin_banner": {
       "text": "You are signed in as a platform administrator · Beyond Violet staff",
       "dismiss": "Dismiss"
+    },
+
+    "dashboard": {
+      "greeting_morning": "Good morning",
+      "greeting_afternoon": "Good afternoon",
+      "greeting_evening": "Good evening",
+      "actions": {
+        "create_task": "Create task",
+        "plan_shift": "Plan shift",
+        "add_employee": "Add employee",
+        "import_schedule": "Import schedule"
+      },
+      "morning_brief": {
+        "title": "Morning",
+        "close": "Close",
+        "shift_utilization": "Shift utilisation",
+        "on_shift": "Employees on shift",
+        "late": "late",
+        "free_now": "Free now",
+        "overloaded": "Overloaded >100%",
+        "tabs": {
+          "planned": "Planned",
+          "on_review": "On review",
+          "bonus": "Bonus"
+        },
+        "distribute_unassigned": "Distribute unassigned",
+        "bonus_hint": "Bonus tasks are distributed automatically when employees complete planned tasks.",
+        "anomalies_title": "My stores anomalies",
+        "goals_progress_title": "Goals progress",
+        "urgent_suggestions": "Urgent AI suggestions",
+        "bonus_tomorrow": "Bonus tasks for tomorrow",
+        "all_suggestions": "All AI suggestions",
+        "set_goal": "Set goal",
+        "active_goal": "Active goal",
+        "open_goal": "Open goal",
+        "alerts_title": "Today alerts",
+        "no_alerts": "No alerts"
+      },
+      "kpi": {
+        "tasks_today": "Tasks today",
+        "completed": "Completed",
+        "on_review": "On review",
+        "overdue": "overdue",
+        "fot_vs_plan": "Payroll vs plan",
+        "active_employees": "Active employees",
+        "on_probation": "On probation",
+        "terminated_month": "Terminated this month",
+        "turnover_rate": "Turnover rate"
+      },
+      "activity": {
+        "title": "Activity today",
+        "tabs": {
+          "all": "All",
+          "tasks": "Tasks",
+          "shifts": "Shifts",
+          "review": "Review"
+        },
+        "view_all": "All events"
+      },
+      "review_queue": {
+        "title": "Review queue",
+        "open_queue": "Open queue"
+      },
+      "anomalies": {
+        "title": "Anomalies"
+      },
+      "quick_actions": {
+        "title": "Quick actions"
+      },
+      "plan_fact": {
+        "title": "Plan vs Fact this week",
+        "plan": "Plan",
+        "fact": "Fact",
+        "period": {
+          "day": "Day",
+          "week": "Week",
+          "month": "Month"
+        }
+      }
     }
   }
 }

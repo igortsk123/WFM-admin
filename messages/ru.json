@@ -419,7 +419,7 @@
     "category": {
       "TASK_REVIEW": "Проверка задачи",
       "TASK_REJECTED": "Задача отклонена",
-      "TASK_STATE_CHANGED": "Измене����ие статуса задачи",
+      "TASK_STATE_CHANGED": "Измене������ие статуса задачи",
       "BONUS_AVAILABLE": "Доступна бонусная задача",
       "GOAL_UPDATE": "Обновление цели",
       "AI_SUGGESTION_NEW": "Новое предложение ИИ",
@@ -748,6 +748,85 @@
     "platform_admin_banner": {
       "text": "Вы зашли как платформенный администратор · Beyond Violet staff",
       "dismiss": "Скрыть"
+    },
+
+    "dashboard": {
+      "greeting_morning": "Доброе утро",
+      "greeting_afternoon": "Добрый день",
+      "greeting_evening": "Добрый вечер",
+      "actions": {
+        "create_task": "Создать задачу",
+        "plan_shift": "Запланировать смену",
+        "add_employee": "Добавить сотрудника",
+        "import_schedule": "Импорт расписания"
+      },
+      "morning_brief": {
+        "title": "Утро",
+        "close": "Закрыть",
+        "shift_utilization": "Утилизация смены",
+        "on_shift": "Сотрудников на смене",
+        "late": "опаздывает",
+        "free_now": "Свободны сейчас",
+        "overloaded": "Нагружено >100%",
+        "tabs": {
+          "planned": "Плановые",
+          "on_review": "На проверке",
+          "bonus": "Бонусные"
+        },
+        "distribute_unassigned": "Распределить нераспределённые",
+        "bonus_hint": "Бонусные распределяются автоматически когда сотрудники закрывают плановые.",
+        "anomalies_title": "Аномалии моих магазинов",
+        "goals_progress_title": "Движение по целям",
+        "urgent_suggestions": "Срочные предложения ИИ",
+        "bonus_tomorrow": "Бонусные на завтра",
+        "all_suggestions": "Все предложения ИИ",
+        "set_goal": "Установить цель",
+        "active_goal": "Активная цель",
+        "open_goal": "Открыть цель",
+        "alerts_title": "Алерты дня",
+        "no_alerts": "Алертов нет"
+      },
+      "kpi": {
+        "tasks_today": "Задачи сегодня",
+        "completed": "Завершено",
+        "on_review": "На проверке",
+        "overdue": "просрочено",
+        "fot_vs_plan": "ФОТ vs план",
+        "active_employees": "Активные сотрудники",
+        "on_probation": "На испытательном",
+        "terminated_month": "Уволенных за месяц",
+        "turnover_rate": "Текучесть"
+      },
+      "activity": {
+        "title": "Активность за день",
+        "tabs": {
+          "all": "Все",
+          "tasks": "Задачи",
+          "shifts": "Смены",
+          "review": "Проверка"
+        },
+        "view_all": "Все события"
+      },
+      "review_queue": {
+        "title": "Очередь на проверку",
+        "open_queue": "Открыть очередь"
+      },
+      "anomalies": {
+        "title": "Аномалии"
+      },
+      "quick_actions": {
+        "title": "Быстрые действия"
+      },
+      "plan_fact": {
+        "title": "План vs Факт за неделю",
+        "plan": "План",
+        "fact": "Факт",
+        "period": {
+          "day": "День",
+          "week": "Неделя",
+          "month": "Месяц"
+        }
+      }
     }
   }
 }
