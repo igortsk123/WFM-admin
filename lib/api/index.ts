@@ -391,7 +391,7 @@ export {
 
 // ═══════════════════════════════════════════════════════════════════
 // Freelance Payouts API (NOMINAL_ACCOUNT mode only)
-// ═══════════════════════════════════════════════════════════════════
+// ══���════════════════════════════════════════════════════════════════
 
 export {
   getPayouts,
@@ -480,3 +480,12 @@ export {
   getOrganizationFreelanceConfig,
   updatePaymentMode,
 } from "./freelance-config";
+
+// ═══════════════════════════════════════════════════════════════════
+// Dashboard API
+// ═══════════════════════════════════════════════════════════════════
+
+export {
+  type ResourceBalanceData,
+  getDashboardResourceBalance,
+} from "./dashboard";

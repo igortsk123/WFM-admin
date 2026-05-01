@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import { useTranslations, useLocale } from "next-intl"
 import { Link } from "@/i18n/navigation"
 import {
@@ -56,6 +56,8 @@ import { KpiCard } from "@/components/shared/kpi-card"
 import { ActivityFeed, type ActivityItem } from "@/components/shared/activity-feed"
 import { TaskStateBadge } from "@/components/shared/task-state-badge"
 import { ReviewStateBadge } from "@/components/shared/review-state-badge"
+import { ResourceBalanceCard } from "./resource-balance-card"
+import { getDashboardResourceBalance, type ResourceBalanceData } from "@/lib/api/dashboard"
 
 // ═══════════════════════════════════════════════════════════════════
 // TYPES
@@ -790,6 +792,14 @@ function PlanFactChart() {
 // MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════════════
 
+/** Roles that can see the Resource Balance block */
+const RESOURCE_BALANCE_ROLES = new Set([
+  "SUPERVISOR",
+  "REGIONAL",
+  "NETWORK_OPS",
+  "HR_MANAGER",
+] as const)
+
 export function Dashboard() {
   const { user } = useAuth()
   const t = useTranslations("screen.dashboard")
@@ -800,12 +810,23 @@ export function Dashboard() {
 
   const [morningBriefDismissed, setMorningBriefDismissed] = useState(false)
   const [activityTab, setActivityTab] = useState<"all" | "tasks" | "shifts" | "review">("all")
+  const [resourceBalance, setResourceBalance] = useState<ResourceBalanceData | null>(null)
 
   const role = user.role
   const firstName = user.first_name
   const greetingKey = getGreetingKey()
   const showMorningBrief = isMorningBriefTime() && !morningBriefDismissed && (role === "STORE_DIRECTOR" || role === "SUPERVISOR")
   const isHrManager = role === "HR_MANAGER"
+
+  const showResourceBalance = (RESOURCE_BALANCE_ROLES as ReadonlySet<string>).has(role)
+  const freelanceModuleEnabled = user.organization.freelance_module_enabled
+  const externalHrEnabled = user.organization.external_hr_enabled
+
+  // Load resource balance data for eligible roles
+  useEffect(() => {
+    if (!showResourceBalance) return
+    getDashboardResourceBalance().then((res) => setResourceBalance(res.data))
+  }, [showResourceBalance])
 
   // Filter activity items by tab
   const filteredActivity = useMemo(() => {
@@ -928,6 +949,15 @@ export function Dashboard() {
           </>
         )}
       </div>
+
+      {/* Resource Balance Block — SUPERVISOR / REGIONAL / NETWORK_OPS / HR_MANAGER */}
+      {showResourceBalance && resourceBalance && (
+        <ResourceBalanceCard
+          data={resourceBalance}
+          freelanceModuleEnabled={freelanceModuleEnabled}
+          externalHrEnabled={externalHrEnabled}
+        />
+      )}
 
       {/* Main Content: Activity + Sidebar */}
       <div className="grid gap-6 lg:grid-cols-3">
