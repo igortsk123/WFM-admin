@@ -211,6 +211,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setUser(newAuthUser);
       setImpersonatingUser(null);
 
+      // Persist role in cookie so middleware can read it for route guards
+      document.cookie = `wfm-current-role=${role}; path=/; samesite=lax; max-age=86400`;
+
       // Redirect based on role
       if (role === "AGENT") {
         router.push(AGENT_ROUTES.dashboard);

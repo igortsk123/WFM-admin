@@ -419,7 +419,7 @@
     "category": {
       "TASK_REVIEW": "Проверка задачи",
       "TASK_REJECTED": "Задача отклонена",
-      "TASK_STATE_CHANGED": "Измене��ие статуса задачи",
+      "TASK_STATE_CHANGED": "Измене����ие статуса задачи",
       "BONUS_AVAILABLE": "Доступна бонусная задача",
       "GOAL_UPDATE": "Обновление цели",
       "AI_SUGGESTION_NEW": "Новое предложение ИИ",
@@ -743,6 +743,11 @@
       "error_invalid_code": "Неверный код",
       "error_invalid_phone": "Неверный номер телефона",
       "error_invalid_email": "Неверный email"
+    },
+
+    "platform_admin_banner": {
+      "text": "Вы зашли как платформенный администратор · Beyond Violet staff",
+      "dismiss": "Скрыть"
     }
   }
 }
