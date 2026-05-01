@@ -55,9 +55,12 @@ export interface TaskListParams extends ApiListParams {
   zone_ids?: number[];
   work_type_ids?: number[];
   assignee_ids?: number[];
+  store_ids?: number[];
   category_id?: number;
   date_from?: string;
   date_to?: string;
+  /** When true — return only archived tasks; when false/undefined — return only active */
+  archived?: boolean;
 }
 
 /** Task filters response for filter dropdowns */
@@ -95,9 +98,11 @@ export async function getTasks(
     zone_ids,
     work_type_ids,
     assignee_ids,
+    store_ids,
     category_id,
     date_from,
     date_to,
+    archived = false,
     page = 1,
     page_size = 20,
     sort_by = "created_at",
@@ -105,6 +110,9 @@ export async function getTasks(
   } = params;
 
   let filtered = [...MOCK_TASKS];
+
+  // Filter by archived flag
+  filtered = filtered.filter((t) => t.archived === archived);
 
   // Filter by state
   if (state) {
@@ -114,6 +122,11 @@ export async function getTasks(
   // Filter by review state
   if (review_state) {
     filtered = filtered.filter((t) => t.review_state === review_state);
+  }
+
+  // Filter by stores
+  if (store_ids && store_ids.length > 0) {
+    filtered = filtered.filter((t) => store_ids.includes(t.store_id));
   }
 
   // Filter by zones
@@ -145,9 +158,6 @@ export async function getTasks(
   if (date_to) {
     filtered = filtered.filter((t) => t.created_at <= date_to);
   }
-
-  // Filter archived by default (show only non-archived)
-  filtered = filtered.filter((t) => !t.archived);
 
   // Search by title
   if (search) {
@@ -929,4 +939,65 @@ export async function removeSubtask(id: string): Promise<ApiMutationResponse> {
 
   console.log(`[v0] Removed subtask ${id}`);
   return { success: true };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// TAB COUNTS (для tasks list)
+// ═══════════════════════════════════════════════════════════════════
+
+export interface TaskTabCounts {
+  all: number;
+  active: number;
+  on_review: number;
+  completed: number;
+  rejected: number;
+  archived: number;
+}
+
+/**
+ * Get task counts for each tab.
+ * @returns Counts per status tab
+ * @endpoint GET /tasks/counts
+ */
+export async function getTaskTabCounts(): Promise<TaskTabCounts> {
+  await delay(200);
+
+  const active = MOCK_TASKS.filter(
+    (t) => !t.archived && (t.state === "NEW" || t.state === "IN_PROGRESS" || t.state === "PAUSED")
+  ).length;
+
+  const on_review = MOCK_TASKS.filter(
+    (t) => !t.archived && t.review_state === "ON_REVIEW"
+  ).length;
+
+  const completed = MOCK_TASKS.filter(
+    (t) => !t.archived && t.state === "COMPLETED" && t.review_state !== "ON_REVIEW"
+  ).length;
+
+  const rejected = MOCK_TASKS.filter(
+    (t) => !t.archived && t.review_state === "REJECTED"
+  ).length;
+
+  const archived = MOCK_TASKS.filter((t) => t.archived).length;
+  const all = MOCK_TASKS.filter((t) => !t.archived).length;
+
+  return { all, active, on_review, completed, rejected, archived };
+}
+
+/**
+ * Get task filter options for the tasks list (zones, work types, categories, assignees, stores).
+ * @returns All available filter options
+ * @endpoint GET /tasks/list/filter-options
+ */
+export async function getTaskListFilterOptions(): Promise<TaskFiltersResponse> {
+  await delay(200);
+
+  const assignees = MOCK_USERS.filter((u) => !u.archived && u.type === "STAFF");
+
+  return {
+    zones: MOCK_ZONES.filter((z) => z.approved),
+    work_types: MOCK_WORK_TYPES.filter((w) => w.id < 20),
+    product_categories: MOCK_PRODUCT_CATEGORIES,
+    assignees: assignees.slice(0, 30),
+  };
 }

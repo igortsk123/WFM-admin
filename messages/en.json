@@ -657,6 +657,72 @@
     "contactSupport": "Contact support"
   },
   "screen": {
+    "tasks": {
+      "title": "Tasks",
+      "counter": "{count} tasks",
+      "create_task": "Create task",
+      "export_xlsx": "Export XLSX",
+      "open": "Open",
+      "duplicate": "Duplicate",
+      "reassign": "Reassign",
+      "archive": "Archive",
+      "restore": "Restore",
+      "tabs": {
+        "all": "All",
+        "active": "Active",
+        "on_review": "Under review",
+        "completed": "Completed",
+        "rejected": "Rejected",
+        "archive": "Archive"
+      },
+      "filters": {
+        "search_placeholder": "Search by name, ID, assignee",
+        "store": "Store",
+        "zone": "Zone",
+        "work_type": "Work type",
+        "product_category": "Product category",
+        "assignee": "Assignee",
+        "date_range": "Period",
+        "date_from": "From",
+        "date_to": "To"
+      },
+      "bulk": {
+        "selected": "{count} tasks selected",
+        "reassign": "Reassign",
+        "archive": "Archive",
+        "clear": "Clear selection",
+        "archive_hint": "Deletion is unavailable — tasks can only be archived. Restore from archive (Supervisor role or above).",
+        "dialog_reassign_title": "Reassign tasks",
+        "dialog_archive_title": "Archive tasks",
+        "dialog_archive_desc": "Select archive reason for {count} tasks",
+        "assignee_placeholder": "Select assignee"
+      },
+      "table": {
+        "name": "Name",
+        "store": "Store",
+        "assignee": "Assignee",
+        "status": "Status",
+        "planned_min": "Min",
+        "source": "Source",
+        "created_at": "Created",
+        "archive_reason": "Archive reason",
+        "archived_by": "Archived by",
+        "archived_at": "When"
+      },
+      "source": {
+        "manager": "Manager",
+        "planned": "Planned",
+        "ai": "AI"
+      },
+      "any_permission": "Any {permission}",
+      "empty_no_tasks_title": "No tasks yet",
+      "empty_no_tasks_desc": "Create the first task or wait for planned tasks from the system",
+      "empty_filtered_title": "Nothing found",
+      "empty_filtered_desc": "Try changing filter parameters",
+      "error_title": "Failed to load tasks",
+      "error_desc": "Check your connection and try again",
+      "pagination_info": "{from}–{to} of {total}"
+    },
     "login": {
       "tagline": "Store command centre",
       "value_tasks": "Tasks under control",

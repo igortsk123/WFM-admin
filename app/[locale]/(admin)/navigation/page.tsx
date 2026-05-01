@@ -51,7 +51,7 @@ const NAV_GROUPS: NavGroup[] = [
     titleKey: "hub.operations",
     items: [
       { labelKey: "dashboard", href: ADMIN_ROUTES.dashboard, icon: LayoutDashboard, status: "ready" },
-      { labelKey: "tasks", href: ADMIN_ROUTES.tasks, icon: CheckSquare, status: "planned" },
+      { labelKey: "tasks", href: ADMIN_ROUTES.tasks, icon: CheckSquare, status: "ready" },
       { labelKey: "tasks_review", href: ADMIN_ROUTES.tasksReview, icon: CheckSquare, status: "planned" },
       { labelKey: "schedule", href: ADMIN_ROUTES.schedule, icon: Calendar, status: "planned" },
       { labelKey: "employees", href: ADMIN_ROUTES.employees, icon: Users, status: "planned" },
