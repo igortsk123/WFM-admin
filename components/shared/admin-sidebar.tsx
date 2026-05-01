@@ -30,8 +30,6 @@ import {
   Wallet,
   UserCog,
   BarChart2,
-  TrendingUp,
-  GitCompare,
   Bot,
   AlertTriangle,
   Trophy,
@@ -41,6 +39,7 @@ import {
   History,
   Bell,
   Ruler,
+  ChevronRight,
 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { useAuth } from "@/lib/contexts/auth-context";
@@ -57,10 +56,17 @@ import {
   SidebarMenuBadge,
   SidebarMenuItem,
   SidebarMenuButton,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+  SidebarMenuSubButton,
   SidebarFooter,
-  SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 
 // ═══════════════════════════════════════════════════════════════════
@@ -75,19 +81,46 @@ interface NavItem {
   badgeVariant?: "default" | "secondary" | "destructive" | "outline";
   visibleFor?: FunctionalRole[];
   hiddenFor?: FunctionalRole[];
-  hideIf?: (ctx: { paymentMode: string; freelanceEnabled: boolean }) => boolean;
+  hideIf?: (ctx: SidebarCtx) => boolean;
+  sub?: NavItem[];
 }
 
 interface NavGroup {
   labelKey: string;
   items: NavItem[];
+  /** Group-level visibility override — if false, whole group hidden */
+  hideIf?: (ctx: SidebarCtx) => boolean;
+  /** Only show group in development */
+  devOnly?: boolean;
+  badgeLabel?: string;
+}
+
+interface SidebarCtx {
+  paymentMode: string;
+  freelanceEnabled: boolean;
+  aiEnabled: boolean;
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// NAVIGATION CONFIGURATION
+// ROLE SETS
 // ═══════════════════════════════════════════════════════════════════
 
-const ALL_MANAGER_ROLES: FunctionalRole[] = [
+const DECISION_MAKERS: FunctionalRole[] = [
+  "SUPERVISOR",
+  "REGIONAL",
+  "NETWORK_OPS",
+  "PLATFORM_ADMIN",
+];
+
+const EFFICIENCY_ROLES: FunctionalRole[] = [
+  "SUPERVISOR",
+  "REGIONAL",
+  "NETWORK_OPS",
+  "HR_MANAGER",
+  "PLATFORM_ADMIN",
+];
+
+const OPS_ROLES: FunctionalRole[] = [
   "STORE_DIRECTOR",
   "SUPERVISOR",
   "REGIONAL",
@@ -97,129 +130,67 @@ const ALL_MANAGER_ROLES: FunctionalRole[] = [
   "PLATFORM_ADMIN",
 ];
 
-const DECISION_MAKERS: FunctionalRole[] = [
-  "SUPERVISOR",
-  "REGIONAL",
-  "NETWORK_OPS",
-  "PLATFORM_ADMIN",
-];
+// ═══════════════════════════════════════════════════════════════════
+// NAVIGATION CONFIGURATION — 4 GROUPS
+// ═══════════════════════════════════════════════════════════════════
 
-const FULL_ACCESS_ROLES: FunctionalRole[] = [
-  "NETWORK_OPS",
-  "REGIONAL",
-  "SUPERVISOR",
-  "PLATFORM_ADMIN",
-];
-
-const buildNavGroups = (
-  pendingAISuggestionsCount: number
-): NavGroup[] => [
+const buildNavGroups = (pendingAISuggestionsCount: number): NavGroup[] => [
+  // ─── 1. OPERATIONS ─────────────────────────────────────────────
   {
-    labelKey: "groups.main",
+    labelKey: "groups.operations",
     items: [
       {
         labelKey: "dashboard",
         icon: LayoutDashboard,
         href: ADMIN_ROUTES.dashboard,
+        visibleFor: OPS_ROLES,
       },
-    ],
-  },
-  {
-    labelKey: "groups.tasks",
-    items: [
       {
         labelKey: "tasks",
         icon: CheckSquare,
         href: ADMIN_ROUTES.tasks,
+        visibleFor: OPS_ROLES,
+        sub: [
+          {
+            labelKey: "tasks_review",
+            icon: ClipboardCheck,
+            href: ADMIN_ROUTES.tasksReview,
+            visibleFor: OPS_ROLES,
+          },
+          {
+            labelKey: "subtasks_moderation",
+            icon: ListChecks,
+            href: ADMIN_ROUTES.subtasksModeration,
+            visibleFor: OPS_ROLES,
+          },
+          {
+            labelKey: "tasks_archive",
+            icon: Archive,
+            href: ADMIN_ROUTES.tasksArchive,
+            visibleFor: OPS_ROLES,
+          },
+        ],
       },
-      {
-        labelKey: "tasks_review",
-        icon: ClipboardCheck,
-        href: ADMIN_ROUTES.tasksReview,
-      },
-      {
-        labelKey: "subtasks_moderation",
-        icon: ListChecks,
-        href: ADMIN_ROUTES.subtasksModeration,
-      },
-      {
-        labelKey: "tasks_archive",
-        icon: Archive,
-        href: ADMIN_ROUTES.tasksArchive,
-      },
-    ],
-  },
-  {
-    labelKey: "groups.ai",
-    items: [
-      {
-        labelKey: "ai_suggestions",
-        icon: Sparkles,
-        href: ADMIN_ROUTES.aiSuggestions,
-        badge: pendingAISuggestionsCount > 0 ? pendingAISuggestionsCount : undefined,
-        badgeVariant: "default",
-      },
-      {
-        labelKey: "ai_chat",
-        icon: MessageSquare,
-        href: ADMIN_ROUTES.aiChat,
-      },
-    ],
-  },
-  {
-    labelKey: "groups.goals",
-    items: [
-      {
-        labelKey: "goals",
-        icon: Target,
-        href: ADMIN_ROUTES.goals,
-      },
-      {
-        labelKey: "network_goals",
-        icon: Network,
-        href: ADMIN_ROUTES.networkGoals,
-        visibleFor: DECISION_MAKERS,
-      },
-      {
-        labelKey: "bonus_tasks",
-        icon: Award,
-        href: ADMIN_ROUTES.bonusTasks,
-      },
-      {
-        labelKey: "payouts",
-        icon: CreditCard,
-        href: ADMIN_ROUTES.payouts,
-      },
-    ],
-  },
-  {
-    labelKey: "groups.schedule",
-    items: [
       {
         labelKey: "schedule",
         icon: Calendar,
         href: ADMIN_ROUTES.schedule,
+        visibleFor: OPS_ROLES,
       },
-    ],
-  },
-  {
-    labelKey: "groups.employees",
-    items: [
       {
         labelKey: "employees",
         icon: Users,
         href: ADMIN_ROUTES.employees,
+        visibleFor: OPS_ROLES,
+        sub: [
+          {
+            labelKey: "permissions",
+            icon: Shield,
+            href: ADMIN_ROUTES.permissions,
+            visibleFor: OPS_ROLES,
+          },
+        ],
       },
-      {
-        labelKey: "permissions",
-        icon: Shield,
-        href: ADMIN_ROUTES.permissions,
-      },
-    ],
-  },
-  {
-    labelKey: "groups.stores",
-    items: [
       {
         labelKey: "stores",
         icon: Store,
@@ -228,49 +199,67 @@ const buildNavGroups = (
       },
     ],
   },
+
+  // ─── 2. EFFICIENCY & AI ─────────────────────────────────────────
   {
-    labelKey: "groups.taxonomy",
+    labelKey: "groups.efficiency",
     items: [
       {
-        labelKey: "taxonomy_work_types",
-        icon: Layers,
-        href: ADMIN_ROUTES.taxonomyWorkTypes,
+        labelKey: "ai_suggestions",
+        icon: Sparkles,
+        href: ADMIN_ROUTES.aiSuggestions,
+        visibleFor: DECISION_MAKERS,
+        badge: pendingAISuggestionsCount > 0 ? pendingAISuggestionsCount : undefined,
+        badgeVariant: "default",
+        hideIf: (ctx) => !ctx.aiEnabled,
       },
       {
-        labelKey: "taxonomy_zones",
-        icon: MapPin,
-        href: ADMIN_ROUTES.taxonomyZones,
+        labelKey: "ai_chat",
+        icon: MessageSquare,
+        href: ADMIN_ROUTES.aiChat,
+        visibleFor: DECISION_MAKERS,
+        hideIf: (ctx) => !ctx.aiEnabled,
       },
       {
-        labelKey: "taxonomy_positions",
-        icon: Briefcase,
-        href: ADMIN_ROUTES.taxonomyPositions,
+        labelKey: "goals",
+        icon: Target,
+        href: ADMIN_ROUTES.goals,
+        visibleFor: EFFICIENCY_ROLES,
+        hiddenFor: ["HR_MANAGER"],
       },
       {
-        labelKey: "taxonomy_hints",
-        icon: HelpCircle,
-        href: ADMIN_ROUTES.hints,
+        labelKey: "network_goals",
+        icon: Network,
+        href: ADMIN_ROUTES.networkGoals,
+        visibleFor: ["NETWORK_OPS", "REGIONAL", "PLATFORM_ADMIN"],
       },
       {
-        labelKey: "taxonomy_hints_manager",
-        icon: Upload,
-        href: ADMIN_ROUTES.hintsManager,
-        visibleFor: ["OPERATOR", "NETWORK_OPS", "PLATFORM_ADMIN"],
+        labelKey: "bonus_tasks",
+        icon: Award,
+        href: ADMIN_ROUTES.bonusTasks,
+        visibleFor: EFFICIENCY_ROLES,
+        hiddenFor: ["HR_MANAGER"],
       },
       {
-        labelKey: "regulations",
-        icon: FileText,
-        href: ADMIN_ROUTES.regulations,
+        labelKey: "payouts",
+        icon: CreditCard,
+        href: ADMIN_ROUTES.payouts,
+        visibleFor: EFFICIENCY_ROLES,
+        hiddenFor: ["HR_MANAGER"],
       },
       {
-        labelKey: "taxonomy_service_norms",
-        icon: Ruler,
-        href: ADMIN_ROUTES.taxonomyServiceNorms,
+        labelKey: "reports_plan_fact",
+        icon: BarChart2,
+        href: ADMIN_ROUTES.reportsPlanFact,
+        visibleFor: EFFICIENCY_ROLES,
       },
     ],
   },
+
+  // ─── 3. FREELANCE ───────────────────────────────────────────────
   {
-    labelKey: "groups.freelance",
+    labelKey: "groups.flexible",
+    hideIf: (ctx) => !ctx.freelanceEnabled,
     items: [
       {
         labelKey: "freelance_dashboard",
@@ -291,7 +280,7 @@ const buildNavGroups = (
         labelKey: "freelance_payouts",
         icon: Receipt,
         href: ADMIN_ROUTES.freelancePayouts,
-        hideIf: (ctx) => ctx.paymentMode === "CLIENT_DIRECT",
+        hideIf: (ctx) => ctx.paymentMode !== "NOMINAL_ACCOUNT",
       },
       {
         labelKey: "freelance_budget_limits",
@@ -302,69 +291,62 @@ const buildNavGroups = (
         labelKey: "freelance_agents",
         icon: UserCog,
         href: ADMIN_ROUTES.freelanceAgents,
-        hideIf: (ctx) => ctx.paymentMode === "CLIENT_DIRECT",
+        hideIf: (ctx) => ctx.paymentMode !== "NOMINAL_ACCOUNT",
       },
     ],
   },
+
+  // ─── 4. CONFIGURATION ───────────────────────────────────────────
   {
-    labelKey: "groups.reports",
+    labelKey: "groups.config",
     items: [
       {
-        labelKey: "reports_plan_fact",
-        icon: BarChart2,
-        href: ADMIN_ROUTES.reportsPlanFact,
+        labelKey: "taxonomy",
+        icon: Layers,
+        href: ADMIN_ROUTES.taxonomyWorkTypes,
+        sub: [
+          {
+            labelKey: "taxonomy_work_types",
+            icon: Layers,
+            href: ADMIN_ROUTES.taxonomyWorkTypes,
+          },
+          {
+            labelKey: "taxonomy_zones",
+            icon: MapPin,
+            href: ADMIN_ROUTES.taxonomyZones,
+          },
+          {
+            labelKey: "taxonomy_positions",
+            icon: Briefcase,
+            href: ADMIN_ROUTES.taxonomyPositions,
+          },
+          {
+            labelKey: "taxonomy_hints",
+            icon: HelpCircle,
+            href: ADMIN_ROUTES.hints,
+          },
+          {
+            labelKey: "taxonomy_hints_manager",
+            icon: Upload,
+            href: ADMIN_ROUTES.hintsManager,
+            visibleFor: ["OPERATOR", "NETWORK_OPS", "PLATFORM_ADMIN"],
+          },
+          {
+            labelKey: "regulations",
+            icon: FileText,
+            href: ADMIN_ROUTES.regulations,
+          },
+          {
+            labelKey: "taxonomy_service_norms",
+            icon: Ruler,
+            href: ADMIN_ROUTES.taxonomyServiceNorms,
+          },
+        ],
       },
       {
-        labelKey: "reports_kpi",
-        icon: TrendingUp,
-        href: ADMIN_ROUTES.reportsKpi,
-      },
-      {
-        labelKey: "reports_compare",
-        icon: GitCompare,
-        href: ADMIN_ROUTES.reportsCompare,
-      },
-    ],
-  },
-  {
-    labelKey: "groups.stretch",
-    items: [
-      {
-        labelKey: "ai_coach",
-        icon: Bot,
-        href: ADMIN_ROUTES.aiCoach,
-        badge: "Beta",
-        badgeVariant: "secondary",
-      },
-      {
-        labelKey: "risk_rules",
-        icon: AlertTriangle,
-        href: ADMIN_ROUTES.riskRules,
-        badge: "Beta",
-        badgeVariant: "secondary",
-      },
-      {
-        labelKey: "leaderboards",
-        icon: Trophy,
-        href: ADMIN_ROUTES.leaderboards,
-        badge: "Beta",
-        badgeVariant: "secondary",
-      },
-    ],
-  },
-  {
-    labelKey: "groups.settings",
-    items: [
-      {
-        labelKey: "settings_profile",
-        icon: User,
-        href: ADMIN_ROUTES.settingsProfile,
-      },
-      {
-        labelKey: "settings_organization",
-        icon: Building,
-        href: ADMIN_ROUTES.settingsOrganization,
-        visibleFor: ["NETWORK_OPS", "PLATFORM_ADMIN"],
+        labelKey: "notifications",
+        icon: Bell,
+        href: ADMIN_ROUTES.notifications,
       },
       {
         labelKey: "integrations",
@@ -373,16 +355,55 @@ const buildNavGroups = (
         visibleFor: ["NETWORK_OPS", "PLATFORM_ADMIN"],
       },
       {
+        labelKey: "settings",
+        icon: User,
+        href: ADMIN_ROUTES.settingsProfile,
+        sub: [
+          {
+            labelKey: "settings_profile",
+            icon: User,
+            href: ADMIN_ROUTES.settingsProfile,
+          },
+          {
+            labelKey: "settings_organization",
+            icon: Building,
+            href: ADMIN_ROUTES.settingsOrganization,
+            visibleFor: ["NETWORK_OPS", "PLATFORM_ADMIN"],
+          },
+        ],
+      },
+      {
         labelKey: "audit",
         icon: History,
         href: ADMIN_ROUTES.audit,
       },
-      {
-        labelKey: "notifications",
-        icon: Bell,
-        href: ADMIN_ROUTES.notifications,
-      },
     ],
+  },
+];
+
+// ─── STRETCH (dev-only inside Efficiency & AI) ───────────────────
+
+const STRETCH_ITEMS: NavItem[] = [
+  {
+    labelKey: "ai_coach",
+    icon: Bot,
+    href: ADMIN_ROUTES.aiCoach,
+    badge: "Beta",
+    badgeVariant: "secondary",
+  },
+  {
+    labelKey: "risk_rules",
+    icon: AlertTriangle,
+    href: ADMIN_ROUTES.riskRules,
+    badge: "Beta",
+    badgeVariant: "secondary",
+  },
+  {
+    labelKey: "leaderboards",
+    icon: Trophy,
+    href: ADMIN_ROUTES.leaderboards,
+    badge: "Beta",
+    badgeVariant: "secondary",
   },
 ];
 
@@ -390,41 +411,97 @@ const buildNavGroups = (
 // VISIBILITY HELPERS
 // ═══════════════════════════════════════════════════════════════════
 
-function isItemVisible(
-  item: NavItem,
-  role: FunctionalRole,
-  ctx: { paymentMode: string; freelanceEnabled: boolean }
-): boolean {
-  // Check hideIf condition
-  if (item.hideIf && item.hideIf(ctx)) {
-    return false;
-  }
-
-  // Check visibleFor
-  if (item.visibleFor && !item.visibleFor.includes(role)) {
-    return false;
-  }
-
-  // Check hiddenFor
-  if (item.hiddenFor && item.hiddenFor.includes(role)) {
-    return false;
-  }
-
+function isItemVisible(item: NavItem, role: FunctionalRole, ctx: SidebarCtx): boolean {
+  if (item.hideIf?.(ctx)) return false;
+  if (item.visibleFor && !item.visibleFor.includes(role)) return false;
+  if (item.hiddenFor?.includes(role)) return false;
   return true;
 }
 
-function isGroupVisible(
-  group: NavGroup,
-  role: FunctionalRole,
-  ctx: { paymentMode: string; freelanceEnabled: boolean }
-): boolean {
-  // Check if freelance group should be hidden
-  if (group.labelKey === "groups.freelance" && !ctx.freelanceEnabled) {
-    return false;
+function isGroupVisible(group: NavGroup, role: FunctionalRole, ctx: SidebarCtx): boolean {
+  if (group.hideIf?.(ctx)) return false;
+  if (group.devOnly && process.env.NODE_ENV !== "development") return false;
+  return group.items.some((item) => isItemVisible(item, role, ctx));
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SUB-ITEM COLLAPSIBLE
+// ═══════════════════════════════════════════════════════════════════
+
+interface CollapsibleNavItemProps {
+  item: NavItem;
+  role: FunctionalRole;
+  ctx: SidebarCtx;
+  isActive: (href: string) => boolean;
+  t: ReturnType<typeof useTranslations<"nav">>;
+}
+
+function CollapsibleNavItem({ item, role, ctx, isActive, t }: CollapsibleNavItemProps) {
+  const visibleSubs = item.sub?.filter((s) => isItemVisible(s, role, ctx)) ?? [];
+  const parentActive = isActive(item.href);
+  const anySubActive = visibleSubs.some((s) => isActive(s.href));
+  const defaultOpen = parentActive || anySubActive;
+  const Icon = item.icon;
+
+  if (visibleSubs.length === 0) {
+    return (
+      <SidebarMenuItem>
+        <SidebarMenuButton
+          asChild
+          isActive={parentActive}
+          tooltip={t(item.labelKey as never)}
+          className={cn(parentActive && "border-l-[3px] border-l-primary rounded-l-none")}
+        >
+          <Link href={item.href}>
+            <Icon className="size-4" />
+            <span>{t(item.labelKey as never)}</span>
+          </Link>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
+    );
   }
 
-  // A group is visible if at least one item is visible
-  return group.items.some((item) => isItemVisible(item, role, ctx));
+  return (
+    <Collapsible defaultOpen={defaultOpen} className="group/collapsible">
+      <SidebarMenuItem>
+        <CollapsibleTrigger asChild>
+          <SidebarMenuButton
+            isActive={parentActive || anySubActive}
+            tooltip={t(item.labelKey as never)}
+            className={cn(
+              (parentActive || anySubActive) && "border-l-[3px] border-l-primary rounded-l-none"
+            )}
+          >
+            <Icon className="size-4" />
+            <span>{t(item.labelKey as never)}</span>
+            <ChevronRight className="ml-auto size-3 transition-transform group-data-[state=open]/collapsible:rotate-90" />
+          </SidebarMenuButton>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <SidebarMenuSub>
+            {visibleSubs.map((sub) => {
+              const SubIcon = sub.icon;
+              const subActive = isActive(sub.href);
+              return (
+                <SidebarMenuSubItem key={sub.href}>
+                  <SidebarMenuSubButton
+                    asChild
+                    isActive={subActive}
+                    className={cn(subActive && "text-primary font-medium")}
+                  >
+                    <Link href={sub.href}>
+                      <SubIcon className="size-3.5" />
+                      <span>{t(sub.labelKey as never)}</span>
+                    </Link>
+                  </SidebarMenuSubButton>
+                </SidebarMenuSubItem>
+              );
+            })}
+          </SidebarMenuSub>
+        </CollapsibleContent>
+      </SidebarMenuItem>
+    </Collapsible>
+  );
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -438,25 +515,20 @@ export function AdminSidebar() {
 
   const navGroups = buildNavGroups(pendingAISuggestionsCount);
 
-  const ctx = {
+  const ctx: SidebarCtx = {
     paymentMode: user.organization.payment_mode,
     freelanceEnabled: user.organization.freelance_module_enabled,
+    aiEnabled: (user.organization as { ai_module_enabled?: boolean }).ai_module_enabled ?? true,
   };
 
-  // Check if a path is active
   const isActive = (href: string) => {
-    // Handle query params in href
     const hrefPath = href.split("?")[0];
     const pathnameWithoutLocale = pathname.replace(/^\/(ru|en)/, "") || "/";
-
-    // Exact match for dashboard
-    if (hrefPath === "/dashboard") {
-      return pathnameWithoutLocale === "/dashboard";
-    }
-
-    // For other paths, check if pathname starts with href path
+    if (hrefPath === "/dashboard") return pathnameWithoutLocale === "/dashboard";
     return pathnameWithoutLocale.startsWith(hrefPath);
   };
+
+  const isDev = process.env.NODE_ENV === "development";
 
   return (
     <Sidebar collapsible="icon" className="border-r border-border">
@@ -476,57 +548,74 @@ export function AdminSidebar() {
 
       <SidebarContent>
         {navGroups.map((group) => {
-          if (!isGroupVisible(group, user.role, ctx)) {
-            return null;
-          }
+          if (!isGroupVisible(group, user.role, ctx)) return null;
 
           const visibleItems = group.items.filter((item) =>
             isItemVisible(item, user.role, ctx)
           );
-
-          if (visibleItems.length === 0) {
-            return null;
-          }
+          if (visibleItems.length === 0) return null;
 
           return (
             <SidebarGroup key={group.labelKey}>
-              <SidebarGroupLabel>
-                {t(group.labelKey)}
-              </SidebarGroupLabel>
+              <SidebarGroupLabel>{t(group.labelKey as never)}</SidebarGroupLabel>
               <SidebarGroupContent>
                 <SidebarMenu>
-                  {visibleItems.map((item) => {
-                    const Icon = item.icon;
-                    const active = isActive(item.href);
+                  {visibleItems.map((item) => (
+                    <CollapsibleNavItem
+                      key={item.href}
+                      item={item}
+                      role={user.role}
+                      ctx={ctx}
+                      isActive={isActive}
+                      t={t}
+                    />
+                  ))}
 
-                    return (
-                      <SidebarMenuItem key={item.href}>
-                        <SidebarMenuButton
-                          asChild
-                          isActive={active}
-                          tooltip={t(item.labelKey)}
-                          className={cn(
-                            active && "border-l-[3px] border-l-primary rounded-l-none"
-                          )}
-                        >
-                          <Link href={item.href}>
-                            <Icon className="size-4" />
-                            <span>{t(item.labelKey)}</span>
-                          </Link>
-                        </SidebarMenuButton>
-                        {item.badge !== undefined && (
-                          <SidebarMenuBadge>
+                  {/* Stretch / Beta items — Efficiency group only, dev only */}
+                  {group.labelKey === "groups.efficiency" && isDev && (
+                    <Collapsible className="group/stretch">
+                      <SidebarMenuItem>
+                        <CollapsibleTrigger asChild>
+                          <SidebarMenuButton
+                            tooltip={t("groups.future" as never)}
+                            className="text-muted-foreground"
+                          >
+                            <Trophy className="size-4" />
+                            <span>{t("groups.future" as never)}</span>
                             <Badge
-                              variant={item.badgeVariant || "default"}
-                              className="h-5 min-w-5 px-1 text-xs"
+                              variant="secondary"
+                              className="ml-auto h-4 px-1 text-[10px]"
                             >
-                              {item.badge}
+                              {t("beta" as never)}
                             </Badge>
-                          </SidebarMenuBadge>
-                        )}
+                            <ChevronRight className="size-3 transition-transform group-data-[state=open]/stretch:rotate-90" />
+                          </SidebarMenuButton>
+                        </CollapsibleTrigger>
+                        <CollapsibleContent>
+                          <SidebarMenuSub>
+                            {STRETCH_ITEMS.map((item) => {
+                              const Icon = item.icon;
+                              const active = isActive(item.href);
+                              return (
+                                <SidebarMenuSubItem key={item.href}>
+                                  <SidebarMenuSubButton
+                                    asChild
+                                    isActive={active}
+                                    className={cn(active && "text-primary font-medium")}
+                                  >
+                                    <Link href={item.href}>
+                                      <Icon className="size-3.5" />
+                                      <span>{t(item.labelKey as never)}</span>
+                                    </Link>
+                                  </SidebarMenuSubButton>
+                                </SidebarMenuSubItem>
+                              );
+                            })}
+                          </SidebarMenuSub>
+                        </CollapsibleContent>
                       </SidebarMenuItem>
-                    );
-                  })}
+                    </Collapsible>
+                  )}
                 </SidebarMenu>
               </SidebarGroupContent>
             </SidebarGroup>
@@ -556,7 +645,7 @@ export function AdminSidebar() {
               {user.middle_name ? ` ${user.middle_name[0]}.` : ""}
             </span>
             <span className="text-xs text-muted-foreground truncate">
-              {t(`role.${user.role}`, { defaultValue: user.role })}
+              {t(`role.${user.role}` as never, { defaultValue: user.role })}
             </span>
           </div>
         </div>

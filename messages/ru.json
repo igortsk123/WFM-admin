@@ -92,18 +92,11 @@
 
   "nav": {
     "groups": {
-      "main": "Главное",
-      "tasks": "Задачи",
-      "ai": "ИИ-помощник",
-      "goals": "Цели и бонусы",
-      "schedule": "Расписание",
-      "employees": "Сотрудники",
-      "stores": "Магазины",
-      "taxonomy": "Таксономия",
-      "freelance": "Внештат",
-      "reports": "Отчёты",
-      "stretch": "Stretch",
-      "settings": "Настройки"
+      "operations": "Операционка",
+      "efficiency": "Эффективность и ИИ",
+      "flexible": "Внештат и подработки",
+      "config": "Конфигурация",
+      "future": "Будущее"
     },
     "role": {
       "STORE_DIRECTOR": "Директор магазина",
@@ -145,6 +138,8 @@
     "employees": "Сотрудники",
     "permissions": "Права доступа",
     "stores": "Магазины",
+    "taxonomy": "Таксономия",
+    "settings": "Настройки",
     "taxonomy_work_types": "Типы работ",
     "taxonomy_zones": "Зоны",
     "taxonomy_positions": "Должности",
@@ -596,7 +591,7 @@
     "loading": "Загрузка...",
     "empty_title": "Нет данных",
     "empty_description": "Здесь пока ничего нет",
-    "error_title": "Произошла ошибка",
+    "error_title": "Произошл�� ошибка",
     "error_description": "Не удалось загрузить данные. Попробуйте ещё раз.",
     "retry": "Повторить",
     "conflict_message": "Данные изменились — обновите страницу",
