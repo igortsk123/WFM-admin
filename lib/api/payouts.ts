@@ -56,7 +56,7 @@ export async function getPayoutPeriods(
  * Get a single payout period with its employee rows.
  * @endpoint GET /payouts/:id
  */
-export async function getPayoutById(
+export async function getBonusPayoutById(
   id: string
 ): Promise<ApiResponse<BonusPayoutPeriod & { rows: BonusPayoutRow[] }>> {
   await delay(400);
