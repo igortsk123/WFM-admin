@@ -4,6 +4,8 @@ import { getMessages } from "next-intl/server";
 import { Inter } from "next/font/google";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { AuthProvider } from "@/lib/contexts/auth-context";
 import { routing, type Locale } from "@/i18n/routing";
 
 const inter = Inter({
@@ -37,7 +39,11 @@ export default async function LocaleLayout({
       <body className="min-h-screen font-sans antialiased">
         <NextIntlClientProvider messages={messages}>
           <TooltipProvider>
-            {children}
+            <AuthProvider>
+              <SidebarProvider defaultOpen>
+                {children}
+              </SidebarProvider>
+            </AuthProvider>
             <Toaster />
           </TooltipProvider>
         </NextIntlClientProvider>
