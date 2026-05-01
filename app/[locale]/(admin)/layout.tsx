@@ -20,7 +20,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
       {/* Impersonation banner - sticky above everything */}
       {isImpersonating && <ImpersonationBanner />}
 
-      <div className="flex min-h-screen">
+      <div className="flex min-h-screen w-full">
         {/* Sidebar - desktop only */}
         <AdminSidebar />
 
