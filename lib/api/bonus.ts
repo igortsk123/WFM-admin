@@ -26,7 +26,7 @@ const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
 
 export interface BonusTaskWithSource extends Task {
   bonus_points: number;
-  source: BonusTaskSource;
+  bonus_source: BonusTaskSource;
 }
 
 export interface BonusMetrics {
@@ -110,7 +110,7 @@ export async function getBonusTasks(
   const data: BonusTaskWithSource[] = paginated.map((t) => ({
     ...t,
     bonus_points: t.bonus_points ?? 100,
-    source: (t.source === "AI" ? "GOAL_LINKED" : "SUPERVISOR_BUDGET") as BonusTaskSource,
+    bonus_source: (t.source === "AI" ? "GOAL_LINKED" : "SUPERVISOR_BUDGET") as BonusTaskSource,
   }));
 
   return { data, total, page, page_size };
@@ -133,7 +133,7 @@ export async function getBonusProposals(
     .map((t) => ({
       ...t,
       bonus_points: t.bonus_points ?? 150,
-      source: "GOAL_LINKED" as BonusTaskSource,
+      bonus_source: "GOAL_LINKED" as BonusTaskSource,
     }));
 
   return { data: proposals, total: proposals.length, page: 1, page_size: 10 };
@@ -144,7 +144,7 @@ export async function getBonusProposals(
  * @endpoint POST /bonus/tasks
  */
 export async function createBonusTask(
-  data: Partial<Task> & { bonus_points: number; source: BonusTaskSource; goal_id?: string }
+  data: Partial<Task> & { bonus_points: number; bonus_source: BonusTaskSource; goal_id?: string }
 ): Promise<ApiMutationResponse> {
   await delay(450);
   if (!data.title || !data.store_id) {
