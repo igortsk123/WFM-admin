@@ -30,8 +30,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
           <AdminTopBar />
 
           {/* Main content with proper padding */}
-          <main className="flex-1 p-4 pb-20 md:p-6 md:pb-6">
-            <div className="mx-auto max-w-screen-2xl">{children}</div>
+          <main className="flex-1 overflow-auto p-4 pb-20 md:p-6 md:pb-6">
+            <div className="mx-auto w-full max-w-screen-2xl">{children}</div>
           </main>
         </SidebarInset>
 
