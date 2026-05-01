@@ -1,0 +1,375 @@
+{
+  "common": {
+    "save": "Сохранить",
+    "cancel": "Отмена",
+    "back": "Назад",
+    "close": "Закрыть",
+    "delete": "Удалить",
+    "edit": "Редактировать",
+    "create": "Создать",
+    "add": "Добавить",
+    "remove": "Удалить",
+    "search": "Поиск",
+    "filter": "Фильтр",
+    "filters": "Фильтры",
+    "clearAll": "Очистить все",
+    "apply": "Применить",
+    "reset": "Сбросить",
+    "loading": "Загрузка...",
+    "error": "Ошибка",
+    "retry": "Повторить",
+    "empty": "Нет данных",
+    "noResults": "Ничего не найдено",
+    "actions": "Действия",
+    "more": "Ещё",
+    "details": "Подробнее",
+    "view": "Просмотр",
+    "archive": "Архивировать",
+    "restore": "Восстановить",
+    "confirm": "Подтвердить",
+    "yes": "Да",
+    "no": "Нет",
+    "all": "Все",
+    "selected": "Выбрано",
+    "of": "из",
+    "page": "Страница",
+    "perPage": "На странице",
+    "next": "Далее",
+    "previous": "Назад",
+    "first": "Первая",
+    "last": "Последняя",
+    "today": "Сегодня",
+    "yesterday": "Вчера",
+    "tomorrow": "Завтра",
+    "week": "Неделя",
+    "month": "Месяц",
+    "year": "Год",
+    "from": "От",
+    "to": "До",
+    "date": "Дата",
+    "time": "Время",
+    "dateRange": "Период",
+    "status": "Статус",
+    "type": "Тип",
+    "name": "Название",
+    "description": "Описание",
+    "total": "Всего",
+    "count": "Количество",
+    "amount": "Сумма",
+    "percent": "Процент",
+    "required": "Обязательное поле",
+    "optional": "Необязательно",
+    "success": "Успешно",
+    "warning": "Внимание",
+    "info": "Информация",
+    "copy": "Копировать",
+    "copied": "Скопировано",
+    "download": "Скачать",
+    "upload": "Загрузить",
+    "export": "Экспорт",
+    "import": "Импорт",
+    "print": "Печать",
+    "share": "Поделиться",
+    "settings": "Настройки",
+    "profile": "Профиль",
+    "logout": "Выйти",
+    "login": "Войти",
+    "language": "Язык",
+    "russian": "Русский",
+    "english": "English"
+  },
+
+  "nav": {
+    "dashboard": "Главная",
+    "tasks": "Задачи",
+    "goals": "Цели",
+    "schedule": "Расписание",
+    "employees": "Сотрудники",
+    "stores": "Магазины",
+    "reports": "Отчёты",
+    "notifications": "Уведомления",
+    "ai": "ИИ-аналитика",
+    "aiChat": "ИИ-чат",
+    "aiSuggestions": "Предложения ИИ",
+    "integrations": "Интеграции",
+    "documents": "Документы",
+    "settings": "Настройки",
+    "help": "Помощь",
+    "users": "Пользователи",
+    "permissions": "Права доступа",
+    "audit": "Аудит",
+    "organization": "Организация"
+  },
+
+  "task": {
+    "title": "Задача",
+    "titlePlural": "Задачи",
+    "new": "Новая задача",
+    "assignee": "Исполнитель",
+    "assignees": "Исполнители",
+    "dueDate": "Срок",
+    "priority": "Приоритет",
+    "workType": "Тип работы",
+    "zone": "Зона",
+    "store": "Магазин",
+    "subtasks": "Подзадачи",
+    "subtask": "Подзадача",
+    "progress": "Прогресс",
+    "estimatedTime": "Расчётное время",
+    "actualTime": "Фактическое время",
+    "archiveReason": "Причина архивации",
+    "createdAt": "Создана",
+    "updatedAt": "Обновлена",
+    "createdBy": "Автор",
+    "aiGenerated": "Создана ИИ",
+
+    "state": {
+      "draft": "Черновик",
+      "open": "Открыта",
+      "in_progress": "В работе",
+      "paused": "На паузе",
+      "blocked": "Заблокирована",
+      "completed": "Завершена",
+      "archived": "В архиве"
+    },
+
+    "review": {
+      "none": "Без проверки",
+      "pending": "На проверке",
+      "approved": "Одобрена",
+      "rejected": "Отклонена",
+      "needs_revision": "Требует доработки"
+    },
+
+    "type": {
+      "regular": "Регулярная",
+      "bonus": "Бонусная",
+      "urgent": "Срочная",
+      "chain": "Цепочка"
+    },
+
+    "archiveReason_values": {
+      "completed": "Выполнена",
+      "cancelled": "Отменена",
+      "duplicate": "Дубликат",
+      "irrelevant": "Неактуальна",
+      "merged": "Объединена",
+      "other": "Другое"
+    }
+  },
+
+  "permission": {
+    "title": "Разрешение",
+    "titlePlural": "Разрешения",
+    "zone": "Зона магазина",
+
+    "zones": {
+      "cashier": "Касса",
+      "sales_floor": "Торговый зал",
+      "warehouse": "Склад",
+      "office": "Офис",
+      "production": "Производство",
+      "receiving": "Приёмка",
+      "cleaning": "Клининг"
+    }
+  },
+
+  "role": {
+    "title": "Роль",
+    "titlePlural": "Роли",
+
+    "functional": {
+      "store_director": "Директор магазина",
+      "supervisor": "Супервайзер",
+      "regional": "Региональный менеджер",
+      "network_ops": "Операционный директор",
+      "hr_manager": "HR-менеджер",
+      "operator": "Оператор",
+      "worker": "Работник",
+      "agent": "Агент",
+      "platform_admin": "Администратор платформы"
+    }
+  },
+
+  "employeeType": {
+    "title": "Тип занятости",
+    "staff": "Штатный",
+    "freelance": "Внештатный"
+  },
+
+  "goal": {
+    "title": "Цель",
+    "titlePlural": "Цели",
+    "new": "Новая цель",
+    "target": "Целевое значение",
+    "current": "Текущее значение",
+    "baseline": "Базовое значение",
+    "deadline": "Дедлайн",
+    "owner": "Ответственный",
+
+    "category": {
+      "sales": "Продажи",
+      "operations": "Операции",
+      "quality": "Качество",
+      "efficiency": "Эффективность",
+      "customer": "Клиенты",
+      "inventory": "Запасы"
+    },
+
+    "status": {
+      "draft": "Черновик",
+      "active": "Активна",
+      "at_risk": "Под угрозой",
+      "achieved": "Достигнута",
+      "missed": "Не достигнута",
+      "paused": "Приостановлена"
+    }
+  },
+
+  "notification": {
+    "title": "Уведомление",
+    "titlePlural": "Уведомления",
+    "markAsRead": "Отметить как прочитанное",
+    "markAllAsRead": "Прочитать все",
+    "unread": "Непрочитанные",
+    "all": "Все",
+
+    "category": {
+      "task": "Задачи",
+      "goal": "Цели",
+      "schedule": "Расписание",
+      "system": "Система",
+      "ai": "ИИ"
+    }
+  },
+
+  "store": {
+    "title": "Магазин",
+    "titlePlural": "Магазины",
+    "address": "Адрес",
+    "city": "Город",
+    "region": "Регион",
+    "format": "Формат",
+    "workingHours": "Часы работы",
+    "employeeCount": "Сотрудников"
+  },
+
+  "employee": {
+    "title": "Сотрудник",
+    "titlePlural": "Сотрудники",
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "middleName": "Отчество",
+    "phone": "Телефон",
+    "email": "Email",
+    "position": "Должность",
+    "hireDate": "Дата приёма",
+    "status": "Статус",
+
+    "status_values": {
+      "active": "Активен",
+      "on_leave": "В отпуске",
+      "sick": "На больничном",
+      "terminated": "Уволен"
+    }
+  },
+
+  "shift": {
+    "title": "Смена",
+    "titlePlural": "Смены",
+    "start": "Начало",
+    "end": "Окончание",
+    "break": "Перерыв",
+    "duration": "Длительность",
+
+    "state": {
+      "scheduled": "Запланирована",
+      "in_progress": "В процессе",
+      "completed": "Завершена",
+      "cancelled": "Отменена",
+      "no_show": "Неявка"
+    }
+  },
+
+  "ai": {
+    "title": "ИИ-аналитика",
+    "analyzing": "ИИ анализирует...",
+    "suggestion": "Предложение ИИ",
+    "suggestions": "Предложения ИИ",
+    "accept": "Принять",
+    "reject": "Отклонить",
+    "askAi": "Спросить у ИИ",
+    "rationale": "Обоснование",
+    "confidence": "Уверенность",
+    "learnMore": "Узнать подробнее",
+
+    "suggestionType": {
+      "task": "Создать задачу",
+      "goal": "Выбрать цель",
+      "bonus_task": "Бонусная задача",
+      "insight": "Инсайт"
+    },
+
+    "suggestionStatus": {
+      "pending": "Ожидает решения",
+      "accepted": "Принято",
+      "rejected": "Отклонено",
+      "edited": "Принято с правками"
+    }
+  },
+
+  "auth": {
+    "login": "Вход",
+    "logout": "Выход",
+    "phone": "Телефон",
+    "email": "Email",
+    "code": "Код подтверждения",
+    "sendCode": "Отправить код",
+    "resendCode": "Отправить повторно",
+    "enterCode": "Введите код",
+    "verifyCode": "Подтвердить",
+    "chooseMethod": "Выберите способ входа",
+    "phoneMethod": "По номеру телефона",
+    "emailMethod": "По email",
+    "totpMethod": "Authenticator",
+    "channel": "Канал получения кода",
+    "channels": {
+      "telegram": "Telegram",
+      "max": "Max (VK)",
+      "call": "Звонок",
+      "sms": "SMS"
+    },
+    "codeExpires": "Код действителен {minutes} мин",
+    "wrongCode": "Неверный код",
+    "codeSent": "Код отправлен",
+    "sessionExpired": "Сессия истекла",
+    "forbidden": "Недостаточно прав"
+  },
+
+  "validation": {
+    "required": "Обязательное поле",
+    "minLength": "Минимум {min} символов",
+    "maxLength": "Максимум {max} символов",
+    "email": "Некорректный email",
+    "phone": "Некорректный номер телефона",
+    "url": "Некорректный URL",
+    "number": "Должно быть числом",
+    "positive": "Должно быть положительным",
+    "integer": "Должно быть целым числом",
+    "date": "Некорректная дата",
+    "dateRange": "Некорректный период",
+    "min": "Минимум {min}",
+    "max": "Максимум {max}"
+  },
+
+  "error": {
+    "generic": "Произошла ошибка",
+    "network": "Ошибка сети",
+    "notFound": "Не найдено",
+    "forbidden": "Доступ запрещён",
+    "conflict": "Данные были изменены",
+    "serverError": "Ошибка сервера",
+    "tryAgain": "Попробуйте ещё раз",
+    "contactSupport": "Обратитесь в поддержку"
+  }
+}

@@ -1,0 +1,375 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "back": "Back",
+    "close": "Close",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "add": "Add",
+    "remove": "Remove",
+    "search": "Search",
+    "filter": "Filter",
+    "filters": "Filters",
+    "clearAll": "Clear all",
+    "apply": "Apply",
+    "reset": "Reset",
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "empty": "No data",
+    "noResults": "No results found",
+    "actions": "Actions",
+    "more": "More",
+    "details": "Details",
+    "view": "View",
+    "archive": "Archive",
+    "restore": "Restore",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "all": "All",
+    "selected": "Selected",
+    "of": "of",
+    "page": "Page",
+    "perPage": "Per page",
+    "next": "Next",
+    "previous": "Previous",
+    "first": "First",
+    "last": "Last",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "tomorrow": "Tomorrow",
+    "week": "Week",
+    "month": "Month",
+    "year": "Year",
+    "from": "From",
+    "to": "To",
+    "date": "Date",
+    "time": "Time",
+    "dateRange": "Date range",
+    "status": "Status",
+    "type": "Type",
+    "name": "Name",
+    "description": "Description",
+    "total": "Total",
+    "count": "Count",
+    "amount": "Amount",
+    "percent": "Percent",
+    "required": "Required",
+    "optional": "Optional",
+    "success": "Success",
+    "warning": "Warning",
+    "info": "Information",
+    "copy": "Copy",
+    "copied": "Copied",
+    "download": "Download",
+    "upload": "Upload",
+    "export": "Export",
+    "import": "Import",
+    "print": "Print",
+    "share": "Share",
+    "settings": "Settings",
+    "profile": "Profile",
+    "logout": "Log out",
+    "login": "Log in",
+    "language": "Language",
+    "russian": "Русский",
+    "english": "English"
+  },
+
+  "nav": {
+    "dashboard": "Dashboard",
+    "tasks": "Tasks",
+    "goals": "Goals",
+    "schedule": "Schedule",
+    "employees": "Employees",
+    "stores": "Stores",
+    "reports": "Reports",
+    "notifications": "Notifications",
+    "ai": "AI Analytics",
+    "aiChat": "AI Chat",
+    "aiSuggestions": "AI Suggestions",
+    "integrations": "Integrations",
+    "documents": "Documents",
+    "settings": "Settings",
+    "help": "Help",
+    "users": "Users",
+    "permissions": "Permissions",
+    "audit": "Audit",
+    "organization": "Organization"
+  },
+
+  "task": {
+    "title": "Task",
+    "titlePlural": "Tasks",
+    "new": "New task",
+    "assignee": "Assignee",
+    "assignees": "Assignees",
+    "dueDate": "Due date",
+    "priority": "Priority",
+    "workType": "Work type",
+    "zone": "Zone",
+    "store": "Store",
+    "subtasks": "Subtasks",
+    "subtask": "Subtask",
+    "progress": "Progress",
+    "estimatedTime": "Estimated time",
+    "actualTime": "Actual time",
+    "archiveReason": "Archive reason",
+    "createdAt": "Created",
+    "updatedAt": "Updated",
+    "createdBy": "Created by",
+    "aiGenerated": "AI generated",
+
+    "state": {
+      "draft": "Draft",
+      "open": "Open",
+      "in_progress": "In progress",
+      "paused": "Paused",
+      "blocked": "Blocked",
+      "completed": "Completed",
+      "archived": "Archived"
+    },
+
+    "review": {
+      "none": "No review",
+      "pending": "Pending review",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "needs_revision": "Needs revision"
+    },
+
+    "type": {
+      "regular": "Regular",
+      "bonus": "Bonus",
+      "urgent": "Urgent",
+      "chain": "Chain"
+    },
+
+    "archiveReason_values": {
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "duplicate": "Duplicate",
+      "irrelevant": "Irrelevant",
+      "merged": "Merged",
+      "other": "Other"
+    }
+  },
+
+  "permission": {
+    "title": "Permission",
+    "titlePlural": "Permissions",
+    "zone": "Store zone",
+
+    "zones": {
+      "cashier": "Cashier",
+      "sales_floor": "Sales floor",
+      "warehouse": "Warehouse",
+      "office": "Office",
+      "production": "Production",
+      "receiving": "Receiving",
+      "cleaning": "Cleaning"
+    }
+  },
+
+  "role": {
+    "title": "Role",
+    "titlePlural": "Roles",
+
+    "functional": {
+      "store_director": "Store Director",
+      "supervisor": "Supervisor",
+      "regional": "Regional Manager",
+      "network_ops": "Operations Director",
+      "hr_manager": "HR Manager",
+      "operator": "Operator",
+      "worker": "Worker",
+      "agent": "Agent",
+      "platform_admin": "Platform Admin"
+    }
+  },
+
+  "employeeType": {
+    "title": "Employment type",
+    "staff": "Staff",
+    "freelance": "Freelance"
+  },
+
+  "goal": {
+    "title": "Goal",
+    "titlePlural": "Goals",
+    "new": "New goal",
+    "target": "Target value",
+    "current": "Current value",
+    "baseline": "Baseline",
+    "deadline": "Deadline",
+    "owner": "Owner",
+
+    "category": {
+      "sales": "Sales",
+      "operations": "Operations",
+      "quality": "Quality",
+      "efficiency": "Efficiency",
+      "customer": "Customer",
+      "inventory": "Inventory"
+    },
+
+    "status": {
+      "draft": "Draft",
+      "active": "Active",
+      "at_risk": "At risk",
+      "achieved": "Achieved",
+      "missed": "Missed",
+      "paused": "Paused"
+    }
+  },
+
+  "notification": {
+    "title": "Notification",
+    "titlePlural": "Notifications",
+    "markAsRead": "Mark as read",
+    "markAllAsRead": "Mark all as read",
+    "unread": "Unread",
+    "all": "All",
+
+    "category": {
+      "task": "Tasks",
+      "goal": "Goals",
+      "schedule": "Schedule",
+      "system": "System",
+      "ai": "AI"
+    }
+  },
+
+  "store": {
+    "title": "Store",
+    "titlePlural": "Stores",
+    "address": "Address",
+    "city": "City",
+    "region": "Region",
+    "format": "Format",
+    "workingHours": "Working hours",
+    "employeeCount": "Employees"
+  },
+
+  "employee": {
+    "title": "Employee",
+    "titlePlural": "Employees",
+    "firstName": "First name",
+    "lastName": "Last name",
+    "middleName": "Middle name",
+    "phone": "Phone",
+    "email": "Email",
+    "position": "Position",
+    "hireDate": "Hire date",
+    "status": "Status",
+
+    "status_values": {
+      "active": "Active",
+      "on_leave": "On leave",
+      "sick": "Sick leave",
+      "terminated": "Terminated"
+    }
+  },
+
+  "shift": {
+    "title": "Shift",
+    "titlePlural": "Shifts",
+    "start": "Start",
+    "end": "End",
+    "break": "Break",
+    "duration": "Duration",
+
+    "state": {
+      "scheduled": "Scheduled",
+      "in_progress": "In progress",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "no_show": "No show"
+    }
+  },
+
+  "ai": {
+    "title": "AI Analytics",
+    "analyzing": "AI is analyzing...",
+    "suggestion": "AI Suggestion",
+    "suggestions": "AI Suggestions",
+    "accept": "Accept",
+    "reject": "Reject",
+    "askAi": "Ask AI",
+    "rationale": "Rationale",
+    "confidence": "Confidence",
+    "learnMore": "Learn more",
+
+    "suggestionType": {
+      "task": "Create task",
+      "goal": "Select goal",
+      "bonus_task": "Bonus task",
+      "insight": "Insight"
+    },
+
+    "suggestionStatus": {
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "rejected": "Rejected",
+      "edited": "Accepted with edits"
+    }
+  },
+
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "phone": "Phone",
+    "email": "Email",
+    "code": "Verification code",
+    "sendCode": "Send code",
+    "resendCode": "Resend code",
+    "enterCode": "Enter code",
+    "verifyCode": "Verify",
+    "chooseMethod": "Choose login method",
+    "phoneMethod": "Phone number",
+    "emailMethod": "Email",
+    "totpMethod": "Authenticator",
+    "channel": "Code delivery channel",
+    "channels": {
+      "telegram": "Telegram",
+      "max": "Max (VK)",
+      "call": "Phone call",
+      "sms": "SMS"
+    },
+    "codeExpires": "Code expires in {minutes} min",
+    "wrongCode": "Wrong code",
+    "codeSent": "Code sent",
+    "sessionExpired": "Session expired",
+    "forbidden": "Access denied"
+  },
+
+  "validation": {
+    "required": "This field is required",
+    "minLength": "Minimum {min} characters",
+    "maxLength": "Maximum {max} characters",
+    "email": "Invalid email address",
+    "phone": "Invalid phone number",
+    "url": "Invalid URL",
+    "number": "Must be a number",
+    "positive": "Must be positive",
+    "integer": "Must be a whole number",
+    "date": "Invalid date",
+    "dateRange": "Invalid date range",
+    "min": "Minimum {min}",
+    "max": "Maximum {max}"
+  },
+
+  "error": {
+    "generic": "An error occurred",
+    "network": "Network error",
+    "notFound": "Not found",
+    "forbidden": "Access denied",
+    "conflict": "Data has been modified",
+    "serverError": "Server error",
+    "tryAgain": "Please try again",
+    "contactSupport": "Contact support"
+  }
+}
