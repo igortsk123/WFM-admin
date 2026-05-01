@@ -1,15 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
-
-const inter = Inter({
-  subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-inter",
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "WFM Admin",
@@ -22,19 +12,11 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+// Root layout shell — locale-specific rendering happens in app/[locale]/layout.tsx
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
-    <html lang="ru" className={`${inter.variable} bg-background`}>
-      <body className="min-h-screen font-sans antialiased">
-        <TooltipProvider>
-          {children}
-          <Toaster />
-        </TooltipProvider>
-      </body>
-    </html>
-  );
+  return children;
 }
