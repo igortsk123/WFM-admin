@@ -392,14 +392,14 @@
   "notification": {
     "title": "Уведомление",
     "titlePlural": "Уведомления",
-    "markAsRead": "Отметить как прочитанное",
+    "markAsRead": "От��етить как прочитанное",
     "markAllAsRead": "Прочитать все",
     "unread": "Непрочитанные",
     "all": "Все",
     "category": {
       "TASK_REVIEW": "Проверка задачи",
       "TASK_REJECTED": "Задача отклонена",
-      "TASK_STATE_CHANGED": "Измене������ие статуса задачи",
+      "TASK_STATE_CHANGED": "Измене������ие статуса з��дачи",
       "BONUS_AVAILABLE": "Доступна бонусная задача",
       "GOAL_UPDATE": "Обновление цели",
       "AI_SUGGESTION_NEW": "Новое предложение ИИ",
@@ -709,6 +709,72 @@
     "platform_admin_banner": {
       "text": "Вы зашли как платформенный администратор · Beyond Violet staff",
       "dismiss": "Скрыть"
+    },
+    "tasks": {
+      "title": "Задачи",
+      "counter": "{count} задач",
+      "create_task": "Создать задачу",
+      "export_xlsx": "Экспорт XLSX",
+      "open": "Открыть",
+      "duplicate": "Дублировать",
+      "reassign": "Переназначить",
+      "archive": "Архивировать",
+      "restore": "Восстановить",
+      "tabs": {
+        "all": "Все",
+        "active": "Активные",
+        "on_review": "На проверке",
+        "completed": "Завершённые",
+        "rejected": "Отклонённые",
+        "archive": "Архив"
+      },
+      "filters": {
+        "search_placeholder": "Поиск по названию, ID, исполнителю",
+        "store": "Магазин",
+        "zone": "Зона",
+        "work_type": "Тип работы",
+        "product_category": "Категория товара",
+        "assignee": "Исполнитель",
+        "date_range": "Период",
+        "date_from": "С",
+        "date_to": "По"
+      },
+      "bulk": {
+        "selected": "{count} задач выбрано",
+        "reassign": "Переназначить",
+        "archive": "Архивировать",
+        "clear": "Очистить выбор",
+        "archive_hint": "Удаление недоступно — задачи только архивируются. Восстановить можно из архива (роль Супервайзер или выше).",
+        "dialog_reassign_title": "Переназначить задачи",
+        "dialog_archive_title": "Архивировать задачи",
+        "dialog_archive_desc": "Выберите причину архивации для {count} задач",
+        "assignee_placeholder": "Выберите исполнителя"
+      },
+      "table": {
+        "name": "Название",
+        "store": "Магазин",
+        "assignee": "Исполнитель",
+        "status": "Статус",
+        "planned_min": "Мин",
+        "source": "Источник",
+        "created_at": "Создано",
+        "archive_reason": "Причина архива",
+        "archived_by": "Архивировал",
+        "archived_at": "Когда"
+      },
+      "source": {
+        "manager": "Менеджер",
+        "planned": "Плановая",
+        "ai": "ИИ"
+      },
+      "any_permission": "Любой {permission}",
+      "empty_no_tasks_title": "Задач пока нет",
+      "empty_no_tasks_desc": "Создайте первую задачу или дождитесь плановых задач из системы",
+      "empty_filtered_title": "Ничего не найдено",
+      "empty_filtered_desc": "Попробуйте изменить параметры фильтрации",
+      "error_title": "Не удалось загрузить задачи",
+      "error_desc": "Проверьте соединение и попробуйте снова",
+      "pagination_info": "{from}–{to} из {total}"
     },
     "dashboard": {
       "greeting_morning": "Доброе утро",
