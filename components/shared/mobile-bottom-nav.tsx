@@ -11,7 +11,7 @@ interface NavItem {
   key: string
   href: string
   icon: React.ElementType
-  navKey: keyof ReturnType<typeof useTranslations<"nav">>
+  navKey: string
   showBadge?: boolean
 }
 
@@ -63,7 +63,7 @@ export function MobileBottomNav({ unreadCount = 0 }: MobileBottomNavProps) {
                     </Badge>
                   )}
                 </span>
-                <span className="text-[10px] font-medium leading-tight">{t(navKey as never)}</span>
+                <span className="text-[10px] font-medium leading-tight">{t(navKey as Parameters<typeof t>[0])}</span>
               </Link>
             </li>
           )
