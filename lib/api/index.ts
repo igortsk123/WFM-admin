@@ -348,3 +348,135 @@ export {
   testDataConnector,
   removeDataConnector,
 } from "./data-connectors";
+
+// ═══════════════════════════════════════════════════════════════════
+// Freelance Applications API
+// ═══════════════════════════════════════════════════════════════════
+
+export {
+  getFreelanceApplications,
+  getFreelanceApplicationById,
+  createFreelanceApplication,
+  approveApplicationFull,
+  approveApplicationPartial,
+  rejectApplication,
+  replaceWithBonus,
+  approveMixed,
+  cancelApplication,
+  simulateApplicationApproval,
+} from "./freelance-applications";
+
+// ═══════════════════════════════════════════════════════════════════
+// Freelance Assignments API
+// ═══════════════════════════════════════════════════════════════════
+
+export {
+  getAssignmentsByApplication,
+  createAssignment,
+  removeAssignment,
+} from "./freelance-assignments";
+
+// ═══════════════════════════════════════════════════════════════════
+// Freelance Services API
+// ═══════════════════════════════════════════════════════════════════
+
+export {
+  getServices,
+  getServiceById,
+  confirmService,
+  disputeService,
+  markNoShow,
+  adjustServiceAmount,
+} from "./freelance-services";
+
+// ═══════════════════════════════════════════════════════════════════
+// Freelance Payouts API (NOMINAL_ACCOUNT mode only)
+// ═══════════════════════════════════════════════════════════════════
+
+export {
+  getPayouts,
+  getPayoutById,
+  getClosingDocumentUrl,
+  retryPayout,
+} from "./freelance-payouts";
+
+// ═══════════════════════════════════════════════════════════════════
+// Freelance Budget API
+// ═══════════════════════════════════════════════════════════════════
+
+export {
+  getBudgetLimits,
+  createBudgetLimit,
+  updateBudgetLimit,
+  getBudgetUsage,
+} from "./freelance-budget";
+
+// ═══════════════════════════════════════════════════════════════════
+// Freelance Service Norms API
+// ═══════════════════════════════════════════════════════════════════
+
+export {
+  getServiceNorms,
+  createServiceNorm,
+  updateServiceNorm,
+  archiveServiceNorm,
+} from "./freelance-norms";
+
+// ═══════════════════════════════════════════════════════════════════
+// Freelance Agents API (NOMINAL_ACCOUNT mode only)
+// ═══════════════════════════════════════════════════════════════════
+
+export {
+  getAgents,
+  getAgentById,
+  createAgent,
+  updateAgent,
+  blockAgent,
+  archiveAgent,
+  getAgentEarnings,
+} from "./freelance-agents";
+
+// ═══════════════════════════════════════════════════════════════════
+// Agent Cabinet API (AGENT role, NOMINAL_ACCOUNT mode only)
+// ═══════════════════════════════════════════════════════════════════
+
+export {
+  type AgentDocumentType,
+  type AgentDocument,
+  getMyAgentDashboard,
+  getMyFreelancers,
+  getMyFreelancerById,
+  getMyEarnings,
+  getMyDocuments,
+} from "./agent-cabinet";
+
+// ═══════════════════════════════════════════════════════════════════
+// External HR Sync API
+// ═══════════════════════════════════════════════════════════════════
+
+export {
+  type ExternalHrConfig,
+  getExternalHrSyncLogs,
+  getExternalHrConfig,
+  updateExternalHrConfig,
+  triggerExternalHrSync,
+} from "./external-hr-sync";
+
+// ═══════════════════════════════════════════════════════════════════
+// No-Show Reports API
+// ═══════════════════════════════════════════════════════════════════
+
+export {
+  getNoShows,
+  updateNoShowStatus,
+} from "./no-show";
+
+// ═══════════════════════════════════════════════════════════════════
+// Freelance Config API (platform-level)
+// ═══════════════════════════════════════════════════════════════════
+
+export {
+  type FreelanceConfig,
+  getOrganizationFreelanceConfig,
+  updatePaymentMode,
+} from "./freelance-config";
