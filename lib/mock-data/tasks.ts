@@ -139,7 +139,7 @@ export const MOCK_TASKS: Task[] = [
   {
     id: "task-004",
     title: "Приёмка молочки от ООО «Деревенское молочко» (Томск)",
-    description: "Приём молочной продукции по накладной №ДМТ-2026-0430. Контроль температуры и сроков. Количество позиций: 42.",
+    description: "Приём молочной продукции по накладной №ДМТ-2026-0430. Контроль температуры и сроков. Количество по��иций: 42.",
     type: "PLANNED",
     kind: "SINGLE",
     source: "PLANNED",
@@ -180,7 +180,7 @@ export const MOCK_TASKS: Task[] = [
     store_id: 4,
     store_name: "СПАР Новосибирск, ул. Ленина 55",
     zone_id: 6,
-    zone_name: "Холодильники",
+    zone_name: "Хо����одильники",
     work_type_id: 11,
     work_type_name: "Контроль качества",
     product_category_id: 1,
@@ -1183,6 +1183,73 @@ export const MOCK_TASKS: Task[] = [
     archived_by: 4,
     created_at: hoursAgo(6),
     updated_at: hoursAgo(3),
+  },
+
+  // ─────────────────────────────────────────────────────────────────
+  // DEMO DETAIL TASK — t-1042
+  // ─────────────────────────────────────────────────────────────────
+
+  /**
+   * t-1042: «Выкладка молочной полки» — полный кейс для TaskDetail.
+   * state=COMPLETED, review_state=ON_REVIEW, is_overdue=true
+   * requires_photo=true, report_image_url задан, report_text задан.
+   * Плановое время: 45 мин (09:30–10:15), фактическое 52 мин.
+   * Дедлайн: 09:30 28 апр — просрочка ~68 мин.
+   */
+  {
+    id: "t-1042",
+    title: "Выкладка молочной полки",
+    description: "Полная перевыкладка молочной секции холодильника 2 по утверждённой планограмме от 27 апр. Фронт строго к покупателю. Ротация сроков обязательна. Перед началом убедитесь, что температура в секции +2…+4°C.",
+    type: "PLANNED",
+    kind: "SINGLE",
+    source: "PLANNED",
+    planned_minutes: 45,
+    store_id: 1,
+    store_name: "СПАР Томск, пр. Ленина 80",
+    zone_id: 6,
+    zone_name: "Холодильники",
+    work_type_id: 4,
+    work_type_name: "Выкладка",
+    product_category_id: 1,
+    product_category_name: "Молочка",
+    creator_id: 5,
+    creator_name: "Иванов Александр Сергеевич",
+    assignee_id: 15,
+    assignee_name: "Козлова Дарья Андреевна",
+    assigned_to_permission: null,
+    state: "COMPLETED",
+    review_state: "ON_REVIEW",
+    acceptance_policy: "MANUAL",
+    requires_photo: true,
+    is_overdue: true,
+    comment: "Обратите внимание: в секции 2Б освободилось место после списания просрочки. Доложить оттуда в первую очередь.",
+    report_text: "Выкладка выполнена полностью. Секция 2Б доложена после списания просрочки (8 позиций). Все этикетки обращены фронтом, ротация сроков соблюдена. Температура в секции при завершении +3°C. Обнаружено 2 позиции без ценников — передала на переоценку.",
+    report_image_url: "https://images.unsplash.com/photo-1534723452862-4c874018d66d?w=800&q=80",
+    time_start: "09:30:00",
+    time_end: "10:15:00",
+    archived: false,
+    history_brief: {
+      opened_at: new Date("2026-04-28T09:38:00+07:00").toISOString(),
+      paused_intervals: [
+        {
+          from: new Date("2026-04-28T10:05:00+07:00").toISOString(),
+          to: new Date("2026-04-28T10:12:00+07:00").toISOString(),
+        },
+      ],
+      work_intervals: [
+        {
+          from: new Date("2026-04-28T09:38:00+07:00").toISOString(),
+          to: new Date("2026-04-28T10:05:00+07:00").toISOString(),
+        },
+        {
+          from: new Date("2026-04-28T10:12:00+07:00").toISOString(),
+          to: new Date("2026-04-28T10:30:00+07:00").toISOString(),
+        },
+      ],
+      completed_at: new Date("2026-04-28T10:30:00+07:00").toISOString(),
+    },
+    created_at: new Date("2026-04-28T07:00:00+07:00").toISOString(),
+    updated_at: new Date("2026-04-28T10:32:00+07:00").toISOString(),
   },
 
   /**
