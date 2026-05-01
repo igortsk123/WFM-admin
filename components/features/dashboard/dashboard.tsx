@@ -370,7 +370,7 @@ function MorningBriefStoreDirector({
                     <span>{task.assignee}</span>
                   </div>
                 </div>
-                <ReviewStateBadge state="ON_REVIEW" />
+                <ReviewStateBadge reviewState="ON_REVIEW" />
               </div>
             ))}
           </TabsContent>
