@@ -419,7 +419,7 @@
     "category": {
       "TASK_REVIEW": "Проверка задачи",
       "TASK_REJECTED": "Задача отклонена",
-      "TASK_STATE_CHANGED": "Изменение статуса задачи",
+      "TASK_STATE_CHANGED": "Измене��ие статуса задачи",
       "BONUS_AVAILABLE": "Доступна бонусная задача",
       "GOAL_UPDATE": "Обновление цели",
       "AI_SUGGESTION_NEW": "Новое предложение ИИ",
@@ -685,5 +685,64 @@
     "serverError": "Ошибка сервера",
     "tryAgain": "Попробуйте ещё раз",
     "contactSupport": "Обратитесь в поддержку"
+  },
+
+  "screen": {
+    "login": {
+      "tagline": "Командный центр магазина",
+      "value_tasks": "Задачи под контролем",
+      "value_team": "Команда и привилегии",
+      "value_analytics": "Аналитика ФОТ и продуктивности",
+
+      "method_title": "Войти в WFM Admin",
+      "method_subtitle": "Выберите способ входа",
+      "method_phone_title": "Телефон",
+      "method_phone_subtitle": "Код через Telegram, Max, звонок или SMS",
+      "method_email_title": "Email",
+      "method_email_subtitle": "Ссылка на почту — работает без SMS",
+      "method_totp_title": "Authenticator",
+      "method_totp_subtitle": "6-значный код от приложения",
+      "method_continue": "Продолжить",
+      "method_hint": "Возникли проблемы? Обратитесь к администратору",
+
+      "phone_title": "Введите телефон",
+      "phone_placeholder": "+7 (___) ___-__-__",
+      "phone_remember": "Запомнить меня",
+
+      "channel_title": "Куда прислать код?",
+      "channel_telegram": "Telegram",
+      "channel_telegram_hint": "Быстрее всего, если есть Telegram",
+      "channel_max": "Max",
+      "channel_max_hint": "Российский мессенджер",
+      "channel_call": "Звонок",
+      "channel_call_hint": "Робот продиктует код голосом",
+      "channel_sms_fallback": "Если код не придёт в течение 60 секунд — автоматически отправим SMS",
+      "channel_send": "Отправить код",
+
+      "code_title": "Введите код",
+      "code_sent_via": "Код отправлен в {channel} на {phone}",
+      "code_resend_in": "Отправить ещё раз через {time}",
+      "code_resend": "Отправить код ещё раз",
+      "code_sign_in": "Войти",
+
+      "email_title": "Введите email",
+      "email_placeholder": "example@company.ru",
+      "email_send_link": "Отправить ссылку",
+      "email_sent_title": "Ссылка отправлена",
+      "email_sent_body": "Мы отправили ссылку для входа на {email}. Перейдите по ней в течение 15 минут.",
+      "email_spam_hint": "Письмо не пришло? Проверьте папку Спам",
+      "email_simulate_click": "Симулировать клик по ссылке",
+
+      "totp_identifier_title": "Введите телефон или email",
+      "totp_tab_phone": "Телефон",
+      "totp_tab_email": "Email",
+      "totp_code_title": "Откройте authenticator-приложение",
+      "totp_code_subtitle": "Введите код для {identifier}",
+      "totp_code_hint": "Код обновляется каждые 30 секунд",
+
+      "error_invalid_code": "Неверный код",
+      "error_invalid_phone": "Неверный номер телефона",
+      "error_invalid_email": "Неверный email"
+    }
   }
 }

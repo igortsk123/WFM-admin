@@ -685,5 +685,64 @@
     "serverError": "Server error",
     "tryAgain": "Please try again",
     "contactSupport": "Contact support"
+  },
+
+  "screen": {
+    "login": {
+      "tagline": "Store command centre",
+      "value_tasks": "Tasks under control",
+      "value_team": "Team and permissions",
+      "value_analytics": "Payroll and productivity analytics",
+
+      "method_title": "Sign in to WFM Admin",
+      "method_subtitle": "Choose your sign-in method",
+      "method_phone_title": "Phone",
+      "method_phone_subtitle": "Code via Telegram, Max, call or SMS",
+      "method_email_title": "Email",
+      "method_email_subtitle": "Magic link to your inbox — no SMS needed",
+      "method_totp_title": "Authenticator",
+      "method_totp_subtitle": "6-digit code from your app",
+      "method_continue": "Continue",
+      "method_hint": "Having trouble? Contact your administrator",
+
+      "phone_title": "Enter your phone number",
+      "phone_placeholder": "+44 (0) XXXX XXXXXX",
+      "phone_remember": "Remember me",
+
+      "channel_title": "Where should we send the code?",
+      "channel_telegram": "Telegram",
+      "channel_telegram_hint": "Fastest if you have Telegram",
+      "channel_max": "Max",
+      "channel_max_hint": "Russian messenger",
+      "channel_call": "Phone call",
+      "channel_call_hint": "A robot will read out the code",
+      "channel_sms_fallback": "If the code doesn't arrive within 60 seconds, we'll send an SMS automatically",
+      "channel_send": "Send code",
+
+      "code_title": "Enter the code",
+      "code_sent_via": "Code sent via {channel} to {phone}",
+      "code_resend_in": "Resend in {time}",
+      "code_resend": "Resend code",
+      "code_sign_in": "Sign in",
+
+      "email_title": "Enter your email",
+      "email_placeholder": "example@company.com",
+      "email_send_link": "Send link",
+      "email_sent_title": "Link sent",
+      "email_sent_body": "We've sent a sign-in link to {email}. Click it within 15 minutes.",
+      "email_spam_hint": "Didn't receive the email? Check your spam folder",
+      "email_simulate_click": "Simulate link click",
+
+      "totp_identifier_title": "Enter your phone or email",
+      "totp_tab_phone": "Phone",
+      "totp_tab_email": "Email",
+      "totp_code_title": "Open your authenticator app",
+      "totp_code_subtitle": "Enter the code for {identifier}",
+      "totp_code_hint": "Code refreshes every 30 seconds",
+
+      "error_invalid_code": "Invalid code",
+      "error_invalid_phone": "Invalid phone number",
+      "error_invalid_email": "Invalid email"
+    }
   }
 }
