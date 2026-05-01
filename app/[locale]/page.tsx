@@ -12,13 +12,13 @@ import { EntitySummaryCard } from "@/components/shared/entity-summary-card"
 import { ActivityFeed } from "@/components/shared/activity-feed"
 import { EmptyState } from "@/components/shared/empty-state"
 import { ShoppingCart, Users, TrendingUp, Package, ClipboardList } from "lucide-react"
-import type { TaskState, TaskReviewState, ShiftState, StoreZone, FunctionalRole } from "@/lib/types"
+import type { TaskState, TaskReviewState, ShiftStatus, Permission, FunctionalRole } from "@/lib/types"
 import type { ActivityItem } from "@/components/shared/activity-feed"
 
-const TASK_STATES: TaskState[] = ["DRAFT", "OPEN", "IN_PROGRESS", "PAUSED", "BLOCKED", "COMPLETED", "ARCHIVED"]
-const REVIEW_STATES: TaskReviewState[] = ["NONE", "PENDING", "APPROVED", "REJECTED", "NEEDS_REVISION"]
-const SHIFT_STATES: ShiftState[] = ["SCHEDULED", "IN_PROGRESS", "COMPLETED", "CANCELLED", "NO_SHOW"]
-const ZONES: StoreZone[] = ["CASHIER", "SALES_FLOOR", "WAREHOUSE", "OFFICE", "PRODUCTION", "RECEIVING", "CLEANING"]
+const TASK_STATES: TaskState[] = ["NEW", "IN_PROGRESS", "PAUSED", "COMPLETED"]
+const REVIEW_STATES: TaskReviewState[] = ["NONE", "ON_REVIEW", "ACCEPTED", "REJECTED"]
+const SHIFT_STATES: ShiftStatus[] = ["NEW", "OPENED", "CLOSED"]
+const PERMISSIONS: Permission[] = ["CASHIER", "SALES_FLOOR", "SELF_CHECKOUT", "WAREHOUSE", "PRODUCTION_LINE"]
 const ROLES: FunctionalRole[] = [
   "NETWORK_OPS", "REGIONAL", "SUPERVISOR", "STORE_DIRECTOR",
   "HR_MANAGER", "OPERATOR", "WORKER", "AGENT", "PLATFORM_ADMIN",
@@ -226,8 +226,8 @@ export default async function HomePage() {
       </Section>
 
       <Section title="PermissionPill — permission.zones">
-        {ZONES.map((z) => (
-          <PermissionPill key={z} permission={z} />
+        {PERMISSIONS.map((p) => (
+          <PermissionPill key={p} permission={p} />
         ))}
       </Section>
 

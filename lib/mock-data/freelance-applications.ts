@@ -1,5 +1,5 @@
 import type { FreelanceApplication } from "@/lib/types";
-import { MOCK_TODAY, daysFromNow, daysAgoFrom, dateFromNow, dateAgo } from "./_today";
+import { MOCK_TODAY, daysAgoFrom, dateFromNow, dateAgo } from "./_today";
 
 void MOCK_TODAY; // imported for documentation / reference
 
