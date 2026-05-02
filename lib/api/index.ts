@@ -488,4 +488,6 @@ export {
 export {
   type ResourceBalanceData,
   getDashboardResourceBalance,
+  getNetworkHealth,
+  getBudgetSummary,
 } from "./dashboard";

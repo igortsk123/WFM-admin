@@ -3,10 +3,17 @@
  * Computes on-the-fly from mock data to mirror future backend endpoints.
  */
 
-import type { ApiResponse } from "@/lib/types";
+import type {
+  ApiResponse,
+  BudgetSummary,
+  DashboardPeriod,
+  NetworkHealthSummary,
+} from "@/lib/types";
 import { MOCK_TASKS } from "@/lib/mock-data/tasks";
 import { MOCK_FREELANCE_SERVICES } from "@/lib/mock-data/freelance-services";
 import { MOCK_FREELANCE_APPLICATIONS } from "@/lib/mock-data/freelance-applications";
+import { MOCK_NETWORK_HEALTH } from "@/lib/mock-data/network-health";
+import { MOCK_NETWORK_BUDGET } from "@/lib/mock-data/network-budget";
 
 const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
 
@@ -136,5 +143,54 @@ export async function getDashboardResourceBalance(): Promise<
       overspend_count: overspendCount,
       external_unassigned_count: externalUnassigned,
     },
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// NETWORK HEALTH (SUPERVISOR / REGIONAL / NETWORK_OPS)
+// ═══════════════════════════════════════════════════════════════════
+
+/**
+ * Aggregated network health summary for SUPERVISOR+ roles.
+ * Прогноз vs назначено по магазинам сети + аномалии.
+ *
+ * Scope (определяется ролью):
+ * - SUPERVISOR — только свои магазины (filtered by user.id == store.supervisor_id)
+ * - REGIONAL — магазины своего региона
+ * - NETWORK_OPS — вся сеть текущей организации
+ *
+ * @param period период агрегации (default: current_month)
+ * @endpoint GET /dashboard/network-health
+ * @roles SUPERVISOR, REGIONAL, NETWORK_OPS
+ */
+export async function getNetworkHealth(
+  period: DashboardPeriod = "current_month"
+): Promise<ApiResponse<NetworkHealthSummary>> {
+  await delay(400);
+  return {
+    data: { ...MOCK_NETWORK_HEALTH, period },
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// BUDGET SUMMARY (SUPERVISOR / REGIONAL / NETWORK_OPS)
+// ═══════════════════════════════════════════════════════════════════
+
+/**
+ * Aggregated freelance budget summary for SUPERVISOR+ roles.
+ * Расход бюджета внештата vs лимит, риск нехватки, заявки на одобрение.
+ *
+ * Scope аналогичен network-health (по роли пользователя).
+ *
+ * @param period период агрегации (default: current_month)
+ * @endpoint GET /dashboard/budget
+ * @roles SUPERVISOR, REGIONAL, NETWORK_OPS
+ */
+export async function getBudgetSummary(
+  period: DashboardPeriod = "current_month"
+): Promise<ApiResponse<BudgetSummary>> {
+  await delay(400);
+  return {
+    data: { ...MOCK_NETWORK_BUDGET, period },
   };
 }

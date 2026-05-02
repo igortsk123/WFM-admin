@@ -1,4 +1,6 @@
 export { LanguageSwitcher } from "./language-switcher"
+export { HealthGauge } from "./health-gauge"
+export type { GaugeStatus } from "./health-gauge"
 export { TaskStateBadge } from "./task-state-badge"
 export { ReviewStateBadge } from "./review-state-badge"
 export { ShiftStateBadge } from "./shift-state-badge"
