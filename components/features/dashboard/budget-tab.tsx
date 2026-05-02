@@ -85,25 +85,14 @@ function FormatBreakdown({ formats, selected, onSelect, locale }: FormatBreakdow
   const tBudget = useTranslations("screen.dashboard.budget");
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      <button
-        type="button"
-        onClick={() => onSelect("ALL")}
-        className={cn(
-          "rounded-xl border bg-card p-3 text-left transition-colors hover:bg-accent",
-          selected === "ALL" && "border-primary ring-1 ring-primary",
-        )}
-      >
-        <div className="text-xs text-muted-foreground">{tHealth("all_formats")}</div>
-        <div className="mt-1 text-base font-semibold">—</div>
-      </button>
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
       {formats.map((f) => {
         const isActive = selected === f.format;
         return (
           <button
             key={f.format}
             type="button"
-            onClick={() => onSelect(f.format)}
+            onClick={() => onSelect(isActive ? "ALL" : f.format)}
             className={cn(
               "rounded-xl border bg-card p-3 text-left transition-colors hover:bg-accent",
               isActive && "border-primary ring-1 ring-primary",
@@ -259,11 +248,15 @@ export function BudgetTab({
   const totalDisplay = totalMln.toLocaleString(locale);
   const valueSuffix = `${t("of")} ${totalDisplay} ${t("value_unit_mln")}`;
 
-  // Pace summary string
+  // Pace summary: risk_amount_rub конвертим в млн с 1 знаком (700_000 → 0,7)
+  const riskMln = (data.risk_amount_rub / 1_000_000).toLocaleString(locale, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
   const paceStr = data.pace_diff_pct > 0
     ? t("pace_summary", {
         pace: data.pace_diff_pct,
-        risk: `${formatRub(data.risk_amount_rub, locale)} ${t("value_unit_mln")}`,
+        risk: `${riskMln} ${t("value_unit_mln")}`,
       })
     : t("pace_summary_under", { pace: Math.abs(data.pace_diff_pct) });
 
@@ -296,6 +289,7 @@ export function BudgetTab({
             status={status}
             statusLabel={t(statusLabelKey as Parameters<typeof t>[0])}
             size={240}
+            locale={locale}
           />
           <p className="max-w-md text-center text-sm text-muted-foreground">{paceStr}</p>
         </CardContent>

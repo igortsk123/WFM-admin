@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { TrendingDown, TrendingUp, ChevronRight } from "lucide-react";
 
 import type {
@@ -77,18 +77,7 @@ function FormatBreakdown({ formats, selected, onSelect }: FormatBreakdownProps) 
   const t = useTranslations("screen.dashboard.health");
 
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-      <button
-        type="button"
-        onClick={() => onSelect("ALL")}
-        className={cn(
-          "rounded-xl border bg-card p-3 text-left transition-colors hover:bg-accent",
-          selected === "ALL" && "border-primary ring-1 ring-primary",
-        )}
-      >
-        <div className="text-xs text-muted-foreground">{t("all_formats")}</div>
-        <div className="mt-1 text-base font-semibold">—</div>
-      </button>
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
       {formats.map((f) => {
         const isUp = f.diff_pct >= 0;
         const Icon = isUp ? TrendingUp : TrendingDown;
@@ -98,7 +87,8 @@ function FormatBreakdown({ formats, selected, onSelect }: FormatBreakdownProps) 
           <button
             key={f.format}
             type="button"
-            onClick={() => onSelect(f.format)}
+            // Клик по активному формату — сбрасывает фильтр
+            onClick={() => onSelect(isActive ? "ALL" : f.format)}
             className={cn(
               "rounded-xl border bg-card p-3 text-left transition-colors hover:bg-accent",
               isActive && "border-primary ring-1 ring-primary",
@@ -208,6 +198,7 @@ function StoreHealthRowItem({ row }: { row: StoreHealthRow }) {
 
 export function NetworkHealthTab({ period = "current_month" }: { period?: DashboardPeriod }) {
   const t = useTranslations("screen.dashboard.health");
+  const locale = useLocale();
 
   const [data, setData] = useState<NetworkHealthSummary | null>(null);
   const [loading, setLoading] = useState(true);
@@ -273,6 +264,7 @@ export function NetworkHealthTab({ period = "current_month" }: { period?: Dashbo
             status={status}
             statusLabel={t(statusLabelKey as Parameters<typeof t>[0])}
             size={240}
+            locale={locale}
           />
           <p className="max-w-md text-center text-sm text-muted-foreground">
             {t("trend_summary", { coverage_diff: coverageStr, anomaly_diff: anomalyStr })}
