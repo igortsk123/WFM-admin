@@ -57,6 +57,7 @@ import { ActivityFeed, type ActivityItem } from "@/components/shared/activity-fe
 import { TaskStateBadge } from "@/components/shared/task-state-badge"
 import { ReviewStateBadge } from "@/components/shared/review-state-badge"
 import { ResourceBalanceCard } from "./resource-balance-card"
+import { NetworkDashboard } from "./network-dashboard"
 import { getDashboardResourceBalance, type ResourceBalanceData } from "@/lib/api/dashboard"
 
 // ═══════════════════════════════════════════════════════════════════
@@ -800,7 +801,28 @@ const RESOURCE_BALANCE_ROLES = new Set([
   "HR_MANAGER",
 ] as const)
 
+/**
+ * Роли которые видят НОВЫЙ дашборд с двумя табами «Здоровье сети» / «Бюджет».
+ * STORE_DIRECTOR, HR_MANAGER, OPERATOR — продолжают видеть старый task-focused вариант.
+ */
+const NETWORK_DASHBOARD_ROLES = new Set<FunctionalRole>([
+  "SUPERVISOR",
+  "REGIONAL",
+  "NETWORK_OPS",
+])
+
 export function Dashboard() {
+  const { user } = useAuth()
+
+  // Network-level дашборд для SUPERVISOR / REGIONAL / NETWORK_OPS — отдельный компонент
+  if ((NETWORK_DASHBOARD_ROLES as ReadonlySet<string>).has(user.role)) {
+    return <NetworkDashboard />
+  }
+
+  return <LegacyDashboard />
+}
+
+function LegacyDashboard() {
   const { user } = useAuth()
   const t = useTranslations("screen.dashboard")
   const tActions = useTranslations("screen.dashboard.actions")

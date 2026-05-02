@@ -1086,3 +1086,94 @@ export interface ApiListParams {
   sort_dir?: "asc" | "desc";
   [key: string]: unknown;
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// DASHBOARD — NETWORK HEALTH & BUDGET (SUPERVISOR+ ROLES)
+// ═══════════════════════════════════════════════════════════════════
+
+/** Период для агрегированных метрик дашборда. */
+export type DashboardPeriod = "7d" | "30d" | "current_month" | "prev_month";
+
+/** Статус магазина по health-метрике. */
+export type StoreHealthStatus = "IDLE" | "ANOMALY" | "NORMAL";
+
+/** Статус магазина по бюджету. */
+export type StoreBudgetStatus = "EXCEEDED" | "RISK" | "NORMAL";
+
+/** Группировка по формату объекта для сводок. */
+export interface FormatHealthRow {
+  format: ObjectFormat;
+  /** Изменение покрытия в % vs предыдущий период (-12, +19). */
+  diff_pct: number;
+}
+
+export interface FormatBudgetRow {
+  format: ObjectFormat;
+  spent_rub: number;
+  total_rub: number;
+}
+
+/** Строка списка магазинов на вкладке "Здоровье сети". */
+export interface StoreHealthRow {
+  store_id: number;
+  store_name: string;
+  format: ObjectFormat;
+  /** Прогноз часов на период (план + ИИ-корректировка). */
+  forecast_hours: number;
+  /** Реально назначено часов сотрудникам и внештатникам. */
+  assigned_hours: number;
+  /** Изменение покрытия за период в % (-12, +20). */
+  coverage_pct_diff: number;
+  /** Если ANOMALY — на сколько % отклонение от нормы. */
+  anomaly_pct?: number;
+  status: StoreHealthStatus;
+  supervisor_id?: number;
+  supervisor_name?: string;
+  supervisor_avatar_url?: string | null;
+}
+
+/** Сводка по здоровью сети за период (агрегирует все магазины в скоупе роли). */
+export interface NetworkHealthSummary {
+  /** Общий health score 0-100. */
+  score: number;
+  period: DashboardPeriod;
+  /** Тренд за 7 дней: +5 покрытие, -1 объект с аномалией. */
+  trend_7d: {
+    coverage_pct_diff: number;
+    anomalies_diff_count: number;
+  };
+  by_format: FormatHealthRow[];
+  stores: StoreHealthRow[];
+}
+
+/** Строка списка магазинов на вкладке "Бюджет". */
+export interface StoreBudgetRow {
+  store_id: number;
+  store_name: string;
+  format: ObjectFormat;
+  spent_rub: number;
+  total_rub: number;
+  status: StoreBudgetStatus;
+  /** При статусе RISK / EXCEEDED — сумма риска или превышения в ₽. */
+  risk_amount_rub?: number;
+  supervisor_id?: number;
+  supervisor_name?: string;
+  supervisor_avatar_url?: string | null;
+}
+
+/** Сводка по бюджету внештата за период. */
+export interface BudgetSummary {
+  spent_rub: number;
+  total_rub: number;
+  /** OK | RISK | EXCEEDED — общая оценка по сети. */
+  status: "OK" | "RISK" | "EXCEEDED";
+  /** Кол-во заявок на внештат, ожидающих подтверждения супервайзером+. */
+  pending_approvals_count: number;
+  /** Скорость траты vs план (%). +5 = на 5% выше плана. */
+  pace_diff_pct: number;
+  /** Сумма риска нехватки (в ₽). 0 если нет риска. */
+  risk_amount_rub: number;
+  by_format: FormatBudgetRow[];
+  stores: StoreBudgetRow[];
+  period: DashboardPeriod;
+}
