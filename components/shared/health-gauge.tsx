@@ -17,17 +17,19 @@ interface HealthGaugeProps {
   status: GaugeStatus;
   /** Подпись-чип под числом (например "Ниже нормы", "Риск нехватки"). */
   statusLabel?: string;
-  /** Размер svg (квадратная коробка). default 220. */
+  /** Размер svg (квадратная коробка). default 240. */
   size?: number;
   /** Толщина дуги. default 18. */
   strokeWidth?: number;
+  /** Locale для форматирования числа в центре. default "ru-RU". */
+  locale?: string;
   className?: string;
 }
 
-const STATUS_COLOR: Record<GaugeStatus, string> = {
-  danger: "var(--destructive)",
-  warning: "var(--warning, #f59e0b)",
-  success: "var(--success, #10b981)",
+const STATUS_STROKE: Record<GaugeStatus, string> = {
+  danger: "#ef4444", // red-500
+  warning: "#f59e0b", // amber-500
+  success: "#10b981", // emerald-500
 };
 
 const STATUS_BG: Record<GaugeStatus, string> = {
@@ -38,7 +40,8 @@ const STATUS_BG: Record<GaugeStatus, string> = {
 
 /**
  * Полукруглая шкала прогресса (semicircle gauge).
- * Используется на дашборде SUPERVISOR+ для health score и budget consumption.
+ * Контент (число / подпись / статус) размещается в normal flow с negative margin,
+ * чтобы parent контейнер корректно учитывал высоту всех элементов.
  */
 export function HealthGauge({
   value,
@@ -47,48 +50,46 @@ export function HealthGauge({
   max = 100,
   status,
   statusLabel,
-  size = 220,
+  size = 240,
   strokeWidth = 18,
+  locale = "ru-RU",
   className,
 }: HealthGaugeProps) {
   const radius = (size - strokeWidth) / 2;
   const cx = size / 2;
   const cy = size / 2;
 
-  // Полукруг от 180° (слева) до 360°/0° (справа). Длина дуги = π * r.
   const arcLength = Math.PI * radius;
-
-  // Нормализуем value в [0..1]
   const range = max - min;
   const normalized = range === 0 ? 0 : Math.min(1, Math.max(0, (value - min) / range));
   const filledLength = arcLength * normalized;
 
-  // Точки полукруга: start = (cx - radius, cy), end = (cx + radius, cy)
   const startX = cx - radius;
   const startY = cy;
   const endX = cx + radius;
   const endY = cy;
 
-  // SVG path для полукруга (sweep против часовой = верхняя половина)
   const arcPath = `M ${startX} ${startY} A ${radius} ${radius} 0 0 1 ${endX} ${endY}`;
 
-  // Высота svg = половина (полукруг сверху) + место под текст центра
   const svgHeight = cy + strokeWidth;
 
+  // Контент сдвигаем вверх внутрь дуги. Целевая позиция верха контента ~70% от cy.
+  const overlap = Math.round(svgHeight * 0.45);
+
   return (
-    <div className={cn("relative flex flex-col items-center", className)}>
+    <div className={cn("flex flex-col items-center", className)}>
       <svg
         width={size}
         height={svgHeight}
         viewBox={`0 0 ${size} ${svgHeight}`}
         role="img"
-        aria-label={`Шкала: ${value}${valueSuffix ? " " + valueSuffix : ""}`}
+        aria-label={`${value}${valueSuffix ? " " + valueSuffix : ""}`}
       >
         {/* Background arc */}
         <path
           d={arcPath}
           fill="none"
-          stroke="var(--muted)"
+          stroke="hsl(var(--muted-foreground) / 0.15)"
           strokeWidth={strokeWidth}
           strokeLinecap="round"
         />
@@ -96,7 +97,7 @@ export function HealthGauge({
         <path
           d={arcPath}
           fill="none"
-          stroke={STATUS_COLOR[status]}
+          stroke={STATUS_STROKE[status]}
           strokeWidth={strokeWidth}
           strokeLinecap="round"
           strokeDasharray={`${filledLength} ${arcLength}`}
@@ -104,13 +105,13 @@ export function HealthGauge({
         />
       </svg>
 
-      {/* Center value (positioned absolutely over the lower part of the arc) */}
+      {/* Center value: pulled up into the arc with negative margin */}
       <div
-        className="pointer-events-none absolute flex flex-col items-center"
-        style={{ top: cy - strokeWidth - 6, left: 0, right: 0 }}
+        className="flex flex-col items-center"
+        style={{ marginTop: -overlap }}
       >
         <div className="text-4xl font-bold leading-none tabular-nums">
-          {value.toLocaleString("ru-RU")}
+          {value.toLocaleString(locale)}
         </div>
         {valueSuffix && (
           <div className="mt-1 text-xs text-muted-foreground">{valueSuffix}</div>
