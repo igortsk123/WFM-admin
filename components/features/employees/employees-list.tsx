@@ -7,14 +7,21 @@ import { useQueryState, parseAsString, parseAsInteger } from "nuqs"
 import { type ColumnDef } from "@tanstack/react-table"
 import {
   Archive,
+  Check,
   ChevronLeft,
   ChevronRight,
+  ChevronsUpDown,
+  Download,
   FileWarning,
   Filter,
   MoreHorizontal,
+  MoreVertical,
   Plus,
   Search,
+  SearchX,
+  Upload,
   UserCog,
+  Users,
   X,
 } from "lucide-react"
 import { toast } from "sonner"
@@ -566,7 +573,8 @@ export function EmployeesList() {
 
   // ── Org feature flags (mock: NOMINAL_ACCOUNT + external_hr_enabled) ──
   // In production these come from user.organization
-  const paymentMode = "NOMINAL_ACCOUNT" as const
+  type PaymentMode = "NOMINAL_ACCOUNT" | "CLIENT_DIRECT"
+  const paymentMode: PaymentMode = "NOMINAL_ACCOUNT" as PaymentMode
   const externalHrEnabled = true
   const showAgentFilter = paymentMode !== "CLIENT_DIRECT"
   const showSourceFilter = externalHrEnabled
@@ -1656,10 +1664,9 @@ export function EmployeesList() {
           {/* Mobile filter sheet trigger */}
           <div className="md:hidden flex-1">
               <MobileFilterSheet
-                open={mobileFiltersOpen}
-                onOpenChange={setMobileFiltersOpen}
                 activeCount={activeFilterCount}
-                onReset={clearAllFilters}
+                onClearAll={clearAllFilters}
+                onApply={() => { /* filters apply on change */ }}
               >
                 <div className="space-y-4">
                   <div className="space-y-2">
@@ -1779,7 +1786,7 @@ export function EmployeesList() {
                       {t("filters.permission")}
                     </p>
                     <MultiSelectCombobox
-                      options={permissionOptions}
+                      options={permOptions}
                       selected={selectedPermissions}
                       onSelectionChange={(v) => {
                         setSelectedPermissions(v)
