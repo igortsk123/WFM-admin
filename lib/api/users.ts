@@ -47,10 +47,42 @@ export interface UserWithAssignment extends User {
   agent_name?: string | null;
 }
 
-/** User with full assignments and permissions history */
+/** Statistics for an employee (tasks last 30 days). */
+export interface UserStats {
+  tasks_total: number;
+  tasks_diff_pct: number;
+  tasks_accepted: number;
+  tasks_rejected: number;
+  paused_now: number;
+  avg_completion_min: number;
+  avg_completion_diff_min: number;
+}
+
+/** Functional role + scope (read-only on detail screen unless HR_MANAGER/NETWORK_OPS). */
+export interface UserFunctionalScope {
+  functional_role: FunctionalRole;
+  scope_type: "STORE" | "STORE_LIST" | "REGION" | "ORGANIZATION";
+  scope_ids: Array<number | string>;
+  scope_store_names?: string[];
+}
+
+/** Freelance document record. */
+export interface FreelanceDocument {
+  type: "PASSPORT" | "INN" | "SNILS" | "CONTRACT";
+  uploaded_at: string | null;
+  file_name: string | null;
+  file_url: string | null;
+}
+
+/** User with full assignments, permissions history, stats, and extended fields. */
 export interface UserDetail extends User {
   assignments: Assignment[];
   permissions: WorkerPermission[];
+  functional_scope?: UserFunctionalScope;
+  current_shift?: Shift | null;
+  stats?: UserStats;
+  last_active_at?: string;
+  freelance_documents?: FreelanceDocument[];
 }
 
 /**
@@ -278,9 +310,9 @@ export async function getUsers(
 }
 
 /**
- * Get single user by ID with full assignments and permissions history.
+ * Get single user by ID with full assignments, permissions history, stats, and functional scope.
  * @param id User ID
- * @returns User with all assignments and permissions
+ * @returns User with all extended fields
  * @endpoint GET /users/:id
  */
 export async function getUserById(
@@ -296,11 +328,65 @@ export async function getUserById(
   const assignments = MOCK_ASSIGNMENTS.filter((a) => a.user_id === id);
   const permissions = MOCK_PERMISSIONS.filter((p) => p.user_id === id);
 
+  // Resolve functional scope
+  const roleAssignment = MOCK_FUNCTIONAL_ROLES.find((r) => r.user_id === id);
+  let functional_scope: UserFunctionalScope | undefined;
+  if (roleAssignment) {
+    functional_scope = {
+      functional_role: roleAssignment.functional_role,
+      scope_type: roleAssignment.scope_type,
+      scope_ids: roleAssignment.scope_ids,
+    };
+  }
+
+  // Current shift
+  const current_shift = MOCK_SHIFTS.find(
+    (s) => s.user_id === id && s.shift_date === TODAY,
+  ) ?? null;
+
+  // Mock realistic stats for demo user 101, generic fallback for others
+  const stats: UserStats =
+    id === 101
+      ? {
+          tasks_total: 87,
+          tasks_diff_pct: 12,
+          tasks_accepted: 79,
+          tasks_rejected: 5,
+          paused_now: 1,
+          avg_completion_min: 42,
+          avg_completion_diff_min: -3,
+        }
+      : {
+          tasks_total: Math.floor(20 + Math.random() * 60),
+          tasks_diff_pct: Math.floor(-10 + Math.random() * 25),
+          tasks_accepted: Math.floor(15 + Math.random() * 50),
+          tasks_rejected: Math.floor(Math.random() * 8),
+          paused_now: Math.floor(Math.random() * 3),
+          avg_completion_min: Math.floor(30 + Math.random() * 40),
+          avg_completion_diff_min: Math.floor(-8 + Math.random() * 16),
+        };
+
+  // Freelance documents (only for FREELANCE type)
+  const freelance_documents: FreelanceDocument[] | undefined =
+    user.type === "FREELANCE"
+      ? [
+          { type: "PASSPORT", uploaded_at: null, file_name: null, file_url: null },
+          { type: "INN", uploaded_at: null, file_name: null, file_url: null },
+          { type: "SNILS", uploaded_at: null, file_name: null, file_url: null },
+          { type: "CONTRACT", uploaded_at: null, file_name: null, file_url: null },
+        ]
+      : undefined;
+
   return {
     data: {
       ...user,
       assignments,
       permissions,
+      functional_scope,
+      current_shift,
+      stats,
+      last_active_at: id === 101 ? "2026-05-01T08:22:00Z" : undefined,
+      freelance_documents,
     },
   };
 }

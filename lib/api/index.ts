@@ -55,6 +55,9 @@ export {
   // Types
   type UserWithAssignment,
   type UserDetail,
+  type UserStats,
+  type UserFunctionalScope,
+  type FreelanceDocument,
   type UserListParams,
   type UserCreateData,
   // List & Get
@@ -391,7 +394,7 @@ export {
 
 // ═══════════════════════════════════════════════════════════════════
 // Freelance Payouts API (NOMINAL_ACCOUNT mode only)
-// ══���════════════════════════════════════════════════════════════════
+// ══�����════════════════════════════════════════════════════════════════
 
 export {
   getPayouts,

@@ -566,4 +566,23 @@ export const MOCK_USERS: User[] = [
     rating: 2.8,
     source: "MANUAL",
   },
+
+  // ── 101. DEMO — Иванова Мария Петровна (employeeDetail demo) ──────
+  {
+    /** Demo user for /employees/101 — штатный кассир SPAR-TOM-001, активный */
+    id: 101,
+    sso_id: "sso-worker-101",
+    phone: "+7 (913) 101-22-33",
+    email: "m.ivanova@spar-sibir.ru",
+    first_name: "Мария",
+    last_name: "Иванова",
+    middle_name: "Петровна",
+    type: "STAFF",
+    hired_at: "2024-03-15",
+    archived: false,
+    preferred_locale: "ru",
+    preferred_timezone: "Asia/Tomsk",
+    totp_enabled: false,
+    rating: 4.6,
+  },
 ];
