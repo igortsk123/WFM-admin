@@ -1292,6 +1292,96 @@
       "expand_hints": "Приложенные подсказки",
       "expand_no_hints": "Подсказок нет",
       "expand_hints_count": "{count, plural, one {# подсказка} few {# подсказки} other {# подсказок}}"
+    },
+    "employees": {
+      "page_title": "Сотрудники",
+      "counter": "{count, plural, one {# сотрудник} few {# сотрудника} many {# сотрудников} other {# сотрудников}}",
+      "actions": {
+        "import_lama": "Импорт из LAMA",
+        "import_xlsx": "Импорт XLSX",
+        "export_xlsx": "Экспорт XLSX",
+        "add": "Добавить сотрудника",
+        "more": "Ещё"
+      },
+      "tabs": {
+        "all": "Все",
+        "active": "Активные",
+        "archived": "Архив"
+      },
+      "filters": {
+        "search_placeholder": "Поиск по ФИО, телефону",
+        "store": "Магазин",
+        "position": "Должность",
+        "permission": "Привилегия",
+        "functional_role": "Функциональная роль",
+        "employment_type": "Тип занятости",
+        "clear_all": "Очистить все",
+        "open_filters": "Фильтры",
+        "close": "Закрыть",
+        "apply": "Применить"
+      },
+      "employment": {
+        "staff": "Штатный",
+        "freelance": "Внештатный",
+        "no_documents": "Нет загруженных документов"
+      },
+      "columns": {
+        "fio": "Сотрудник",
+        "store": "Магазин",
+        "position": "Должность",
+        "functional_role": "Функц. роль",
+        "permissions": "Привилегии",
+        "current_shift": "Текущая смена",
+        "employment": "Тип занятости",
+        "hired_at": "Принят",
+        "more_permissions": "+{n}"
+      },
+      "shift": {
+        "no_shift": "—",
+        "time_range": "{start}–{end}"
+      },
+      "row_actions": {
+        "open": "Открыть карточку",
+        "assign_task": "Назначить задачу",
+        "permissions": "Привилегии",
+        "change_position": "Сменить должность",
+        "impersonate": "Войти как пользователь",
+        "archive": "Архивировать"
+      },
+      "bulk": {
+        "selected": "{count, plural, one {Выбран # сотрудник} few {Выбрано # сотрудника} many {Выбрано # сотрудников} other {Выбрано # сотрудников}}",
+        "assign_permission": "Назначить привилегию",
+        "archive": "Архивировать",
+        "cancel": "Отмена"
+      },
+      "dialogs": {
+        "permission_title": "Назначить привилегию",
+        "permission_select": "Выберите привилегию",
+        "archive_title": "Архивировать сотрудника?",
+        "archive_description": "Сотрудники в архиве не появляются в списках задач и смен. Действие обратимо.",
+        "archive_confirm": "Архивировать"
+      },
+      "empty": {
+        "all": {
+          "title": "Сотрудников нет",
+          "cta": "Добавить сотрудника"
+        },
+        "archived": {
+          "title": "В архиве пусто",
+          "subtitle": "Архивированные сотрудники появятся здесь"
+        },
+        "filtered": {
+          "title": "Никого не найдено",
+          "subtitle": "Попробуйте изменить фильтры или сбросить их",
+          "reset": "Сбросить фильтры"
+        }
+      },
+      "toast": {
+        "permission_assigned": "Привилегия назначена",
+        "archived": "Сотрудник архивирован",
+        "bulk_archived": "Архивировано {count} сотрудников",
+        "error": "Не удалось выполнить операцию"
+      }
     }
   }
 }

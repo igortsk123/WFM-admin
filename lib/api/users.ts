@@ -13,11 +13,17 @@ import type {
   WorkerPermission,
   Permission,
   FunctionalRole,
+  EmployeeType,
+  Shift,
 } from "@/lib/types";
 import { MOCK_USERS } from "@/lib/mock-data";
 import { MOCK_ASSIGNMENTS } from "@/lib/mock-data/assignments";
 import { MOCK_PERMISSIONS } from "@/lib/mock-data/permissions";
 import { MOCK_FUNCTIONAL_ROLES } from "@/lib/mock-data/functional-roles";
+import { MOCK_SHIFTS } from "@/lib/mock-data/shifts";
+
+/** Сегодняшняя дата в моках — синхронизируем с MOCK_SHIFTS / MOCK_TASKS. */
+const TODAY = "2026-05-01";
 
 // ═══════════════════════════════════════════════════════════════════
 // HELPERS
@@ -25,10 +31,16 @@ import { MOCK_FUNCTIONAL_ROLES } from "@/lib/mock-data/functional-roles";
 
 const delay = (ms: number = 300) => new Promise((r) => setTimeout(r, ms));
 
-/** User with embedded assignment and permissions list */
+/** User with embedded assignment, permissions, и текущая смена (если есть). */
 export interface UserWithAssignment extends User {
   assignment: Assignment;
   permissions: Permission[];
+  /** Назначенная функциональная роль (через MOCK_FUNCTIONAL_ROLES). */
+  functional_role?: FunctionalRole;
+  /** Текущая смена сегодня (если есть, для отображения ShiftStateBadge + времени). */
+  current_shift?: Shift | null;
+  /** Кол-во загруженных документов внештатника (для FREELANCE-индикатора). 0 = нет документов. */
+  freelance_documents_count?: number;
 }
 
 /** User with full assignments and permissions history */
@@ -37,11 +49,28 @@ export interface UserDetail extends User {
   permissions: WorkerPermission[];
 }
 
-/** User filter parameters */
+/**
+ * User filter parameters.
+ * Поддерживает multi-фильтры (store_ids, position_ids, permissions) для employees-list,
+ * и legacy-single (store_id, permission) для обратной совместимости с другими экранами.
+ */
 export interface UserListParams extends ApiListParams {
   role?: FunctionalRole;
+  /** Single store filter (legacy). Для multi используй store_ids. */
   store_id?: number;
+  /** Multi-store filter — пользователь попадает в выборку если хоть в одном из. */
+  store_ids?: number[];
+  /** Single position filter. */
+  position_id?: number;
+  /** Multi-position filter. */
+  position_ids?: number[];
+  /** Single permission filter (legacy). */
   permission?: Permission;
+  /** Multi-permission filter — пользователь попадает если имеет хоть одну из. */
+  permissions?: Permission[];
+  /** Тип занятости: STAFF | FREELANCE. */
+  employment_type?: EmployeeType;
+  /** Архивированные. По умолчанию false (только активные). */
   archived?: boolean;
 }
 
@@ -71,7 +100,12 @@ export async function getUsers(
     search,
     role,
     store_id,
+    store_ids,
+    position_id,
+    position_ids,
     permission,
+    permissions,
+    employment_type,
     archived = false,
     page = 1,
     page_size = 20,
@@ -92,30 +126,59 @@ export async function getUsers(
     filtered = filtered.filter((u) => roleUserIds.includes(u.id));
   }
 
-  // Filter by store
-  if (store_id) {
-    const storeUserIds = MOCK_ASSIGNMENTS
-      .filter((a) => a.store_id === store_id && a.active)
-      .map((a) => a.user_id);
-    filtered = filtered.filter((u) => storeUserIds.includes(u.id));
+  // Filter by store(s) — multi takes precedence over single
+  const effectiveStoreIds = store_ids && store_ids.length > 0
+    ? store_ids
+    : (store_id ? [store_id] : null);
+  if (effectiveStoreIds) {
+    const storeUserIds = new Set(
+      MOCK_ASSIGNMENTS
+        .filter((a) => a.active && effectiveStoreIds.includes(a.store_id))
+        .map((a) => a.user_id),
+    );
+    filtered = filtered.filter((u) => storeUserIds.has(u.id));
   }
 
-  // Filter by permission
-  if (permission) {
-    const permUserIds = MOCK_PERMISSIONS
-      .filter((p) => p.permission === permission && !p.revoked_at)
-      .map((p) => p.user_id);
-    filtered = filtered.filter((u) => permUserIds.includes(u.id));
+  // Filter by position(s)
+  const effectivePositionIds = position_ids && position_ids.length > 0
+    ? position_ids
+    : (position_id ? [position_id] : null);
+  if (effectivePositionIds) {
+    const positionUserIds = new Set(
+      MOCK_ASSIGNMENTS
+        .filter((a) => a.active && effectivePositionIds.includes(a.position_id))
+        .map((a) => a.user_id),
+    );
+    filtered = filtered.filter((u) => positionUserIds.has(u.id));
   }
 
-  // Search by name
+  // Filter by permission(s) — user matches if has ANY of requested permissions
+  const effectivePermissions = permissions && permissions.length > 0
+    ? permissions
+    : (permission ? [permission] : null);
+  if (effectivePermissions) {
+    const permUserIds = new Set(
+      MOCK_PERMISSIONS
+        .filter((p) => !p.revoked_at && effectivePermissions.includes(p.permission))
+        .map((p) => p.user_id),
+    );
+    filtered = filtered.filter((u) => permUserIds.has(u.id));
+  }
+
+  // Filter by employment type
+  if (employment_type) {
+    filtered = filtered.filter((u) => u.type === employment_type);
+  }
+
+  // Search by name or phone
   if (search) {
     const lowerSearch = search.toLowerCase();
     filtered = filtered.filter(
       (u) =>
         u.first_name.toLowerCase().includes(lowerSearch) ||
         u.last_name.toLowerCase().includes(lowerSearch) ||
-        u.phone.includes(search)
+        (u.middle_name?.toLowerCase().includes(lowerSearch) ?? false) ||
+        u.phone.includes(search),
     );
   }
 
@@ -134,7 +197,7 @@ export async function getUsers(
   const start = (page - 1) * page_size;
   const paginated = filtered.slice(start, start + page_size);
 
-  // Enrich with assignment and permissions
+  // Enrich with assignment, permissions, functional role, current shift
   const enriched: UserWithAssignment[] = paginated.map((user) => {
     const assignment = MOCK_ASSIGNMENTS.find(
       (a) => a.user_id === user.id && a.active
@@ -144,10 +207,25 @@ export async function getUsers(
       .filter((p) => p.user_id === user.id && !p.revoked_at)
       .map((p) => p.permission);
 
+    const funcRole = MOCK_FUNCTIONAL_ROLES.find(
+      (r) => r.user_id === user.id,
+    )?.functional_role;
+
+    // Сегодняшняя смена пользователя — берём первую (план или факт) на TODAY.
+    const todayShift = MOCK_SHIFTS.find(
+      (s) => s.user_id === user.id && s.shift_date === TODAY,
+    ) ?? null;
+
+    // Заглушка для freelance-документов — на M0 не считаем реально.
+    const docsCount = user.type === "FREELANCE" ? 0 : undefined;
+
     return {
       ...user,
       assignment,
       permissions: userPerms,
+      functional_role: funcRole,
+      current_shift: todayShift,
+      freelance_documents_count: docsCount,
     };
   });
 
