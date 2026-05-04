@@ -177,7 +177,8 @@
     "help": "Помощь",
     "users": "Пользователи",
     "reports": "Отчёты",
-    "organization": "Организация"
+    "organization": "Организация",
+    "employee_new": "Добавить сотрудника"
   },
   "task": {
     "title": "Задача",
@@ -1390,7 +1391,7 @@
           "reset": "Сбросить фильтры"
         }
       },
-        "toast": {
+      "toast": {
         "permission_assigned": "Привилегия назначена",
         "archived": "Сотрудник архивирован",
         "bulk_archived": "Архивировано {count} сотрудников",
@@ -1540,6 +1541,118 @@
         "store_transferred": "Сотрудник переведён",
         "archived": "Сотрудник архивирован",
         "error": "Не удалось выполнить операцию"
+      }
+    },
+    "employeeCreate": {
+      "page_title": "Добавить сотрудника",
+      "breadcrumb_home": "Главная",
+      "breadcrumb_employees": "Сотрудники",
+      "breadcrumb_new": "Новый",
+      "steps": {
+        "personal": "Личные данные",
+        "personal_sub": "ФИО, телефон, email",
+        "position": "Должность и магазин",
+        "position_sub": "Где и кем работает",
+        "permissions": "Привилегии",
+        "permissions_sub": "Компетенции работника",
+        "invite": "Приглашение",
+        "invite_sub": "Способ отправки"
+      },
+      "step1": {
+        "last_name": "Фамилия",
+        "first_name": "Имя",
+        "middle_name": "Отчество",
+        "phone": "Телефон",
+        "phone_placeholder": "+7 (999) 999-99-99",
+        "email": "Email",
+        "email_placeholder": "name@company.ru",
+        "date_of_birth": "Дата рождения",
+        "employment_type": "Тип занятости",
+        "employment_staff": "Штатный",
+        "employment_freelance": "Внештатный",
+        "freelance_hint": "Для внештатников документы обязательны",
+        "avatar": "Аватар",
+        "avatar_drop": "Перетащите фото или нажмите чтобы выбрать",
+        "avatar_constraints": "JPG / PNG, до 5 МБ"
+      },
+      "step2": {
+        "store": "Магазин",
+        "store_placeholder": "Выберите магазин",
+        "store_search": "Поиск по коду или названию",
+        "position": "Должность",
+        "position_placeholder": "Выберите должность",
+        "position_hint": "Должность определяет роль",
+        "rank": "Грейд",
+        "rank_hint": "1-6, влияет на ставку",
+        "hired_at": "Дата найма",
+        "role_alert": "По должности будет автоматически определена роль (Работник / Управляющий / HR-менеджер / Офис). Функциональную роль можно изменить после создания."
+      },
+      "step3": {
+        "title": "Привилегии",
+        "info_alert": "Привилегии — индикаторы компетенций. Не блокируют назначение задач, но помогают управляющему.",
+        "manager_skip": "Управляющие не имеют привилегий",
+        "manager_skip_subtitle": "Шаг будет пропущен для этой должности",
+        "permission_cashier": "Кассир",
+        "permission_sales_floor": "Торговый зал",
+        "permission_self_checkout": "Касса самообслуживания",
+        "permission_warehouse": "Склад",
+        "permission_production_line": "Производственная линия"
+      },
+      "step4": {
+        "method": "Способ приглашения",
+        "method_sms": "SMS",
+        "method_email": "Email",
+        "method_none": "Не отправлять",
+        "method_email_disabled_hint": "Укажите email на шаге 1, чтобы выбрать",
+        "message": "Сообщение",
+        "message_template": "Здравствуйте, {fio}! Вас пригласили в WFM — систему управления задачами магазина {store}. Скачайте приложение по ссылке: {link}",
+        "notify_manager": "Отправить копию управляющему магазина",
+        "summary_title": "Сводка"
+      },
+      "summary": {
+        "fio": "ФИО",
+        "phone": "Телефон",
+        "email": "Email",
+        "store": "Магазин",
+        "position": "Должность",
+        "rank": "Грейд",
+        "hired_at": "Дата найма",
+        "employment": "Тип занятости",
+        "permissions": "Привилегии",
+        "permissions_none": "Не назначены",
+        "invite_method": "Приглашение",
+        "not_set": "—"
+      },
+      "footer": {
+        "cancel": "Отмена",
+        "back": "Назад",
+        "next": "Далее",
+        "submit": "Создать и пригласить",
+        "saving": "Создание..."
+      },
+      "validation": {
+        "first_name_min": "Имя должно быть не короче 2 символов",
+        "last_name_min": "Фамилия должна быть не короче 2 символов",
+        "phone_invalid": "Введите телефон в формате +7 (XXX) XXX-XX-XX",
+        "phone_required": "Телефон обязателен",
+        "email_invalid": "Некорректный email",
+        "store_required": "Выберите магазин",
+        "position_required": "Выберите должность",
+        "hired_at_future": "Дата найма не может быть в будущем",
+        "invite_method_required": "Выберите способ приглашения"
+      },
+      "dialogs": {
+        "cancel_title": "Уйти без сохранения?",
+        "cancel_description": "Все введённые данные будут потеряны.",
+        "cancel_confirm": "Уйти",
+        "cancel_back": "Остаться"
+      },
+      "toast": {
+        "created": "Сотрудник создан, приглашение отправлено",
+        "created_no_invite": "Сотрудник создан",
+        "duplicate_phone": "Сотрудник с таким телефоном уже существует",
+        "duplicate_open_existing": "Открыть существующего",
+        "error": "Не удалось создать сотрудника"
       }
     }
   }

@@ -177,7 +177,8 @@
     "help": "Help",
     "users": "Users",
     "reports": "Reports",
-    "organization": "Organisation"
+    "organization": "Organisation",
+    "employee_new": "Add employee"
   },
   "task": {
     "title": "Task",
@@ -1540,6 +1541,118 @@
         "store_transferred": "Employee transferred",
         "archived": "Employee archived",
         "error": "Operation failed"
+      }
+    },
+    "employeeCreate": {
+      "page_title": "Add employee",
+      "breadcrumb_home": "Home",
+      "breadcrumb_employees": "Employees",
+      "breadcrumb_new": "New",
+      "steps": {
+        "personal": "Personal info",
+        "personal_sub": "Name, phone, email",
+        "position": "Position & store",
+        "position_sub": "Where and as what",
+        "permissions": "Permissions",
+        "permissions_sub": "Worker competencies",
+        "invite": "Invitation",
+        "invite_sub": "How to send"
+      },
+      "step1": {
+        "last_name": "Last name",
+        "first_name": "First name",
+        "middle_name": "Middle name",
+        "phone": "Phone",
+        "phone_placeholder": "+7 (999) 999-99-99",
+        "email": "Email",
+        "email_placeholder": "name@company.com",
+        "date_of_birth": "Date of birth",
+        "employment_type": "Employment type",
+        "employment_staff": "Staff",
+        "employment_freelance": "Freelance",
+        "freelance_hint": "Documents are required for freelance workers",
+        "avatar": "Avatar",
+        "avatar_drop": "Drag a photo or click to upload",
+        "avatar_constraints": "JPG / PNG, up to 5 MB"
+      },
+      "step2": {
+        "store": "Store",
+        "store_placeholder": "Select store",
+        "store_search": "Search by code or name",
+        "position": "Position",
+        "position_placeholder": "Select position",
+        "position_hint": "Position determines the role",
+        "rank": "Rank",
+        "rank_hint": "1-6, affects rate",
+        "hired_at": "Hired at",
+        "role_alert": "The role (Worker / Manager / HR / Office) will be derived from position. Functional role can be changed after creation."
+      },
+      "step3": {
+        "title": "Permissions",
+        "info_alert": "Permissions are competency indicators. They don't block task assignment but help the manager.",
+        "manager_skip": "Managers don't have permissions",
+        "manager_skip_subtitle": "This step will be skipped for this position",
+        "permission_cashier": "Cashier",
+        "permission_sales_floor": "Sales floor",
+        "permission_self_checkout": "Self-checkout",
+        "permission_warehouse": "Warehouse",
+        "permission_production_line": "Production line"
+      },
+      "step4": {
+        "method": "Invite method",
+        "method_sms": "SMS",
+        "method_email": "Email",
+        "method_none": "Don't send",
+        "method_email_disabled_hint": "Add email on step 1 to enable",
+        "message": "Message",
+        "message_template": "Hi {fio}! You've been invited to WFM — task management for {store}. Download the app: {link}",
+        "notify_manager": "Send a copy to the store manager",
+        "summary_title": "Summary"
+      },
+      "summary": {
+        "fio": "Full name",
+        "phone": "Phone",
+        "email": "Email",
+        "store": "Store",
+        "position": "Position",
+        "rank": "Rank",
+        "hired_at": "Hired",
+        "employment": "Employment",
+        "permissions": "Permissions",
+        "permissions_none": "Not assigned",
+        "invite_method": "Invite",
+        "not_set": "—"
+      },
+      "footer": {
+        "cancel": "Cancel",
+        "back": "Back",
+        "next": "Next",
+        "submit": "Create & invite",
+        "saving": "Creating..."
+      },
+      "validation": {
+        "first_name_min": "First name must be at least 2 characters",
+        "last_name_min": "Last name must be at least 2 characters",
+        "phone_invalid": "Phone must match +7 (XXX) XXX-XX-XX",
+        "phone_required": "Phone is required",
+        "email_invalid": "Invalid email",
+        "store_required": "Select a store",
+        "position_required": "Select a position",
+        "hired_at_future": "Hire date can't be in the future",
+        "invite_method_required": "Select invite method"
+      },
+      "dialogs": {
+        "cancel_title": "Leave without saving?",
+        "cancel_description": "All entered data will be lost.",
+        "cancel_confirm": "Leave",
+        "cancel_back": "Stay"
+      },
+      "toast": {
+        "created": "Employee created, invitation sent",
+        "created_no_invite": "Employee created",
+        "duplicate_phone": "An employee with this phone already exists",
+        "duplicate_open_existing": "Open existing",
+        "error": "Failed to create employee"
       }
     }
   }
