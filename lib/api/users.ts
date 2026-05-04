@@ -125,8 +125,11 @@ export interface UserListParams extends ApiListParams {
   archived?: boolean;
 }
 
-/** Способ отправки приглашения новому сотруднику. */
+/** Способ отправки приглашения новому сотруднику (для STAFF). */
 export type InviteMethod = "SMS" | "EMAIL" | "NONE";
+
+/** Канал отправки оферты внештатнику (для FREELANCE). По умолчанию = preferred auth канал организации. */
+export type OfertaChannel = "SMS" | "TELEGRAM" | "EMAIL";
 
 /** User create payload — используется wizard'ом /employees/new. */
 export interface UserCreateData extends Partial<User> {
@@ -142,12 +145,16 @@ export interface UserCreateData extends Partial<User> {
   hired_at?: string;
   /** Назначаемые привилегии при создании. Игнорируется для управляющих. */
   permissions?: Permission[];
-  /** Способ отправки приглашения. */
+  /** Способ отправки приглашения (для STAFF). */
   invite_method?: InviteMethod;
   /** Текст сообщения (по шаблону, заменяемый). */
   invite_message?: string;
   /** Отправить копию приглашения управляющему магазина. */
   notify_manager?: boolean;
+  /** ID агента-привлёкшего (для FREELANCE + payment_mode=NOMINAL_ACCOUNT). null = без агента. */
+  agent_id?: string | null;
+  /** Канал отправки оферты (для FREELANCE). */
+  oferta_channel?: OfertaChannel;
   /** Legacy (deprecated): используй invite_method. */
   send_invite?: boolean;
 }

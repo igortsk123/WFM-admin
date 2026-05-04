@@ -1628,7 +1628,14 @@
         "freelance_hint": "Documents are required for freelance workers",
         "avatar": "Avatar",
         "avatar_drop": "Drag a photo or click to upload",
-        "avatar_constraints": "JPG / PNG, up to 5 MB"
+        "avatar_constraints": "JPG / PNG, up to 5 MB",
+        "freelance_alert": "A freelance worker can start work after: signing the offer in the mobile app and HR confirmation of their status.",
+        "freelance_external_hint": "For import from external HR system, use Settings → Integrations.",
+        "oferta_channel": "Send offer via",
+        "oferta_sms": "SMS",
+        "oferta_telegram": "Telegram",
+        "oferta_email": "Email magic link",
+        "oferta_default_hint": "Defaults to organization preferred channel"
       },
       "step2": {
         "store": "Store",
@@ -1640,7 +1647,11 @@
         "rank": "Rank",
         "rank_hint": "1-6, affects rate",
         "hired_at": "Hired at",
-        "role_alert": "The role (Worker / Manager / HR / Office) will be derived from position. Functional role can be changed after creation."
+        "role_alert": "The role (Worker / Manager / HR / Office) will be derived from position. Functional role can be changed after creation.",
+        "agent": "Agent",
+        "agent_placeholder": "No agent",
+        "agent_hint": "Only when org runs on nominal-account payment mode",
+        "agent_none": "No agent"
       },
       "step3": {
         "title": "Permissions",
@@ -1676,7 +1687,9 @@
         "permissions": "Permissions",
         "permissions_none": "Not assigned",
         "invite_method": "Invite",
-        "not_set": "—"
+        "not_set": "—",
+        "agent": "Agent",
+        "oferta_channel": "Offer via"
       },
       "footer": {
         "cancel": "Cancel",
@@ -1707,7 +1720,8 @@
         "created_no_invite": "Employee created",
         "duplicate_phone": "An employee with this phone already exists",
         "duplicate_open_existing": "Open existing",
-        "error": "Failed to create employee"
+        "error": "Failed to create employee",
+        "freelance_created": "Employee created. Offer link sent."
       }
     }
   }

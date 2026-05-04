@@ -61,6 +61,7 @@ export {
   type UserListParams,
   type UserCreateData,
   type InviteMethod,
+  type OfertaChannel,
   // List & Get
   getUsers,
   getUserById,
