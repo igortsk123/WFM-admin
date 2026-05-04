@@ -77,11 +77,14 @@ import {
   createUser,
   getStores,
   getPositions,
+  getAgents,
   type UserCreateData,
   type InviteMethod,
+  type OfertaChannel,
   type StoreWithStats,
   type PositionWithCounts,
 } from "@/lib/api";
+import type { Agent } from "@/lib/types";
 import type { Permission, EmployeeType } from "@/lib/types";
 
 // ─── Zod schemas per step ───────────────────────────────────────────────────
@@ -156,6 +159,10 @@ interface WizardValues {
   position_id: number;
   rank: number;
   hired_at: Date;
+  /** Agent ID — only for FREELANCE + NOMINAL_ACCOUNT */
+  agent_id?: string | null;
+  /** Oferta delivery channel — only for FREELANCE */
+  oferta_channel?: OfertaChannel;
   // Step 3
   permissions: Permission[];
   // Step 4
@@ -192,6 +199,7 @@ function applyPhoneMask(raw: string): string {
 export function EmployeeCreateWizard() {
   const t = useTranslations("screen.employeeCreate");
   const tV = useTranslations("screen.employeeCreate.validation");
+  const tCommon = useTranslations("common");
   const router = useRouter();
 
   const [currentStep, setCurrentStep] = useState(1);
@@ -200,10 +208,14 @@ export function EmployeeCreateWizard() {
   const [avatarPreview, setAvatarPreview] = useState<string | undefined>();
   const [stores, setStores] = useState<StoreWithStats[]>([]);
   const [positions, setPositions] = useState<PositionWithCounts[]>([]);
+  const [agents, setAgents] = useState<Agent[]>([]);
   const [storeOpen, setStoreOpen] = useState(false);
   const [positionOpen, setPositionOpen] = useState(false);
+  const [agentOpen, setAgentOpen] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
   const [summarySheetOpen, setSummarySheetOpen] = useState(false);
+  // Payment mode for the demo org — determines agent field visibility
+  const [isNominalAccount, setIsNominalAccount] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Master form values accumulated across steps
@@ -211,12 +223,14 @@ export function EmployeeCreateWizard() {
     employee_type: "STAFF",
     rank: 1,
     hired_at: new Date(),
+    agent_id: null,
+    oferta_channel: "SMS",
     permissions: [],
     invite_method: "SMS",
     notify_manager: false,
   });
 
-  // Load stores + positions on mount
+  // Load stores + positions + agents on mount
   useEffect(() => {
     async function loadData() {
       try {
@@ -226,6 +240,16 @@ export function EmployeeCreateWizard() {
         ]);
         setStores(storesRes.data);
         setPositions(positionsRes.data);
+        // Try loading agents (only available for NOMINAL_ACCOUNT orgs)
+        try {
+          const agentsRes = await getAgents({ page_size: 100 });
+          setAgents(agentsRes.data);
+          setIsNominalAccount(true);
+        } catch {
+          // MODULE_DISABLED = CLIENT_DIRECT mode
+          setAgents([]);
+          setIsNominalAccount(false);
+        }
       } finally {
         setLoadingData(false);
       }
@@ -360,6 +384,8 @@ export function EmployeeCreateWizard() {
     const s3 = form3.getValues();
     const s4 = form4.getValues();
 
+    const isFreelance = s1.employee_type === "FREELANCE";
+
     const payload: UserCreateData = {
       first_name: s1.first_name,
       last_name: s1.last_name,
@@ -376,6 +402,9 @@ export function EmployeeCreateWizard() {
       invite_method: s4.invite_method as InviteMethod,
       invite_message: s4.invite_message,
       notify_manager: s4.notify_manager,
+      // Freelance-specific fields
+      agent_id: isFreelance && isNominalAccount ? (masterValues.agent_id ?? null) : undefined,
+      oferta_channel: isFreelance ? (masterValues.oferta_channel ?? "SMS") : undefined,
     };
 
     try {
@@ -397,16 +426,25 @@ export function EmployeeCreateWizard() {
       }
 
       const newId = result.id;
-      if (s4.invite_method === "NONE") {
-        toast.success(t("toast.created_no_invite"));
+      if (isFreelance) {
+        // FREELANCE: always show oferta-sent toast, redirect to documents tab
+        toast.success(t("toast.freelance_created"));
+        if (newId) {
+          router.push(`${ADMIN_ROUTES.employeeDetail(newId)}?tab=documents`);
+        } else {
+          router.push(ADMIN_ROUTES.employees);
+        }
       } else {
-        toast.success(t("toast.created"));
-      }
-
-      if (newId) {
-        router.push(ADMIN_ROUTES.employeeDetail(newId));
-      } else {
-        router.push(ADMIN_ROUTES.employees);
+        if (s4.invite_method === "NONE") {
+          toast.success(t("toast.created_no_invite"));
+        } else {
+          toast.success(t("toast.created"));
+        }
+        if (newId) {
+          router.push(ADMIN_ROUTES.employeeDetail(newId));
+        } else {
+          router.push(ADMIN_ROUTES.employees);
+        }
       }
     } catch {
       toast.error(t("toast.error"));
@@ -428,7 +466,7 @@ export function EmployeeCreateWizard() {
     router.push(ADMIN_ROUTES.employees);
   }
 
-  // ── Avatar file pick ──────────────────────────────────────────────────────────
+  // ── Avatar file pick ─────────────────────────────────────────────────────────��
   function handleAvatarFile(file: File) {
     if (!file.type.startsWith("image/")) return;
     if (file.size > 5 * 1024 * 1024) return;
@@ -527,6 +565,28 @@ export function EmployeeCreateWizard() {
               )}
             </dd>
           </div>
+          {s1Watch.employee_type === "FREELANCE" && isNominalAccount && (
+            <SummaryRow
+              label={t("summary.agent")}
+              value={
+                masterValues.agent_id
+                  ? (agents.find((a) => a.id === masterValues.agent_id)?.name ?? t("summary.not_set"))
+                  : t("step2.agent_none")
+              }
+            />
+          )}
+          {s1Watch.employee_type === "FREELANCE" && (
+            <SummaryRow
+              label={t("summary.oferta_channel")}
+              value={
+                masterValues.oferta_channel === "SMS"
+                  ? t("step1.oferta_sms")
+                  : masterValues.oferta_channel === "TELEGRAM"
+                  ? t("step1.oferta_telegram")
+                  : t("step1.oferta_email")
+              }
+            />
+          )}
           <SummaryRow
             label={t("summary.invite_method")}
             value={
@@ -885,7 +945,17 @@ export function EmployeeCreateWizard() {
                             </RadioGroup>
                           </FormControl>
                           {field.value === "FREELANCE" && (
-                            <p className="text-xs text-warning mt-1">{t("step1.freelance_hint")}</p>
+                            <div className="space-y-2 mt-2">
+                              <Alert className="border-info/30 bg-info/5">
+                                <Info className="size-4 text-info" />
+                                <AlertDescription className="text-sm">
+                                  {t("step1.freelance_alert")}
+                                </AlertDescription>
+                              </Alert>
+                              <p className="text-xs text-muted-foreground">
+                                {t("step1.freelance_external_hint")}
+                              </p>
+                            </div>
                           )}
                           <FormMessage />
                         </FormItem>
@@ -1090,6 +1160,123 @@ export function EmployeeCreateWizard() {
                         </FormItem>
                       )}
                     />
+
+                    {/* Agent combobox — only for FREELANCE + NOMINAL_ACCOUNT */}
+                    {masterValues.employee_type === "FREELANCE" && isNominalAccount && (
+                      <div className="flex flex-col gap-1.5">
+                        <Label className="text-sm font-medium">
+                          {t("step2.agent")}
+                          <span className="ml-1 text-xs font-normal text-muted-foreground">
+                            ({tCommon("optional")})
+                          </span>
+                        </Label>
+                        <Popover open={agentOpen} onOpenChange={setAgentOpen}>
+                          <PopoverTrigger asChild>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              role="combobox"
+                              className="w-full justify-between font-normal"
+                            >
+                              {masterValues.agent_id
+                                ? agents.find((a) => a.id === masterValues.agent_id)?.name
+                                : t("step2.agent_placeholder")}
+                              <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-full p-0" align="start">
+                            <Command>
+                              <CommandInput placeholder={t("step2.agent_placeholder")} />
+                              <CommandList>
+                                <CommandEmpty>{t("step2.agent_none")}</CommandEmpty>
+                                <CommandGroup>
+                                  {/* "No agent" option */}
+                                  <CommandItem
+                                    value="__none__"
+                                    onSelect={() => {
+                                      setMasterValues((prev) => ({ ...prev, agent_id: null }));
+                                      setAgentOpen(false);
+                                    }}
+                                  >
+                                    <Check
+                                      className={cn(
+                                        "mr-2 size-4",
+                                        !masterValues.agent_id ? "opacity-100" : "opacity-0"
+                                      )}
+                                    />
+                                    <span className="text-muted-foreground">
+                                      {t("step2.agent_none")}
+                                    </span>
+                                  </CommandItem>
+                                  {agents.map((agent) => (
+                                    <CommandItem
+                                      key={agent.id}
+                                      value={agent.name}
+                                      onSelect={() => {
+                                        setMasterValues((prev) => ({ ...prev, agent_id: agent.id }));
+                                        setAgentOpen(false);
+                                      }}
+                                    >
+                                      <Check
+                                        className={cn(
+                                          "mr-2 size-4",
+                                          masterValues.agent_id === agent.id
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                      {agent.name}
+                                    </CommandItem>
+                                  ))}
+                                </CommandGroup>
+                              </CommandList>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+                        <p className="text-xs text-muted-foreground">{t("step2.agent_hint")}</p>
+                      </div>
+                    )}
+
+                    {/* Oferta channel — only for FREELANCE */}
+                    {masterValues.employee_type === "FREELANCE" && (
+                      <div className="flex flex-col gap-1.5">
+                        <Label className="text-sm font-medium">
+                          {t("step1.oferta_channel")}
+                        </Label>
+                        <RadioGroup
+                          value={masterValues.oferta_channel ?? "SMS"}
+                          onValueChange={(val) =>
+                            setMasterValues((prev) => ({
+                              ...prev,
+                              oferta_channel: val as OfertaChannel,
+                            }))
+                          }
+                          className="space-y-1.5"
+                        >
+                          <div className="flex items-center gap-2">
+                            <RadioGroupItem value="SMS" id="oferta-sms" />
+                            <Label htmlFor="oferta-sms" className="font-normal cursor-pointer">
+                              {t("step1.oferta_sms")}
+                            </Label>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <RadioGroupItem value="TELEGRAM" id="oferta-telegram" />
+                            <Label htmlFor="oferta-telegram" className="font-normal cursor-pointer">
+                              {t("step1.oferta_telegram")}
+                            </Label>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <RadioGroupItem value="EMAIL" id="oferta-email" />
+                            <Label htmlFor="oferta-email" className="font-normal cursor-pointer">
+                              {t("step1.oferta_email")}
+                            </Label>
+                          </div>
+                        </RadioGroup>
+                        <p className="text-xs text-muted-foreground">
+                          {t("step1.oferta_default_hint")}
+                        </p>
+                      </div>
+                    )}
 
                     {/* Role alert */}
                     <Alert className="border-info/30 bg-info/5">
@@ -1403,7 +1590,7 @@ export function EmployeeCreateWizard() {
           <div className="h-14 lg:hidden" />
         </div>
 
-        {/* ── Desktop summary sidebar (steps 1-3 only, step 4 shows inline) ── */}
+        {/* ─�� Desktop summary sidebar (steps 1-3 only, step 4 shows inline) ── */}
         {currentStep < 4 && (
           <div className="hidden lg:block lg:col-span-1 lg:col-start-4 -mt-[calc(theme(spacing.6)+1px)]">
             {/* Invisible placeholder — summary is already the 4th col */}
