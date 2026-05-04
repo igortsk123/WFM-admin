@@ -786,7 +786,7 @@ export async function getSubtasksPending(
   const { store_id, work_type_id, zone_id, search, page = 1, page_size = 20 } = params;
 
   // Get pending subtasks
-  let pending = MOCK_SUBTASKS.filter((s) => s.review_state === "PENDING");
+  const pending = MOCK_SUBTASKS.filter((s) => s.review_state === "PENDING");
 
   // Enrich all pending with task/store/zone/work_type data first (needed for filtering)
   const nowIso = new Date("2026-05-01T10:00:00+07:00").toISOString();

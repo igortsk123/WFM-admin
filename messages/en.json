@@ -1292,6 +1292,96 @@
       "expand_hints": "Attached hints",
       "expand_no_hints": "No hints attached",
       "expand_hints_count": "{count, plural, one {# hint} other {# hints}}"
+    },
+    "employees": {
+      "page_title": "Employees",
+      "counter": "{count, plural, one {# employee} other {# employees}}",
+      "actions": {
+        "import_lama": "Import from LAMA",
+        "import_xlsx": "Import XLSX",
+        "export_xlsx": "Export XLSX",
+        "add": "Add employee",
+        "more": "More"
+      },
+      "tabs": {
+        "all": "All",
+        "active": "Active",
+        "archived": "Archive"
+      },
+      "filters": {
+        "search_placeholder": "Search by name, phone",
+        "store": "Store",
+        "position": "Position",
+        "permission": "Permission",
+        "functional_role": "Functional role",
+        "employment_type": "Employment type",
+        "clear_all": "Clear all",
+        "open_filters": "Filters",
+        "close": "Close",
+        "apply": "Apply"
+      },
+      "employment": {
+        "staff": "Staff",
+        "freelance": "Freelance",
+        "no_documents": "No documents uploaded"
+      },
+      "columns": {
+        "fio": "Employee",
+        "store": "Store",
+        "position": "Position",
+        "functional_role": "Functional role",
+        "permissions": "Permissions",
+        "current_shift": "Current shift",
+        "employment": "Employment",
+        "hired_at": "Hired",
+        "more_permissions": "+{n}"
+      },
+      "shift": {
+        "no_shift": "—",
+        "time_range": "{start}–{end}"
+      },
+      "row_actions": {
+        "open": "Open card",
+        "assign_task": "Assign task",
+        "permissions": "Permissions",
+        "change_position": "Change position",
+        "impersonate": "Login as user",
+        "archive": "Archive"
+      },
+      "bulk": {
+        "selected": "{count, plural, one {# employee selected} other {# employees selected}}",
+        "assign_permission": "Assign permission",
+        "archive": "Archive",
+        "cancel": "Cancel"
+      },
+      "dialogs": {
+        "permission_title": "Assign permission",
+        "permission_select": "Select permission",
+        "archive_title": "Archive employee?",
+        "archive_description": "Archived employees won't appear in task and shift lists. Reversible.",
+        "archive_confirm": "Archive"
+      },
+      "empty": {
+        "all": {
+          "title": "No employees",
+          "cta": "Add employee"
+        },
+        "archived": {
+          "title": "Archive is empty",
+          "subtitle": "Archived employees will appear here"
+        },
+        "filtered": {
+          "title": "Nothing found",
+          "subtitle": "Try adjusting filters or clear them",
+          "reset": "Reset filters"
+        }
+      },
+      "toast": {
+        "permission_assigned": "Permission assigned",
+        "archived": "Employee archived",
+        "bulk_archived": "Archived {count} employees",
+        "error": "Operation failed"
+      }
     }
   }
 }
