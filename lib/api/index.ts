@@ -60,6 +60,7 @@ export {
   type FreelanceDocument,
   type UserListParams,
   type UserCreateData,
+  type InviteMethod,
   // List & Get
   getUsers,
   getUserById,

@@ -119,11 +119,31 @@ export interface UserListParams extends ApiListParams {
   archived?: boolean;
 }
 
-/** User create payload */
+/** Способ отправки приглашения новому сотруднику. */
+export type InviteMethod = "SMS" | "EMAIL" | "NONE";
+
+/** User create payload — используется wizard'ом /employees/new. */
 export interface UserCreateData extends Partial<User> {
+  /** Должность (формальная). Обязательно. */
   position_id: number;
+  /** Магазин текущего назначения. Обязательно. */
   store_id: number;
-  send_invite: boolean;
+  /** Грейд внутри должности (1-6). По умолчанию 1. */
+  rank?: number;
+  /** Дата рождения (опционально). ISO. */
+  date_of_birth?: string;
+  /** Дата найма. По умолчанию сегодня. */
+  hired_at?: string;
+  /** Назначаемые привилегии при создании. Игнорируется для управляющих. */
+  permissions?: Permission[];
+  /** Способ отправки приглашения. */
+  invite_method?: InviteMethod;
+  /** Текст сообщения (по шаблону, заменяемый). */
+  invite_message?: string;
+  /** Отправить копию приглашения управляющему магазина. */
+  notify_manager?: boolean;
+  /** Legacy (deprecated): используй invite_method. */
+  send_invite?: boolean;
 }
 
 // ═══════════════════════════════════════════════════════════════════
