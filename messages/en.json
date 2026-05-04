@@ -1396,6 +1396,151 @@
         "bulk_archived": "Archived {count} employees",
         "error": "Operation failed"
       }
+    },
+    "employeeDetail": {
+      "breadcrumb_home": "Home",
+      "breadcrumb_employees": "Employees",
+      "active_dot_label": "Currently online",
+      "archived_label": "Archived",
+      "store_link_prefix": "Store",
+      "phone": "Phone",
+      "email": "Email",
+      "permissions_empty": "No permissions assigned",
+      "permissions_assign": "Assign",
+      "dob": "Date of birth",
+      "hired_at": "Hired",
+      "employee_type": "Employment type",
+      "last_active": "Last active",
+      "actions": {
+        "assign_task": "Assign task",
+        "permissions": "Permissions",
+        "edit": "Edit",
+        "more": "More",
+        "change_position": "Change position",
+        "transfer_store": "Transfer to store",
+        "reset_password": "Reset password / send invite",
+        "archive": "Archive"
+      },
+      "stats": {
+        "tasks_month": "Tasks this month",
+        "accepted_rejected": "Accepted / Rejected",
+        "paused_now": "Paused now",
+        "avg_completion": "Avg. completion",
+        "diff_vs_prev": "vs previous",
+        "diff_vs_plan": "vs plan",
+        "minutes_unit": "min"
+      },
+      "tabs": {
+        "profile": "Profile",
+        "tasks": "Tasks",
+        "shifts": "Shifts",
+        "permissions": "Permissions",
+        "history": "History",
+        "documents": "Documents"
+      },
+      "profile": {
+        "personal_card": "Personal data",
+        "personal_name": "Full name",
+        "personal_phone": "Phone",
+        "personal_email": "Email",
+        "personal_dob": "Date of birth",
+        "personal_type": "Employment type",
+        "personal_hired": "Hired",
+        "assignments_card": "Assignments",
+        "assignments_current": "Current",
+        "assignments_add": "Add assignment",
+        "assignments_position": "Position",
+        "assignments_store": "Store",
+        "assignments_rank": "Rank",
+        "scope_card": "Functional role & scope",
+        "scope_role": "Role",
+        "scope_store_single": "Store",
+        "scope_store_list": "Stores",
+        "scope_network": "Entire network",
+        "scope_edit": "Edit role",
+        "system_card": "System info",
+        "system_id": "Internal ID",
+        "system_external_id": "External ID",
+        "system_created": "Created",
+        "system_last_active": "Last active",
+        "system_timezone": "Timezone",
+        "system_locale": "Language"
+      },
+      "tasks": {
+        "filter_period": "Period",
+        "filter_state": "Status",
+        "empty": "No tasks found"
+      },
+      "shifts": {
+        "col_date": "Date",
+        "col_store": "Store",
+        "col_planned": "Planned",
+        "col_actual": "Actual",
+        "col_duration": "Duration",
+        "col_status": "Status",
+        "empty": "No shifts found"
+      },
+      "permissions": {
+        "permission_label": "Permission",
+        "granted_at": "Granted",
+        "granted_by": "Granted by",
+        "revoke": "Revoke",
+        "grant": "Grant",
+        "not_granted": "Not granted",
+        "history_card": "Permission history",
+        "history_granted": "Permission {permission} granted",
+        "history_revoked": "Permission {permission} revoked"
+      },
+      "history": {
+        "empty": "History is empty"
+      },
+      "documents": {
+        "tab_optional": "Optional",
+        "freelance_required_alert": "Documents are required for a freelance employee",
+        "doc_passport": "Passport",
+        "doc_inn": "Tax ID (INN)",
+        "doc_snils": "Pension ID (SNILS)",
+        "doc_contract": "Contract",
+        "uploaded_at": "Uploaded {date}",
+        "not_uploaded": "Not uploaded",
+        "upload": "Upload",
+        "replace": "Replace",
+        "download": "Download"
+      },
+      "dialogs": {
+        "edit_profile_title": "Edit profile",
+        "edit_profile_name": "Full name",
+        "edit_profile_first_name": "First name",
+        "edit_profile_last_name": "Last name",
+        "edit_profile_middle_name": "Middle name",
+        "edit_profile_phone": "Phone",
+        "edit_profile_email": "Email",
+        "edit_profile_dob": "Date of birth",
+        "manage_permissions_title": "Manage permissions",
+        "manage_permissions_save": "Save",
+        "change_position_title": "Change position",
+        "change_position_select": "Select position",
+        "change_position_warning": "Changing position may affect the functional role",
+        "transfer_store_title": "Transfer to store",
+        "transfer_store_select": "Select store",
+        "archive_title": "Archive employee?",
+        "archive_description": "The employee will be hidden from task and shift lists. This action is reversible."
+      },
+      "states": {
+        "not_found_title": "Employee not found",
+        "not_found_description": "A user with this ID does not exist or was deleted",
+        "forbidden_title": "Access denied",
+        "forbidden_description": "You do not have access to this employee's data",
+        "error_retry": "Try again"
+      },
+      "toast": {
+        "profile_updated": "Profile updated",
+        "permissions_updated": "Permissions updated",
+        "position_changed": "Position changed",
+        "store_transferred": "Employee transferred",
+        "archived": "Employee archived",
+        "error": "Operation failed"
+      }
     }
   }
 }

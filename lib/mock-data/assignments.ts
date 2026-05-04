@@ -48,8 +48,14 @@ export const MOCK_ASSIGNMENTS: Assignment[] = [
   { id: 25, user_id: 25, position_id: 2, position_name: "Кассир", store_id: 8, store_name: "Food City Томск, ул. Учебная 39", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: true },
   { id: 26, user_id: 26, position_id: 6, position_name: "Мерчендайзер", store_id: 8, store_name: "Food City Томск, ул. Учебная 39", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: true },
   { id: 27, user_id: 27, position_id: 4, position_name: "Продавец-консультант", store_id: 10, store_name: "Магазин одежды Альфа, Томск, пр. Ленина 50", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: true },
-  { id: 28, user_id: 28, position_id: 2, position_name: "Кассир", store_id: 1, store_name: "СПАР Томск, пр. Ленина 80", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: false },
+  { id: 28, user_id: 28, position_id: 2, position_name: "Кассир", store_id: 1, store_name: "СПАР То��ск, пр. Ленина 80", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: false },
   { id: 29, user_id: 29, position_id: 1, position_name: "Универсал", store_id: 1, store_name: "СПАР Томск, пр. Ленина 80", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: true },
   { id: 30, user_id: 30, position_id: 4, position_name: "Продавец-консультант", store_id: 4, store_name: "СПАР Новосибирск, ул. Ленина 55", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: true },
   { id: 31, user_id: 31, position_id: 1, position_name: "Универсал", store_id: 6, store_name: "СПАР Кемерово, пр. Советский 50", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: true },
+
+  // ── id=101 Иванова М. П. — demo employee detail ──────────────────
+  // Текущее назначение (активное)
+  { id: 101, user_id: 101, position_id: 2, position_name: "Кассир", store_id: 1, store_name: "СПАР Томск, пр. Ленина 80", rank: { id: 2, code: "RANK-2", name: "Старший" }, active: true, external_id: "EMP-042" },
+  // Предыдущее назначение (архивное)
+  { id: 102, user_id: 101, position_id: 4, position_name: "Продавец-консультант", store_id: 2, store_name: "СПАР Томск, ул. Красноармейская 99", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: false, external_id: "EMP-015" },
 ];
