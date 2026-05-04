@@ -16,6 +16,7 @@ import type {
   EmployeeType,
   FreelancerStatus,
   Shift,
+  PaymentMode,
 } from "@/lib/types";
 import { MOCK_USERS } from "@/lib/mock-data";
 import { MOCK_ASSIGNMENTS } from "@/lib/mock-data/assignments";
@@ -23,6 +24,7 @@ import { MOCK_PERMISSIONS } from "@/lib/mock-data/permissions";
 import { MOCK_FUNCTIONAL_ROLES } from "@/lib/mock-data/functional-roles";
 import { MOCK_SHIFTS } from "@/lib/mock-data/shifts";
 import { MOCK_FREELANCE_AGENTS } from "@/lib/mock-data/freelance-agents";
+import { MOCK_ORGANIZATIONS } from "@/lib/mock-data/organizations";
 
 /** Сегодняшняя дата в моках — синхронизируем с MOCK_SHIFTS / MOCK_TASKS. */
 const TODAY = "2026-05-01";
@@ -83,6 +85,10 @@ export interface UserDetail extends User {
   stats?: UserStats;
   last_active_at?: string;
   freelance_documents?: FreelanceDocument[];
+  /** Resolved agent name (FREELANCE only, null if no agent). */
+  agent_name?: string | null;
+  /** Organization payment mode (FREELANCE only). */
+  payment_mode?: PaymentMode;
 }
 
 /**
@@ -377,6 +383,18 @@ export async function getUserById(
         ]
       : undefined;
 
+  // Resolve agent name for FREELANCE users
+  const agent_name =
+    user.type === "FREELANCE" && user.agent_id
+      ? (MOCK_FREELANCE_AGENTS.find((a) => a.id === user.agent_id)?.name ?? null)
+      : null;
+
+  // Resolve payment_mode from first organization (SPAR demo)
+  const payment_mode: PaymentMode | undefined =
+    user.type === "FREELANCE"
+      ? (MOCK_ORGANIZATIONS[0]?.payment_mode ?? "NOMINAL_ACCOUNT")
+      : undefined;
+
   return {
     data: {
       ...user,
@@ -387,6 +405,8 @@ export async function getUserById(
       stats,
       last_active_at: id === 101 ? "2026-05-01T08:22:00Z" : undefined,
       freelance_documents,
+      agent_name,
+      payment_mode,
     },
   };
 }

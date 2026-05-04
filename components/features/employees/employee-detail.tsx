@@ -25,10 +25,17 @@ import {
   Timer,
   FileText,
   RotateCcw,
+  Info,
+  ChevronDown,
+  ChevronUp,
+  Download,
+  Star,
+  BanIcon,
+  UserCheck,
 } from "lucide-react"
 import Link from "next/link"
 
-import type { Permission, FunctionalRole } from "@/lib/types"
+import type { Permission, FunctionalRole, Service, Payout } from "@/lib/types"
 import type { UserDetail } from "@/lib/api/users"
 import {
   getUserById,
@@ -36,6 +43,8 @@ import {
   archiveUser,
   updateUserPermissions,
 } from "@/lib/api/users"
+import { getServices } from "@/lib/api/freelance-services"
+import { getPayouts } from "@/lib/api/freelance-payouts"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
@@ -75,6 +84,14 @@ import {
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet"
+import { Textarea } from "@/components/ui/textarea"
+import { Label } from "@/components/ui/label"
+import { Progress } from "@/components/ui/progress"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 
 import {
   PageHeader,
@@ -82,8 +99,7 @@ import {
   PermissionPill,
   RoleBadge,
   EmptyState,
-  ShiftStateBadge,
-  TaskStateBadge,
+  FreelancerStatusBadge,
 } from "@/components/shared"
 
 import { EditProfileDialogContent } from "./edit-profile-dialog-content"
@@ -167,6 +183,9 @@ export function EmployeeDetail({ userId }: EmployeeDetailProps) {
   const [editProfileOpen, setEditProfileOpen] = useState(false)
   const [managePermsOpen, setManagePermsOpen] = useState(false)
   const [archiveOpen, setArchiveOpen] = useState(false)
+  const [blockOpen, setBlockOpen] = useState(false)
+  const [blockReason, setBlockReason] = useState("")
+  const [blockLoading, setBlockLoading] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
   // Detect mobile
@@ -318,6 +337,37 @@ export function EmployeeDetail({ userId }: EmployeeDetailProps) {
     await handleSavePermissions(next)
   }
 
+  async function handleBlock() {
+    setBlockLoading(true)
+    try {
+      await updateUser(userId, { freelancer_status: "BLOCKED" } as never)
+      toast.success(t("actions.block_toast"))
+      setBlockOpen(false)
+      setBlockReason("")
+      await load()
+    } catch {
+      toast.error(t("toast.error"))
+    } finally {
+      setBlockLoading(false)
+    }
+  }
+
+  async function handleActivate() {
+    try {
+      await updateUser(userId, { freelancer_status: "ACTIVE" } as never)
+      toast.success(t("actions.activate_toast"))
+      await load()
+    } catch {
+      toast.error(t("toast.error"))
+    }
+  }
+
+  async function handleSendOfferLink() {
+    if (!user) return
+    await new Promise((r) => setTimeout(r, 600))
+    toast.success(t("freelance_hero.offer_link_sent", { phone: user.phone }))
+  }
+
   // ─────────────────────────────────────────────────────────────────
   // BREADCRUMBS
   // ─────────────────────────────────────────────────────────────────
@@ -438,18 +488,48 @@ export function EmployeeDetail({ userId }: EmployeeDetailProps) {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-52">
-            <DropdownMenuItem>
-              <UserCog className="size-4 mr-2" aria-hidden="true" />
-              {t("actions.change_position")}
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <MoveRight className="size-4 mr-2" aria-hidden="true" />
-              {t("actions.transfer_store")}
-            </DropdownMenuItem>
+            {user.type === "STAFF" && (
+              <>
+                <DropdownMenuItem>
+                  <UserCog className="size-4 mr-2" aria-hidden="true" />
+                  {t("actions.change_position")}
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <MoveRight className="size-4 mr-2" aria-hidden="true" />
+                  {t("actions.transfer_store")}
+                </DropdownMenuItem>
+              </>
+            )}
             <DropdownMenuItem>
               <KeyRound className="size-4 mr-2" aria-hidden="true" />
               {t("actions.reset_password")}
             </DropdownMenuItem>
+            {/* FREELANCE-specific: block / activate */}
+            {user.type === "FREELANCE" && (
+              <>
+                <DropdownMenuSeparator />
+                {user.freelancer_status !== "BLOCKED" ? (
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive"
+                    onClick={() => setBlockOpen(true)}
+                  >
+                    <BanIcon className="size-4 mr-2" aria-hidden="true" />
+                    {t("actions.block")}
+                  </DropdownMenuItem>
+                ) : (
+                  <DropdownMenuItem onClick={handleActivate}>
+                    <UserCheck className="size-4 mr-2" aria-hidden="true" />
+                    {t("actions.activate")}
+                  </DropdownMenuItem>
+                )}
+                {(user.freelancer_status === "NEW" || user.freelancer_status === "VERIFICATION") && (
+                  <DropdownMenuItem onClick={handleActivate}>
+                    <UserCheck className="size-4 mr-2" aria-hidden="true" />
+                    {t("actions.activate")}
+                  </DropdownMenuItem>
+                )}
+              </>
+            )}
             <DropdownMenuSeparator />
             <AlertDialogTrigger asChild>
               <DropdownMenuItem className="text-destructive focus:text-destructive">
@@ -473,6 +553,41 @@ export function EmployeeDetail({ userId }: EmployeeDetailProps) {
               onClick={handleArchive}
             >
               {tCommon("archive")}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Block dialog (FREELANCE only) */}
+      <AlertDialog open={blockOpen} onOpenChange={setBlockOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{t("actions.block_dialog_title")}</AlertDialogTitle>
+            <AlertDialogDescription>
+              {t("actions.block_dialog_description")}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="px-0 pb-2">
+            <Label htmlFor="block-reason" className="text-sm font-medium">
+              {t("actions.block_reason_label")}
+            </Label>
+            <Textarea
+              id="block-reason"
+              className="mt-1.5 resize-none"
+              rows={3}
+              placeholder={t("actions.block_reason_placeholder")}
+              value={blockReason}
+              onChange={(e) => setBlockReason(e.target.value)}
+            />
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setBlockReason("")}>{tCommon("cancel")}</AlertDialogCancel>
+            <AlertDialogAction
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              onClick={handleBlock}
+              disabled={blockLoading}
+            >
+              {t("actions.block_confirm")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -525,6 +640,9 @@ export function EmployeeDetail({ userId }: EmployeeDetailProps) {
                     {user.archived && (
                       <Badge variant="secondary">{t("archived_label")}</Badge>
                     )}
+                    {user.type === "FREELANCE" && user.freelancer_status && (
+                      <FreelancerStatusBadge status={user.freelancer_status} />
+                    )}
                   </div>
 
                   {/* Position · Store */}
@@ -563,25 +681,53 @@ export function EmployeeDetail({ userId }: EmployeeDetailProps) {
                 )}
               </div>
 
-              {/* Permission pills */}
-              {localPermissions.length > 0 ? (
-                <div className="flex flex-wrap gap-1.5" role="list" aria-label={tPerm("titlePlural")}>
-                  {localPermissions.map((p) => (
-                    <span key={p} role="listitem">
-                      <PermissionPill permission={p} />
-                    </span>
-                  ))}
+              {/* Permission pills — hidden for FREELANCE (no zone permissions) */}
+              {user.type === "STAFF" && (
+                localPermissions.length > 0 ? (
+                  <div className="flex flex-wrap gap-1.5" role="list" aria-label={tPerm("titlePlural")}>
+                    {localPermissions.map((p) => (
+                      <span key={p} role="listitem">
+                        <PermissionPill permission={p} />
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm text-muted-foreground italic">
+                    {t("permissions_empty")}{" "}
+                    <button
+                      onClick={() => setManagePermsOpen(true)}
+                      className="text-primary hover:underline underline-offset-2"
+                    >
+                      {t("permissions_assign")}
+                    </button>
+                  </p>
+                )
+              )}
+
+              {/* FREELANCE-only hero extras */}
+              {user.type === "FREELANCE" && (
+                <div className="flex flex-col gap-3">
+                  {/* External sync badge */}
+                  {user.source === "EXTERNAL_SYNC" && (
+                    <div className="flex items-center gap-1.5 rounded-md bg-info/10 px-2.5 py-1.5 w-fit">
+                      <Info className="size-3.5 text-info shrink-0" aria-hidden="true" />
+                      <span className="text-xs text-info">{t("freelance_hero.external_sync_badge")}</span>
+                    </div>
+                  )}
+
+                  {/* Agent card — shown only in NOMINAL_ACCOUNT mode */}
+                  {user.agent_id && user.agent_name && user.payment_mode !== "CLIENT_DIRECT" && (
+                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <span>{t("freelance_hero.agent_label")}:</span>
+                      <Link
+                        href={ADMIN_ROUTES.freelanceAgentDetail(user.agent_id)}
+                        className="text-foreground font-medium hover:underline underline-offset-2 transition-colors"
+                      >
+                        {user.agent_name}
+                      </Link>
+                    </div>
+                  )}
                 </div>
-              ) : (
-                <p className="text-sm text-muted-foreground italic">
-                  {t("permissions_empty")}{" "}
-                  <button
-                    onClick={() => setManagePermsOpen(true)}
-                    className="text-primary hover:underline underline-offset-2"
-                  >
-                    {t("permissions_assign")}
-                  </button>
-                </p>
               )}
             </div>
 
@@ -643,6 +789,18 @@ export function EmployeeDetail({ userId }: EmployeeDetailProps) {
         </CardContent>
       </Card>
 
+      {/* ── FREELANCE: Offer card ─────────────────────────────── */}
+      {user.type === "FREELANCE" && (
+        <FreelanceOfferCard
+          user={user}
+          locale={locale}
+          formatDate={formatDate}
+          t={t}
+          tCommon={tCommon}
+          onSendLink={handleSendOfferLink}
+        />
+      )}
+
       {/* ── TABS ─────────────────────────────────────────────────── */}
       <Tabs defaultValue="profile" className="w-full">
         <ScrollArea className="w-full">
@@ -656,7 +814,7 @@ export function EmployeeDetail({ userId }: EmployeeDetailProps) {
                 {t(`tabs.${tab}`)}
               </TabsTrigger>
             ))}
-            {/* Documents tab — only for HR_MANAGER (in a real app, role check here) */}
+            {/* Documents tab */}
             <TabsTrigger
               value="documents"
               className="rounded-none border-b-2 border-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none"
@@ -668,6 +826,31 @@ export function EmployeeDetail({ userId }: EmployeeDetailProps) {
                 </Badge>
               )}
             </TabsTrigger>
+            {/* FREELANCE-only tabs */}
+            {user.type === "FREELANCE" && (
+              <>
+                <TabsTrigger
+                  value="services"
+                  className="rounded-none border-b-2 border-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+                >
+                  {t("tabs.services")}
+                </TabsTrigger>
+                {user.payment_mode !== "CLIENT_DIRECT" && (
+                  <TabsTrigger
+                    value="payouts"
+                    className="rounded-none border-b-2 border-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+                  >
+                    {t("tabs.payouts")}
+                  </TabsTrigger>
+                )}
+                <TabsTrigger
+                  value="rating"
+                  className="rounded-none border-b-2 border-transparent px-4 py-2.5 text-sm font-medium text-muted-foreground hover:text-foreground data-[state=active]:border-primary data-[state=active]:text-foreground data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+                >
+                  {t("tabs.rating")}
+                </TabsTrigger>
+              </>
+            )}
           </TabsList>
           <ScrollBar orientation="horizontal" />
         </ScrollArea>
@@ -707,6 +890,40 @@ export function EmployeeDetail({ userId }: EmployeeDetailProps) {
         <TabsContent value="documents" className="mt-6">
           <DocumentsTab user={user} t={t} locale={locale} formatDate={formatDate} />
         </TabsContent>
+
+        {/* ── FREELANCE: Services tab ───────────────────────────── */}
+        {user.type === "FREELANCE" && (
+          <TabsContent value="services" className="mt-6">
+            <FreelanceServicesTab
+              freelancerId={userId}
+              paymentMode={user.payment_mode ?? "NOMINAL_ACCOUNT"}
+              locale={locale}
+              formatDate={formatDate}
+              t={t}
+              tCommon={tCommon}
+            />
+          </TabsContent>
+        )}
+
+        {/* ── FREELANCE: Payouts tab ───────────────────────────── */}
+        {user.type === "FREELANCE" && user.payment_mode !== "CLIENT_DIRECT" && (
+          <TabsContent value="payouts" className="mt-6">
+            <FreelancePayoutsTab
+              freelancerId={userId}
+              locale={locale}
+              formatDate={formatDate}
+              t={t}
+              tCommon={tCommon}
+            />
+          </TabsContent>
+        )}
+
+        {/* ── FREELANCE: Rating tab ────────────────────────────── */}
+        {user.type === "FREELANCE" && (
+          <TabsContent value="rating" className="mt-6">
+            <FreelanceRatingTab user={user} t={t} />
+          </TabsContent>
+        )}
       </Tabs>
     </div>
   )
@@ -1263,6 +1480,459 @@ function PermissionsMobileContent({ currentPermissions, onSave, onClose }: Permi
           {t("dialogs.manage_permissions_save")}
         </Button>
       </div>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FREELANCE OFFER CARD
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface FreelanceOfferCardProps {
+  user: UserDetail
+  locale: string
+  formatDate: (iso: string | undefined | null, locale: string) => string
+  t: ReturnType<typeof useTranslations<"screen.employeeDetail">>
+  tCommon: ReturnType<typeof useTranslations<"common">>
+  onSendLink: () => Promise<void>
+}
+
+function FreelanceOfferCard({ user, locale, formatDate, t, tCommon, onSendLink }: FreelanceOfferCardProps) {
+  const isSigned = !!user.oferta_accepted_at
+  const [open, setOpen] = useState(!isSigned)
+  const [sending, setSending] = useState(false)
+
+  async function handleSend() {
+    setSending(true)
+    try {
+      await onSendLink()
+    } finally {
+      setSending(false)
+    }
+  }
+
+  return (
+    <Collapsible open={open} onOpenChange={setOpen}>
+      <Card>
+        <CollapsibleTrigger asChild>
+          <CardHeader className="pb-3 cursor-pointer select-none">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <CardTitle className="text-base">{t("freelance_hero.offer_card_title")}</CardTitle>
+                <span
+                  className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-xs font-medium ${
+                    isSigned
+                      ? "bg-success/10 text-success"
+                      : "bg-warning/10 text-warning"
+                  }`}
+                >
+                  {isSigned ? (
+                    <CheckCircle2 className="size-3" aria-hidden="true" />
+                  ) : (
+                    <XCircle className="size-3" aria-hidden="true" />
+                  )}
+                  {isSigned ? t("freelance_hero.offer_signed") : t("freelance_hero.offer_not_signed")}
+                </span>
+              </div>
+              {open ? (
+                <ChevronUp className="size-4 text-muted-foreground" aria-hidden="true" />
+              ) : (
+                <ChevronDown className="size-4 text-muted-foreground" aria-hidden="true" />
+              )}
+            </div>
+          </CardHeader>
+        </CollapsibleTrigger>
+        <CollapsibleContent>
+          <CardContent className="pt-0 pb-4">
+            <div className="flex flex-col gap-3">
+              {isSigned && user.oferta_accepted_at && (
+                <p className="text-sm text-muted-foreground">
+                  {t("freelance_hero.offer_signed_at", {
+                    date: formatDate(user.oferta_accepted_at, locale),
+                  })}
+                </p>
+              )}
+              {!isSigned && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="w-fit min-h-9"
+                  onClick={handleSend}
+                  disabled={sending}
+                >
+                  {sending ? tCommon("loading") : t("freelance_hero.offer_send_link")}
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </CollapsibleContent>
+      </Card>
+    </Collapsible>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FREELANCE SERVICES TAB
+// ─────────────────────────────────────────────────────────────────────────────
+
+const SERVICE_STATUS_CLASS: Record<string, string> = {
+  PLANNED: "bg-muted text-muted-foreground",
+  IN_PROGRESS: "bg-info/10 text-info",
+  COMPLETED: "bg-warning/10 text-warning",
+  CONFIRMED: "bg-success/10 text-success",
+  READY_TO_PAY: "bg-success/10 text-success",
+  PAID: "bg-success/10 text-success",
+  NO_SHOW: "bg-destructive/10 text-destructive",
+  DISPUTED: "bg-destructive/10 text-destructive",
+}
+
+interface FreelanceServicesTabProps {
+  freelancerId: number
+  paymentMode: "NOMINAL_ACCOUNT" | "CLIENT_DIRECT"
+  locale: string
+  formatDate: (iso: string | undefined | null, locale: string) => string
+  t: ReturnType<typeof useTranslations<"screen.employeeDetail">>
+  tCommon: ReturnType<typeof useTranslations<"common">>
+}
+
+function FreelanceServicesTab({ freelancerId, paymentMode, locale, formatDate, t, tCommon }: FreelanceServicesTabProps) {
+  const [services, setServices] = useState<Service[]>([])
+  const [total, setTotal] = useState(0)
+  const [loadState, setLoadState] = useState<"loading" | "loaded" | "error">("loading")
+  const [selectedService, setSelectedService] = useState<Service | null>(null)
+
+  useEffect(() => {
+    setLoadState("loading")
+    getServices({ freelancer_id: freelancerId, page_size: 50 })
+      .then((res) => {
+        setServices(res.data)
+        setTotal(res.total ?? 0)
+        setLoadState("loaded")
+      })
+      .catch(() => setLoadState("error"))
+  }, [freelancerId])
+
+  const tFreelance = useTranslations("freelance")
+
+  if (loadState === "loading") {
+    return (
+      <div className="flex flex-col gap-2">
+        {[0, 1, 2].map((i) => <Skeleton key={i} className="h-12 w-full rounded-lg" />)}
+      </div>
+    )
+  }
+
+  if (loadState === "error") {
+    return (
+      <Alert variant="destructive">
+        <AlertCircle className="size-4" />
+        <AlertDescription>{tCommon("error")}</AlertDescription>
+      </Alert>
+    )
+  }
+
+  if (services.length === 0) {
+    return <EmptyState icon={Briefcase} title={t("services_tab.empty")} description="" />
+  }
+
+  return (
+    <>
+      <div className="overflow-x-auto rounded-lg border">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b bg-muted/50">
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{t("services_tab.col_date")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{t("services_tab.col_store")}</th>
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden sm:table-cell">{t("services_tab.col_work_type")}</th>
+              <th className="px-4 py-3 text-right font-medium text-muted-foreground">{t("services_tab.col_hours")}</th>
+              {paymentMode === "NOMINAL_ACCOUNT" && (
+                <th className="px-4 py-3 text-right font-medium text-muted-foreground hidden md:table-cell">{t("services_tab.col_amount")}</th>
+              )}
+              <th className="px-4 py-3 text-left font-medium text-muted-foreground">{t("services_tab.col_status")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {services.map((svc) => (
+              <tr
+                key={svc.id}
+                className="border-b last:border-0 hover:bg-muted/30 cursor-pointer transition-colors"
+                onClick={() => setSelectedService(svc)}
+              >
+                <td className="px-4 py-3 text-foreground whitespace-nowrap">
+                  {formatDate(svc.service_date, locale)}
+                </td>
+                <td className="px-4 py-3 text-foreground truncate max-w-[140px]">{svc.store_name}</td>
+                <td className="px-4 py-3 text-muted-foreground hidden sm:table-cell truncate max-w-[160px]">
+                  {svc.work_type_name}
+                </td>
+                <td className="px-4 py-3 text-right text-foreground">{svc.actual_hours ?? svc.scheduled_hours}</td>
+                {paymentMode === "NOMINAL_ACCOUNT" && (
+                  <td className="px-4 py-3 text-right text-foreground hidden md:table-cell">
+                    {svc.total_amount != null
+                      ? new Intl.NumberFormat(locale === "en" ? "en-GB" : "ru-RU", {
+                          style: "currency",
+                          currency: locale === "en" ? "GBP" : "RUB",
+                          maximumFractionDigits: 0,
+                        }).format(svc.total_amount)
+                      : "—"}
+                  </td>
+                )}
+                <td className="px-4 py-3">
+                  <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${SERVICE_STATUS_CLASS[svc.status] ?? "bg-muted text-muted-foreground"}`}>
+                    {tFreelance(`service.status.${svc.status}`)}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Service detail sheet */}
+      <Sheet open={!!selectedService} onOpenChange={(v) => { if (!v) setSelectedService(null) }}>
+        <SheetContent side="right" className="w-full sm:max-w-md overflow-y-auto">
+          <SheetHeader className="mb-4">
+            <SheetTitle>{t("services_tab.sheet_title")}</SheetTitle>
+          </SheetHeader>
+          {selectedService && (
+            <dl className="flex flex-col gap-4">
+              <div>
+                <dt className="text-xs text-muted-foreground">{t("services_tab.col_date")}</dt>
+                <dd className="text-sm text-foreground mt-0.5">{formatDate(selectedService.service_date, locale)}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-muted-foreground">{t("services_tab.col_store")}</dt>
+                <dd className="text-sm text-foreground mt-0.5">{selectedService.store_name}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-muted-foreground">{t("services_tab.col_work_type")}</dt>
+                <dd className="text-sm text-foreground mt-0.5">{selectedService.work_type_name}</dd>
+              </div>
+              <div>
+                <dt className="text-xs text-muted-foreground">{t("services_tab.col_hours")}</dt>
+                <dd className="text-sm text-foreground mt-0.5">{selectedService.actual_hours ?? selectedService.scheduled_hours} ч.</dd>
+              </div>
+              {selectedService.total_amount != null && (
+                <div>
+                  <dt className="text-xs text-muted-foreground">{t("services_tab.col_amount")}</dt>
+                  <dd className="text-sm text-foreground mt-0.5">
+                    {new Intl.NumberFormat(locale === "en" ? "en-GB" : "ru-RU", {
+                      style: "currency",
+                      currency: locale === "en" ? "GBP" : "RUB",
+                      maximumFractionDigits: 0,
+                    }).format(selectedService.total_amount)}
+                  </dd>
+                </div>
+              )}
+              <div>
+                <dt className="text-xs text-muted-foreground">{t("services_tab.col_status")}</dt>
+                <dd className="mt-1">
+                  <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${SERVICE_STATUS_CLASS[selectedService.status] ?? "bg-muted text-muted-foreground"}`}>
+                    {tFreelance(`service.status.${selectedService.status}`)}
+                  </span>
+                </dd>
+              </div>
+            </dl>
+          )}
+        </SheetContent>
+      </Sheet>
+    </>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FREELANCE PAYOUTS TAB
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface FreelancePayoutsTabProps {
+  freelancerId: number
+  locale: string
+  formatDate: (iso: string | undefined | null, locale: string) => string
+  t: ReturnType<typeof useTranslations<"screen.employeeDetail">>
+  tCommon: ReturnType<typeof useTranslations<"common">>
+}
+
+function FreelancePayoutsTab({ freelancerId, locale, formatDate, t, tCommon }: FreelancePayoutsTabProps) {
+  const [payouts, setPayouts] = useState<Payout[]>([])
+  const [loadState, setLoadState] = useState<"loading" | "loaded" | "error">("loading")
+
+  useEffect(() => {
+    setLoadState("loading")
+    getPayouts({ freelancer_id: freelancerId, page_size: 50 })
+      .then((res) => {
+        setPayouts(res.data)
+        setLoadState("loaded")
+      })
+      .catch(() => setLoadState("error"))
+  }, [freelancerId])
+
+  const tFreelance = useTranslations("freelance")
+
+  const PAYOUT_STATUS_CLASS: Record<string, string> = {
+    PENDING: "bg-muted text-muted-foreground",
+    PROCESSING: "bg-info/10 text-info",
+    PAID: "bg-success/10 text-success",
+    FAILED: "bg-destructive/10 text-destructive",
+  }
+
+  const formatCurrency = (amount: number) =>
+    new Intl.NumberFormat(locale === "en" ? "en-GB" : "ru-RU", {
+      style: "currency",
+      currency: locale === "en" ? "GBP" : "RUB",
+      maximumFractionDigits: 0,
+    }).format(amount)
+
+  if (loadState === "loading") {
+    return (
+      <div className="flex flex-col gap-2">
+        {[0, 1, 2].map((i) => <Skeleton key={i} className="h-12 w-full rounded-lg" />)}
+      </div>
+    )
+  }
+
+  if (loadState === "error") {
+    return (
+      <Alert variant="destructive">
+        <AlertCircle className="size-4" />
+        <AlertDescription>{tCommon("error")}</AlertDescription>
+      </Alert>
+    )
+  }
+
+  if (payouts.length === 0) {
+    return <EmptyState icon={FileText} title={t("payouts_tab.empty")} description="" />
+  }
+
+  return (
+    <div className="overflow-x-auto rounded-lg border">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="border-b bg-muted/50">
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{t("payouts_tab.col_date")}</th>
+            <th className="px-4 py-3 text-right font-medium text-muted-foreground">{t("payouts_tab.col_gross")}</th>
+            <th className="px-4 py-3 text-right font-medium text-muted-foreground hidden sm:table-cell">{t("payouts_tab.col_commission")}</th>
+            <th className="px-4 py-3 text-right font-medium text-muted-foreground">{t("payouts_tab.col_net")}</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground">{t("payouts_tab.col_status")}</th>
+            <th className="px-4 py-3 text-left font-medium text-muted-foreground hidden md:table-cell">{t("payouts_tab.col_action")}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {payouts.map((payout) => (
+            <tr key={payout.id} className="border-b last:border-0 hover:bg-muted/30 transition-colors">
+              <td className="px-4 py-3 text-foreground whitespace-nowrap">
+                {formatDate(payout.payout_date, locale)}
+              </td>
+              <td className="px-4 py-3 text-right text-foreground">{formatCurrency(payout.gross_amount)}</td>
+              <td className="px-4 py-3 text-right text-muted-foreground hidden sm:table-cell">
+                {payout.nominal_account_fee != null ? formatCurrency(payout.nominal_account_fee) : "—"}
+              </td>
+              <td className="px-4 py-3 text-right font-medium text-foreground">{formatCurrency(payout.net_amount)}</td>
+              <td className="px-4 py-3">
+                <span className={`inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium ${PAYOUT_STATUS_CLASS[payout.status] ?? "bg-muted text-muted-foreground"}`}>
+                  {tFreelance(`payout.status.${payout.status}`)}
+                </span>
+              </td>
+              <td className="px-4 py-3 hidden md:table-cell">
+                {payout.closing_doc_url && (
+                  <Button variant="ghost" size="sm" className="h-8 gap-1.5 text-muted-foreground">
+                    <Download className="size-3.5" aria-hidden="true" />
+                    {t("payouts_tab.download_act")}
+                  </Button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// FREELANCE RATING TAB
+// ─────────────────────────────────────────────────────────────────────────────
+
+const MOCK_FREELANCE_RATING = {
+  overall: 4.2,
+  criteria: [
+    { key: "criteria_shift_show",    score: 4.8, max: 5 },
+    { key: "criteria_task_speed",    score: 4.1, max: 5 },
+    { key: "criteria_task_quality",  score: 4.5, max: 5 },
+    { key: "criteria_rework",        score: 3.9, max: 5 },
+    { key: "criteria_relative_speed",score: 4.0, max: 5 },
+    { key: "criteria_total_tasks",   score: 87, max: 200, isCount: true },
+    { key: "criteria_experience",    score: 9, max: 24, isCount: true, unit: "мес." },
+  ],
+}
+
+interface FreelanceRatingTabProps {
+  user: UserDetail
+  t: ReturnType<typeof useTranslations<"screen.employeeDetail">>
+}
+
+function FreelanceRatingTab({ user, t }: FreelanceRatingTabProps) {
+  const hasRating = user.rating != null || (user.freelancer_status === "ACTIVE")
+
+  if (!hasRating) {
+    return (
+      <EmptyState icon={Star} title={t("rating_tab.no_data")} description="" />
+    )
+  }
+
+  const ratingData = MOCK_FREELANCE_RATING
+
+  return (
+    <div className="flex flex-col gap-6">
+      {/* Overall rating card */}
+      <Card>
+        <CardContent className="p-6">
+          <div className="flex items-center gap-4">
+            <div className="flex size-16 items-center justify-center rounded-full bg-primary/10">
+              <span className="text-2xl font-bold text-primary">{ratingData.overall.toFixed(1)}</span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-sm font-medium text-foreground">{t("rating_tab.overall")}</span>
+              <div className="flex items-center gap-1" aria-label={`${ratingData.overall} out of 5`}>
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <Star
+                    key={star}
+                    className={`size-4 ${star <= Math.round(ratingData.overall) ? "text-warning fill-warning" : "text-muted-foreground"}`}
+                    aria-hidden="true"
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Per-criteria breakdown */}
+      <Card>
+        <CardContent className="p-4 md:p-6">
+          <div className="flex flex-col gap-5">
+            {ratingData.criteria.map((c) => (
+              <div key={c.key} className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-sm text-foreground">
+                    {t(`rating_tab.${c.key}` as Parameters<typeof t>[0])}
+                  </span>
+                  <span className="text-sm font-medium text-foreground shrink-0">
+                    {c.isCount ? c.score : `${c.score.toFixed(1)} / ${c.max}`}
+                    {c.unit ? ` ${c.unit}` : ""}
+                  </span>
+                </div>
+                {!c.isCount && (
+                  <Progress
+                    value={(c.score / c.max) * 100}
+                    className="h-1.5"
+                    aria-label={`${c.score} out of ${c.max}`}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   )
 }

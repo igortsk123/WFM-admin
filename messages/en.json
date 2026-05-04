@@ -1411,6 +1411,16 @@
       "hired_at": "Hired",
       "employee_type": "Employment type",
       "last_active": "Last active",
+      "freelance_hero": {
+        "agent_label": "Recruited by agent",
+        "external_sync_badge": "Created automatically from external HR system",
+        "offer_card_title": "Offer agreement",
+        "offer_signed": "Signed",
+        "offer_not_signed": "Not signed",
+        "offer_signed_at": "Signed on: {date}",
+        "offer_send_link": "Send offer link",
+        "offer_link_sent": "Link sent to {phone}"
+      },
       "actions": {
         "assign_task": "Assign task",
         "permissions": "Permissions",
@@ -1419,7 +1429,16 @@
         "change_position": "Change position",
         "transfer_store": "Transfer to store",
         "reset_password": "Reset password / send invite",
-        "archive": "Archive"
+        "archive": "Archive",
+        "block": "Block",
+        "activate": "Activate",
+        "block_dialog_title": "Block freelancer?",
+        "block_dialog_description": "The freelancer will not be able to receive new tasks. Please provide a reason.",
+        "block_reason_label": "Reason",
+        "block_reason_placeholder": "Enter reason...",
+        "block_confirm": "Block",
+        "block_toast": "Freelancer blocked",
+        "activate_toast": "Freelancer activated"
       },
       "stats": {
         "tasks_month": "Tasks this month",
@@ -1436,7 +1455,10 @@
         "shifts": "Shifts",
         "permissions": "Permissions",
         "history": "History",
-        "documents": "Documents"
+        "documents": "Documents",
+        "services": "Services",
+        "payouts": "Payouts",
+        "rating": "Rating"
       },
       "profile": {
         "personal_card": "Personal data",
@@ -1493,6 +1515,39 @@
       },
       "history": {
         "empty": "History is empty"
+      },
+      "services_tab": {
+        "col_date": "Date",
+        "col_store": "Location",
+        "col_work_type": "Work type",
+        "col_hours": "Hours",
+        "col_volume": "Volume",
+        "col_amount": "Amount",
+        "col_status": "Status",
+        "empty": "No services found",
+        "sheet_title": "Service details"
+      },
+      "payouts_tab": {
+        "col_date": "Date",
+        "col_gross": "Gross",
+        "col_commission": "Commission",
+        "col_net": "Net",
+        "col_status": "Status",
+        "col_action": "Act",
+        "download_act": "Download act",
+        "empty": "No payouts found",
+        "hidden_client_direct": "Payouts are not shown in client-direct payment mode"
+      },
+      "rating_tab": {
+        "overall": "Overall rating",
+        "criteria_shift_show": "Shift attendance",
+        "criteria_task_speed": "Task completion speed",
+        "criteria_task_quality": "Work quality",
+        "criteria_rework": "Rework rate",
+        "criteria_relative_speed": "Speed vs peers",
+        "criteria_total_tasks": "Total tasks completed",
+        "criteria_experience": "Total work experience",
+        "no_data": "Rating not yet formed"
       },
       "documents": {
         "tab_optional": "Optional",
