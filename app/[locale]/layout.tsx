@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { Inter } from "next/font/google";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -38,14 +39,16 @@ export default async function LocaleLayout({
     <html lang={locale} className={`${inter.variable} bg-background`}>
       <body className="min-h-screen font-sans antialiased">
         <NextIntlClientProvider messages={messages}>
-          <TooltipProvider>
-            <AuthProvider>
-              <SidebarProvider defaultOpen>
-                {children}
-              </SidebarProvider>
-            </AuthProvider>
-            <Toaster />
-          </TooltipProvider>
+          <NuqsAdapter>
+            <TooltipProvider>
+              <AuthProvider>
+                <SidebarProvider defaultOpen>
+                  {children}
+                </SidebarProvider>
+              </AuthProvider>
+              <Toaster />
+            </TooltipProvider>
+          </NuqsAdapter>
         </NextIntlClientProvider>
       </body>
     </html>
