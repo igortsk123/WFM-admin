@@ -1272,7 +1272,7 @@
       "reject_reason_label": "Причина отклонения",
       "reject_reason_placeholder": "Опишите причину (минимум 10 символов)...",
       "reject_reason_hint": "Минимум 10 символов",
-      "bulk_selected": "{count, plural, one {Выбрана # подзадача} few {Выбрано # подзадачи} other {Выбрано # подзадач}}",
+      "bulk_selected": "{count, plural, one {��ыбрана # подзадача} few {Выбрано # подзадачи} other {Выбрано # подзадач}}",
       "bulk_approve_all": "Принять все",
       "bulk_reject_all": "Отклонить все",
       "bulk_clear": "Очистить",
@@ -1387,7 +1387,7 @@
         },
         "filtered": {
           "title": "Никого не найдено",
-          "subtitle": "Попробуйте изменить фильтры или сбр��сить их",
+          "subtitle": "Попробуйте изменить фильтры или сбр����ить их",
           "reset": "Сбросить фильтры"
         }
       },
@@ -1412,6 +1412,16 @@
       "hired_at": "Принят",
       "employee_type": "Тип занятости",
       "last_active": "Последняя активность",
+      "freelance_hero": {
+        "agent_label": "Привлёк агент",
+        "external_sync_badge": "Создан автоматически из внешней HR-системы",
+        "offer_card_title": "Оферта",
+        "offer_signed": "Подписана",
+        "offer_not_signed": "Не подписана",
+        "offer_signed_at": "Дата подписания: {date}",
+        "offer_send_link": "Отправить ссылку на оферту",
+        "offer_link_sent": "Ссылка отправлена на {phone}"
+      },
       "actions": {
         "assign_task": "Назначить задачу",
         "permissions": "Привилегии",
@@ -1420,7 +1430,16 @@
         "change_position": "Сменить должность",
         "transfer_store": "Перевести в магазин",
         "reset_password": "Сбросить пароль / отправить инвайт",
-        "archive": "Архивировать"
+        "archive": "Архивировать",
+        "block": "Заблокировать",
+        "activate": "Активировать",
+        "block_dialog_title": "Заблокировать фрилансера?",
+        "block_dialog_description": "Фрилансер не сможет получать новые задачи. Укажите причину блокировки.",
+        "block_reason_label": "Причина",
+        "block_reason_placeholder": "Укажите причину...",
+        "block_confirm": "Заблокировать",
+        "block_toast": "Фрилансер заблокирован",
+        "activate_toast": "Фрилансер активирован"
       },
       "stats": {
         "tasks_month": "Задач за месяц",
@@ -1437,7 +1456,10 @@
         "shifts": "Смены",
         "permissions": "Привилегии",
         "history": "История",
-        "documents": "Документы"
+        "documents": "Документы",
+        "services": "Услуги",
+        "payouts": "Выплаты",
+        "rating": "Рейтинг"
       },
       "profile": {
         "personal_card": "Личные данные",
@@ -1494,6 +1516,39 @@
       },
       "history": {
         "empty": "История пуста"
+      },
+      "services_tab": {
+        "col_date": "Дата",
+        "col_store": "Объект",
+        "col_work_type": "Тип работ",
+        "col_hours": "Часы",
+        "col_volume": "Объём",
+        "col_amount": "Сумма",
+        "col_status": "Статус",
+        "empty": "Услуги не найдены",
+        "sheet_title": "Детали услуги"
+      },
+      "payouts_tab": {
+        "col_date": "Дата",
+        "col_gross": "Брутто",
+        "col_commission": "Комиссия",
+        "col_net": "Нетто",
+        "col_status": "Статус",
+        "col_action": "Акт",
+        "download_act": "Скачать акт",
+        "empty": "Выплат не найдено",
+        "hidden_client_direct": "В режиме прямого расчёта выплаты не отображаются"
+      },
+      "rating_tab": {
+        "overall": "Общий рейтинг",
+        "criteria_shift_show": "Факт выхода на смену",
+        "criteria_task_speed": "Скорость выполнения задач",
+        "criteria_task_quality": "Качество работы",
+        "criteria_rework": "Возвраты на доработку",
+        "criteria_relative_speed": "Скорость относительно других",
+        "criteria_total_tasks": "Всего выполнено задач",
+        "criteria_experience": "Общий опыт работы",
+        "no_data": "Рейтинг ещё не сформирован"
       },
       "documents": {
         "tab_optional": "Опционально",
