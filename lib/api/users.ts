@@ -47,10 +47,47 @@ export interface UserWithAssignment extends User {
   agent_name?: string | null;
 }
 
-/** User with full assignments and permissions history */
+/** Документ внештатника для tab «Документы». */
+export interface FreelanceDocument {
+  type: "PASSPORT" | "INN" | "SNILS" | "CONTRACT";
+  uploaded_at?: string | null;
+  file_name?: string;
+  file_url?: string;
+}
+
+/** Stats per-user за выбранный период (default: текущий месяц). */
+export interface UserStats {
+  tasks_total: number;
+  tasks_diff_pct: number;
+  tasks_accepted: number;
+  tasks_rejected: number;
+  paused_now: number;
+  avg_completion_min: number;
+  avg_completion_diff_min: number;
+}
+
+/** Functional role + scope (магазины / регион / организация). Re-shape FunctionalRoleAssignment. */
+export interface UserFunctionalScope {
+  functional_role: FunctionalRole;
+  scope_type: "STORE" | "STORE_LIST" | "REGION" | "ORGANIZATION";
+  scope_ids: Array<number | string>;
+  scope_label?: string;
+}
+
+/** User with full assignments and permissions history + enriched fields для detail screen. */
 export interface UserDetail extends User {
   assignments: Assignment[];
   permissions: WorkerPermission[];
+  /** Функциональная роль и scope (если назначены). */
+  functional_scope?: UserFunctionalScope | null;
+  /** Сегодняшняя смена (если есть). */
+  current_shift?: Shift | null;
+  /** Stats за текущий месяц (mock-вычисленные). */
+  stats?: UserStats;
+  /** Время последней активности — login или task action. */
+  last_active_at?: string;
+  /** Документы внештатника — только для type='FREELANCE'. */
+  freelance_documents?: FreelanceDocument[];
 }
 
 /**
@@ -296,11 +333,66 @@ export async function getUserById(
   const assignments = MOCK_ASSIGNMENTS.filter((a) => a.user_id === id);
   const permissions = MOCK_PERMISSIONS.filter((p) => p.user_id === id);
 
+  // Functional role + scope
+  const fnRole = MOCK_FUNCTIONAL_ROLES.find((r) => r.user_id === id);
+  const functional_scope: UserFunctionalScope | null = fnRole
+    ? {
+        functional_role: fnRole.functional_role,
+        scope_type: fnRole.scope_type,
+        scope_ids: fnRole.scope_ids,
+      }
+    : null;
+
+  // Today's shift (or null)
+  const current_shift = MOCK_SHIFTS.find(
+    (s) => s.user_id === id && s.shift_date === TODAY,
+  ) ?? null;
+
+  // Mock stats — детерминированные по user.id, чтобы при перезагрузке цифры не прыгали
+  const seed = id;
+  const tasks_total = 50 + (seed % 60);
+  const tasks_accepted = Math.floor(tasks_total * 0.85) + (seed % 5);
+  const tasks_rejected = Math.max(1, Math.floor(tasks_total * 0.06) + (seed % 3));
+  const paused_now = seed % 3;
+  const avg_completion_min = 35 + (seed % 25);
+  const stats: UserStats = {
+    tasks_total,
+    tasks_diff_pct: 5 + (seed % 15),
+    tasks_accepted,
+    tasks_rejected,
+    paused_now,
+    avg_completion_min,
+    avg_completion_diff_min: -((seed % 8) - 3),
+  };
+
+  // Last activity — last shift's actual_end if any, else today minus a few hours
+  const lastShift = [...MOCK_SHIFTS]
+    .filter((s) => s.user_id === id)
+    .sort((a, b) => b.shift_date.localeCompare(a.shift_date))[0];
+  const last_active_at = lastShift?.actual_end
+    ?? lastShift?.actual_start
+    ?? `${TODAY}T${String(8 + (seed % 8)).padStart(2, "0")}:30:00+07:00`;
+
+  // Freelance documents — только для FREELANCE
+  const freelance_documents: FreelanceDocument[] | undefined = user.type === "FREELANCE"
+    ? [
+        { type: "PASSPORT", uploaded_at: user.oferta_accepted_at ?? null },
+        { type: "INN", uploaded_at: null },
+        { type: "SNILS", uploaded_at: null },
+        { type: "CONTRACT", uploaded_at: user.oferta_accepted_at ?? null },
+      ]
+    : undefined;
+
   return {
     data: {
       ...user,
       assignments,
       permissions,
+      functional_scope,
+      current_shift,
+      stats,
+      last_active_at,
+      freelance_documents,
     },
   };
 }

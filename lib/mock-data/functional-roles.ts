@@ -132,4 +132,13 @@ export const MOCK_FUNCTIONAL_ROLES: FunctionalRoleAssignment[] = [
     scope_type: "ORGANIZATION",
     scope_ids: ["org-spar"],
   },
+
+  // id=101 — WORKER (Иванова Мария, demo для employee-detail screen)
+  {
+    id: 101,
+    user_id: 101,
+    functional_role: "WORKER",
+    scope_type: "STORE",
+    scope_ids: ["1"],
+  },
 ];

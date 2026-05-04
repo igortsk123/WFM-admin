@@ -177,7 +177,8 @@
     "help": "Помощь",
     "users": "Пользователи",
     "reports": "Отчёты",
-    "organization": "Органи����ация"
+    "organization": "Организация",
+    "employee_detail_demo": "Сотрудник (демо)"
   },
   "task": {
     "title": "Задача",
@@ -1394,6 +1395,143 @@
         "permission_assigned": "Привилегия назначена",
         "archived": "Сотрудник архивирован",
         "bulk_archived": "Архивировано {count} сотрудников",
+        "error": "Не удалось выполнить операцию"
+      }
+    },
+    "employeeDetail": {
+      "breadcrumb_home": "Главная",
+      "breadcrumb_employees": "Сотрудники",
+      "active_dot_label": "Активен",
+      "archived_label": "Архив",
+      "store_link_prefix": "Магазин",
+      "phone": "Телефон",
+      "email": "Email",
+      "permissions_empty": "Привилегии не назначены",
+      "permissions_assign": "Назначить",
+      "actions": {
+        "assign_task": "Назначить задачу",
+        "permissions": "Привилегии",
+        "edit": "Редактировать",
+        "more": "Ещё",
+        "change_position": "Сменить должность",
+        "transfer_store": "Перевести в магазин",
+        "reset_password": "Сбросить пароль / отправить инвайт",
+        "archive": "Архивировать"
+      },
+      "stats": {
+        "tasks_month": "Задач за месяц",
+        "accepted_rejected": "Принято / Отклонено",
+        "paused_now": "На паузе сейчас",
+        "avg_completion": "Среднее время выполнения",
+        "diff_vs_prev": "vs прошлый",
+        "diff_vs_plan": "к плану",
+        "minutes_unit": "мин"
+      },
+      "tabs": {
+        "profile": "Профиль",
+        "tasks": "Задачи",
+        "shifts": "Смены",
+        "permissions": "Привилегии",
+        "history": "История",
+        "documents": "Документы"
+      },
+      "profile": {
+        "personal_card": "Личные данные",
+        "personal_first_name": "Имя",
+        "personal_last_name": "Фамилия",
+        "personal_middle_name": "Отчество",
+        "personal_phone": "Телефон",
+        "personal_email": "Email",
+        "personal_birth_date": "Дата рождения",
+        "personal_employment": "Тип занятости",
+        "personal_hired_at": "Принят",
+        "assignments_card": "Назначения",
+        "assignments_current_label": "Текущее",
+        "assignments_archived_label": "Архивное",
+        "assignments_add": "Добавить назначение",
+        "assignments_edit": "Изменить",
+        "assignments_archive": "Архивировать",
+        "scope_card": "Функциональная роль и scope",
+        "scope_no_role": "Функциональная роль не назначена",
+        "scope_edit": "Изменить",
+        "scope_global": "Вся сеть",
+        "scope_organization": "Вся организация",
+        "scope_region": "Регион",
+        "scope_store": "Магазин",
+        "scope_store_list": "Магазины ({count})",
+        "system_card": "Системная инфо",
+        "system_id": "ID",
+        "system_external_id": "External ID",
+        "system_created": "Создан",
+        "system_last_active": "Последняя активность"
+      },
+      "tasks": {
+        "filter_period": "Период",
+        "filter_state": "Статус",
+        "empty": "У сотрудника нет задач за выбранный период"
+      },
+      "shifts": {
+        "col_date": "Дата",
+        "col_store": "Магазин",
+        "col_plan": "План",
+        "col_fact": "Факт",
+        "col_duration": "Длительность",
+        "col_actions": "Действия",
+        "empty": "У сотрудника нет смен за выбранный период"
+      },
+      "permissions": {
+        "permission_label": "Привилегия",
+        "granted_at": "Назначена",
+        "granted_by": "Назначил",
+        "revoke": "Отозвать",
+        "grant": "Назначить",
+        "history_card": "История привилегий",
+        "history_granted": "Назначена",
+        "history_revoked": "Отозвана"
+      },
+      "history": {
+        "empty": "История пуста"
+      },
+      "documents": {
+        "tab_optional": "Опционально",
+        "freelance_required_alert": "Документы обязательны для внештатного сотрудника",
+        "doc_passport": "Паспорт",
+        "doc_inn": "ИНН",
+        "doc_snils": "СНИЛС",
+        "doc_contract": "Договор",
+        "uploaded_at": "Загружено",
+        "not_uploaded": "Не загружено",
+        "upload": "Загрузить",
+        "replace": "Заменить",
+        "download": "Скачать"
+      },
+      "dialogs": {
+        "edit_profile_title": "Редактировать профиль",
+        "edit_profile_save": "Сохранить",
+        "manage_permissions_title": "Управление привилегиями",
+        "manage_permissions_save": "Сохранить",
+        "change_position_title": "Сменить должность",
+        "change_position_warning": "Изменение должности может повлиять на функциональную роль",
+        "change_position_confirm": "Сменить",
+        "transfer_store_title": "Перевести в магазин",
+        "transfer_store_confirm": "Перевести",
+        "archive_title": "Архивировать сотрудника?",
+        "archive_description": "Сотрудник пропадёт из списков задач и смен. Действие обратимо.",
+        "archive_confirm": "Архивировать"
+      },
+      "states": {
+        "not_found_title": "Сотрудник не найден",
+        "not_found_subtitle": "Сотрудник с ID {id} не существует или был удалён",
+        "forbidden_title": "Нет доступа",
+        "forbidden_subtitle": "У вас нет прав на просмотр карточки этого сотрудника",
+        "error_retry": "Повторить"
+      },
+      "toast": {
+        "profile_updated": "Профиль обновлён",
+        "permissions_updated": "Привилегии обновлены",
+        "position_changed": "Должность изменена",
+        "store_transferred": "Сотрудник переведён",
+        "archived": "Сотрудник архивирован",
         "error": "Не удалось выполнить операцию"
       }
     }

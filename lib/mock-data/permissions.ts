@@ -88,4 +88,9 @@ export const MOCK_PERMISSIONS: WorkerPermission[] = [
 
   // ── id=31 Мельников (FREELANCE, EXTERNAL_SYNC) — SALES_FLOOR ───
   { id: 27, user_id: 31, permission: "SALES_FLOOR", granted_at: "2025-04-10", granted_by_name: "Никитин Б. С." },
+
+  // ── id=101 Иванова Мария (employee-detail demo) — 3 active permissions ──
+  { id: 101, user_id: 101, permission: "CASHIER", granted_at: "2024-09-20", granted_by_name: "Иванов А. С." },
+  { id: 102, user_id: 101, permission: "SALES_FLOOR", granted_at: "2024-10-15", granted_by_name: "Иванов А. С." },
+  { id: 103, user_id: 101, permission: "SELF_CHECKOUT", granted_at: "2025-02-01", granted_by_name: "Иванов А. С." },
 ];

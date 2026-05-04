@@ -566,4 +566,22 @@ export const MOCK_USERS: User[] = [
     rating: 2.8,
     source: "MANUAL",
   },
+
+  // ── Demo user для employee-detail screen (chat 23) ──────────────────
+  {
+    id: 101,
+    sso_id: "sso-demo-101",
+    phone: "+7 (913) 555-10-01",
+    first_name: "Мария",
+    last_name: "Иванова",
+    middle_name: "Петровна",
+    email: "ivanova.m@spar.example",
+    type: "STAFF",
+    hired_at: d("2024-09-15"),
+    archived: false,
+    preferred_locale: "ru",
+    preferred_timezone: "Asia/Tomsk",
+    avatar_url: undefined,
+    source: "MANUAL",
+  },
 ];

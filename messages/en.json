@@ -177,7 +177,8 @@
     "help": "Help",
     "users": "Users",
     "reports": "Reports",
-    "organization": "Organisation"
+    "organization": "Organisation",
+    "employee_detail_demo": "Employee (demo)"
   },
   "task": {
     "title": "Task",
@@ -1394,6 +1395,143 @@
         "permission_assigned": "Permission assigned",
         "archived": "Employee archived",
         "bulk_archived": "Archived {count} employees",
+        "error": "Operation failed"
+      }
+    },
+    "employeeDetail": {
+      "breadcrumb_home": "Home",
+      "breadcrumb_employees": "Employees",
+      "active_dot_label": "Active",
+      "archived_label": "Archive",
+      "store_link_prefix": "Store",
+      "phone": "Phone",
+      "email": "Email",
+      "permissions_empty": "No permissions granted",
+      "permissions_assign": "Grant",
+      "actions": {
+        "assign_task": "Assign task",
+        "permissions": "Permissions",
+        "edit": "Edit",
+        "more": "More",
+        "change_position": "Change position",
+        "transfer_store": "Transfer to store",
+        "reset_password": "Reset password / send invite",
+        "archive": "Archive"
+      },
+      "stats": {
+        "tasks_month": "Tasks this month",
+        "accepted_rejected": "Accepted / Rejected",
+        "paused_now": "Paused now",
+        "avg_completion": "Avg completion time",
+        "diff_vs_prev": "vs prev",
+        "diff_vs_plan": "vs plan",
+        "minutes_unit": "min"
+      },
+      "tabs": {
+        "profile": "Profile",
+        "tasks": "Tasks",
+        "shifts": "Shifts",
+        "permissions": "Permissions",
+        "history": "History",
+        "documents": "Documents"
+      },
+      "profile": {
+        "personal_card": "Personal info",
+        "personal_first_name": "First name",
+        "personal_last_name": "Last name",
+        "personal_middle_name": "Middle name",
+        "personal_phone": "Phone",
+        "personal_email": "Email",
+        "personal_birth_date": "Date of birth",
+        "personal_employment": "Employment",
+        "personal_hired_at": "Hired",
+        "assignments_card": "Assignments",
+        "assignments_current_label": "Current",
+        "assignments_archived_label": "Archived",
+        "assignments_add": "Add assignment",
+        "assignments_edit": "Edit",
+        "assignments_archive": "Archive",
+        "scope_card": "Functional role & scope",
+        "scope_no_role": "No functional role assigned",
+        "scope_edit": "Edit",
+        "scope_global": "Entire network",
+        "scope_organization": "Entire organization",
+        "scope_region": "Region",
+        "scope_store": "Store",
+        "scope_store_list": "Stores ({count})",
+        "system_card": "System info",
+        "system_id": "ID",
+        "system_external_id": "External ID",
+        "system_created": "Created",
+        "system_last_active": "Last active"
+      },
+      "tasks": {
+        "filter_period": "Period",
+        "filter_state": "Status",
+        "empty": "No tasks for the selected period"
+      },
+      "shifts": {
+        "col_date": "Date",
+        "col_store": "Store",
+        "col_plan": "Plan",
+        "col_fact": "Fact",
+        "col_duration": "Duration",
+        "col_actions": "Actions",
+        "empty": "No shifts for the selected period"
+      },
+      "permissions": {
+        "permission_label": "Permission",
+        "granted_at": "Granted",
+        "granted_by": "Granted by",
+        "revoke": "Revoke",
+        "grant": "Grant",
+        "history_card": "Permission history",
+        "history_granted": "Granted",
+        "history_revoked": "Revoked"
+      },
+      "history": {
+        "empty": "History is empty"
+      },
+      "documents": {
+        "tab_optional": "Optional",
+        "freelance_required_alert": "Documents are required for freelance employees",
+        "doc_passport": "Passport",
+        "doc_inn": "INN",
+        "doc_snils": "SNILS",
+        "doc_contract": "Contract",
+        "uploaded_at": "Uploaded",
+        "not_uploaded": "Not uploaded",
+        "upload": "Upload",
+        "replace": "Replace",
+        "download": "Download"
+      },
+      "dialogs": {
+        "edit_profile_title": "Edit profile",
+        "edit_profile_save": "Save",
+        "manage_permissions_title": "Manage permissions",
+        "manage_permissions_save": "Save",
+        "change_position_title": "Change position",
+        "change_position_warning": "Changing position may affect functional role",
+        "change_position_confirm": "Change",
+        "transfer_store_title": "Transfer to store",
+        "transfer_store_confirm": "Transfer",
+        "archive_title": "Archive employee?",
+        "archive_description": "Employee will disappear from task and shift lists. Reversible.",
+        "archive_confirm": "Archive"
+      },
+      "states": {
+        "not_found_title": "Employee not found",
+        "not_found_subtitle": "Employee with ID {id} does not exist or has been removed",
+        "forbidden_title": "Access denied",
+        "forbidden_subtitle": "You don't have permission to view this employee",
+        "error_retry": "Retry"
+      },
+      "toast": {
+        "profile_updated": "Profile updated",
+        "permissions_updated": "Permissions updated",
+        "position_changed": "Position changed",
+        "store_transferred": "Employee transferred",
+        "archived": "Employee archived",
         "error": "Operation failed"
       }
     }

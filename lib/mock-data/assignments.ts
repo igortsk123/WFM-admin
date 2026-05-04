@@ -52,4 +52,8 @@ export const MOCK_ASSIGNMENTS: Assignment[] = [
   { id: 29, user_id: 29, position_id: 1, position_name: "Универсал", store_id: 1, store_name: "СПАР Томск, пр. Ленина 80", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: true },
   { id: 30, user_id: 30, position_id: 4, position_name: "Продавец-консультант", store_id: 4, store_name: "СПАР Новосибирск, ул. Ленина 55", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: true },
   { id: 31, user_id: 31, position_id: 1, position_name: "Универсал", store_id: 6, store_name: "СПАР Кемерово, пр. Советский 50", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: true },
+
+  // ── Demo user 101 (employee-detail demo): текущее + старое archived ──
+  { id: 101, user_id: 101, position_id: 2, position_name: "Кассир", store_id: 1, store_name: "СПАР Томск, пр. Ленина 80", rank: { id: 2, code: "RANK-2", name: "Старший" }, active: true },
+  { id: 102, user_id: 101, position_id: 1, position_name: "Универсал", store_id: 2, store_name: "СПАР Томск, ул. Красноармейская 99", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: false },
 ];
