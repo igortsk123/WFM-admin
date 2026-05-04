@@ -110,8 +110,8 @@ function buildStep1Schema(tV: (key: string) => string) {
 
 function buildStep2Schema(tV: (key: string) => string) {
   return z.object({
-    store_id: z.number({ required_error: tV("store_required") }).positive(tV("store_required")),
-    position_id: z.number({ required_error: tV("position_required") }).positive(tV("position_required")),
+    store_id: z.number({ message: tV("store_required") }).positive(tV("store_required")),
+    position_id: z.number({ message: tV("position_required") }).positive(tV("position_required")),
     rank: z.number().min(1).max(6).default(1),
     hired_at: z
       .date()
@@ -132,7 +132,7 @@ function buildStep3Schema() {
 function buildStep4Schema(tV: (key: string) => string) {
   return z.object({
     invite_method: z.enum(["SMS", "EMAIL", "NONE"], {
-      required_error: tV("invite_method_required"),
+      message: tV("invite_method_required"),
     }),
     invite_message: z.string().optional(),
     notify_manager: z.boolean().default(false),
@@ -251,7 +251,7 @@ export function EmployeeCreateWizard() {
 
   // ── Step 2 form ─────────────────────────────────────────────────────────────
   const step2Schema = buildStep2Schema((key) => tV(key as Parameters<typeof tV>[0]));
-  const form2 = useForm<z.infer<typeof step2Schema>>({
+  const form2 = useForm<z.input<typeof step2Schema>>({
     resolver: zodResolver(step2Schema),
     defaultValues: {
       store_id: masterValues.store_id ?? (undefined as unknown as number),
@@ -272,7 +272,7 @@ export function EmployeeCreateWizard() {
 
   // ── Step 4 form ─────────────────────────────────────────────────────────────
   const step4Schema = buildStep4Schema((key) => tV(key as Parameters<typeof tV>[0]));
-  const form4 = useForm<z.infer<typeof step4Schema>>({
+  const form4 = useForm<z.input<typeof step4Schema>>({
     resolver: zodResolver(step4Schema),
     defaultValues: {
       invite_method: masterValues.invite_method ?? "SMS",
@@ -371,7 +371,7 @@ export function EmployeeCreateWizard() {
       position_id: s2.position_id,
       store_id: s2.store_id,
       rank: s2.rank,
-      hired_at: s2.hired_at.toISOString().split("T")[0],
+      hired_at: (s2.hired_at ?? new Date()).toISOString().split("T")[0],
       permissions: isManagerPosition ? [] : (s3.permissions as Permission[]),
       invite_method: s4.invite_method as InviteMethod,
       invite_message: s4.invite_message,
