@@ -832,8 +832,91 @@ const subtasksDetailDemo: Subtask[] = [
 // EXPORT
 // ══════════════════════════════════════════════════════════════════
 
+// ══════════════════════════════════════════════════════════════════
+// Pending moderation queue — 8 subtasks proposed by workers
+// Task IDs below are existing MOCK_TASKS ids; store/zone info is
+// embedded in SubtaskPending (enriched at query time).
+// IDs 200-207 reserved for this set.
+// ══════════════════════════════════════════════════════════════════
+
+const subtasksModerationQueue: Subtask[] = [
+  {
+    id: 200,
+    task_id: "task-005",  // store_id=1 SPAR-TOM-001, work_type_id=11 Контроль
+    name: "Проверка датчиков температуры",
+    review_state: "PENDING",
+    hints_count: 2,
+    duration_min: 12,
+    order: 99,
+  },
+  {
+    id: 201,
+    task_id: "task-004",  // store_id=3 SPAR-NSK-001, work_type_id=13 Приёмка
+    name: "Перепроверка партии после возврата",
+    review_state: "PENDING",
+    hints_count: 0,
+    duration_min: 25,
+    order: 99,
+  },
+  {
+    id: 202,
+    task_id: "task-013",  // store_id=5 FC-TOM-001, work_type_id=12 Уборка
+    name: "Очистка зоны выпечки от муки",
+    review_state: "PENDING",
+    hints_count: 1,
+    duration_min: 8,
+    order: 99,
+  },
+  {
+    id: 203,
+    task_id: "task-001",  // store_id=1 SPAR-TOM-001, work_type_id=2 Касса
+    name: "Калибровка весов",
+    review_state: "PENDING",
+    hints_count: 0,
+    duration_min: 5,
+    order: 99,
+  },
+  {
+    id: 204,
+    task_id: "task-017",  // store_id=2 SPAR-TOM-002, work_type_id=11 Контроль
+    name: "Сборка корзины с просрочкой",
+    review_state: "PENDING",
+    hints_count: 3,
+    duration_min: 15,
+    order: 99,
+  },
+  {
+    id: 205,
+    task_id: "task-008",  // store_id=1 SPAR-TOM-001, work_type_id=5 Переоценка
+    name: "Замена ценников после переоценки",
+    review_state: "PENDING",
+    hints_count: 1,
+    duration_min: 18,
+    order: 99,
+  },
+  {
+    id: 206,
+    task_id: "task-014",  // store_id=3 SPAR-NSK-001, work_type_id=13 Складские
+    name: "Доукладка алкоголя из подсобки",
+    review_state: "PENDING",
+    hints_count: 0,
+    duration_min: 22,
+    order: 99,
+  },
+  {
+    id: 207,
+    task_id: "task-012",  // store_id=6 FC-TOM-002, work_type_id=6 Контроль
+    name: "Сверка остатков по холодильнику",
+    review_state: "PENDING",
+    hints_count: 2,
+    duration_min: 10,
+    order: 99,
+  },
+];
+
 export const MOCK_SUBTASKS: Subtask[] = [
   ...subtasksDetailDemo,
+  ...subtasksModerationQueue,
   ...subtasksMerch1,
   ...subtasksMerch2,
   ...subtasksReprice1,

@@ -74,6 +74,24 @@ export interface TaskFiltersResponse {
 /** Subtask with parent task title for pending lists */
 export interface SubtaskWithTaskTitle extends Subtask {
   task_title: string;
+  task_id_display: string;
+  store_id: number;
+  store_name: string;
+  store_external_code: string;
+  zone_id: number;
+  zone_name: string;
+  work_type_id: number;
+  work_type_name: string;
+  /** Worker who proposed the subtask (inferred from task assignee) */
+  proposed_by?: {
+    id: number;
+    first_name: string;
+    last_name: string;
+    middle_name?: string;
+    position_name: string;
+    avatar_url?: string;
+  };
+  created_at: string;
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -751,45 +769,112 @@ export async function bulkAssignTasks(
 // ═══════════════════════════════════════════════════════════════════
 
 /**
- * Get pending subtasks (awaiting moderation) for a store.
- * @param params Filter parameters
- * @returns Paginated list of pending subtasks with task titles
+ * Get pending subtasks (awaiting moderation).
+ * @param params Filter parameters (store_id, work_type_id, zone_id, search, pagination)
+ * @returns Paginated list of enriched pending subtasks
  * @endpoint GET /tasks/subtasks/pending
  */
 export async function getSubtasksPending(
-  params: ApiListParams & { store_id?: number } = {}
+  params: ApiListParams & {
+    store_id?: number;
+    work_type_id?: number;
+    zone_id?: number;
+  } = {}
 ): Promise<ApiListResponse<SubtaskWithTaskTitle>> {
   await delay(300);
 
-  const { store_id, page = 1, page_size = 20 } = params;
+  const { store_id, work_type_id, zone_id, search, page = 1, page_size = 20 } = params;
 
   // Get pending subtasks
   let pending = MOCK_SUBTASKS.filter((s) => s.review_state === "PENDING");
 
-  // Filter by store if provided
-  if (store_id) {
-    const taskIdsInStore = MOCK_TASKS
-      .filter((t) => t.store_id === store_id)
-      .map((t) => t.id);
-    pending = pending.filter((s) => taskIdsInStore.includes(s.task_id));
-  }
+  // Enrich all pending with task/store/zone/work_type data first (needed for filtering)
+  const nowIso = new Date("2026-05-01T10:00:00+07:00").toISOString();
+  const daysBack = (d: number) =>
+    new Date(new Date("2026-05-01T10:00:00+07:00").getTime() - d * 24 * 60 * 60 * 1000).toISOString();
 
-  // Paginate
-  const total = pending.length;
-  const start = (page - 1) * page_size;
-  const paginated = pending.slice(start, start + page_size);
+  // Worker names mapped by subtask id (from prompt spec)
+  const workerBySubtaskId: Record<number, { id: number; first_name: string; last_name: string; middle_name?: string; position_name: string }> = {
+    200: { id: 15, first_name: "Иван",    last_name: "Иванов",    middle_name: "Иванович",  position_name: "Универсал" },
+    201: { id: 16, first_name: "Сергей",  last_name: "Петров",    middle_name: "Иванович",  position_name: "Кладовщик" },
+    202: { id: 17, first_name: "Ольга",   last_name: "Сидорова",  middle_name: "Алексеевна", position_name: "Уборщик" },
+    203: { id: 18, first_name: "Алексей", last_name: "Козлов",    middle_name: "Васильевич", position_name: "Кассир" },
+    204: { id: 19, first_name: "Елена",   last_name: "Васильева", middle_name: "Алексеевна", position_name: "Продавец" },
+    205: { id: 20, first_name: "Алексей", last_name: "Морозов",   middle_name: "Сергеевич",  position_name: "Продавец" },
+    206: { id: 21, first_name: "Дмитрий", last_name: "Смирнов",   middle_name: "Олегович",   position_name: "Грузчик" },
+    207: { id: 22, first_name: "Анна",    last_name: "Соколова",  middle_name: "Викторовна", position_name: "Продавец" },
+  };
 
-  // Enrich with task title
-  const enriched: SubtaskWithTaskTitle[] = paginated.map((subtask) => {
+  const createdAtBySubtaskId: Record<number, string> = {
+    200: daysBack(1),
+    201: daysBack(2),
+    202: daysBack(0),
+    203: daysBack(3),
+    204: daysBack(1),
+    205: daysBack(4),
+    206: daysBack(2),
+    207: daysBack(1),
+    // existing PENDING ids from original mock
+    15: daysBack(5),
+    28: daysBack(7),
+    46: daysBack(6),
+    58: daysBack(8),
+    104: daysBack(3),
+  };
+
+  // Build enriched list
+  const enrichedAll: SubtaskWithTaskTitle[] = pending.map((subtask) => {
     const task = MOCK_TASKS.find((t) => t.id === subtask.task_id);
     return {
       ...subtask,
-      task_title: task?.title ?? "Unknown Task",
+      task_title: task?.title ?? "—",
+      task_id_display: task?.id ?? subtask.task_id,
+      store_id: task?.store_id ?? 0,
+      store_name: task?.store_name ?? "—",
+      store_external_code: "", // filled below
+      zone_id: task?.zone_id ?? 0,
+      zone_name: task?.zone_name ?? "—",
+      work_type_id: task?.work_type_id ?? 0,
+      work_type_name: task?.work_type_name ?? "—",
+      proposed_by: workerBySubtaskId[subtask.id],
+      created_at: createdAtBySubtaskId[subtask.id] ?? nowIso,
     };
   });
 
+  let filtered = enrichedAll;
+
+  // Filter by store
+  if (store_id) {
+    filtered = filtered.filter((s) => s.store_id === store_id);
+  }
+
+  // Filter by work type
+  if (work_type_id) {
+    filtered = filtered.filter((s) => s.work_type_id === work_type_id);
+  }
+
+  // Filter by zone
+  if (zone_id) {
+    filtered = filtered.filter((s) => s.zone_id === zone_id);
+  }
+
+  // Search by subtask name or work type name
+  if (search) {
+    const q = search.toLowerCase();
+    filtered = filtered.filter(
+      (s) =>
+        s.name.toLowerCase().includes(q) ||
+        s.work_type_name.toLowerCase().includes(q)
+    );
+  }
+
+  // Paginate
+  const total = filtered.length;
+  const start = (page - 1) * page_size;
+  const paginated = filtered.slice(start, start + page_size);
+
   return {
-    data: enriched,
+    data: paginated,
     total,
     page,
     page_size,

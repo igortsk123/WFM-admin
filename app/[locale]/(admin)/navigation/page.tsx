@@ -55,6 +55,7 @@ const NAV_GROUPS: NavGroup[] = [
       { labelKey: "task_new", href: ADMIN_ROUTES.taskNew, icon: CheckSquare, status: "ready" },
       { labelKey: "task_detail_demo", href: ADMIN_ROUTES.taskDetail("t-1042"), icon: CheckSquare, status: "ready" },
       { labelKey: "tasks_review", href: ADMIN_ROUTES.tasksReview, icon: CheckSquare, status: "planned" },
+      { labelKey: "subtasks_moderation", href: ADMIN_ROUTES.subtasksModeration, icon: CheckSquare, status: "ready" },
       { labelKey: "schedule", href: ADMIN_ROUTES.schedule, icon: Calendar, status: "planned" },
       { labelKey: "employees", href: ADMIN_ROUTES.employees, icon: Users, status: "planned" },
       { labelKey: "stores", href: ADMIN_ROUTES.stores, icon: Store, status: "planned" },
