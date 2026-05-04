@@ -14,6 +14,7 @@ import type {
   Permission,
   FunctionalRole,
   EmployeeType,
+  FreelancerStatus,
   Shift,
 } from "@/lib/types";
 import { MOCK_USERS } from "@/lib/mock-data";
@@ -21,6 +22,7 @@ import { MOCK_ASSIGNMENTS } from "@/lib/mock-data/assignments";
 import { MOCK_PERMISSIONS } from "@/lib/mock-data/permissions";
 import { MOCK_FUNCTIONAL_ROLES } from "@/lib/mock-data/functional-roles";
 import { MOCK_SHIFTS } from "@/lib/mock-data/shifts";
+import { MOCK_FREELANCE_AGENTS } from "@/lib/mock-data/freelance-agents";
 
 /** Сегодняшняя дата в моках — синхронизируем с MOCK_SHIFTS / MOCK_TASKS. */
 const TODAY = "2026-05-01";
@@ -41,6 +43,8 @@ export interface UserWithAssignment extends User {
   current_shift?: Shift | null;
   /** Кол-во загруженных документов внештатника (для FREELANCE-индикатора). 0 = нет документов. */
   freelance_documents_count?: number;
+  /** Имя агента (для колонки «Агент» в employees-list). null = без агента. */
+  agent_name?: string | null;
 }
 
 /** User with full assignments and permissions history */
@@ -70,6 +74,15 @@ export interface UserListParams extends ApiListParams {
   permissions?: Permission[];
   /** Тип занятости: STAFF | FREELANCE. */
   employment_type?: EmployeeType;
+  /** Статус внештатника. Активен только при employment_type=FREELANCE. */
+  freelancer_status?: FreelancerStatus;
+  /** Фильтр по agent_id. Scope=organization. Скрыт при payment_mode=CLIENT_DIRECT. */
+  agent_ids?: string[];
+  /**
+   * Источник создания: MANUAL | EXTERNAL_SYNC.
+   * Скрыт при organization.external_hr_enabled=false.
+   */
+  source?: "MANUAL" | "EXTERNAL_SYNC";
   /** Архивированные. По умолчанию false (только активные). */
   archived?: boolean;
 }
@@ -106,6 +119,9 @@ export async function getUsers(
     permission,
     permissions,
     employment_type,
+    freelancer_status,
+    agent_ids,
+    source,
     archived = false,
     page = 1,
     page_size = 20,
@@ -170,6 +186,23 @@ export async function getUsers(
     filtered = filtered.filter((u) => u.type === employment_type);
   }
 
+  // Filter by freelancer status (only relevant for FREELANCE users)
+  if (freelancer_status) {
+    filtered = filtered.filter((u) => u.freelancer_status === freelancer_status);
+  }
+
+  // Filter by agent_ids (multi-select)
+  if (agent_ids && agent_ids.length > 0) {
+    filtered = filtered.filter(
+      (u) => u.agent_id != null && agent_ids.includes(u.agent_id)
+    );
+  }
+
+  // Filter by creation source
+  if (source) {
+    filtered = filtered.filter((u) => u.source === source);
+  }
+
   // Search by name or phone
   if (search) {
     const lowerSearch = search.toLowerCase();
@@ -219,6 +252,12 @@ export async function getUsers(
     // Заглушка для freelance-документов — на M0 не считаем реально.
     const docsCount = user.type === "FREELANCE" ? 0 : undefined;
 
+    // Resolve agent name for FREELANCE users
+    const agentName =
+      user.type === "FREELANCE" && user.agent_id
+        ? (MOCK_FREELANCE_AGENTS.find((a) => a.id === user.agent_id)?.name ?? null)
+        : null;
+
     return {
       ...user,
       assignment,
@@ -226,6 +265,7 @@ export async function getUsers(
       functional_role: funcRole,
       current_shift: todayShift,
       freelance_documents_count: docsCount,
+      agent_name: agentName,
     };
   });
 
