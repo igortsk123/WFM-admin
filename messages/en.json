@@ -1315,15 +1315,26 @@
         "permission": "Permission",
         "functional_role": "Functional role",
         "employment_type": "Employment type",
+        "agent": "Agent",
+        "source_creation": "Creation source",
+        "freelancer_status": "Freelancer status",
         "clear_all": "Clear all",
         "open_filters": "Filters",
         "close": "Close",
         "apply": "Apply"
       },
+      "source": {
+        "manual": "Manual",
+        "external": "From external HR"
+      },
       "employment": {
         "staff": "Staff",
         "freelance": "Freelance",
-        "no_documents": "No documents uploaded"
+        "no_documents": "No documents uploaded",
+        "no_oferta": "Offer not signed",
+        "oferta_signed": "Offer signed",
+        "no_agent": "No agent",
+        "not_activated_tooltip": "Freelancer is not activated"
       },
       "columns": {
         "fio": "Employee",
@@ -1334,7 +1345,10 @@
         "current_shift": "Current shift",
         "employment": "Employment",
         "hired_at": "Hired",
-        "more_permissions": "+{n}"
+        "more_permissions": "+{n}",
+        "agent": "Agent",
+        "freelancer_status": "Freelancer status",
+        "oferta": "Offer"
       },
       "shift": {
         "no_shift": "—",

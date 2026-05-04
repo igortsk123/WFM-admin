@@ -6,22 +6,25 @@ import { useTranslations, useLocale } from "next-intl"
 import { useQueryState, parseAsString, parseAsInteger } from "nuqs"
 import { type ColumnDef } from "@tanstack/react-table"
 import {
-  Plus,
-  Download,
-  Upload,
-  MoreVertical,
-  FileWarning,
-  Users,
   Archive,
-  SearchX,
-  SlidersHorizontal,
-  Check,
-  ChevronsUpDown,
+  ChevronLeft,
+  ChevronRight,
+  FileWarning,
+  Filter,
+  MoreHorizontal,
+  Plus,
+  Search,
+  UserCog,
   X,
 } from "lucide-react"
 import { toast } from "sonner"
 
-import type { Permission, FunctionalRole, EmployeeType } from "@/lib/types"
+import type {
+  Permission,
+  FunctionalRole,
+  EmployeeType,
+  FreelancerStatus,
+} from "@/lib/types"
 import type { UserWithAssignment } from "@/lib/api/users"
 import { getUsers, archiveUser, bulkAssignPermission } from "@/lib/api/users"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
@@ -63,6 +66,12 @@ import {
   CommandList,
 } from "@/components/ui/command"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
 import { PageHeader } from "@/components/shared/page-header"
@@ -75,6 +84,7 @@ import { EmptyState } from "@/components/shared/empty-state"
 import { ResponsiveDataTable } from "@/components/shared/responsive-data-table"
 import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet"
 import { ConfirmDialog } from "@/components/shared/confirm-dialog"
+import { FreelancerStatusBadge } from "@/components/shared/freelancer-status-badge"
 
 // ─────────────────────────────────────────────────────────────────
 // CONSTANTS
@@ -118,6 +128,28 @@ const POSITION_OPTIONS = [
   { id: 6, name: "Мерчендайзер" },
   { id: 7, name: "Директор магазина" },
   { id: 8, name: "Супервайзер" },
+]
+
+// Agents for filter — mirrors MOCK_FREELANCE_AGENTS (only ACTIVE)
+const AGENT_OPTIONS = [
+  { id: "agent-001", name: "ИП Захарова М. С." },
+  { id: "agent-002", name: 'ООО «Кадровый партнёр»' },
+  { id: "agent-003", name: "ИП Никитин А. И." },
+]
+
+const ALL_FREELANCER_STATUSES: FreelancerStatus[] = [
+  "NEW",
+  "VERIFICATION",
+  "ACTIVE",
+  "BLOCKED",
+  "ARCHIVED",
+]
+
+/** Statuses that block task assignment */
+const INACTIVE_FREELANCER_STATUSES: FreelancerStatus[] = [
+  "NEW",
+  "VERIFICATION",
+  "BLOCKED",
 ]
 
 // ─────────────────────────────────────────────────────────────────
@@ -433,6 +465,10 @@ export function EmployeesList() {
   const [selectedRole, setSelectedRole] = React.useState<string>("")
   const [selectedEmploymentType, setSelectedEmploymentType] =
     React.useState<string>("")
+  const [selectedAgentIds, setSelectedAgentIds] = React.useState<string[]>([])
+  const [selectedFreelancerStatus, setSelectedFreelancerStatus] =
+    React.useState<string>("")
+  const [selectedSource, setSelectedSource] = React.useState<string>("")
 
   // ── Data state ──────────────────────────────────────────────────
   const [data, setData] = React.useState<UserWithAssignment[]>([])
@@ -474,6 +510,14 @@ export function EmployeesList() {
         employment_type: selectedEmploymentType
           ? (selectedEmploymentType as EmployeeType)
           : undefined,
+        freelancer_status: selectedFreelancerStatus
+          ? (selectedFreelancerStatus as FreelancerStatus)
+          : undefined,
+        agent_ids:
+          selectedAgentIds.length > 0 ? selectedAgentIds : undefined,
+        source: selectedSource
+          ? (selectedSource as "MANUAL" | "EXTERNAL_SYNC")
+          : undefined,
         page: pageParam,
         page_size: 20,
       })
@@ -492,6 +536,9 @@ export function EmployeesList() {
     selectedPermissions,
     selectedRole,
     selectedEmploymentType,
+    selectedFreelancerStatus,
+    selectedAgentIds,
+    selectedSource,
     pageParam,
   ])
 
@@ -517,13 +564,24 @@ export function EmployeesList() {
     })
   }, [])
 
+  // ── Org feature flags (mock: NOMINAL_ACCOUNT + external_hr_enabled) ──
+  // In production these come from user.organization
+  const paymentMode = "NOMINAL_ACCOUNT" as const
+  const externalHrEnabled = true
+  const showAgentFilter = paymentMode !== "CLIENT_DIRECT"
+  const showSourceFilter = externalHrEnabled
+  const showFreelancerStatusFilter = selectedEmploymentType === "FREELANCE"
+
   // ── Active filter count ─────────────────────────────────────────
   const activeFilterCount =
     selectedStoreIds.length +
     selectedPositionIds.length +
     selectedPermissions.length +
     (selectedRole ? 1 : 0) +
-    (selectedEmploymentType ? 1 : 0)
+    (selectedEmploymentType ? 1 : 0) +
+    selectedAgentIds.length +
+    (selectedFreelancerStatus ? 1 : 0) +
+    (selectedSource ? 1 : 0)
 
   const hasActiveFilters = activeFilterCount > 0 || !!searchParam
 
@@ -533,6 +591,9 @@ export function EmployeesList() {
     setSelectedPermissions([])
     setSelectedRole("")
     setSelectedEmploymentType("")
+    setSelectedAgentIds([])
+    setSelectedFreelancerStatus("")
+    setSelectedSource("")
     setSearchParam(null)
     setPageParam(null)
   }
@@ -635,17 +696,39 @@ export function EmployeesList() {
     {
       id: "fio",
       header: t("columns.fio"),
-      cell: ({ row }) => (
-        <UserCell
-          user={{
-            first_name: row.original.first_name,
-            last_name: row.original.last_name,
-            middle_name: row.original.middle_name,
-            avatar_url: row.original.avatar_url,
-            position_name: row.original.assignment?.position_name,
-          }}
-        />
-      ),
+      cell: ({ row }) => {
+        const u = row.original
+        const hasUnsignedOferta =
+          u.type === "FREELANCE" && !u.oferta_accepted_at
+        return (
+          <div className="flex items-center gap-1.5">
+            <UserCell
+              user={{
+                first_name: u.first_name,
+                last_name: u.last_name,
+                middle_name: u.middle_name,
+                avatar_url: u.avatar_url,
+                position_name: u.assignment?.position_name,
+              }}
+            />
+            {hasUnsignedOferta && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <FileWarning
+                      className="size-3.5 text-warning shrink-0"
+                      aria-label={t("employment.no_oferta")}
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    {t("employment.no_oferta")}
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+          </div>
+        )
+      },
     },
     ...(!hideStore
       ? [
@@ -770,6 +853,54 @@ export function EmployeesList() {
         </span>
       ),
     },
+    // ── FREELANCE-only columns ──────────────────────────────────────
+    {
+      id: "agent",
+      header: t("columns.agent"),
+      cell: ({ row }) => {
+        const u = row.original
+        if (u.type !== "FREELANCE") return null
+        return (
+          <span className="text-sm text-muted-foreground truncate max-w-[160px] block">
+            {u.agent_name ?? t("employment.no_agent")}
+          </span>
+        )
+      },
+    },
+    {
+      id: "freelancer_status",
+      header: t("columns.freelancer_status"),
+      cell: ({ row }) => {
+        const u = row.original
+        if (u.type !== "FREELANCE" || !u.freelancer_status) return null
+        return <FreelancerStatusBadge status={u.freelancer_status} size="sm" />
+      },
+    },
+    {
+      id: "oferta",
+      header: t("columns.oferta"),
+      cell: ({ row }) => {
+        const u = row.original
+        if (u.type !== "FREELANCE") return null
+        if (u.oferta_accepted_at) {
+          return (
+            <div className="flex flex-col gap-0.5">
+              <span className="text-xs text-success font-medium">
+                {t("employment.oferta_signed")}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {formatHiredAt(u.oferta_accepted_at, locale)}
+              </span>
+            </div>
+          )
+        }
+        return (
+          <span className="text-xs text-warning">
+            {t("employment.no_oferta")}
+          </span>
+        )
+      },
+    },
     {
       id: "actions",
       header: "",
@@ -797,14 +928,31 @@ export function EmployeesList() {
               >
                 {t("row_actions.open")}
               </DropdownMenuItem>
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation()
-                  router.push(`${ADMIN_ROUTES.taskNew}?assignee_id=${u.id}`)
-                }}
-              >
-                {t("row_actions.assign_task")}
-              </DropdownMenuItem>
+              {u.type === "FREELANCE" &&
+              u.freelancer_status &&
+              INACTIVE_FREELANCER_STATUSES.includes(u.freelancer_status) ? (
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none opacity-50">
+                        {t("row_actions.assign_task")}
+                      </span>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {t("employment.not_activated_tooltip")}
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              ) : (
+                <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    router.push(`${ADMIN_ROUTES.taskNew}?assignee_id=${u.id}`)
+                  }}
+                >
+                  {t("row_actions.assign_task")}
+                </DropdownMenuItem>
+              )}
               <DropdownMenuItem
                 onClick={(e) => {
                   e.stopPropagation()
@@ -874,6 +1022,30 @@ export function EmployeesList() {
   const employmentOptions = [
     { value: "STAFF", label: t("employment.staff") },
     { value: "FREELANCE", label: t("employment.freelance") },
+  ]
+
+  const agentOptions = AGENT_OPTIONS.map((a) => ({
+    value: a.id,
+    label: a.name,
+  }))
+
+  const freelancerStatusOptions = ALL_FREELANCER_STATUSES.map((s) => ({
+    value: s,
+    label:
+      s === "NEW"
+        ? "Новый"
+        : s === "VERIFICATION"
+        ? "Проверка"
+        : s === "ACTIVE"
+        ? "Активен"
+        : s === "BLOCKED"
+        ? "Заблокирован"
+        : "Архив",
+  }))
+
+  const sourceOptions = [
+    { value: "MANUAL", label: t("source.manual") },
+    { value: "EXTERNAL_SYNC", label: t("source.external") },
   ]
 
   // ── Empty state variants ─────────────────────────────────────────
@@ -1066,6 +1238,49 @@ export function EmployeesList() {
             : t("employment.freelance")
         }
         onRemove={() => setSelectedEmploymentType("")}
+      />
+    )
+  }
+
+  selectedAgentIds.forEach((id) => {
+    const name = AGENT_OPTIONS.find((a) => a.id === id)?.name ?? id
+    filterChips.push(
+      <FilterChip
+        key={`agent-${id}`}
+        label={t("filters.agent")}
+        value={name}
+        onRemove={() =>
+          setSelectedAgentIds((prev) => prev.filter((v) => v !== id))
+        }
+      />
+    )
+  })
+
+  if (selectedFreelancerStatus) {
+    const statusLabel =
+      freelancerStatusOptions.find((o) => o.value === selectedFreelancerStatus)
+        ?.label ?? selectedFreelancerStatus
+    filterChips.push(
+      <FilterChip
+        key="fstatus"
+        label={t("filters.freelancer_status")}
+        value={statusLabel}
+        onRemove={() => setSelectedFreelancerStatus("")}
+      />
+    )
+  }
+
+  if (selectedSource) {
+    filterChips.push(
+      <FilterChip
+        key="source"
+        label={t("filters.source_creation")}
+        value={
+          selectedSource === "MANUAL"
+            ? t("source.manual")
+            : t("source.external")
+        }
+        onRemove={() => setSelectedSource("")}
       />
     )
   }
@@ -1393,24 +1608,189 @@ export function EmployeesList() {
               value={selectedEmploymentType}
               onValueChange={(v) => {
                 setSelectedEmploymentType(v)
+                // Reset freelancer-specific filter if no longer FREELANCE
+                if (v !== "FREELANCE") setSelectedFreelancerStatus("")
                 setPageParam(null)
               }}
               placeholder={t("filters.employment_type")}
               className="w-40"
             />
+            {showFreelancerStatusFilter && (
+              <SingleSelectCombobox
+                options={freelancerStatusOptions}
+                value={selectedFreelancerStatus}
+                onValueChange={(v) => {
+                  setSelectedFreelancerStatus(v)
+                  setPageParam(null)
+                }}
+                placeholder={t("filters.freelancer_status")}
+                className="w-44"
+              />
+            )}
+            {showAgentFilter && (
+              <MultiSelectCombobox
+                options={agentOptions}
+                selected={selectedAgentIds}
+                onSelectionChange={(v) => {
+                  setSelectedAgentIds(v)
+                  setPageParam(null)
+                }}
+                placeholder={t("filters.agent")}
+                className="w-44"
+              />
+            )}
+            {showSourceFilter && (
+              <SingleSelectCombobox
+                options={sourceOptions}
+                value={selectedSource}
+                onValueChange={(v) => {
+                  setSelectedSource(v)
+                  setPageParam(null)
+                }}
+                placeholder={t("filters.source_creation")}
+                className="w-44"
+              />
+            )}
           </div>
 
           {/* Mobile filter sheet trigger */}
           <div className="md:hidden flex-1">
-            <MobileFilterSheet
-              activeCount={activeFilterCount}
-              onClearAll={clearAllFilters}
-              onApply={() => {
-                setPageParam(null)
-              }}
-            >
-              {filterPanel}
-            </MobileFilterSheet>
+              <MobileFilterSheet
+                open={mobileFiltersOpen}
+                onOpenChange={setMobileFiltersOpen}
+                activeCount={activeFilterCount}
+                onReset={clearAllFilters}
+              >
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium">
+                      {t("filters.store")}
+                    </p>
+                    <MultiSelectCombobox
+                      options={storeOptions}
+                      selected={selectedStoreIds}
+                      onSelectionChange={(v) => {
+                        setSelectedStoreIds(v)
+                        setPageParam(null)
+                      }}
+                      placeholder={t("filters.store")}
+                      className="w-full"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium">
+                      {t("filters.position")}
+                    </p>
+                    <MultiSelectCombobox
+                      options={positionOptions}
+                      selected={selectedPositionIds}
+                      onSelectionChange={(v) => {
+                        setSelectedPositionIds(v)
+                        setPageParam(null)
+                      }}
+                      placeholder={t("filters.position")}
+                      className="w-full"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium">
+                      {t("filters.functional_role")}
+                    </p>
+                    <SingleSelectCombobox
+                      options={roleOptions}
+                      value={selectedRole}
+                      onValueChange={(v) => {
+                        setSelectedRole(v)
+                        setPageParam(null)
+                      }}
+                      placeholder={t("filters.functional_role")}
+                      className="w-full"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium">
+                      {t("filters.employment_type")}
+                    </p>
+                    <SingleSelectCombobox
+                      options={employmentOptions}
+                      value={selectedEmploymentType}
+                      onValueChange={(v) => {
+                        setSelectedEmploymentType(v)
+                        if (v !== "FREELANCE") setSelectedFreelancerStatus("")
+                        setPageParam(null)
+                      }}
+                      placeholder={t("filters.employment_type")}
+                      className="w-full"
+                    />
+                  </div>
+                  {showFreelancerStatusFilter && (
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">
+                        {t("filters.freelancer_status")}
+                      </p>
+                      <SingleSelectCombobox
+                        options={freelancerStatusOptions}
+                        value={selectedFreelancerStatus}
+                        onValueChange={(v) => {
+                          setSelectedFreelancerStatus(v)
+                          setPageParam(null)
+                        }}
+                        placeholder={t("filters.freelancer_status")}
+                        className="w-full"
+                      />
+                    </div>
+                  )}
+                  {showAgentFilter && (
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">
+                        {t("filters.agent")}
+                      </p>
+                      <MultiSelectCombobox
+                        options={agentOptions}
+                        selected={selectedAgentIds}
+                        onSelectionChange={(v) => {
+                          setSelectedAgentIds(v)
+                          setPageParam(null)
+                        }}
+                        placeholder={t("filters.agent")}
+                        className="w-full"
+                      />
+                    </div>
+                  )}
+                  {showSourceFilter && (
+                    <div className="space-y-2">
+                      <p className="text-sm font-medium">
+                        {t("filters.source_creation")}
+                      </p>
+                      <SingleSelectCombobox
+                        options={sourceOptions}
+                        value={selectedSource}
+                        onValueChange={(v) => {
+                          setSelectedSource(v)
+                          setPageParam(null)
+                        }}
+                        placeholder={t("filters.source_creation")}
+                        className="w-full"
+                      />
+                    </div>
+                  )}
+                  <div className="space-y-2">
+                    <p className="text-sm font-medium">
+                      {t("filters.permission")}
+                    </p>
+                    <MultiSelectCombobox
+                      options={permissionOptions}
+                      selected={selectedPermissions}
+                      onSelectionChange={(v) => {
+                        setSelectedPermissions(v)
+                        setPageParam(null)
+                      }}
+                      placeholder={t("filters.permission")}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+              </MobileFilterSheet>
           </div>
         </div>
 
