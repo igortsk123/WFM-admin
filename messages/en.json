@@ -158,7 +158,7 @@
     "audit": "Audit",
     "notifications": "Notifications",
     "ai_coach": "AI Coach",
-    "risk_rules": "Risk rules",
+    "risk_rules": "Risk scoring",
     "leaderboards": "Leaderboards",
     "freelance_dashboard": "Freelance",
     "freelance_applications": "Freelance applications",
@@ -5180,6 +5180,143 @@
         "generated": "Generated {count} variants",
         "ab_test_started": "A/B test started",
         "ab_test_finished": "Test finished",
+        "error": "Operation failed"
+      }
+    },
+    "riskRules": {
+      "page_title": "Risk scoring",
+      "page_subtitle": "Selective task review rules",
+      "beta_badge": "Beta",
+      "breadcrumbs": {
+        "home": "Home",
+        "future": "Future",
+        "risk": "Risk scoring"
+      },
+      "stats": {
+        "avg_review_title": "Avg review time",
+        "avg_review_value": "{minutes} min",
+        "avg_review_prev": "was {minutes} min before risk scoring",
+        "avg_review_diff": "-{percent}%",
+        "reviewed_share_title": "Share of tasks reviewed",
+        "reviewed_share_value": "{percent}%",
+        "reviewed_share_prev": "was {percent}%",
+        "reviewed_share_saved": "Saved: {hours} h/mo",
+        "defect_rate_title": "Defect rate",
+        "defect_rate_value": "{percent}%",
+        "defect_rate_hint": "Share of tasks with issues that passed sampling"
+      },
+      "tabs": {
+        "rules": "Rules",
+        "simulation": "Simulation",
+        "history": "History",
+        "metrics": "Metrics"
+      },
+      "rules_tab": {
+        "search_placeholder": "Search rule",
+        "category_label": "Category",
+        "create_rule": "Create rule",
+        "columns": {
+          "work_type": "Work type",
+          "mode": "Mode",
+          "sample_rate": "Sample rate",
+          "photo_required": "Photo",
+          "triggers": "Escalation triggers",
+          "updated_at": "Updated",
+          "actions": "Actions"
+        },
+        "mode_label": {
+          "FULL_REVIEW": "Full review",
+          "SAMPLING": "Sampling",
+          "PHOTO_REQUIRED": "Photo only",
+          "AUTO_ACCEPT": "No review"
+        },
+        "triggers_count": "{count} active",
+        "row_actions": {
+          "edit": "Edit",
+          "duplicate": "Duplicate",
+          "delete": "Delete"
+        },
+        "delete_dialog": {
+          "title": "Delete rule?",
+          "description": "After deletion the type reverts to FULL_REVIEW policy",
+          "confirm": "Delete"
+        }
+      },
+      "rule_editor": {
+        "title": "Rule for type: {workType}",
+        "mode_section": "Review mode",
+        "mode_descriptions": {
+          "FULL_REVIEW": "All tasks require manual approve",
+          "SAMPLING": "% of tasks sent for review",
+          "PHOTO_REQUIRED": "Review only if photo report present",
+          "AUTO_ACCEPT": "Auto-accept all"
+        },
+        "sample_section": "Sample rate",
+        "sample_hint": "Higher % = more review but more time",
+        "photo_section": "Photo requirement",
+        "photo_label": "Require photo on completion",
+        "triggers_section": "Escalation triggers",
+        "trigger_keys": {
+          "NEW_PERFORMER": "New performer",
+          "STORE_HIGH_DEFECT": "Store with high defect rate",
+          "PERFORMER_RECENT_REJECTS": "Performer with recent rejects",
+          "TASK_ADDITIONAL": "Additional tasks"
+        },
+        "trigger_threshold_labels": {
+          "NEW_PERFORMER": "Tasks until escalation",
+          "STORE_HIGH_DEFECT": "% threshold",
+          "PERFORMER_RECENT_REJECTS": "Rejects"
+        },
+        "actions": {
+          "cancel": "Cancel",
+          "save": "Save"
+        }
+      },
+      "simulation_tab": {
+        "card_title": "Simulation",
+        "card_description": "Run on historical data to estimate the effect of current rules",
+        "date_range_label": "Period",
+        "stores_label": "Stores",
+        "run_button": "Run simulation",
+        "running_hint": "Simulation running, up to 30 seconds",
+        "result_title": "Simulation results",
+        "result_columns": {
+          "tasks_total": "Tasks in period",
+          "would_review": "Would have been reviewed",
+          "hours_saved": "Hours saved",
+          "forecast_defect": "Forecast defect rate"
+        }
+      },
+      "history_tab": {
+        "title": "Rule change history",
+        "diff_drawer_title": "Version diff",
+        "before": "Before",
+        "after": "After",
+        "empty": "Change history will appear after editing"
+      },
+      "metrics_tab": {
+        "defect_rate_chart_title": "Defect rate, 90 days",
+        "review_time_chart_title": "Review time, 90 days",
+        "top_defective_card_title": "Top defective work types",
+        "top_defective_columns": {
+          "work_type": "Work type",
+          "defect_rate": "Defect rate",
+          "tasks_count": "Tasks in period"
+        }
+      },
+      "empty": {
+        "no_rules_title": "No rules yet",
+        "no_rules_cta": "Create first"
+      },
+      "states": {
+        "forbidden_title": "Access restricted",
+        "forbidden_subtitle": "Only available to NETWORK_OPS"
+      },
+      "toasts": {
+        "rule_saved": "Rule updated",
+        "rule_created": "Rule created",
+        "rule_deleted": "Rule deleted",
+        "simulation_done": "Simulation done",
         "error": "Operation failed"
       }
     }

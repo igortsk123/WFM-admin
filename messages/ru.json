@@ -158,7 +158,7 @@
     "audit": "Аудит",
     "notifications": "Уведомления",
     "ai_coach": "AI Coach",
-    "risk_rules": "Правила рисков",
+    "risk_rules": "Риск-скоринг",
     "leaderboards": "Рейтинги",
     "freelance_dashboard": "Фриланс",
     "freelance_applications": "Заявки на фриланс",
@@ -5181,6 +5181,143 @@
         "generated": "Сгенерировано {count} вариантов",
         "ab_test_started": "A/B тест запущен",
         "ab_test_finished": "Тест завершён",
+        "error": "Не удалось выполнить операцию"
+      }
+    },
+    "riskRules": {
+      "page_title": "Риск-скоринг",
+      "page_subtitle": "Правила выборочной проверки задач",
+      "beta_badge": "Beta",
+      "breadcrumbs": {
+        "home": "Главная",
+        "future": "Будущее",
+        "risk": "Риск-скоринг"
+      },
+      "stats": {
+        "avg_review_title": "Среднее время проверки",
+        "avg_review_value": "{minutes} мин",
+        "avg_review_prev": "было {minutes} мин до риск-скоринга",
+        "avg_review_diff": "-{percent}%",
+        "reviewed_share_title": "Доля проверяемых задач",
+        "reviewed_share_value": "{percent}%",
+        "reviewed_share_prev": "было {percent}%",
+        "reviewed_share_saved": "Сбережено: {hours} ч/мес",
+        "defect_rate_title": "Defect rate",
+        "defect_rate_value": "{percent}%",
+        "defect_rate_hint": "Доля задач с проблемами, прошедших sampling"
+      },
+      "tabs": {
+        "rules": "Правила",
+        "simulation": "Тестирование",
+        "history": "История",
+        "metrics": "Метрики"
+      },
+      "rules_tab": {
+        "search_placeholder": "Поиск правила",
+        "category_label": "Категория",
+        "create_rule": "Создать правило",
+        "columns": {
+          "work_type": "Тип работы",
+          "mode": "Режим",
+          "sample_rate": "Sample rate",
+          "photo_required": "Фото",
+          "triggers": "Триггеры эскалации",
+          "updated_at": "Обновлено",
+          "actions": "Действия"
+        },
+        "mode_label": {
+          "FULL_REVIEW": "Полная проверка",
+          "SAMPLING": "Выборка",
+          "PHOTO_REQUIRED": "Только фото",
+          "AUTO_ACCEPT": "Без проверки"
+        },
+        "triggers_count": "{count} активных",
+        "row_actions": {
+          "edit": "Редактировать",
+          "duplicate": "Дублировать",
+          "delete": "Удалить"
+        },
+        "delete_dialog": {
+          "title": "Удалить правило?",
+          "description": "После удаления тип вернётся к политике FULL_REVIEW",
+          "confirm": "Удалить"
+        }
+      },
+      "rule_editor": {
+        "title": "Правило для типа: {workType}",
+        "mode_section": "Режим проверки",
+        "mode_descriptions": {
+          "FULL_REVIEW": "Все задачи требуют ручного approve",
+          "SAMPLING": "% задач отправляется на проверку",
+          "PHOTO_REQUIRED": "Проверка только если фото-отчёт",
+          "AUTO_ACCEPT": "Авто-accept всех"
+        },
+        "sample_section": "Sample rate",
+        "sample_hint": "Чем выше %, тем больше проверки, но больше времени",
+        "photo_section": "Photo requirement",
+        "photo_label": "Требовать фото при завершении",
+        "triggers_section": "Триггеры эскалации",
+        "trigger_keys": {
+          "NEW_PERFORMER": "Новый исполнитель",
+          "STORE_HIGH_DEFECT": "Магазин с высоким defect rate",
+          "PERFORMER_RECENT_REJECTS": "Возвраты у исполнителя",
+          "TASK_ADDITIONAL": "Дополнительные задачи"
+        },
+        "trigger_threshold_labels": {
+          "NEW_PERFORMER": "Задач для эскалации",
+          "STORE_HIGH_DEFECT": "% порог",
+          "PERFORMER_RECENT_REJECTS": "Возвратов"
+        },
+        "actions": {
+          "cancel": "Отмена",
+          "save": "Сохранить"
+        }
+      },
+      "simulation_tab": {
+        "card_title": "Симуляция",
+        "card_description": "Запустите расчёт на исторических данных, чтобы оценить эффект текущих правил",
+        "date_range_label": "Период",
+        "stores_label": "Магазины",
+        "run_button": "Запустить симуляцию",
+        "running_hint": "Идёт симуляция, до 30 секунд",
+        "result_title": "Результаты симуляции",
+        "result_columns": {
+          "tasks_total": "Задач за период",
+          "would_review": "Было бы проверено",
+          "hours_saved": "Сэкономлено времени",
+          "forecast_defect": "Прогнозируемый defect rate"
+        }
+      },
+      "history_tab": {
+        "title": "История изменений правил",
+        "diff_drawer_title": "Сравнение версий",
+        "before": "Было",
+        "after": "Стало",
+        "empty": "История изменений появится после редактирования"
+      },
+      "metrics_tab": {
+        "defect_rate_chart_title": "Defect rate за 90 дней",
+        "review_time_chart_title": "Время на проверку за 90 дней",
+        "top_defective_card_title": "Выявленные проблемы (топ типов работ)",
+        "top_defective_columns": {
+          "work_type": "Тип работы",
+          "defect_rate": "Defect rate",
+          "tasks_count": "Задач за период"
+        }
+      },
+      "empty": {
+        "no_rules_title": "Правила ещё не созданы",
+        "no_rules_cta": "Создать первое"
+      },
+      "states": {
+        "forbidden_title": "Доступ ограничен",
+        "forbidden_subtitle": "Доступно только NETWORK_OPS"
+      },
+      "toasts": {
+        "rule_saved": "Правило обновлено",
+        "rule_created": "Правило создано",
+        "rule_deleted": "Правило удалено",
+        "simulation_done": "Симуляция завершена",
         "error": "Не удалось выполнить операцию"
       }
     }
