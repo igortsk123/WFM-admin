@@ -22,7 +22,13 @@ import {
   type PlanFactByUser,
   type PlanFactByWorkType,
 } from "@/lib/mock-data/reports-plan-fact";
-import { MOCK_STORE_COMPARE, type StoreCompareReport } from "@/lib/mock-data/reports-compare";
+import {
+  MOCK_STORE_COMPARE,
+  type StoreCompareReport,
+  type StoreComparisonRow,
+  type StoreQuadrant,
+  type NetworkMedians,
+} from "@/lib/mock-data/reports-compare";
 
 const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
 
@@ -50,6 +56,9 @@ export type {
   PlanFactByUser,
   PlanFactByWorkType,
   StoreCompareReport as StoreCompareReportData,
+  StoreComparisonRow,
+  StoreQuadrant,
+  NetworkMedians,
 };
 
 // ═══════════════════════════════════════════════════════════════════
