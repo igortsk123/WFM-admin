@@ -5320,6 +5320,131 @@
         "simulation_done": "Симуляция завершена",
         "error": "Не удалось выполнить операцию"
       }
+    },
+    "leaderboards": {
+      "page_title": "Рейтинги",
+      "page_subtitle": "Команда, рост, челленджи",
+      "beta_badge": "Beta",
+      "breadcrumbs": {
+        "home": "Главная",
+        "future": "Будущее",
+        "leaderboards": "Рейтинги"
+      },
+      "filters": {
+        "period_week": "Неделя",
+        "period_month": "Месяц",
+        "period_quarter": "Квартал",
+        "store_label": "Магазин"
+      },
+      "actions": {
+        "create_challenge": "Создать челлендж",
+        "details": "Подробнее",
+        "edit": "Редактировать",
+        "cancel": "Отменить"
+      },
+      "tabs": {
+        "users": "Сотрудники",
+        "stores": "Магазины",
+        "teams": "Команды",
+        "challenges": "Челленджи"
+      },
+      "podium": {
+        "first": "1 место",
+        "second": "2 место",
+        "third": "3 место"
+      },
+      "users_tab": {
+        "table_title": "Полный рейтинг",
+        "columns": {
+          "rank": "#",
+          "user": "Сотрудник",
+          "store": "Магазин",
+          "score": "Score",
+          "streak": "Streak",
+          "trend": "Δ rank"
+        }
+      },
+      "stores_tab": {
+        "columns": {
+          "rank": "#",
+          "store": "Магазин",
+          "city": "Город",
+          "score": "Score",
+          "employees": "Сотрудников",
+          "streak_weeks": "Streak недель",
+          "trend": "Δ rank"
+        }
+      },
+      "teams_tab": {
+        "section_subtitle": "Группы сотрудников по сменам или должностям",
+        "members_count": "{count} участников",
+        "score_label": "Score",
+        "activity_label": "Активность",
+        "drawer_title": "Команда: {name}",
+        "drawer_members": "Участники"
+      },
+      "challenges_tab": {
+        "filter_active": "Активные",
+        "filter_completed": "Завершённые",
+        "filter_upcoming": "Будущие",
+        "status": {
+          "ACTIVE": "Активен",
+          "COMPLETED": "Завершён",
+          "UPCOMING": "Скоро"
+        },
+        "goal_label": "Цель: {value}",
+        "progress_label": "{current} / {target} ({percent}%)",
+        "participants_label": "Участников: {count}",
+        "reward_label": "Награда",
+        "drawer_title": "Челлендж: {title}",
+        "drawer_participants": "Участники",
+        "drawer_leaderboard": "Лидерборд челленджа"
+      },
+      "create_dialog": {
+        "title": "Создать челлендж",
+        "title_label": "Название",
+        "description_label": "Описание",
+        "period_label": "Период",
+        "goal_type_label": "Тип цели",
+        "goal_type_options": {
+          "TASKS_COUNT": "Кол-во задач",
+          "HOURS": "Часы",
+          "COMPLETION_RATE": "Completion rate",
+          "NO_REJECTS": "Без возвратов"
+        },
+        "goal_value_label": "Значение",
+        "work_type_label": "Тип работы",
+        "zone_label": "Зона",
+        "participants_label": "Участники",
+        "participants_options": {
+          "ALL_STORE_EMPLOYEES": "Все сотрудники магазина",
+          "BY_POSITION": "По должности",
+          "SPECIFIC_USERS": "Конкретные люди"
+        },
+        "reward_label": "Награда",
+        "submit": "Создать"
+      },
+      "cancel_dialog": {
+        "title": "Отменить челлендж?",
+        "description": "Все участники получат уведомление",
+        "confirm": "Отменить"
+      },
+      "empty": {
+        "no_users_title": "Рейтинг недоступен",
+        "no_users_subtitle": "Нужно минимум 3 сотрудника",
+        "no_challenges_title": "Челленджи ещё не созданы",
+        "no_challenges_cta": "Создать первый"
+      },
+      "states": {
+        "forbidden_title": "Доступ ограничен",
+        "forbidden_subtitle": "Нет прав для просмотра"
+      },
+      "toasts": {
+        "challenge_created": "Челлендж создан",
+        "challenge_updated": "Челлендж обновлён",
+        "challenge_cancelled": "Челлендж отменён",
+        "error": "Не удалось выполнить операцию"
+      }
     }
   }
 }

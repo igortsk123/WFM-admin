@@ -481,6 +481,31 @@ export {
 } from "./risk";
 
 // ═══════════════════════════════════════════════════════════════════
+// Leaderboards API (stretch — chat 51)
+// ═══════════════════════════════════════════════════════════════════
+
+export {
+  type LeaderboardEntry,
+  type LeaderboardPeriod,
+  type LeaderboardParams,
+  type ChallengeStatus,
+  type ChallengeGoalType,
+  type ChallengeListParams,
+  type CreateChallengeData,
+  type Team,
+  type Challenge,
+  type UserAvatar,
+  getLeaderboardUsers,
+  getLeaderboardStores,
+  getTeams,
+  getChallenges,
+  getChallengeById,
+  createChallenge,
+  updateChallenge,
+  cancelChallenge,
+} from "./leaderboards";
+
+// ═══════════════════════════════════════════════════════════════════
 // Regulations API
 // ═══════════════════════════════════════════════════════════════════
 
