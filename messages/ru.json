@@ -175,7 +175,7 @@
     "ai": "ИИ-аналитика",
     "aiChat": "ИИ-чат",
     "aiSuggestions": "Предложения ИИ",
-    "documents": "Докуме��������ты",
+    "documents": "Докуме����������ты",
     "help": "Помощь",
     "users": "Пользователи",
     "reports": "Отчёты",
@@ -1578,12 +1578,12 @@
       },
       "documents": {
         "tab_optional": "Опционально",
-        "freelance_required_alert": "Документы обязательны для внештатного сотрудника",
+        "freelance_required_alert": "Документы обязательны для внештатного сотрудник��",
         "doc_passport": "Паспорт",
         "doc_inn": "ИНН",
         "doc_snils": "СНИЛС",
         "doc_contract": "Договор",
-        "uploaded_at": "Загружено {date}",
+        "uploaded_at": "За��ружено {date}",
         "not_uploaded": "Не загружено",
         "upload": "Загрузить",
         "replace": "Заменить",
@@ -1869,7 +1869,7 @@
       "validation": {
         "first_name_min": "Имя должно быть не короче 2 символов",
         "last_name_min": "Фамилия должна быть не короче 2 символов",
-        "phone_invalid": "Введите телефон в формате +7 (XXX) XXX-XX-XX",
+        "phone_invalid": "Введите телефон в фор��ате +7 (XXX) XXX-XX-XX",
         "phone_required": "Телефон обязателен",
         "email_invalid": "Некорректный email",
         "store_required": "Выберите магазин",
@@ -2311,7 +2311,7 @@
       "actions": {
         "mark_late": "Зафиксировать опоздание",
         "mark_overtime": "Зафиксировать переработку",
-        "force_close": "Принудительно закрыть",
+        "force_close": "Принудите��ьно закрыть",
         "cancel_shift": "Отменить смену",
         "sync_lama": "Синхронизировать LAMA",
         "more": "Ещё"
@@ -4271,7 +4271,7 @@
         "stats": {
           "progress": "Прогресс",
           "current_value": "Текущее значение",
-          "days_left": "Дней до конца",
+          "days_left": "Д��ей до конца",
           "diff_better": "лучше за {days} дней"
         },
         "set_by_hint": "Установлена {date} {user}",
@@ -4494,7 +4494,7 @@
         }
       },
       "ai_proposals": {
-        "section_description": "ИИ предлагает бонусные задачи на основе активной цели «{goal}». Можно скорректировать перед публикацией.",
+        "section_description": "ИИ предлагает бонусные задачи н�� основе активной цели «{goal}». Можно скорректировать перед публикацией.",
         "rationale_title": "Почему это предложено",
         "all_link": "Все предложения ИИ"
       },
@@ -4572,7 +4572,7 @@
       },
       "freelance_link": {
         "from_app_badge": "Из заявки на внештат №{id}",
-        "tooltip": "Этот бонусный пул создан как замена внештата. Полный внештат стоил бы {full} ₽, бонус ≈{bonus} ₽ (∼50%). Экономия: {saved} ₽.",
+        "tooltip": "Этот бонусный пул создан как замена внештата. Полный внештат стоил бы {full} ���, бонус ≈{bonus} ₽ (∼50%). Экономия: {saved} ₽.",
         "kpi_replaced_title": "Заменено бонусом",
         "kpi_replaced_value": "{hours}, экономия ≈{saved} ₽ vs полный внештат"
       },
@@ -6832,11 +6832,65 @@
   },
   "agentDocuments": {
     "page_title": "Документы",
-    "page_subtitle": "Договоры, акты, отчёты",
+    "page_subtitle": "Договоры, акты, счета",
     "actions": {
       "upload": "Загрузить",
       "download": "Скачать"
     },
+    "filters": {
+      "type": "Тип",
+      "type_all": "Все типы",
+      "year": "Год",
+      "date_range": "Период",
+      "date_from": "С",
+      "date_to": "По",
+      "apply": "Применить"
+    },
+    "columns": {
+      "title": "Название",
+      "type": "Тип",
+      "period": "Период",
+      "date": "Дата создания",
+      "size": "Размер",
+      "status": "Статус"
+    },
+    "type": {
+      "CONTRACT": "Договор",
+      "CLOSING_ACT": "Акт",
+      "INVOICE": "Счёт",
+      "ACT": "Акт",
+      "REPORT": "Отчёт",
+      "OTHER": "Другое"
+    },
+    "status": {
+      "SIGNED": "Подписан",
+      "PENDING_SIGNATURE": "Ожидает подписи",
+      "DRAFT": "Черновик"
+    },
+    "empty": {
+      "no_documents": "Документов пока нет",
+      "no_documents_description": "Они появляются автоматически после выплат на ваш счёт.",
+      "no_results": "Ничего не найдено",
+      "no_results_description": "Попробуйте изменить фильтры."
+    },
+    "toasts": {
+      "uploaded": "Документ загружен",
+      "error": "Не удалось",
+      "download_link": "Ссылка действительна 5 минут"
+    },
+    "detail_sheet": {
+      "title": "Документ",
+      "meta_type": "Тип",
+      "meta_period": "Период",
+      "meta_created_at": "Дата создания",
+      "download": "Скачать"
+    },
+    "error": {
+      "title": "Не удалось загрузить",
+      "description": "Произошла ошибка при загрузке документов.",
+      "retry": "Повторить"
+    }
+  },
     "filters": {
       "type": "��ип",
       "year": "Год"
@@ -6858,7 +6912,7 @@
     "status": {
       "SIGNED": "Подписан",
       "PENDING_SIGNATURE": "Ожидает подписи",
-      "DRAFT": "Черновик"
+      "DRAFT": "Черн��вик"
     },
     "empty": {
       "no_documents": "Документов пока нет"
