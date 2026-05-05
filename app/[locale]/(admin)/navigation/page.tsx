@@ -60,6 +60,7 @@ const NAV_GROUPS: NavGroup[] = [
       { labelKey: "employees", href: ADMIN_ROUTES.employees, icon: Users, status: "ready" },
       { labelKey: "employee_new", href: ADMIN_ROUTES.employeeNew, icon: Users, status: "ready" },
       { labelKey: "users", href: ADMIN_ROUTES.employeeDetail("101"), icon: Users, status: "ready", badge: "Demo" },
+      { labelKey: "permissions", href: ADMIN_ROUTES.permissions, icon: Users, status: "ready" },
       { labelKey: "stores", href: ADMIN_ROUTES.stores, icon: Store, status: "planned" },
     ],
   },

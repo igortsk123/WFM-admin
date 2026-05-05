@@ -1723,6 +1723,87 @@
         "error": "Не удалось создать сотрудника",
         "freelance_created": "Сотрудник добавлен. Ссылка на оферту отправлена."
       }
+    },
+    "permissions": {
+      "page_title": "Матрица привилегий",
+      "breadcrumb_employees": "Сотрудники",
+      "breadcrumb_permissions": "Привилегии",
+      "actions": {
+        "bulk_assign": "Назначить массово",
+        "export_csv": "Экспорт CSV",
+        "more": "Ещё"
+      },
+      "stats": {
+        "card_title_cashier": "Касса",
+        "card_title_sales_floor": "Торговый зал",
+        "card_title_self_checkout": "Самокассы",
+        "card_title_warehouse": "Склад",
+        "card_title_production_line": "Производство",
+        "employees_count": "{count, plural, one {# сотрудник} few {# сотрудника} many {# сотрудников} other {# сотрудников}}",
+        "coverage": "{granted}/{total} ({pct}%)",
+        "trend_30d": "Тренд 30 дней"
+      },
+      "toolbar": {
+        "search_placeholder": "Поиск по ФИО",
+        "store": "Магазин",
+        "position": "Должность",
+        "permission": "Привилегия",
+        "permission_filter_has": "Имеют",
+        "permission_filter_missing": "Не имеют",
+        "clear_all": "Очистить все",
+        "open_filters": "Фильтры"
+      },
+      "matrix": {
+        "col_employee": "Сотрудник",
+        "col_store": "Магазин",
+        "col_cashier": "Касса",
+        "col_sales_floor": "Торг. зал",
+        "col_self_checkout": "Самокассы",
+        "col_warehouse": "Склад",
+        "col_production_line": "Производство",
+        "col_actions": "Действия",
+        "row_actions_open": "Открыть профиль",
+        "row_actions_grant_all": "Назначить все 4",
+        "row_actions_revoke_all": "Отозвать все",
+        "manager_no_privileges": "Управляющий не имеет привилегий",
+        "tooltip_granted": "Назначена {date} управляющим {by}",
+        "tooltip_grant_hint": "Нажмите чтобы назначить"
+      },
+      "bulk": {
+        "selected": "{count, plural, one {Выбран # сотрудник} few {Выбрано # сотрудника} many {Выбрано # сотрудников} other {Выбрано # сотрудников}}",
+        "assign_permission": "Назначить привилегию",
+        "revoke_permission": "Отозвать привилегию",
+        "clear": "Очистить"
+      },
+      "dialogs": {
+        "bulk_assign_title": "Массовое назначение привилегии",
+        "bulk_assign_select": "Выберите привилегию",
+        "bulk_assign_info": "Будет назначена {count} сотрудникам. У кого уже есть — пропущены.",
+        "bulk_assign_confirm": "Назначить",
+        "bulk_revoke_title": "Массовый отзыв привилегии",
+        "bulk_revoke_warning": "Привилегия будет отозвана у {count} сотрудников. Действие обратимо.",
+        "bulk_revoke_confirm": "Отозвать",
+        "single_revoke_title": "Отозвать привилегию у {name}?",
+        "single_revoke_description": "Сотрудник потеряет компетенцию {permission}. Действие обратимо.",
+        "single_revoke_confirm": "Отозвать"
+      },
+      "empty": {
+        "no_workers_title": "Сотрудников нет",
+        "no_workers_cta": "Добавить сотрудника",
+        "filtered_title": "Никого не найдено",
+        "filtered_subtitle": "Попробуйте изменить фильтры",
+        "filtered_reset": "Сбросить фильтры"
+      },
+      "toast": {
+        "granted": "Привилегия назначена",
+        "revoked": "Привилегия отозвана",
+        "bulk_granted": "Назначено {count} сотрудникам",
+        "bulk_revoked": "Отозвано у {count} сотрудников",
+        "conflict": "Привилегия уже изменена другим управляющим",
+        "error": "Не удалось обновить привилегию",
+        "saved": "Сохранено"
+      },
+      "load_more": "Показать ещё"
     }
   }
 }

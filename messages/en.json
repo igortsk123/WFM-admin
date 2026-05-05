@@ -1723,6 +1723,87 @@
         "error": "Failed to create employee",
         "freelance_created": "Employee created. Offer link sent."
       }
+    },
+    "permissions": {
+      "page_title": "Permissions matrix",
+      "breadcrumb_employees": "Employees",
+      "breadcrumb_permissions": "Permissions",
+      "actions": {
+        "bulk_assign": "Bulk assign",
+        "export_csv": "Export CSV",
+        "more": "More"
+      },
+      "stats": {
+        "card_title_cashier": "Cashier",
+        "card_title_sales_floor": "Sales floor",
+        "card_title_self_checkout": "Self-checkout",
+        "card_title_warehouse": "Warehouse",
+        "card_title_production_line": "Production line",
+        "employees_count": "{count, plural, one {# employee} other {# employees}}",
+        "coverage": "{granted}/{total} ({pct}%)",
+        "trend_30d": "30-day trend"
+      },
+      "toolbar": {
+        "search_placeholder": "Search by name",
+        "store": "Store",
+        "position": "Position",
+        "permission": "Permission",
+        "permission_filter_has": "Have it",
+        "permission_filter_missing": "Don't have",
+        "clear_all": "Clear all",
+        "open_filters": "Filters"
+      },
+      "matrix": {
+        "col_employee": "Employee",
+        "col_store": "Store",
+        "col_cashier": "Cashier",
+        "col_sales_floor": "Sales floor",
+        "col_self_checkout": "Self-checkout",
+        "col_warehouse": "Warehouse",
+        "col_production_line": "Production",
+        "col_actions": "Actions",
+        "row_actions_open": "Open profile",
+        "row_actions_grant_all": "Grant all 4",
+        "row_actions_revoke_all": "Revoke all",
+        "manager_no_privileges": "Managers don't have permissions",
+        "tooltip_granted": "Granted {date} by {by}",
+        "tooltip_grant_hint": "Click to grant"
+      },
+      "bulk": {
+        "selected": "{count, plural, one {# employee selected} other {# employees selected}}",
+        "assign_permission": "Assign permission",
+        "revoke_permission": "Revoke permission",
+        "clear": "Clear"
+      },
+      "dialogs": {
+        "bulk_assign_title": "Bulk assign permission",
+        "bulk_assign_select": "Select permission",
+        "bulk_assign_info": "Will be granted to {count} employees. Those who already have it are skipped.",
+        "bulk_assign_confirm": "Assign",
+        "bulk_revoke_title": "Bulk revoke permission",
+        "bulk_revoke_warning": "Permission will be revoked from {count} employees. Reversible.",
+        "bulk_revoke_confirm": "Revoke",
+        "single_revoke_title": "Revoke permission from {name}?",
+        "single_revoke_description": "Employee will lose {permission} competency. Reversible.",
+        "single_revoke_confirm": "Revoke"
+      },
+      "empty": {
+        "no_workers_title": "No employees",
+        "no_workers_cta": "Add employee",
+        "filtered_title": "Nothing found",
+        "filtered_subtitle": "Try adjusting filters",
+        "filtered_reset": "Reset filters"
+      },
+      "toast": {
+        "granted": "Permission granted",
+        "revoked": "Permission revoked",
+        "bulk_granted": "Granted to {count} employees",
+        "bulk_revoked": "Revoked from {count} employees",
+        "conflict": "Permission already modified by another manager",
+        "error": "Failed to update permission",
+        "saved": "Saved"
+      },
+      "load_more": "Load more"
     }
   }
 }

@@ -690,3 +690,78 @@ export async function bulkRevokePermission(
   console.log(`[v0] Bulk revoked ${permission} from users:`, userIds);
   return { success: true };
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// PERMISSIONS COVERAGE (для permissions matrix stats row)
+// ═══════════════════════════════════════════════════════════════════
+
+/** Разбивка по одной привилегии для stats row на permissions matrix. */
+export interface PermissionCoverageRow {
+  permission: Permission;
+  /** Кол-во работников с этой привилегией (granted, не revoked). */
+  granted_count: number;
+  /** Кол-во подходящих работников (роль worker, не архивных). Знаменатель. */
+  eligible_count: number;
+  /** Покрытие в процентах (0-100). */
+  coverage_pct: number;
+  /** Тренд за 30 дней (sparkline) — N точек, последняя = текущее. */
+  trend_30d: number[];
+}
+
+/**
+ * Get coverage statistics for all permissions in scope.
+ * Использует MOCK_USERS + MOCK_PERMISSIONS, фильтр по архивным/manager.
+ *
+ * @param storeId опционально — ограничить scope (для STORE_DIRECTOR / SUPERVISOR)
+ * @returns coverage row per permission (5 строк: CASHIER, SALES_FLOOR, SELF_CHECKOUT, WAREHOUSE, PRODUCTION_LINE)
+ * @endpoint GET /users/permissions/coverage?store_id=
+ * @roles STORE_DIRECTOR (свой магазин), SUPERVISOR, NETWORK_OPS
+ */
+export async function getPermissionsCoverage(
+  storeId?: number,
+): Promise<ApiResponse<PermissionCoverageRow[]>> {
+  await delay(250);
+
+  const ALL: Permission[] = ["CASHIER", "SALES_FLOOR", "SELF_CHECKOUT", "WAREHOUSE", "PRODUCTION_LINE"];
+
+  // Eligible: не архивный + не manager. Manager определяем через position role_id=2 — но у нас нет
+  // позиции в User. Используем наличие активного assignment + проверка через роль из functional-roles.
+  const managerUserIds = new Set(
+    MOCK_FUNCTIONAL_ROLES
+      .filter((r) => r.functional_role !== "WORKER")
+      .map((r) => r.user_id),
+  );
+
+  let eligibleUsers = MOCK_USERS.filter((u) => !u.archived && !managerUserIds.has(u.id));
+
+  if (storeId) {
+    const storeUserIds = new Set(
+      MOCK_ASSIGNMENTS
+        .filter((a) => a.active && a.store_id === storeId)
+        .map((a) => a.user_id),
+    );
+    eligibleUsers = eligibleUsers.filter((u) => storeUserIds.has(u.id));
+  }
+
+  const eligibleIds = new Set(eligibleUsers.map((u) => u.id));
+  const eligible_count = eligibleUsers.length;
+
+  const rows: PermissionCoverageRow[] = ALL.map((perm) => {
+    const granted_count = MOCK_PERMISSIONS.filter(
+      (p) => p.permission === perm && !p.revoked_at && eligibleIds.has(p.user_id),
+    ).length;
+
+    const coverage_pct = eligible_count === 0 ? 0 : Math.round((granted_count / eligible_count) * 100);
+
+    // Mock 30-day trend — детерминированный по permission (чтобы график не прыгал)
+    const seed = perm.length;
+    const trend_30d = Array.from({ length: 30 }, (_, i) => {
+      const noise = ((i + seed) * 7) % 11 - 5; // -5..+5
+      return Math.max(0, Math.min(100, coverage_pct - 10 + noise + Math.floor(i / 3)));
+    });
+
+    return { permission: perm, granted_count, eligible_count, coverage_pct, trend_30d };
+  });
+
+  return { data: rows };
+}

@@ -73,6 +73,9 @@ export {
   updateUserPermissions,
   bulkAssignPermission,
   bulkRevokePermission,
+  // Permissions coverage (matrix stats)
+  type PermissionCoverageRow,
+  getPermissionsCoverage,
 } from "./users";
 
 // ═══════════════════════════════════════════════════════════════════
