@@ -138,6 +138,7 @@
     "employees": "Employees",
     "permissions": "Permissions",
     "stores": "Stores",
+    "store_detail_demo": "Store (demo)",
     "taxonomy": "Taxonomy",
     "settings": "Settings",
     "taxonomy_work_types": "Work types",
@@ -1595,6 +1596,148 @@
         "position_changed": "Position changed",
         "store_transferred": "Employee transferred",
         "archived": "Employee archived",
+        "error": "Operation failed"
+      }
+    },
+    "storeDetail": {
+      "page_title": "Store",
+      "breadcrumbs": {
+        "home": "Home",
+        "stores": "Stores"
+      },
+      "hero": {
+        "address_label": "Address",
+        "manager_label": "Store manager",
+        "manager_unassigned": "Not assigned",
+        "manager_assign": "Assign",
+        "supervisor_label": "Supervisor",
+        "supervisor_unassigned": "Not assigned",
+        "external_code": "Code",
+        "store_type": "Type",
+        "active_badge": "Active",
+        "archived_badge": "Archived",
+        "lama_synced": "LAMA synced: {ago}",
+        "lama_never": "LAMA never synced",
+        "kpi": {
+          "team": "Employees",
+          "team_active": "On shift now",
+          "tasks_today": "Tasks today",
+          "completed_today": "Completed",
+          "on_review": "On review",
+          "zones": "Zones",
+          "fot": "Payroll",
+          "lama_sync": "LAMA"
+        }
+      },
+      "actions": {
+        "create_task": "Create task",
+        "schedule": "Schedule",
+        "edit": "Edit",
+        "more": "More",
+        "archive": "Archive",
+        "restore": "Restore",
+        "transfer_manager": "Transfer manager",
+        "sync_lama": "Force LAMA sync"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "team": "Team",
+        "zones": "Zones",
+        "schedule": "Schedule",
+        "history": "History",
+        "settings": "Settings"
+      },
+      "overview": {
+        "activity_title": "Weekly activity",
+        "feed_title": "Activity feed",
+        "manager_card": "Store manager",
+        "manager_contact": "Contact",
+        "contacts_card": "Contacts & hours",
+        "contacts_phone": "Phone",
+        "contacts_email": "Email",
+        "contacts_hours": "Opening hours",
+        "address_card": "Address & geo",
+        "address_copy": "Copy address",
+        "address_copied": "Address copied",
+        "coords": "Coordinates"
+      },
+      "team": {
+        "search_placeholder": "Search by name or phone",
+        "filter_position": "Position",
+        "all_positions": "All positions",
+        "view_all": "All store employees",
+        "empty": "No employees yet"
+      },
+      "zones": {
+        "title": "Store zones ({count})",
+        "add": "Add zone",
+        "global_badge": "Global",
+        "store_badge": "Store {code}",
+        "stat_employees": "Employees",
+        "stat_tasks": "Tasks today",
+        "stat_shifts": "Active shifts",
+        "delete_disabled": "Cannot delete a zone with active tasks",
+        "edit": "Edit",
+        "delete": "Delete"
+      },
+      "schedule": {
+        "view_full": "Open store schedule",
+        "today_label": "Today",
+        "empty": "No shifts in the upcoming days"
+      },
+      "history": {
+        "col_time": "Time",
+        "col_who": "Actor",
+        "col_action": "Action",
+        "col_object": "Object",
+        "col_ip": "IP",
+        "empty": "History is empty"
+      },
+      "settings": {
+        "lama_card": "LAMA integration",
+        "lama_synced_at": "Last synced: {date}",
+        "danger_card": "Danger zone",
+        "archive_hint": "Archiving hides the store from task, shift and report lists. Reversible."
+      },
+      "dialogs": {
+        "edit_title": "Edit store",
+        "edit_name": "Name",
+        "edit_external_code": "Code",
+        "edit_address": "Address",
+        "edit_city": "City",
+        "edit_store_type": "Object type",
+        "edit_manager": "Store manager",
+        "edit_geo_lat": "Latitude",
+        "edit_geo_lng": "Longitude",
+        "archive_title": "Archive store?",
+        "archive_description": "The store will be hidden from lists and reports. Active shifts and tasks remain in history.",
+        "archive_reason_label": "Reason",
+        "archive_reason_closed": "Closed",
+        "archive_reason_duplicate": "Duplicate",
+        "archive_reason_wrong_data": "Wrong data",
+        "archive_reason_obsolete": "Obsolete",
+        "archive_reason_other": "Other",
+        "transfer_manager_title": "Transfer manager",
+        "transfer_manager_select": "Select candidate",
+        "transfer_manager_hint": "Current manager will be notified",
+        "sync_lama_title": "Force LAMA sync",
+        "sync_lama_description": "Pull the latest schedule from LAMA for this store. May take up to a minute."
+      },
+      "states": {
+        "not_found_title": "Store not found",
+        "not_found_description": "An object with this ID does not exist or was deleted",
+        "forbidden_title": "Access denied",
+        "forbidden_description": "You do not have access to this store",
+        "error_title": "Failed to load store",
+        "error_retry": "Try again"
+      },
+      "toast": {
+        "store_updated": "Store updated",
+        "archived": "Store archived",
+        "restored": "Store restored",
+        "manager_transferred": "Manager assigned",
+        "lama_sync_started": "LAMA sync started",
+        "lama_sync_done": "LAMA sync finished",
         "error": "Operation failed"
       }
     },

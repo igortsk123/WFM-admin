@@ -10,7 +10,8 @@ import type {
   ApiListParams,
   Store,
   ObjectFormat,
-  User,
+  Zone,
+  ArchiveReason,
 } from "@/lib/types";
 import { MOCK_STORES } from "@/lib/mock-data/stores";
 import { MOCK_USERS } from "@/lib/mock-data/users";
@@ -18,6 +19,7 @@ import { MOCK_SHIFTS } from "@/lib/mock-data/shifts";
 import { MOCK_TASKS } from "@/lib/mock-data/tasks";
 import { MOCK_ASSIGNMENTS } from "@/lib/mock-data/assignments";
 import { MOCK_PERMISSIONS } from "@/lib/mock-data/permissions";
+import { MOCK_ZONES } from "@/lib/mock-data/zones";
 
 const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
 
@@ -60,9 +62,78 @@ export interface StoreWithStats extends Store {
   active_shifts_count: number;
 }
 
+/** Зона магазина с быстрыми счётчиками (для tab «Зоны»). */
+export interface StoreZoneWithCounts extends Zone {
+  /** Сотрудников, у которых хотя бы одна задача / привилегия в этой зоне (демо: оценочно). */
+  employees_count: number;
+  /** Задач в этой зоне сегодня. */
+  tasks_today: number;
+  /** Активных смен в этой зоне сегодня. */
+  active_shifts_count: number;
+  /** true — глобальная зона (store_id=null), false — локальная для этого магазина. */
+  is_global: boolean;
+}
+
+/** KPI магазина за сегодня. */
+export interface StoreKpiToday {
+  /** Всего задач, созданных на сегодня. */
+  tasks_today: number;
+  /** Завершённых задач сегодня (state=COMPLETED). */
+  completed_today: number;
+  /** Задач на проверке (review_state=ON_REVIEW). */
+  on_review_today: number;
+  /** Использованный бюджет ФОТ за сегодня (0..100). Демо-значение. */
+  fot_used_pct: number;
+}
+
+/** Subset User для отображения управляющего/супервайзера на detail-странице. */
+export interface StoreContactPerson {
+  id: number;
+  first_name: string;
+  last_name: string;
+  avatar_url?: string;
+}
+
+/** Полная карточка магазина для экрана /stores/:id. */
 export interface StoreDetail extends StoreWithStats {
-  supervisor?: Pick<User, "id" | "first_name" | "last_name" | "avatar_url">;
-  manager?: Pick<User, "id" | "first_name" | "last_name" | "avatar_url">;
+  /** Управляющий магазина (subset для hero / sidebar card). */
+  manager?: StoreContactPerson;
+  /** Супервайзер (региональный куратор). */
+  supervisor?: StoreContactPerson;
+  /** Зоны магазина (глобальные + локальные) с счётчиками. */
+  zones: StoreZoneWithCounts[];
+  /** Всего сотрудников в магазине (по активным assignments). */
+  team_count: number;
+  /** Из них имеют активную / открытую смену сегодня. */
+  team_active_count: number;
+  /** KPI за сегодня. */
+  kpi: StoreKpiToday;
+  /** Время последней синхронизации с LAMA (alias для lama_synced_at — для UI). */
+  last_synced_at?: string;
+  /** Полный адрес одной строкой («Томск, пр. Ленина 80»). */
+  address_full: string;
+}
+
+/** Запись истории магазина (для tab «История» / audit log). */
+export interface StoreHistoryEvent {
+  id: string;
+  /** ISO datetime. */
+  ts: string;
+  /** Тип события — расширяемый набор. */
+  type:
+    | "CREATED"
+    | "UPDATED"
+    | "MANAGER_CHANGED"
+    | "SUPERVISOR_CHANGED"
+    | "ZONE_ADDED"
+    | "ZONE_REMOVED"
+    | "LAMA_SYNC"
+    | "ARCHIVED"
+    | "RESTORED";
+  /** Заголовок события на русском (готов к рендерингу). */
+  title: string;
+  /** Имя пользователя, выполнившего действие. */
+  by_user_name: string;
 }
 
 /**
@@ -86,6 +157,54 @@ export interface StoreListParams extends ApiListParams {
   store_type?: string;
   /** Legacy active flag. */
   active?: boolean;
+}
+
+export interface StoreHistoryParams {
+  /** Лимит записей (по умолчанию 20). */
+  limit?: number;
+  /** Сдвиг для пагинации. */
+  offset?: number;
+  /** Фильтр по типу события. */
+  type?: StoreHistoryEvent["type"];
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════════════
+
+/** Собираем «Город, адрес» в одну строку. */
+function buildAddressFull(store: Store): string {
+  const parts = [store.city, store.address].filter(Boolean);
+  return parts.join(", ");
+}
+
+/** Считаем зоны с быстрыми счётчиками для конкретного магазина. */
+function buildStoreZones(storeId: number): StoreZoneWithCounts[] {
+  const relevant = MOCK_ZONES.filter(
+    (z) => z.store_id === null || z.store_id === undefined || z.store_id === storeId,
+  );
+
+  return relevant.map((zone) => {
+    const tasks_today = MOCK_TASKS.filter(
+      (t) => t.store_id === storeId && t.zone_id === zone.id && !t.archived,
+    ).length;
+    const active_shifts_count = MOCK_SHIFTS.filter(
+      (s) => s.store_id === storeId && s.zone_id === zone.id && s.shift_date === TODAY,
+    ).length;
+    const employees_count = new Set(
+      MOCK_SHIFTS.filter(
+        (s) => s.store_id === storeId && s.zone_id === zone.id,
+      ).map((s) => s.user_id),
+    ).size;
+
+    return {
+      ...zone,
+      employees_count,
+      tasks_today,
+      active_shifts_count,
+      is_global: zone.store_id === null || zone.store_id === undefined,
+    };
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -257,7 +376,7 @@ export async function getStores(
 }
 
 /**
- * Get single store by ID with full detail and staff info.
+ * Get single store by ID with full enriched detail (manager, supervisor, zones, KPI).
  * @endpoint GET /stores/:id
  */
 export async function getStoreById(id: number): Promise<ApiResponse<StoreDetail>> {
@@ -274,6 +393,39 @@ export async function getStoreById(id: number): Promise<ApiResponse<StoreDetail>
     : undefined;
 
   const stats = computeStoreStats(store);
+
+  // Команда магазина — по активным assignments + не архивные пользователи.
+  const teamUserIds = new Set(
+    MOCK_ASSIGNMENTS.filter((a) => a.active && a.store_id === id).map((a) => a.user_id),
+  );
+  const team_count = Array.from(teamUserIds).filter((uid) => {
+    const u = MOCK_USERS.find((x) => x.id === uid);
+    return u && !u.archived;
+  }).length;
+
+  // Активная команда сегодня — у кого есть OPENED-смена сегодня в этом магазине.
+  const team_active_count = new Set(
+    MOCK_SHIFTS.filter(
+      (s) =>
+        s.store_id === id &&
+        s.shift_date === TODAY &&
+        (s.status === "OPENED" || s.status === "NEW"),
+    ).map((s) => s.user_id),
+  ).size;
+
+  // KPI за сегодня по задачам магазина.
+  const tasksToday = MOCK_TASKS.filter(
+    (t) => t.store_id === id && !t.archived,
+  );
+  const tasks_today = tasksToday.length;
+  const completed_today = tasksToday.filter((t) => t.state === "COMPLETED").length;
+  const on_review_today = tasksToday.filter(
+    (t) => t.review_state === "ON_REVIEW",
+  ).length;
+  // Демо-значение ФОТ — детерминированное от id, в диапазоне 35-95.
+  const fot_used_pct = Math.min(95, 35 + (id * 13) % 60);
+
+  const zones = buildStoreZones(id);
 
   return {
     data: {
@@ -300,7 +452,113 @@ export async function getStoreById(id: number): Promise<ApiResponse<StoreDetail>
             avatar_url: supervisor.avatar_url,
           }
         : undefined,
+      zones,
+      team_count,
+      team_active_count,
+      kpi: {
+        tasks_today,
+        completed_today,
+        on_review_today,
+        fot_used_pct,
+      },
+      last_synced_at: store.lama_synced_at,
+      address_full: buildAddressFull(store),
     },
+  };
+}
+
+/**
+ * Get audit log entries for a single store.
+ * @endpoint GET /stores/:id/history
+ */
+export async function getStoreHistory(
+  id: number,
+  params: StoreHistoryParams = {},
+): Promise<ApiListResponse<StoreHistoryEvent>> {
+  await delay(250);
+
+  const store = MOCK_STORES.find((s) => s.id === id);
+  if (!store) {
+    return { data: [], total: 0, page: 1, page_size: params.limit ?? 20 };
+  }
+
+  const manager = store.manager_id
+    ? MOCK_USERS.find((u) => u.id === store.manager_id)
+    : undefined;
+  const supervisor = store.supervisor_id
+    ? MOCK_USERS.find((u) => u.id === store.supervisor_id)
+    : undefined;
+
+  const managerName = manager
+    ? `${manager.last_name} ${manager.first_name[0]}.`
+    : "Система";
+  const supervisorName = supervisor
+    ? `${supervisor.last_name} ${supervisor.first_name[0]}.`
+    : "Система";
+
+  const baseTs = new Date(`${TODAY}T09:00:00+07:00`).getTime();
+  const offsetIso = (hoursAgo: number) =>
+    new Date(baseTs - hoursAgo * 3600 * 1000).toISOString();
+
+  let events: StoreHistoryEvent[] = [
+    {
+      id: `evt-${id}-1`,
+      ts: offsetIso(0.5),
+      type: "LAMA_SYNC",
+      title: "Синхронизация LAMA выполнена",
+      by_user_name: "Система",
+    },
+    {
+      id: `evt-${id}-2`,
+      ts: offsetIso(3),
+      type: "ZONE_ADDED",
+      title: "Добавлена зона «Кофейная зона»",
+      by_user_name: managerName,
+    },
+    {
+      id: `evt-${id}-3`,
+      ts: offsetIso(26),
+      type: "UPDATED",
+      title: "Обновлены контакты и часы работы",
+      by_user_name: managerName,
+    },
+    {
+      id: `evt-${id}-4`,
+      ts: offsetIso(72),
+      type: "MANAGER_CHANGED",
+      title: "Назначен новый управляющий",
+      by_user_name: supervisorName,
+    },
+    {
+      id: `evt-${id}-5`,
+      ts: offsetIso(168),
+      type: "SUPERVISOR_CHANGED",
+      title: "Закреплён супервайзер",
+      by_user_name: "Соколова А. Б.",
+    },
+    {
+      id: `evt-${id}-6`,
+      ts: offsetIso(720),
+      type: "CREATED",
+      title: "Магазин зарегистрирован в системе",
+      by_user_name: "Соколова А. Б.",
+    },
+  ];
+
+  if (params.type) {
+    events = events.filter((e) => e.type === params.type);
+  }
+
+  const total = events.length;
+  const offset = params.offset ?? 0;
+  const limit = params.limit ?? 20;
+  const sliced = events.slice(offset, offset + limit);
+
+  return {
+    data: sliced,
+    total,
+    page: Math.floor(offset / limit) + 1,
+    page_size: limit,
   };
 }
 
@@ -323,24 +581,30 @@ export async function createStore(data: Partial<Store>): Promise<ApiMutationResp
 }
 
 /**
- * Update store data.
+ * Update store data (partial). Supports both Store fields and ID-references.
  * @endpoint PATCH /stores/:id
  */
-export async function updateStore(id: number, data: Partial<Store>): Promise<ApiMutationResponse> {
+export async function updateStore(
+  id: number,
+  patch: Partial<Store>,
+): Promise<ApiMutationResponse> {
   await delay(350);
   const store = MOCK_STORES.find((s) => s.id === id);
   if (!store) {
     return { success: false, error: { code: "NOT_FOUND", message: `Store ${id} not found` } };
   }
-  console.log("[v0] Updated store:", id, data);
+  console.log("[v0] Updated store:", id, patch);
   return { success: true };
 }
 
 /**
- * Archive a store (soft-delete).
+ * Archive a store (soft-delete) with reason.
  * @endpoint POST /stores/:id/archive
  */
-export async function archiveStore(id: number): Promise<ApiMutationResponse> {
+export async function archiveStore(
+  id: number,
+  reason: ArchiveReason = "OTHER",
+): Promise<ApiMutationResponse> {
   await delay(350);
   const store = MOCK_STORES.find((s) => s.id === id);
   if (!store) {
@@ -349,7 +613,7 @@ export async function archiveStore(id: number): Promise<ApiMutationResponse> {
   if (store.archived) {
     return { success: false, error: { code: "ALREADY_ARCHIVED", message: "Store is already archived" } };
   }
-  console.log("[v0] Archived store:", id);
+  console.log("[v0] Archived store:", id, "reason:", reason);
   return { success: true };
 }
 
@@ -371,11 +635,41 @@ export async function bulkArchiveStores(ids: number[]): Promise<ApiMutationRespo
 }
 
 /**
- * Force-sync store schedule from LAMA planner.
+ * Restore an archived store.
+ * @endpoint POST /stores/:id/restore
+ */
+export async function restoreStore(id: number): Promise<ApiMutationResponse> {
+  await delay(300);
+  const store = MOCK_STORES.find((s) => s.id === id);
+  if (!store) {
+    return { success: false, error: { code: "NOT_FOUND", message: `Store ${id} not found` } };
+  }
+  if (!store.archived) {
+    return { success: false, error: { code: "NOT_ARCHIVED", message: "Store is not archived" } };
+  }
+  console.log("[v0] Restored store:", id);
+  return { success: true };
+}
+
+/**
+ * Force-sync schedule for a single store from LAMA planner (per-store action).
  * @endpoint POST /stores/:id/sync-lama
  */
-export async function syncLama(id: number): Promise<ApiMutationResponse> {
-  await delay(500);
-  console.log("[v0] Triggered LAMA sync for store:", id);
+export async function syncLamaForStore(id: number): Promise<ApiMutationResponse> {
+  await delay(600);
+  const store = MOCK_STORES.find((s) => s.id === id);
+  if (!store) {
+    return { success: false, error: { code: "NOT_FOUND", message: `Store ${id} not found` } };
+  }
+  console.log("[v0] LAMA sync triggered for store:", id);
   return { success: true };
+}
+
+/**
+ * Legacy alias (используется в общем экране integrations / sync-banner).
+ * @endpoint POST /stores/:id/sync-lama
+ * @deprecated Используй syncLamaForStore для нового UI.
+ */
+export async function syncLama(id: number): Promise<ApiMutationResponse> {
+  return syncLamaForStore(id);
 }
