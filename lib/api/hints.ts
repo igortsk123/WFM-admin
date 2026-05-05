@@ -4,11 +4,15 @@
  */
 
 import type {
+  ApiListParams,
   ApiListResponse,
   ApiMutationResponse,
+  ApiResponse,
   Hint,
 } from "@/lib/types";
 import { MOCK_HINTS } from "@/lib/mock-data/hints";
+import { MOCK_WORK_TYPES } from "@/lib/mock-data/work-types";
+import { MOCK_ZONES } from "@/lib/mock-data/zones";
 
 // ═══════════════════════════════════════════════════════════════════
 // HELPERS
@@ -153,5 +157,139 @@ export async function deleteHint(id: string): Promise<ApiMutationResponse> {
   }
 
   console.log(`[v0] Deleted hint ${id}`);
+  return { success: true };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// HINTS MANAGEMENT (chat 33)
+// ═══════════════════════════════════════════════════════════════════
+
+/** Hint enriched with work-type / zone names для table view. */
+export interface HintWithLabels extends Hint {
+  work_type_name?: string;
+  zone_name?: string;
+}
+
+/** Filter params для hints management screen. */
+export interface HintsListParams extends ApiListParams {
+  search?: string;
+  work_type_id?: number;
+  zone_id?: number;
+  /** Только пары без подсказок (для filter «Без подсказок»). */
+  empty_pairs_only?: boolean;
+}
+
+/** Coverage stats для hints management. */
+export interface HintsCoverage {
+  total_hints: number;
+  covered_pairs: number;
+  total_pairs: number;
+  empty_pairs: Array<{
+    work_type_id: number;
+    work_type_name: string;
+    zone_id: number;
+    zone_name: string;
+  }>;
+}
+
+/**
+ * Get all hints with optional filters (for table view + management screen).
+ * @endpoint GET /tasks/hints/list
+ */
+export async function getAllHints(
+  params: HintsListParams = {},
+): Promise<ApiListResponse<HintWithLabels>> {
+  await delay(280);
+
+  const {
+    search,
+    work_type_id,
+    zone_id,
+    page = 1,
+    page_size = 50,
+    sort_by = "created_at",
+    sort_dir = "desc",
+  } = params;
+
+  let filtered = [...MOCK_HINTS];
+
+  if (work_type_id) filtered = filtered.filter((h) => h.work_type_id === work_type_id);
+  if (zone_id) filtered = filtered.filter((h) => h.zone_id === zone_id);
+  if (search) {
+    const q = search.toLowerCase();
+    filtered = filtered.filter((h) => h.text.toLowerCase().includes(q));
+  }
+
+  filtered.sort((a, b) => {
+    const aVal = String(a[sort_by as keyof Hint] ?? "");
+    const bVal = String(b[sort_by as keyof Hint] ?? "");
+    const cmp = aVal.localeCompare(bVal);
+    return sort_dir === "asc" ? cmp : -cmp;
+  });
+
+  const total = filtered.length;
+  const paginated = filtered.slice((page - 1) * page_size, page * page_size);
+
+  const data: HintWithLabels[] = paginated.map((h) => ({
+    ...h,
+    work_type_name: MOCK_WORK_TYPES.find((wt) => wt.id === h.work_type_id)?.name,
+    zone_name: MOCK_ZONES.find((z) => z.id === h.zone_id)?.name,
+  }));
+
+  return { data, total, page, page_size };
+}
+
+/**
+ * Get hints coverage stats: how many WT×Zone pairs have hints, which are empty.
+ * Используется в stats row на hints management screen.
+ * @endpoint GET /tasks/hints/coverage
+ */
+export async function getHintsCoverage(): Promise<ApiResponse<HintsCoverage>> {
+  await delay(220);
+
+  // Globally-approved zones (для пар нужны только zones, доступные везде; локальные — отдельно).
+  const globalZones = MOCK_ZONES.filter((z) => z.approved && !z.store_id);
+
+  const covered_keys = new Set<string>();
+  for (const h of MOCK_HINTS) covered_keys.add(`${h.work_type_id}:${h.zone_id}`);
+
+  const empty_pairs: HintsCoverage["empty_pairs"] = [];
+  let total_pairs = 0;
+
+  for (const wt of MOCK_WORK_TYPES) {
+    for (const z of globalZones) {
+      total_pairs++;
+      if (!covered_keys.has(`${wt.id}:${z.id}`)) {
+        empty_pairs.push({
+          work_type_id: wt.id,
+          work_type_name: wt.name,
+          zone_id: z.id,
+          zone_name: z.name,
+        });
+      }
+    }
+  }
+
+  return {
+    data: {
+      total_hints: MOCK_HINTS.length,
+      covered_pairs: total_pairs - empty_pairs.length,
+      total_pairs,
+      empty_pairs,
+    },
+  };
+}
+
+/**
+ * Reorder hints within a work-type × zone pair (drag-drop sort).
+ * @endpoint POST /tasks/hints/reorder
+ */
+export async function reorderHints(
+  workTypeId: number,
+  zoneId: number,
+  hintIds: number[],
+): Promise<ApiMutationResponse> {
+  await delay(220);
+  console.log(`[v0] Reordered hints for WT=${workTypeId} Zone=${zoneId}:`, hintIds);
   return { success: true };
 }
