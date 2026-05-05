@@ -4026,6 +4026,118 @@
         "share_link_copied": "Ссылка скопирована",
         "export_failed": "Не удалось экспортировать отчёт"
       }
+    },
+    "goals": {
+      "page_title": "Цели",
+      "page_subtitle": "AI-ассистент анализирует данные и предлагает фокус для команды",
+      "breadcrumbs": {
+        "home": "Главная",
+        "goals": "Цели"
+      },
+      "actions": {
+        "history": "История целей",
+        "ask_ai_about_goal": "Спросить ИИ про цель",
+        "ai_suggestions_for_goal": "Предложения ИИ по этой цели",
+        "open_bonus_tasks": "Открыть бонусные задачи",
+        "remove_goal": "Снять цель",
+        "select_as_active": "Выбрать как активную",
+        "ask_why_ai_proposed": "Спросить почему ИИ предложил",
+        "create_manual_goal": "Создать ручную цель",
+        "all_ai_suggestions": "Все предложения ИИ",
+        "connect_data_sources": "Подключить источники"
+      },
+      "filters": {
+        "period_label": "Период",
+        "scope_label": "Магазин/Сеть",
+        "current_week": "Текущая неделя",
+        "next_week": "Следующая неделя",
+        "previous_week": "Прошлая неделя"
+      },
+      "active_goal": {
+        "badge": "Активная цель недели",
+        "stats": {
+          "progress": "Прогресс",
+          "current_value": "Текущее значение",
+          "days_left": "Дней до конца",
+          "diff_better": "лучше за {days} дней"
+        },
+        "set_by_hint": "Установлена {date} {user}",
+        "no_active_title": "На эту неделю цель не установлена",
+        "no_active_cta": "Выбрать цель из предложений ниже"
+      },
+      "proposals": {
+        "section_title": "Предложения ИИ",
+        "section_subtitle_count": "ИИ-ассистент проанализировал данные за 7 дней и предлагает {count} целей",
+        "potential_gain": "Потенциал",
+        "current_value": "Текущее",
+        "target_value": "Цель",
+        "select_confirm_title": "Установить цель «{title}»?",
+        "select_confirm_replace_warning": "Будет снята предыдущая цель",
+        "select_confirm_button": "Установить"
+      },
+      "remove_dialog": {
+        "title": "Снять активную цель?",
+        "description": "Цель можно сменить в любой момент. История сохранится.",
+        "reason_label": "Комментарий (опционально)",
+        "reason_placeholder": "Например: цель достигнута раньше срока, либо появились более срочные задачи",
+        "confirm": "Снять цель"
+      },
+      "progress_dashboard": {
+        "section_title": "Dashboard продвижения",
+        "q1_title": "Где мы сейчас?",
+        "q2_title": "Куда движемся?",
+        "q2_eta": "При текущем темпе достигнем {date}",
+        "q3_title": "Что делать сегодня?",
+        "create_task_from_recommendation": "Создать задачу"
+      },
+      "catalog": {
+        "section_title": "Каталог целей по типу бизнеса",
+        "tab_fmcg": "FMCG ритейл",
+        "tab_fashion": "Fashion ритейл",
+        "tab_production": "Производство",
+        "when_to_use": "Когда выбирать",
+        "typical_period": "Типичный срок",
+        "key_tasks": "Ключевые задачи",
+        "ai_analyzes_via": "Как ИИ это анализирует",
+        "footer_hint": "Это примеры. Реальный набор целей зависит от подключённых источников данных."
+      },
+      "manual_create": {
+        "dialog_title": "Создать ручную цель",
+        "title_label": "Название",
+        "description_label": "Описание",
+        "category_label": "Категория",
+        "target_value_label": "Целевое значение",
+        "target_unit_label": "Ед. измерения",
+        "period_start_label": "Дата начала",
+        "period_end_label": "Дата окончания",
+        "submit": "Создать цель"
+      },
+      "category": {
+        "OOS_REDUCTION": "Снижение OOS",
+        "WRITE_OFFS": "Списания и просрочка",
+        "PROMO_QUALITY": "Качество промо",
+        "PRICE_ACCURACY": "Точность ценников",
+        "IMPULSE_ZONES": "Импульсные зоны",
+        "PRODUCTIVITY": "Производительность",
+        "CUSTOM": "Пользовательская"
+      },
+      "priority": {
+        "high": "Высокий",
+        "medium": "Средний",
+        "low": "Низкий"
+      },
+      "empty": {
+        "no_data_title": "Нет данных",
+        "no_proposals_title": "Не хватает данных за период",
+        "no_proposals_subtitle": "ИИ не смог сформировать предложения. Попробуйте другой период или магазин"
+      },
+      "ai_loading": "AI анализирует данные…",
+      "toasts": {
+        "selected": "Цель установлена",
+        "removed": "Цель снята",
+        "created": "Цель создана",
+        "error": "Не удалось выполнить операцию"
+      }
     }
   }
 }

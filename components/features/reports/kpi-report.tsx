@@ -868,7 +868,7 @@ export function KpiReport() {
                       tickFormatter={(v: number) => `${v}%`}
                     />
                     <RechartsTooltip
-                      formatter={(v: number, name: string) => [`${v.toFixed(1)}%`, name]}
+                      formatter={((v: number, name: string) => [`${v.toFixed(1)}%`, name]) as never}
                       contentStyle={{
                         background: "var(--color-card)",
                         border: "1px solid var(--color-border)",
@@ -1040,12 +1040,11 @@ export function KpiReport() {
                     )}
                     margin={{ top: 4, right: 4, left: -20, bottom: 44 }}
                     onClick={(d) => {
-                      if (d?.activePayload?.[0]) {
-                        const workTypeId = (
-                          d.activePayload[0].payload as { id: number }
-                        ).id;
+                      const payload = (d as { activePayload?: Array<{ payload?: { id?: number } }> } | undefined)
+                        ?.activePayload?.[0]?.payload;
+                      if (payload?.id !== undefined) {
                         router.push(
-                          `${ADMIN_ROUTES.tasks}?work_type_id=${workTypeId}` as never
+                          `${ADMIN_ROUTES.tasks}?work_type_id=${payload.id}` as never
                         );
                       }
                     }}
@@ -1073,10 +1072,10 @@ export function KpiReport() {
                       tickFormatter={(v: number) => `${v}%`}
                     />
                     <RechartsTooltip
-                      formatter={(v: number) => [
+                      formatter={((v: number) => [
                         `${v.toFixed(1)}%`,
                         t("breakdown.completion_label"),
-                      ]}
+                      ]) as never}
                       contentStyle={{
                         background: "var(--color-card)",
                         border: "1px solid var(--color-border)",
@@ -1142,7 +1141,7 @@ export function KpiReport() {
                           ))}
                         </Pie>
                         <RechartsTooltip
-                          formatter={(v: number, name: string) => [v, name]}
+                          formatter={((v: number, name: string) => [v, name]) as never}
                           contentStyle={{
                             background: "var(--color-card)",
                             border: "1px solid var(--color-border)",
