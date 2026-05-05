@@ -152,7 +152,7 @@
     "reports_kpi": "KPI",
     "reports_compare": "Comparison",
     "settings_profile": "Profile",
-    "settings_organization": "Organisation",
+    "settings_organization": "Organization",
     "integrations": "Integrations",
     "audit": "Audit",
     "notifications": "Notifications",
@@ -2948,6 +2948,138 @@
         "payment_mode_client_direct": "Client direct",
         "freelance_enabled": "Freelance on",
         "freelance_disabled": "Freelance off"
+      }
+    },
+    "organizationSettings": {
+      "page_title": "Organization settings",
+      "page_subtitle": "Brand, policies, time zone, API, billing, legal entities",
+      "breadcrumbs": {
+        "home": "Home",
+        "settings": "Settings",
+        "organization": "Organization"
+      },
+      "tabs": {
+        "general": "General",
+        "ai_standards": "AI standards",
+        "policies": "Policies",
+        "branding": "Branding",
+        "api": "API",
+        "billing": "Billing",
+        "legal": "Legal entities"
+      },
+      "general": {
+        "type_card": "Organization type",
+        "type_RETAIL": "Retail chain",
+        "type_PRODUCTION": "Production",
+        "type_SMALL_BUSINESS": "Small business",
+        "contact_card": "Contact info",
+        "name": "Public name",
+        "contact_email": "Notification email",
+        "support_phone": "Support phone",
+        "website": "Website",
+        "description_card": "Description",
+        "description_placeholder": "Short organization description",
+        "description_counter": "{count}/500"
+      },
+      "ai_standards": {
+        "fmcg_description": "Set thresholds for AI to detect anomalies. When fact exceeds the threshold, AI suggests a task.",
+        "fmcg_baseline_hint": "If threshold isn't set, AI uses network average as baseline.",
+        "thresholds_section": "Per-product-group thresholds",
+        "ops_section": "Operations thresholds",
+        "col_group": "Group",
+        "col_writeoff_norm": "Writeoff norm %",
+        "col_oos_norm": "OOS norm %",
+        "col_expiration_alert": "Expiration alert (hours)",
+        "ops_cashier_avg": "Average cashier time (min)",
+        "ops_shift_variance": "Allowed shift plan/fact variance (%)",
+        "ops_max_consecutive_rejections": "Max consecutive task rejections",
+        "fashion_description": "Set seasonal periods per product type. AI determines discount sizes itself.",
+        "fashion_seasons_section": "Seasonal periods per product type",
+        "fashion_baseline_hint": "Discount sizes are determined by AI automatically — starts with standard ladder and adapts based on past results.",
+        "col_product_type": "Product type",
+        "col_season_start": "Season start",
+        "col_season_peak": "Peak",
+        "col_season_end": "Season end",
+        "col_typical_sell_days": "Typical sell days",
+        "ai_disabled_alert": "AI module is not enabled. Standards can be set only with an active subscription."
+      },
+      "policies": {
+        "title": "Policies",
+        "default_locale": "Default locale",
+        "default_timezone": "Default time zone",
+        "default_currency": "Currency",
+        "freelance_module": "Freelance module",
+        "freelance_module_hint": "Managed by PLATFORM_ADMIN. When off, freelance section is hidden.",
+        "external_hr_enabled": "External HR sync"
+      },
+      "branding": {
+        "title": "Branding",
+        "logo": "Logo",
+        "logo_helper": "PNG / SVG up to 1 MB",
+        "logo_upload": "Upload logo",
+        "logo_remove": "Remove",
+        "primary_color": "Primary color (hex)",
+        "preview": "Preview"
+      },
+      "api": {
+        "title": "API keys",
+        "create_key": "Create key",
+        "key_name": "Key name",
+        "key_scopes": "Scopes",
+        "key_created_at": "Created",
+        "key_last_used_at": "Last used",
+        "key_revoke": "Revoke",
+        "key_value_warning": "Save the key — shown only once",
+        "no_keys": "No API keys yet"
+      },
+      "billing": {
+        "title": "Billing",
+        "plan_label": "Plan",
+        "plan_STARTER": "Starter",
+        "plan_PRO": "Pro",
+        "plan_ENTERPRISE": "Enterprise",
+        "active_users": "Active users",
+        "next_invoice_date": "Next invoice",
+        "next_invoice_amount": "Amount",
+        "change_plan": "Change plan",
+        "billing_history": "Billing history"
+      },
+      "legal": {
+        "title": "Legal entities",
+        "add_entity": "Add legal entity",
+        "name": "Name",
+        "inn": "INN",
+        "kpp": "KPP",
+        "ogrn": "OGRN",
+        "tax_jurisdiction": "Jurisdiction",
+        "jurisdiction_RU": "Russia",
+        "jurisdiction_UK": "United Kingdom",
+        "jurisdiction_OTHER": "Other",
+        "companies_house": "Companies House (UK)",
+        "vat_number": "VAT Number",
+        "edit": "Edit",
+        "remove": "Remove",
+        "no_entities": "No legal entities added"
+      },
+      "save_bar": {
+        "dirty_message": "You have unsaved changes",
+        "save": "Save",
+        "cancel": "Cancel"
+      },
+      "toasts": {
+        "saved": "Saved",
+        "threshold_updated": "Threshold saved",
+        "season_updated": "Season saved",
+        "key_created": "Key created",
+        "key_revoked": "Key revoked",
+        "legal_added": "Legal entity added",
+        "legal_updated": "Legal entity updated",
+        "legal_removed": "Legal entity removed",
+        "error": "Operation failed"
+      },
+      "states": {
+        "forbidden_title": "Access denied",
+        "forbidden_subtitle": "Only NETWORK_OPS can configure the organization"
       }
     }
   }
