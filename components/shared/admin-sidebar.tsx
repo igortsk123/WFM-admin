@@ -253,6 +253,18 @@ const buildNavGroups = (pendingAISuggestionsCount: number): NavGroup[] => [
         href: ADMIN_ROUTES.reportsPlanFact,
         visibleFor: EFFICIENCY_ROLES,
       },
+      {
+        labelKey: "reports_kpi",
+        icon: BarChart2,
+        href: ADMIN_ROUTES.reportsKpi,
+        visibleFor: EFFICIENCY_ROLES,
+      },
+      {
+        labelKey: "reports_compare",
+        icon: BarChart2,
+        href: ADMIN_ROUTES.reportsCompare,
+        visibleFor: EFFICIENCY_ROLES,
+      },
     ],
   },
 
