@@ -2836,6 +2836,104 @@
         "preferences_saved": "Настройки сохранены",
         "error": "Не удалось выполнить операцию"
       }
+    },
+    "profile": {
+      "page_title": "Настройки",
+      "page_subtitle": "Профиль, безопасность и предпочтения",
+      "breadcrumbs": {
+        "home": "Главная",
+        "settings": "Настройки"
+      },
+      "sidebar": {
+        "profile": "Профиль",
+        "security": "Безопасность",
+        "notifications": "Уведомления",
+        "assignments": "Назначения",
+        "appearance": "Тема и язык",
+        "logout": "Выйти"
+      },
+      "sections": {
+        "profile": {
+          "title": "Профиль",
+          "avatar_card": "Аватар",
+          "avatar_upload": "Загрузить новое фото",
+          "avatar_remove": "Удалить",
+          "avatar_helper": "JPG / PNG до 2 МБ, рекомендованный размер 256×256",
+          "personal_card": "Личные данные",
+          "first_name": "Имя",
+          "last_name": "Фамилия",
+          "middle_name": "Отчество",
+          "phone": "Телефон",
+          "phone_placeholder": "+7 (999) 999-99-99",
+          "email": "Email",
+          "email_locked_hint": "Email управляется в SSO Beyond Violet",
+          "date_of_birth": "Дата рождения",
+          "employee_type": "Тип занятости"
+        },
+        "security": {
+          "title": "Безопасность",
+          "password_card": "Пароль",
+          "password_change": "Сменить пароль",
+          "current_password": "Текущий пароль",
+          "new_password": "Новый пароль",
+          "confirm_password": "Подтверждение",
+          "totp_card": "Двухфакторная аутентификация (TOTP)",
+          "totp_enabled": "Включена",
+          "totp_disabled": "Не настроена",
+          "totp_setup": "Настроить",
+          "totp_disable": "Отключить",
+          "sessions_card": "Активные сессии",
+          "session_current": "Текущая сессия",
+          "session_revoke": "Завершить",
+          "session_revoke_all": "Завершить все остальные"
+        },
+        "notifications": {
+          "title": "Уведомления",
+          "description": "Управляйте уведомлениями в разделе уведомлений",
+          "go_to_notifications": "Перейти к уведомлениям"
+        },
+        "assignments": {
+          "title": "Назначения",
+          "description": "Должности и магазины в которых вы работаете",
+          "active_label": "Текущее",
+          "archived_label": "Архивное",
+          "no_assignments": "Назначений нет"
+        },
+        "appearance": {
+          "title": "Тема и язык",
+          "language": "Язык интерфейса",
+          "language_ru": "Русский",
+          "language_en": "English",
+          "timezone": "Часовой пояс",
+          "theme": "Тема",
+          "theme_light": "Светлая",
+          "theme_dark": "Тёмная",
+          "theme_system": "Системная"
+        }
+      },
+      "save_bar": {
+        "dirty_message": "У вас несохранённые изменения",
+        "save": "Сохранить",
+        "cancel": "Отмена"
+      },
+      "toasts": {
+        "saved": "Сохранено",
+        "avatar_uploaded": "Аватар обновлён",
+        "avatar_removed": "Аватар удалён",
+        "password_changed": "Пароль изменён",
+        "totp_enabled": "TOTP включена",
+        "totp_disabled": "TOTP отключена",
+        "session_revoked": "Сессия завершена",
+        "logged_out": "Вы вышли",
+        "error": "Не удалось выполнить операцию"
+      },
+      "validation": {
+        "name_min": "Минимум 2 символа",
+        "phone_invalid": "Введите телефон в формате +7 (XXX) XXX-XX-XX",
+        "password_min": "Минимум 8 символов",
+        "password_mismatch": "Пароли не совпадают",
+        "avatar_too_large": "Файл должен быть не больше 2 МБ"
+      }
     }
   }
 }

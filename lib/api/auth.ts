@@ -367,3 +367,83 @@ export async function updateUserLocale(
   console.log(`[v0] User locale updated to: ${locale}`);
   return { success: true };
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// Profile Settings (chat 35)
+// ═══════════════════════════════════════════════════════════════════
+
+/** Профиль payload — full update личных данных. */
+export interface ProfileUpdateData {
+  first_name?: string;
+  last_name?: string;
+  middle_name?: string;
+  phone?: string;
+  date_of_birth?: string;
+  avatar_url?: string;
+  preferred_timezone?: string;
+}
+
+/**
+ * Update current user profile (личные данные + аватар + таймзона).
+ * @endpoint PATCH /users/me
+ */
+export async function updateProfile(
+  data: ProfileUpdateData,
+): Promise<ApiMutationResponse> {
+  await delay(350);
+
+  if (data.phone && !/^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/.test(data.phone)) {
+    return {
+      success: false,
+      error: { code: "INVALID_PHONE", message: "Phone must match +7 (XXX) XXX-XX-XX format" },
+    };
+  }
+
+  console.log("[v0] Profile updated:", data);
+  return { success: true };
+}
+
+/**
+ * Upload new avatar (mock — returns generated URL).
+ * @endpoint POST /users/me/avatar
+ */
+export async function uploadAvatar(
+  fileName: string,
+  fileSize: number,
+): Promise<ApiResponse<{ url: string }>> {
+  await delay(500);
+
+  if (fileSize > 2 * 1024 * 1024) {
+    throw new Error("Avatar file size must be less than 2 MB");
+  }
+
+  const url = `/avatars/${Date.now()}-${fileName}`;
+  console.log(`[v0] Avatar uploaded: ${url}`);
+  return { data: { url } };
+}
+
+/**
+ * Remove user avatar (mock).
+ * @endpoint DELETE /users/me/avatar
+ */
+export async function removeAvatar(): Promise<ApiMutationResponse> {
+  await delay(250);
+  console.log("[v0] Avatar removed");
+  return { success: true };
+}
+
+/**
+ * Change password (mock — для users без SSO).
+ * @endpoint POST /auth/change-password
+ */
+export async function changePassword(
+  currentPassword: string,
+  newPassword: string,
+): Promise<ApiMutationResponse> {
+  await delay(400);
+
+  if (!currentPassword) return { success: false, error: { code: "EMPTY_CURRENT", message: "Current password required" } };
+  if (newPassword.length < 8) return { success: false, error: { code: "WEAK_PASSWORD", message: "Password must be at least 8 characters" } };
+  console.log("[v0] Password changed");
+  return { success: true };
+}
