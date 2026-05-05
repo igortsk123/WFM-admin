@@ -539,7 +539,7 @@ export function SuggestionDetailSheet({
                 </CollapsibleTrigger>
                 <CollapsibleContent className="space-y-3 pt-2">
                   {/* Chart data summary */}
-                  {chartData && (
+                  {Boolean(chartData) && (
                     <div className="bg-muted/50 rounded-md p-3">
                       <p className="text-xs font-medium text-foreground mb-1">
                         {(chartData as { label?: string }).label}
