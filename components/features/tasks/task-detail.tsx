@@ -465,13 +465,11 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
 
   if (!task) return null
 
-  const displayId = task.id.startsWith("t-") ? task.id.replace("t-", "T-").toUpperCase() : task.id.toUpperCase()
-
   // ── BREADCRUMB ────────────────────────────────────────────────────
   const breadcrumbs = [
     { label: t("breadcrumb_home"), href: ADMIN_ROUTES.dashboard },
     { label: t("breadcrumb_tasks"), href: ADMIN_ROUTES.tasks },
-    { label: displayId },
+    { label: task.title },
   ]
 
   // ── Actions dropdown ──────────────────────────────────────────────
@@ -1097,7 +1095,7 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
           <Button variant="ghost" size="icon" className="size-9" onClick={() => router.push(ADMIN_ROUTES.tasks)} aria-label={tCommon("back")}>
             <ChevronLeft className="size-5" />
           </Button>
-          <span className="text-sm font-medium text-foreground">{displayId}</span>
+          <span className="text-sm font-medium text-foreground truncate">{task.title}</span>
         </div>
 
         {/* Badges row */}
@@ -1106,9 +1104,6 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
           {task.review_state !== "NONE" && <ReviewStateBadge reviewState={task.review_state} />}
           {isOverdue && (
             <Badge variant="destructive" className="text-xs">{t("badge_overdue")}</Badge>
-          )}
-          {task.type === "ADDITIONAL" && (
-            <Badge variant="outline" className="text-xs">{t("badge_additional")}</Badge>
           )}
           {task.type === "BONUS" && task.bonus_points && (
             <Badge className="bg-info text-info-foreground text-xs">{t("badge_bonus", { points: task.bonus_points })}</Badge>

@@ -13,7 +13,7 @@ export type TaskState = "NEW" | "IN_PROGRESS" | "PAUSED" | "COMPLETED";
 export type TaskReviewState = "NONE" | "ON_REVIEW" | "ACCEPTED" | "REJECTED";
 
 /** BONUS — задачи на 10% KPI */
-export type TaskType = "PLANNED" | "ADDITIONAL" | "BONUS";
+export type TaskType = "PLANNED" | "BONUS";
 
 /** SINGLE — обычная, CHAIN — задача в конвейере (производство, передача) */
 export type TaskKind = "SINGLE" | "CHAIN";

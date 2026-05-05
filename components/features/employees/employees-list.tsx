@@ -851,50 +851,12 @@ export function EmployeesList() {
     },
     // ── FREELANCE-only columns ──────────────────────────────────────
     {
-      id: "agent",
-      header: t("columns.agent"),
-      cell: ({ row }) => {
-        const u = row.original
-        if (u.type !== "FREELANCE") return null
-        return (
-          <span className="text-sm text-muted-foreground truncate max-w-[160px] block">
-            {u.agent_name ?? t("employment.no_agent")}
-          </span>
-        )
-      },
-    },
-    {
       id: "freelancer_status",
       header: t("columns.freelancer_status"),
       cell: ({ row }) => {
         const u = row.original
         if (u.type !== "FREELANCE" || !u.freelancer_status) return null
         return <FreelancerStatusBadge status={u.freelancer_status} size="sm" />
-      },
-    },
-    {
-      id: "oferta",
-      header: t("columns.oferta"),
-      cell: ({ row }) => {
-        const u = row.original
-        if (u.type !== "FREELANCE") return null
-        if (u.oferta_accepted_at) {
-          return (
-            <div className="flex flex-col gap-0.5">
-              <span className="text-xs text-success font-medium">
-                {t("employment.oferta_signed")}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {formatHiredAt(u.oferta_accepted_at, locale)}
-              </span>
-            </div>
-          )
-        }
-        return (
-          <span className="text-xs text-warning">
-            {t("employment.no_oferta")}
-          </span>
-        )
       },
     },
     {
@@ -1091,17 +1053,6 @@ export function EmployeesList() {
   // ── Header actions ───────────────────────────────────────────────
   const desktopActions = (
     <>
-      {canFullCRUD && (
-        <Button
-          variant="outline"
-          size="sm"
-          className="hidden md:flex"
-          onClick={() => toast.info("Импорт из LAMA — мок")}
-        >
-          <Upload className="size-4 mr-1.5" />
-          {t("actions.import_lama")}
-        </Button>
-      )}
       <Button
         variant="outline"
         size="sm"
@@ -1139,11 +1090,6 @@ export function EmployeesList() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          {canFullCRUD && (
-            <DropdownMenuItem onClick={() => toast.info("Импорт из LAMA — мок")}>
-              {t("actions.import_lama")}
-            </DropdownMenuItem>
-          )}
           <DropdownMenuItem onClick={() => toast.info("Импорт XLSX — мок")}>
             {t("actions.import_xlsx")}
           </DropdownMenuItem>

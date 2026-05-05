@@ -39,7 +39,6 @@ import {
   updateStore,
   archiveStore,
   restoreStore,
-  syncLamaForStore,
   type StoreDetail as StoreDetailData,
   type StoreHistoryEvent,
   type StoreZoneWithCounts,
@@ -474,7 +473,6 @@ export function StoreDetail({ storeId }: StoreDetailProps) {
   // Dialog open states
   const [editOpen, setEditOpen] = useState(false)
   const [archiveOpen, setArchiveOpen] = useState(false)
-  const [syncLoading, setSyncLoading] = useState(false)
   const [restoreLoading, setRestoreLoading] = useState(false)
   const [addressCopied, setAddressCopied] = useState(false)
 
@@ -517,20 +515,6 @@ export function StoreDetail({ storeId }: StoreDetailProps) {
   }, [fetchData])
 
   // ── Actions ────────────────────────────────────────────────────────────
-
-  async function handleSyncLama() {
-    setSyncLoading(true)
-    toast.info(t("toast.lama_sync_started"))
-    try {
-      await syncLamaForStore(storeId)
-      toast.success(t("toast.lama_sync_done"))
-      fetchData()
-    } catch {
-      toast.error(t("toast.error"))
-    } finally {
-      setSyncLoading(false)
-    }
-  }
 
   async function handleRestore() {
     setRestoreLoading(true)
@@ -730,15 +714,6 @@ export function StoreDetail({ storeId }: StoreDetailProps) {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="w-52">
-                    <DropdownMenuItem
-                      onClick={handleSyncLama}
-                      disabled={syncLoading}
-                      className="gap-2"
-                    >
-                      <RefreshCw className={`size-4 ${syncLoading ? "animate-spin" : ""}`} />
-                      {t("actions.sync_lama")}
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
                     {!data.archived && (
                       <DropdownMenuItem
                         className="gap-2 text-destructive focus:text-destructive"

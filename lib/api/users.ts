@@ -126,7 +126,7 @@ export interface UserListParams extends ApiListParams {
 }
 
 /** Способ отправки приглашения новому сотруднику (для STAFF). */
-export type InviteMethod = "SMS" | "EMAIL" | "NONE";
+export type InviteMethod = "EMAIL" | "NONE";
 
 /** Канал отправки оферты внештатнику (для FREELANCE). По умолчанию = preferred auth канал организации. */
 export type OfertaChannel = "SMS" | "TELEGRAM" | "EMAIL";

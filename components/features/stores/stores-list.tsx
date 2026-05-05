@@ -977,11 +977,6 @@ export function StoresList() {
   // ── Page actions (mobile overflow) ─────────────────────────────
   const pageActions = (
     <>
-      {/* Desktop: outline import + primary add */}
-      <Button variant="outline" size="sm" className="hidden md:flex gap-1.5">
-        <Upload className="size-3.5" />
-        {t("actions.import_lama")}
-      </Button>
       <Button size="sm" className="gap-1.5" onClick={() => { setEditingStore(null); setStoreDialogOpen(true) }}>
         <Plus className="size-4" />
         <span className="hidden sm:inline">{t("actions.add")}</span>
@@ -995,9 +990,6 @@ export function StoresList() {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem className="gap-2">
-            <Upload className="size-4" /> {t("actions.import_lama")}
-          </DropdownMenuItem>
           <DropdownMenuItem className="gap-2">
             <Download className="size-4" /> {t("actions.export_csv")}
           </DropdownMenuItem>
