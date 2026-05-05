@@ -5588,6 +5588,8 @@
       "form": {
         "store_label": "Object",
         "store_placeholder": "Select store/workshop",
+        "store_search_placeholder": "Search object...",
+        "store_empty": "No objects found",
         "service_label": "Service",
         "service_placeholder": "Select service",
         "quantity_label": "Quantity (hours/units)",
@@ -5597,27 +5599,64 @@
         "agent_label": "Agent",
         "agent_optional": "Optional",
         "comment_label": "Comment",
+        "comment_placeholder": "Describe the context: why freelance is needed, what tasks are planned",
+        "date_label": "Work date",
+        "date_placeholder": "Select date",
         "date_from_label": "From",
         "date_to_label": "To",
-        "submit": "Submit for approval",
+        "hours_label": "Requested hours",
+        "work_type_label": "Work type",
+        "work_type_placeholder": "Select work type",
+        "work_type_search_placeholder": "Search work types...",
+        "work_type_empty": "No work types found",
+        "submit": "Create application",
         "save_draft": "Save draft",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "urgent_label": "Urgent",
+        "retroactive_label": "Retroactive"
+      },
+      "cost_section": {
+        "title": "Cost & budget",
+        "formula": "{hours} h × {rate} ₽/h = {total} ₽",
+        "client_direct_hint": "advisory per norms",
+        "budget_month_label": "Monthly budget",
+        "budget_usage": "Spent {spent} ₽ of {limit} ₽ ({pct}%)",
+        "no_norms": "No norm found for selected work type"
       },
       "validation": {
         "store_required": "Select object",
         "service_required": "Select service",
         "amount_min": "Minimum 1 ₽",
-        "date_invalid": "End date must be after start"
+        "date_invalid": "End date must be after start",
+        "date_required": "Enter work date",
+        "date_too_early": "Application must be submitted at least 3 days in advance",
+        "hours_required": "Enter number of hours",
+        "hours_min": "Minimum 0.5 hours",
+        "hours_max": "Maximum 24 hours",
+        "work_type_required": "Select work type"
+      },
+      "alerts": {
+        "store_director_too_early_title": "Too early",
+        "store_director_too_early_desc": "Applications must be submitted at least 3 days in advance. Urgent applications are created by the supervisor.",
+        "urgent_title": "Urgent application",
+        "urgent_desc": "Will be marked as urgent",
+        "retroactive_title": "Retroactive application",
+        "retroactive_desc": "Will be created immediately with APPROVED_FULL status for reporting",
+        "no_budget_title": "Budget limits not set",
+        "no_budget_desc": "No budget limits found for the selected object. Configure limits before creating an application.",
+        "no_budget_link": "Configure limits"
       },
       "budget_warning": {
         "title": "Budget overrun",
         "description": "This application will exceed the object budget by {amount} ₽"
       },
       "toasts": {
-        "submitted": "Application submitted",
+        "submitted": "Application created and submitted for approval",
+        "retroactive": "Application recorded as retroactive",
         "draft_saved": "Draft saved",
         "error": "Failed to create application"
-      }
+      },
+      "module_disabled": "Freelance module is disabled"
     },
     "freelanceApplicationDetail": {
       "page_title": "Freelance application",
