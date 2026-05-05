@@ -4805,6 +4805,98 @@
         "remembered": "AI will remember for similar cases",
         "error": "Operation failed"
       }
+    },
+    "aiChat": {
+      "page_title": "Assistant",
+      "page_subtitle": "Clarify something about your data with AI",
+      "threads": {
+        "search_placeholder": "Search chats",
+        "new_chat": "New chat",
+        "filters": {
+          "all": "All",
+          "tasks": "By tasks",
+          "goals": "By goals",
+          "charts": "By charts",
+          "general": "General"
+        },
+        "row_actions": {
+          "rename": "Rename",
+          "archive": "Archive",
+          "attach_to": "Attach to another object"
+        },
+        "footer_count": "{total} chats · {week} this week",
+        "context_label": {
+          "general": "General",
+          "suggestion": "Suggestion",
+          "goal": "Goal",
+          "task": "Task",
+          "chart": "Chart"
+        }
+      },
+      "context_banner": {
+        "general": "General chat with assistant",
+        "suggestion": "On suggestion: '{title}'",
+        "goal": "On goal: '{title}'",
+        "task": "On task: {id} '{title}'",
+        "chart": "On chart '{title}'",
+        "open_link": "open",
+        "change_context": "Change context",
+        "close": "Close context"
+      },
+      "messages": {
+        "typing_label": "AI is analysing…",
+        "empty_thread_title": "Ask anything about your data",
+        "empty_thread_subtitle": "AI reads from connected sources",
+        "suggestion_chips": {
+          "worst_oos": "Which stores have the worst OOS?",
+          "explain_returns": "Why did task returns increase?",
+          "today_priorities": "What's important today?",
+          "team_status": "How are my employees doing?"
+        },
+        "context_chips": {
+          "suggestion_data_source": "Where is this data from?",
+          "suggestion_similar": "Show similar cases",
+          "suggestion_disagree": "I disagree — why?",
+          "goal_actions": "Which actions are more effective?",
+          "goal_lagging": "Where are we lagging?",
+          "goal_forecast": "Forecast for end of week",
+          "chart_meaning": "What does this mean?",
+          "chart_why": "Why so?",
+          "chart_action": "What to do?"
+        },
+        "actions": {
+          "thumbs_up_tooltip": "Helpful answer",
+          "thumbs_down_tooltip": "Didn't help",
+          "copy": "Copy",
+          "create_task_from_advice": "Create task from this advice"
+        }
+      },
+      "composer": {
+        "placeholder": "Ask anything or speak",
+        "voice_button_tooltip": "Voice input",
+        "voice_coming_soon_toast": "Voice input coming soon",
+        "send_button_tooltip": "Send",
+        "hint": "AI reads from connected sources. Verify reasoning before accepting."
+      },
+      "states": {
+        "error_sending": "Failed to send message",
+        "retry": "Retry",
+        "offline_title": "No connection to AI",
+        "offline_subtitle": "Try again later"
+      },
+      "delete_dialog": {
+        "title": "Delete chat?",
+        "description": "Cannot be undone",
+        "confirm": "Delete"
+      },
+      "toasts": {
+        "thanks_for_feedback": "Thanks for the feedback",
+        "thread_archived": "Chat archived",
+        "thread_deleted": "Chat deleted",
+        "thread_renamed": "Chat renamed",
+        "share_link_copied": "Chat link copied",
+        "error": "Operation failed"
+      }
     }
   }
 }

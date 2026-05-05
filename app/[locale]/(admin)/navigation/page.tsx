@@ -70,7 +70,7 @@ const NAV_GROUPS: NavGroup[] = [
     titleKey: "hub.efficiency",
     items: [
       { labelKey: "ai_suggestions", href: ADMIN_ROUTES.aiSuggestions, icon: Sparkles, status: "ready" },
-      { labelKey: "ai_chat", href: ADMIN_ROUTES.aiChat, icon: MessageSquare, status: "planned" },
+      { labelKey: "ai_chat", href: ADMIN_ROUTES.aiChat, icon: MessageSquare, status: "ready" },
       { labelKey: "goals", href: ADMIN_ROUTES.goals, icon: Target, status: "ready" },
       { labelKey: "network_goals", href: ADMIN_ROUTES.networkGoals, icon: Target, status: "planned" },
       { labelKey: "bonus_tasks", href: ADMIN_ROUTES.bonusTasks, icon: Award, status: "ready" },
