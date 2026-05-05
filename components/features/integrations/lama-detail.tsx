@@ -1069,7 +1069,7 @@ export function LamaDetail() {
   const [connection, setConnection] = React.useState<LamaConnection | null>(null);
   const [loading, setLoading] = React.useState(true);
 
-  const LAMA_HEALTH: "connected" | "degraded" | "disconnected" = "connected";
+  const LAMA_HEALTH = "connected" as "connected" | "degraded" | "disconnected";
   const LAST_SYNC = "2026-04-28T06:00:00Z";
 
   async function loadConnection() {

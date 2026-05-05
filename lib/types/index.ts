@@ -577,6 +577,10 @@ export interface AuditEntry {
   ip_address?: string;
   user_agent?: string;
   device_type?: "desktop" | "mobile" | "tablet";
+  /** PLATFORM_ADMIN action affecting multiple tenants — для cross-tenant audit. */
+  platform_action?: boolean;
+  /** Метод аутентификации (для login событий): "phone_otp.telegram", "totp.authenticator" и т.д. */
+  login_method?: string;
 }
 
 /**

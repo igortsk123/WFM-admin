@@ -2877,15 +2877,30 @@
           "current_password": "Current password",
           "new_password": "New password",
           "confirm_password": "Confirm password",
+          "password_sso_hint": "Account is protected by Beyond Violet SMS code — no password required",
           "totp_card": "Two-factor authentication (TOTP)",
           "totp_enabled": "Enabled",
           "totp_disabled": "Not configured",
+          "totp_hint": "Works offline with any authenticator app (Yandex Key, Authy, FreeOTP)",
           "totp_setup": "Set up",
           "totp_disable": "Disable",
+          "totp_setup_title": "Set up TOTP",
+          "totp_setup_description": "Two-factor authentication via authenticator app",
+          "totp_setup_secret_hint": "Manual entry key for the authenticator app",
+          "totp_setup_scan_hint": "Scan the QR code in Yandex Key, Authy, or FreeOTP",
+          "totp_setup_next": "Next",
+          "totp_setup_enter_code": "Enter the 6-digit code from your app",
+          "totp_setup_confirm": "Confirm",
+          "totp_backup_warning": "Save your backup codes — they are shown only once",
+          "totp_backup_done": "Done",
+          "totp_disable_title": "Disable two-factor authentication?",
+          "totp_disable_description": "Enter your current app code to confirm",
           "sessions_card": "Active sessions",
           "session_current": "Current session",
           "session_revoke": "Sign out",
-          "session_revoke_all": "Sign out all others"
+          "session_revoke_all": "Sign out all others",
+          "session_revoke_all_confirm_title": "Sign out all other sessions?",
+          "session_revoke_all_confirm_message": "All other devices will be signed out of your account"
         },
         "notifications": {
           "title": "Notifications",
@@ -2907,8 +2922,17 @@
           "timezone": "Time zone",
           "theme": "Theme",
           "theme_light": "Light",
+          "theme_light_hint": "Default for daytime work",
           "theme_dark": "Dark",
-          "theme_system": "System"
+          "theme_system": "System",
+          "theme_system_hint": "Follows your device settings",
+          "timezone_search": "Search time zone...",
+          "timezone_not_found": "Not found",
+          "regional_title": "Regional settings",
+          "regional_date": "Date format",
+          "regional_time": "Time format",
+          "regional_number": "Number format",
+          "regional_currency": "Currency"
         }
       },
       "save_bar": {
@@ -2948,11 +2972,15 @@
         "payment_mode_client_direct": "Client direct",
         "freelance_enabled": "Freelance on",
         "freelance_disabled": "Freelance off"
+      },
+      "logout_confirm": {
+        "title": "Sign out?",
+        "message": "You will be redirected to the login page"
       }
     },
     "organizationSettings": {
-      "page_title": "Organization settings",
-      "page_subtitle": "Brand, policies, time zone, API, billing, legal entities",
+      "page_title": "Organization Settings",
+      "page_subtitle": "Brand, policies, timezone, API, billing, legal entities",
       "breadcrumbs": {
         "home": "Home",
         "settings": "Settings",
@@ -2960,19 +2988,22 @@
       },
       "tabs": {
         "general": "General",
-        "ai_standards": "AI standards",
-        "policies": "Policies",
-        "branding": "Branding",
-        "api": "API",
+        "ai_standards": "AI Standards",
+        "legal": "Legal Entities",
+        "branding": "Brand",
+        "policies": "Task Policies",
+        "timezone": "Timezone",
+        "api": "API Keys",
         "billing": "Billing",
-        "legal": "Legal entities"
+        "freelance": "Freelance"
       },
       "general": {
         "type_card": "Organization type",
-        "type_RETAIL": "Retail chain",
+        "type_RETAIL": "Retail network",
         "type_PRODUCTION": "Production",
         "type_SMALL_BUSINESS": "Small business",
-        "contact_card": "Contact info",
+        "type_readonly_hint": "Organization type is locked after initial setup",
+        "contact_card": "Contact information",
         "name": "Public name",
         "contact_email": "Notification email",
         "support_phone": "Support phone",
@@ -2982,84 +3013,140 @@
         "description_counter": "{count}/500"
       },
       "ai_standards": {
-        "fmcg_description": "Set thresholds for AI to detect anomalies. When fact exceeds the threshold, AI suggests a task.",
-        "fmcg_baseline_hint": "If threshold isn't set, AI uses network average as baseline.",
-        "thresholds_section": "Per-product-group thresholds",
+        "fmcg_description": "Set thresholds for AI anomaly detection. If actuals exceed the threshold — a task suggestion is generated.",
+        "fmcg_baseline_hint": "If no threshold is set — AI uses network average as baseline.",
+        "thresholds_section": "Product group thresholds",
         "ops_section": "Operations thresholds",
         "col_group": "Group",
-        "col_writeoff_norm": "Writeoff norm %",
+        "col_writeoff_norm": "Write-off norm %",
         "col_oos_norm": "OOS norm %",
-        "col_expiration_alert": "Expiration alert (hours)",
-        "ops_cashier_avg": "Average cashier time (min)",
-        "ops_shift_variance": "Allowed shift plan/fact variance (%)",
-        "ops_max_consecutive_rejections": "Max consecutive task rejections",
-        "fashion_description": "Set seasonal periods per product type. AI determines discount sizes itself.",
-        "fashion_seasons_section": "Seasonal periods per product type",
-        "fashion_baseline_hint": "Discount sizes are determined by AI automatically — starts with standard ladder and adapts based on past results.",
+        "col_expiration_alert": "Expiry alert (hours)",
+        "ops_cashier_avg": "Cashier avg time (min)",
+        "ops_shift_variance": "Shift variance (%)",
+        "ops_max_consecutive_rejections": "Max consecutive rejections",
+        "fashion_description": "Set seasonal periods by product type — that is all. Discount sizes are determined automatically by AI.",
+        "fashion_seasons_section": "Seasonal periods by product type",
+        "fashion_baseline_hint": "Discount sizes are determined automatically — starts with standard ladder and adapts based on past discount results.",
         "col_product_type": "Product type",
         "col_season_start": "Season start",
-        "col_season_peak": "Peak",
+        "col_season_peak": "Season peak",
         "col_season_end": "Season end",
         "col_typical_sell_days": "Typical sell days",
-        "ai_disabled_alert": "AI module is not enabled. Standards can be set only with an active subscription."
-      },
-      "policies": {
-        "title": "Policies",
-        "default_locale": "Default locale",
-        "default_timezone": "Default time zone",
-        "default_currency": "Currency",
-        "freelance_module": "Freelance module",
-        "freelance_module_hint": "Managed by PLATFORM_ADMIN. When off, freelance section is hidden.",
-        "external_hr_enabled": "External HR sync"
-      },
-      "branding": {
-        "title": "Branding",
-        "logo": "Logo",
-        "logo_helper": "PNG / SVG up to 1 MB",
-        "logo_upload": "Upload logo",
-        "logo_remove": "Remove",
-        "primary_color": "Primary color (hex)",
-        "preview": "Preview"
-      },
-      "api": {
-        "title": "API keys",
-        "create_key": "Create key",
-        "key_name": "Key name",
-        "key_scopes": "Scopes",
-        "key_created_at": "Created",
-        "key_last_used_at": "Last used",
-        "key_revoke": "Revoke",
-        "key_value_warning": "Save the key — shown only once",
-        "no_keys": "No API keys yet"
-      },
-      "billing": {
-        "title": "Billing",
-        "plan_label": "Plan",
-        "plan_STARTER": "Starter",
-        "plan_PRO": "Pro",
-        "plan_ENTERPRISE": "Enterprise",
-        "active_users": "Active users",
-        "next_invoice_date": "Next invoice",
-        "next_invoice_amount": "Amount",
-        "change_plan": "Change plan",
-        "billing_history": "Billing history"
+        "ai_disabled_alert": "AI module is not connected. Standards can only be set with an active subscription.",
+        "row_saved": "Saved",
+        "production_section": "Quality and timing norms",
+        "col_defect_norm": "Defect norm %",
+        "col_op_time": "Operation time norm (min)"
       },
       "legal": {
-        "title": "Legal entities",
-        "add_entity": "Add legal entity",
-        "name": "Name",
-        "inn": "INN",
-        "kpp": "KPP",
-        "ogrn": "OGRN",
-        "tax_jurisdiction": "Jurisdiction",
-        "jurisdiction_RU": "Russia",
-        "jurisdiction_UK": "United Kingdom",
-        "jurisdiction_OTHER": "Other",
-        "companies_house": "Companies House (UK)",
-        "vat_number": "VAT Number",
+        "description": "Multiple legal entities within one organization (for retail networks with multiple legal entities)",
+        "add_entity": "Add entity",
+        "col_name": "Name",
+        "col_inn": "TIN",
+        "col_kpp": "KPP",
+        "col_ogrn": "OGRN",
+        "col_stores": "Stores",
         "edit": "Edit",
-        "remove": "Remove",
-        "no_entities": "No legal entities added"
+        "archive": "Archive",
+        "dialog_title_add": "Add legal entity",
+        "dialog_title_edit": "Edit legal entity",
+        "inn_label": "TIN (INN)",
+        "kpp_label": "KPP",
+        "ogrn_label": "OGRN",
+        "name_label": "Name",
+        "no_entities": "No legal entities",
+        "no_entities_desc": "Add the first legal entity for this organization",
+        "archive_confirm_title": "Archive entity?",
+        "archive_confirm_message": "The entity will be hidden from the list. Data will be preserved.",
+        "archive_confirm_action": "Archive"
+      },
+      "branding": {
+        "logo_card": "Logo",
+        "logo_helper": "PNG / SVG up to 1 MB",
+        "logo_upload": "Upload new",
+        "color_card": "Primary color",
+        "theme_card": "Default theme",
+        "theme_light": "Light",
+        "theme_system": "System"
+      },
+      "policies": {
+        "default_card": "Defaults",
+        "acceptance_policy": "Acceptance policy default",
+        "acceptance_policy_desc": "Applied to new tasks if not selected manually",
+        "acceptance_MANUAL": "Manual review",
+        "acceptance_AUTO": "Auto accept",
+        "requires_photo": "Require photo on completion",
+        "deviation_pct": "Allowed actual/plan deviation, %",
+        "auto_accept_hours": "Auto-accept hours",
+        "auto_accept_hours_desc": "If MANUAL task stays in ON_REVIEW longer than N hours — auto-accepted",
+        "reject_card": "Reject reason",
+        "min_reason_length": "Minimum characters in reason",
+        "require_reject_category": "Request reject category"
+      },
+      "timezone": {
+        "tz_card": "Organization timezone",
+        "tz_label": "Timezone",
+        "tz_hint": "Timezone applies to all UI and task deadline calculations",
+        "format_card": "Display format",
+        "date_format": "Date format",
+        "date_format_verbose": "Apr 28 2026",
+        "date_format_dot": "28.04.2026",
+        "date_format_iso": "2026-04-28",
+        "time_format": "Time format",
+        "time_24h": "24h",
+        "time_12h": "12h",
+        "week_start": "First day of week",
+        "week_start_mon": "Monday",
+        "week_start_sun": "Sunday"
+      },
+      "api": {
+        "create_key": "Create key",
+        "col_name": "Name",
+        "col_prefix": "Key prefix",
+        "col_created_at": "Created",
+        "col_last_used": "Last used",
+        "col_created_by": "Created by",
+        "rename": "Rename",
+        "revoke": "Revoke",
+        "revoke_confirm_title": "Revoke key?",
+        "revoke_confirm_message": "The API key will be immediately deactivated. All integrations using it will stop working.",
+        "revoke_confirm_action": "Revoke",
+        "no_keys": "No API keys",
+        "no_keys_desc": "Create your first API key for integrations",
+        "create_dialog_title": "Create API key",
+        "name_label": "Name",
+        "name_placeholder": "LAMA integration prod",
+        "scopes_label": "Scopes",
+        "expiry_label": "Expiry date",
+        "expiry_optional": "Optional",
+        "key_success_title": "Key created",
+        "key_success_warning": "Save the key — it is shown only once",
+        "copy": "Copy",
+        "copied": "Copied",
+        "never_used": "Never used"
+      },
+      "billing": {
+        "current_plan_card": "Current plan",
+        "next_charge": "Next charge",
+        "stores_stat": "Stores",
+        "users_stat": "Active users",
+        "tasks_stat": "Tasks this month",
+        "payment_method_card": "Payment method",
+        "change_card": "Change",
+        "history_card": "Payment history",
+        "col_date": "Date",
+        "col_amount": "Amount",
+        "col_status": "Status",
+        "col_invoice": "Invoice",
+        "download_pdf": "Download PDF",
+        "status_paid": "Paid",
+        "status_pending": "Pending",
+        "status_failed": "Failed",
+        "change_plan": "Change plan",
+        "cancel_sub": "Cancel subscription",
+        "cancel_confirm_title": "Cancel subscription?",
+        "cancel_confirm_message": "Access to paid features will end at the end of the paid period. Data will be preserved.",
+        "cancel_confirm_action": "Cancel subscription"
       },
       "save_bar": {
         "dirty_message": "You have unsaved changes",
@@ -3067,42 +3154,19 @@
         "cancel": "Cancel"
       },
       "toasts": {
-        "saved": "Saved",
+        "saved": "Settings saved",
         "threshold_updated": "Threshold saved",
         "season_updated": "Season saved",
         "key_created": "Key created",
         "key_revoked": "Key revoked",
-        "legal_added": "Legal entity added",
-        "legal_updated": "Legal entity updated",
-        "legal_removed": "Legal entity removed",
-        "error": "Operation failed",
-        "payment_mode_changed": "Payment mode changed",
-        "module_toggled": "Module state changed"
+        "legal_added": "Entity added",
+        "legal_updated": "Entity updated",
+        "legal_removed": "Entity removed",
+        "error": "Operation failed"
       },
       "states": {
         "forbidden_title": "Access denied",
-        "forbidden_subtitle": "Only NETWORK_OPS can configure the organization"
-      },
-      "freelance_section": {
-        "title": "Freelance & billing",
-        "payment_mode_label": "Payment mode",
-        "payment_mode_NOMINAL_ACCOUNT": "Via 'Nominal account' service",
-        "payment_mode_CLIENT_DIRECT": "Client pays freelancers directly",
-        "payment_mode_locked_hint": "This parameter is fixed by the contract with Beyond Violet. Contact support to change.",
-        "external_hr_label": "External HR system",
-        "external_hr_connected": "Connected",
-        "external_hr_disconnected": "Not connected",
-        "external_hr_manage_link": "Manage in Integrations",
-        "freelance_module_label": "Freelance module",
-        "freelance_module_on": "Active",
-        "freelance_module_off": "Disabled"
-      },
-      "platform_admin": {
-        "edit_payment_mode": "Change payment mode",
-        "edit_payment_mode_warning_title": "Change payment mode?",
-        "edit_payment_mode_warning_description": "Changing the mode affects financial operations. Open applications may lose connection to active payouts.",
-        "edit_payment_mode_confirm": "Change",
-        "module_toggle": "Toggle freelance module"
+        "forbidden_subtitle": "Only NETWORK_OPS can configure organization settings"
       }
     },
     "integrations": {
@@ -3384,6 +3448,445 @@
         "save": "Save",
         "test": "Test connection",
         "disconnect": "Disconnect"
+      }
+    },
+    "audit": {
+      "page_title": "Audit log",
+      "page_subtitle": "All system actions journal",
+      "breadcrumbs": {
+        "home": "Home",
+        "audit": "Audit"
+      },
+      "actions": {
+        "export": "Export CSV",
+        "more": "More"
+      },
+      "filters": {
+        "search_placeholder": "Search by action / object / actor",
+        "actor": "Actor",
+        "entity_type": "Entity type",
+        "action": "Action",
+        "date_range": "Date range",
+        "date_from": "From",
+        "date_to": "To",
+        "platform_action_only": "Cross-tenant actions only",
+        "clear_all": "Clear all",
+        "open_filters": "Filters"
+      },
+      "entity_type": {
+        "task": "Task",
+        "subtask": "Subtask",
+        "user": "Employee",
+        "shift": "Shift",
+        "store": "Store",
+        "goal": "Goal",
+        "permission": "Permission",
+        "webhook": "Webhook",
+        "organization": "Organization",
+        "regulation": "Regulation",
+        "freelance_application": "Freelance application",
+        "freelance_service": "Freelance service",
+        "freelance_payout": "Freelance payout",
+        "all": "All types"
+      },
+      "columns": {
+        "occurred_at": "When",
+        "actor": "Actor",
+        "action": "Action",
+        "entity_type": "Type",
+        "entity_name": "Object",
+        "details": "Details",
+        "actions_col": "Actions"
+      },
+      "row_actions": {
+        "view_diff": "Show diff",
+        "open_entity": "Open object",
+        "copy_id": "Copy ID"
+      },
+      "detail_sheet": {
+        "title": "Audit entry",
+        "actor_section": "Who",
+        "what_section": "What",
+        "when_section": "When",
+        "diff_section": "Changes",
+        "ip_label": "IP",
+        "user_agent_label": "User-Agent"
+      },
+      "empty": {
+        "no_entries_title": "Audit log is empty",
+        "no_entries_subtitle": "Actions will appear here as the system runs",
+        "filtered_title": "Nothing found",
+        "filtered_reset": "Reset filters"
+      },
+      "toasts": {
+        "exported": "Log exported",
+        "id_copied": "ID copied",
+        "error": "Operation failed"
+      },
+      "actions_labels": {
+        "task.create": "Task created",
+        "task.update": "Task updated",
+        "task.start": "Task started",
+        "task.pause": "Task paused",
+        "task.resume": "Task resumed",
+        "task.complete": "Task completed",
+        "task.approve": "Task approved",
+        "task.reject": "Task rejected",
+        "task.delete": "Task deleted",
+        "user.create": "Employee created",
+        "user.update": "Employee profile updated",
+        "user.activate": "Employee activated",
+        "user.deactivate": "Employee deactivated",
+        "permission.grant": "Permission granted",
+        "permission.revoke": "Permission revoked",
+        "shift.open": "Shift opened",
+        "shift.close": "Shift closed",
+        "shift.force_close": "Shift force-closed",
+        "settings.update": "Settings updated",
+        "api_key.create": "API key created",
+        "api_key.revoke": "API key revoked",
+        "webhook.create": "Webhook created",
+        "webhook.update": "Webhook updated",
+        "webhook.delete": "Webhook deleted",
+        "regulation.create": "Regulation created",
+        "regulation.publish": "Regulation published",
+        "regulation.archive": "Regulation archived",
+        "freelance.application.approve": "Freelance application approved",
+        "freelance.application.reject": "Freelance application rejected",
+        "freelance.payout.create": "Freelance payout created",
+        "freelance.payout.complete": "Freelance payout completed",
+        "login": "Login",
+        "logout": "Logout",
+        "login.failed": "Failed login attempt"
+      },
+      "diff_fields": {
+        "title": "Title",
+        "description": "Description",
+        "comment": "Comment",
+        "review_state": "Review state",
+        "review_comment": "Reject reason",
+        "state": "State",
+        "state_from": "From state",
+        "state_to": "To state",
+        "assignee_id": "Assignee",
+        "creator_id": "Creator",
+        "planned_minutes": "Planned minutes",
+        "phone": "Phone",
+        "email": "Email",
+        "first_name": "First name",
+        "last_name": "Last name",
+        "middle_name": "Middle name",
+        "position_id": "Position",
+        "preferred_locale": "Interface language",
+        "default_duration_min": "Default duration, min",
+        "dairy_writeoff_norm_pct": "Dairy write-off norm, %",
+        "oos_norm_pct": "OOS norm, %",
+        "writeoff_norm_pct": "Write-off norm, %"
+      },
+      "login_method": {
+        "phone_otp.telegram": "Phone OTP · Telegram",
+        "phone_otp.max": "Phone OTP · MAX",
+        "phone_otp.sms_fallback": "Phone OTP · SMS",
+        "phone_otp.call": "Phone OTP · Call",
+        "totp.authenticator": "TOTP · Authenticator",
+        "email_magic_link": "Email magic link",
+        "sso": "SSO"
+      },
+      "device_type": {
+        "desktop": "Desktop",
+        "mobile": "Mobile",
+        "tablet": "Tablet"
+      },
+      "platform_action": {
+        "badge": "Cross-tenant",
+        "tooltip": "Platform administrator action affecting multiple tenants"
+      },
+      "diff": {
+        "before": "Before",
+        "after": "After",
+        "added": "Added",
+        "removed": "Removed",
+        "no_changes": "No changes",
+        "view_json": "View JSON"
+      },
+      "export": {
+        "csv_starting": "Preparing CSV…",
+        "csv_done": "CSV ready",
+        "max_rows_warning": "Too many records — refine filters (max 10,000 rows at a time)"
+      }
+    },
+    "reportsKpi": {
+      "page_title": "KPI report",
+      "page_subtitle": "Network and store performance",
+      "breadcrumbs": {
+        "home": "Home",
+        "reports": "Reports",
+        "kpi": "KPI"
+      },
+      "actions": {
+        "export_xlsx": "Export XLSX",
+        "export_csv": "Export CSV",
+        "share": "Share",
+        "compare": "Compare with previous period"
+      },
+      "filters": {
+        "period_label": "Period",
+        "store_label": "Store",
+        "all_stores": "Whole network",
+        "from": "From",
+        "to": "To",
+        "compare_with": "Compare with",
+        "previous_period": "Previous period",
+        "previous_year": "Same period last year",
+        "apply": "Apply",
+        "reset": "Reset"
+      },
+      "period": {
+        "week": "Week",
+        "month": "Month",
+        "quarter": "Quarter",
+        "year": "Year",
+        "custom": "Custom"
+      },
+      "scope": {
+        "network": "Network",
+        "store": "Store"
+      },
+      "metrics": {
+        "completion_rate": "Task completion",
+        "return_rate": "Returned for rework",
+        "on_time_rate": "On-time completion",
+        "hours_plan": "Planned hours",
+        "hours_actual": "Actual hours",
+        "fot_ratio": "Payroll actual / plan"
+      },
+      "metric_card": {
+        "vs_prev": "vs previous period",
+        "no_change": "no change",
+        "view_details": "Details"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "performers": "Performers",
+        "by_work_type": "By work type",
+        "by_zone": "By zone"
+      },
+      "performers": {
+        "top_title": "Top performers",
+        "top_subtitle": "Best by task completion over the period",
+        "needs_support_title": "Needs support",
+        "needs_support_subtitle": "Employees with low performance",
+        "columns": {
+          "rank": "#",
+          "name": "Employee",
+          "store": "Store",
+          "completion_rate": "Completion",
+          "tasks_completed": "Tasks",
+          "on_time_rate": "On-time",
+          "rating": "Rating"
+        },
+        "row_actions": {
+          "open_profile": "Open profile",
+          "set_goal": "Set goal"
+        }
+      },
+      "dimension": {
+        "by_work_type_title": "Performance by work type",
+        "by_zone_title": "Performance by zone",
+        "columns": {
+          "label": "Name",
+          "completion_rate": "Completion, %",
+          "tasks_total": "Tasks total",
+          "on_time_rate": "On-time, %"
+        }
+      },
+      "empty": {
+        "no_data_title": "No data for the selected period",
+        "no_data_subtitle": "Try a wider period or pick a different store",
+        "loading": "Calculating metrics…"
+      },
+      "toasts": {
+        "exported_xlsx": "Report saved as XLSX",
+        "exported_csv": "Report saved as CSV",
+        "share_link_copied": "Link copied",
+        "export_failed": "Failed to export report"
+      }
+    },
+    "reportsPlanFact": {
+      "page_title": "Plan / Actual",
+      "page_subtitle": "Planned vs actual performance comparison",
+      "breadcrumbs": {
+        "home": "Home",
+        "reports": "Reports",
+        "plan_fact": "Plan / Actual"
+      },
+      "actions": {
+        "export_xlsx": "Export XLSX",
+        "export_csv": "Export CSV",
+        "share": "Share"
+      },
+      "filters": {
+        "period_label": "Period",
+        "store_label": "Store",
+        "all_stores": "Whole network",
+        "breakdown_label": "Breakdown",
+        "metric_label": "Compare by",
+        "from": "From",
+        "to": "To",
+        "apply": "Apply",
+        "reset": "Reset"
+      },
+      "metric": {
+        "hours": "Hours",
+        "tasks": "Tasks"
+      },
+      "breakdown": {
+        "days": "By day",
+        "stores": "By store",
+        "users": "By employee",
+        "work_types": "By work type"
+      },
+      "summary": {
+        "total_planned_hours": "Planned hours",
+        "total_actual_hours": "Actual hours",
+        "total_planned_tasks": "Planned tasks",
+        "total_completed_tasks": "Completed tasks",
+        "avg_completion_rate": "Avg completion",
+        "best_day_title": "Best day",
+        "worst_day_title": "Worst day",
+        "worst_day_reason": "Reason"
+      },
+      "chart": {
+        "planned": "Plan",
+        "actual": "Actual",
+        "completion_rate_axis": "Completion, %",
+        "weekday_short": {
+          "Mon": "Mon",
+          "Tue": "Tue",
+          "Wed": "Wed",
+          "Thu": "Thu",
+          "Fri": "Fri",
+          "Sat": "Sat",
+          "Sun": "Sun"
+        }
+      },
+      "table": {
+        "columns": {
+          "date": "Date",
+          "weekday": "Day",
+          "planned_hours": "Plan, h",
+          "actual_hours": "Actual, h",
+          "planned_tasks": "Plan tasks",
+          "completed_tasks": "Completed",
+          "completion_rate": "Completion, %",
+          "store": "Store",
+          "user": "Employee",
+          "work_type": "Work type",
+          "delta": "Delta"
+        }
+      },
+      "empty": {
+        "no_data_title": "No data for the selected period",
+        "no_data_subtitle": "Widen the period or pick a different store",
+        "loading": "Calculating plan/actual…"
+      },
+      "toasts": {
+        "exported_xlsx": "Report saved as XLSX",
+        "exported_csv": "Report saved as CSV",
+        "share_link_copied": "Link copied",
+        "export_failed": "Failed to export report"
+      }
+    },
+    "reportsCompare": {
+      "page_title": "Store comparison",
+      "page_subtitle": "Network benchmarking — leaders, laggards and trends",
+      "breadcrumbs": {
+        "home": "Home",
+        "reports": "Reports",
+        "compare": "Comparison"
+      },
+      "actions": {
+        "export_xlsx": "Export XLSX",
+        "export_csv": "Export CSV",
+        "share": "Share"
+      },
+      "filters": {
+        "period_label": "Period",
+        "from": "From",
+        "to": "To",
+        "sort_by_label": "Sort by",
+        "quadrant_filter_label": "Quadrant",
+        "all_quadrants": "All quadrants",
+        "apply": "Apply",
+        "reset": "Reset"
+      },
+      "quadrant": {
+        "LEADERS": "Leaders",
+        "GROWING": "Growing",
+        "STABLE": "Stable",
+        "DECLINING": "Declining",
+        "leaders_subtitle": "High completion and positive trend",
+        "growing_subtitle": "Below median but improving",
+        "stable_subtitle": "Near median with no significant changes",
+        "declining_subtitle": "Below median and trending worse"
+      },
+      "metric": {
+        "completion_rate": "Completion, %",
+        "return_rate": "Returns, %",
+        "on_time_rate": "On-time, %",
+        "hours_diff_pct": "Hours actual vs plan, %",
+        "fot_diff_pct": "Payroll actual vs plan, %"
+      },
+      "median_card": {
+        "title": "Network medians",
+        "completion_rate": "Completion",
+        "return_rate": "Returned for rework",
+        "on_time_rate": "On-time completion",
+        "hours_diff_pct": "Hours variance",
+        "fot_diff_pct": "Payroll variance"
+      },
+      "table": {
+        "columns": {
+          "rank": "#",
+          "store": "Store",
+          "external_code": "Code",
+          "completion_rate": "Completion",
+          "return_rate": "Returns",
+          "on_time_rate": "On-time",
+          "hours_diff_pct": "Hours Δ",
+          "fot_diff_pct": "Payroll Δ",
+          "trend_completion": "Completion trend",
+          "trend_return": "Returns trend",
+          "quadrant": "Quadrant"
+        }
+      },
+      "row_actions": {
+        "open_store": "Open store",
+        "open_kpi_report": "KPI report",
+        "open_plan_fact": "Plan/Actual"
+      },
+      "scatter": {
+        "title": "Performance map",
+        "subtitle": "Each store is a point on two axes",
+        "x_axis_label": "Completion, %",
+        "y_axis_label": "Trend, p.p. over the period",
+        "median_line_label": "Network median"
+      },
+      "vs_median": {
+        "above": "Above median",
+        "below": "Below median",
+        "equal": "At median"
+      },
+      "empty": {
+        "no_data_title": "No data for the selected period",
+        "no_data_subtitle": "Widen the period or wait for store data to come in",
+        "loading": "Calculating comparison…"
+      },
+      "toasts": {
+        "exported_xlsx": "Report saved as XLSX",
+        "exported_csv": "Report saved as CSV",
+        "share_link_copied": "Link copied",
+        "export_failed": "Failed to export report"
       }
     }
   }

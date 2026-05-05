@@ -222,15 +222,40 @@ export {
   type FmcgOpsThresholds,
   type FashionSeasonRow,
   type BillingInfo,
-  type LegalEntity,
   getOrganizationConfig,
   updateOrganizationConfig,
   updateFmcgGroupThreshold,
   updateFmcgOpsThresholds,
   updateFashionSeason,
+  getLegalEntities,
   addLegalEntity,
   updateLegalEntity,
   removeLegalEntity,
+  // API Keys (chat 36)
+  type ApiKey,
+  type ApiKeyScope,
+  type CreateApiKeyPayload,
+  getApiKeys,
+  createApiKey,
+  revokeApiKey,
+  renameApiKey,
+  // Billing (chat 36)
+  type BillingConfig,
+  type BillingPaymentMethod,
+  type BillingHistoryEntry,
+  getBillingConfig,
+  // Task Policies (chat 36)
+  type TaskPoliciesConfig,
+  getTaskPolicies,
+  updateTaskPolicies,
+  // Timezone (chat 36)
+  type TimezoneConfig,
+  getTimezoneConfig,
+  updateTimezoneConfig,
+  // Branding (chat 36)
+  type BrandingConfig,
+  getBrandingConfig,
+  updateBrandingConfig,
 } from "./organization";
 
 // ═══════════════════════════════════════════════════════════════════
@@ -254,6 +279,7 @@ export {
 // ═══════════════════════════════════════════════════════════════════
 
 export {
+  type AuditListParams,
   getAuditEntries,
   getAuditEntryById,
 } from "./audit";
@@ -266,8 +292,20 @@ export {
   type ReportPeriod,
   type ReportParams,
   type KpiReportData,
+  type KpiMetric,
+  type KpiPerformer,
+  type KpiByDimension,
   type PlanFactReportData,
+  type PlanFactDay,
+  type PlanFactByStore,
+  type PlanFactByUser,
+  type PlanFactByWorkType,
+  type PlanFactBreakdown,
+  type PlanFactParams,
   type StoreCompareReportData,
+  type StoreComparisonRow,
+  type StoreQuadrant,
+  type NetworkMedians,
   getKpiReport,
   getPlanFactReport,
   getStoreCompareReport,
@@ -412,7 +450,7 @@ export {
   getRegulationsStats,
 } from "./regulations";
 
-// ═══════════════════════════════════════════════════════════════════
+// ═════════════════════════��═════════════════════════════════════════
 // Data Connectors API
 // ═══════════════════════════════════════════════════════════════════
 
