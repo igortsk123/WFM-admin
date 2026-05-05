@@ -4121,6 +4121,118 @@
         "share_link_copied": "Link copied",
         "export_failed": "Failed to export report"
       }
+    },
+    "goals": {
+      "page_title": "Goals",
+      "page_subtitle": "AI assistant analyses data and suggests focus areas for your team",
+      "breadcrumbs": {
+        "home": "Home",
+        "goals": "Goals"
+      },
+      "actions": {
+        "history": "Goal history",
+        "ask_ai_about_goal": "Ask AI about this goal",
+        "ai_suggestions_for_goal": "AI suggestions for this goal",
+        "open_bonus_tasks": "Open bonus tasks",
+        "remove_goal": "Remove goal",
+        "select_as_active": "Select as active",
+        "ask_why_ai_proposed": "Ask why AI proposed",
+        "create_manual_goal": "Create manual goal",
+        "all_ai_suggestions": "All AI suggestions",
+        "connect_data_sources": "Connect data sources"
+      },
+      "filters": {
+        "period_label": "Period",
+        "scope_label": "Store/Network",
+        "current_week": "Current week",
+        "next_week": "Next week",
+        "previous_week": "Previous week"
+      },
+      "active_goal": {
+        "badge": "Active goal of the week",
+        "stats": {
+          "progress": "Progress",
+          "current_value": "Current value",
+          "days_left": "Days left",
+          "diff_better": "better over {days} days"
+        },
+        "set_by_hint": "Set on {date} by {user}",
+        "no_active_title": "No goal set for this week",
+        "no_active_cta": "Pick a goal from the suggestions below"
+      },
+      "proposals": {
+        "section_title": "AI suggestions",
+        "section_subtitle_count": "AI analysed 7 days of data and proposes {count} goals",
+        "potential_gain": "Potential",
+        "current_value": "Current",
+        "target_value": "Target",
+        "select_confirm_title": "Set goal '{title}'?",
+        "select_confirm_replace_warning": "The previous goal will be removed",
+        "select_confirm_button": "Set"
+      },
+      "remove_dialog": {
+        "title": "Remove the active goal?",
+        "description": "You can change goals any time. History is preserved.",
+        "reason_label": "Comment (optional)",
+        "reason_placeholder": "E.g. goal reached early, or more urgent priorities arose",
+        "confirm": "Remove goal"
+      },
+      "progress_dashboard": {
+        "section_title": "Progress dashboard",
+        "q1_title": "Where are we now?",
+        "q2_title": "Where are we headed?",
+        "q2_eta": "At current pace we reach the target by {date}",
+        "q3_title": "What to do today?",
+        "create_task_from_recommendation": "Create task"
+      },
+      "catalog": {
+        "section_title": "Goal catalogue by business type",
+        "tab_fmcg": "FMCG retail",
+        "tab_fashion": "Fashion retail",
+        "tab_production": "Production",
+        "when_to_use": "When to use",
+        "typical_period": "Typical duration",
+        "key_tasks": "Key tasks",
+        "ai_analyzes_via": "How AI analyses",
+        "footer_hint": "These are examples. Actual goals depend on connected data sources."
+      },
+      "manual_create": {
+        "dialog_title": "Create manual goal",
+        "title_label": "Title",
+        "description_label": "Description",
+        "category_label": "Category",
+        "target_value_label": "Target value",
+        "target_unit_label": "Unit",
+        "period_start_label": "Start date",
+        "period_end_label": "End date",
+        "submit": "Create goal"
+      },
+      "category": {
+        "OOS_REDUCTION": "Reduce OOS",
+        "WRITE_OFFS": "Write-offs & expiry",
+        "PROMO_QUALITY": "Promo quality",
+        "PRICE_ACCURACY": "Price accuracy",
+        "IMPULSE_ZONES": "Impulse zones",
+        "PRODUCTIVITY": "Productivity",
+        "CUSTOM": "Custom"
+      },
+      "priority": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "empty": {
+        "no_data_title": "No data",
+        "no_proposals_title": "Not enough data for this period",
+        "no_proposals_subtitle": "AI couldn't generate suggestions. Try a different period or store"
+      },
+      "ai_loading": "AI is analysing data…",
+      "toasts": {
+        "selected": "Goal set",
+        "removed": "Goal removed",
+        "created": "Goal created",
+        "error": "Operation failed"
+      }
     }
   }
 }
