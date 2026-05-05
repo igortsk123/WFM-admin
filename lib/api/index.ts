@@ -441,6 +441,25 @@ export {
 } from "./ai-performance";
 
 // ═══════════════════════════════════════════════════════════════════
+// AI Coach API (stretch — chat 49)
+// ═══════════════════════════════════════════════════════════════════
+
+export {
+  type AIHint,
+  type AbTest,
+  type AiHintStatus,
+  type AiHintGenerateParams,
+  type CreateAbTestParams,
+  getAiHints,
+  createAiHint,
+  updateAiHint,
+  activateAiHint,
+  generateAiHint,
+  getAbTest,
+  createAbTest,
+} from "./ai-coach";
+
+// ═══════════════════════════════════════════════════════════════════
 // Regulations API
 // ═══════════════════════════════════════════════════════════════════
 

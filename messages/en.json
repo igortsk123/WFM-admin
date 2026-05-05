@@ -157,7 +157,7 @@
     "integrations": "Integrations",
     "audit": "Audit",
     "notifications": "Notifications",
-    "ai_coach": "AI coach",
+    "ai_coach": "AI Coach",
     "risk_rules": "Risk rules",
     "leaderboards": "Leaderboards",
     "freelance_dashboard": "Freelance",
@@ -5054,158 +5054,132 @@
         "error": "Operation failed"
       }
     },
-    "aiSuggestions": {
-      "page_title": "AI Suggestions",
-      "title": "AI Suggestions",
-      "subtitle": "Analytics system recommendations for your business",
-      "breadcrumb_home": "Home",
-      "breadcrumb_ai": "Efficiency & AI",
-      "stats": {
-        "new_today": "New today",
-        "in_progress": "In progress",
-        "accepted_week": "Accepted this week",
-        "rejected_week": "Rejected this week"
+    "aiCoach": {
+      "page_title": "AI Coach",
+      "page_subtitle": "Hints for work types: why, steps, common mistakes",
+      "beta_badge": "Beta",
+      "breadcrumbs": {
+        "home": "Home",
+        "future": "Future",
+        "ai_coach": "AI Coach"
       },
-      "tabs": {
-        "all": "All",
-        "pending": "New",
-        "edited": "In progress",
-        "accepted": "Accepted",
-        "rejected": "Rejected"
+      "left_panel": {
+        "title": "Work types",
+        "search_placeholder": "Search work type",
+        "filter_all": "All",
+        "filter_with_hint": "With AI hint",
+        "filter_without": "Without AI hint",
+        "no_version": "—",
+        "add_for_missing": "Add hint for type without hints"
       },
-      "filters": {
-        "type": "Type",
-        "priority": "Priority",
-        "store": "Store",
-        "date_range": "Date range"
+      "editor": {
+        "version_meta": "Version v{version} · Active since {activatedAt} · Created by {createdBy}",
+        "tabs": {
+          "edit": "Edit",
+          "history": "History",
+          "ab_test": "A/B test",
+          "metrics": "Metrics"
+        }
       },
-      "type": {
-        "TASK_SUGGESTION": "Task",
-        "GOAL_SUGGESTION": "Goal",
-        "BONUS_TASK_SUGGESTION": "Bonus task",
-        "INSIGHT": "Insight"
+      "edit_tab": {
+        "why_card_title": "Why it matters",
+        "why_card_hint": "Used as the first block in the task card",
+        "why_placeholder": "Explain in 2-3 sentences why this task matters",
+        "steps_card_title": "3 steps",
+        "step_label": "Step {n}",
+        "errors_card_title": "Common mistakes",
+        "error_placeholder": "Describe a typical mistake",
+        "actions": {
+          "generate_via_ai": "Generate via AI",
+          "preview": "Preview",
+          "save_draft": "Save as version",
+          "activate": "Activate"
+        }
       },
-      "priority": {
-        "high": "High",
-        "medium": "Medium",
-        "low": "Low"
+      "history_tab": {
+        "active_badge": "active",
+        "applied_count": "Applications {count}",
+        "helpful_count": "Helpful {applied} ({rate}%)",
+        "rollback": "Rollback",
+        "compare": "Compare to active",
+        "rollback_dialog_title": "Rollback to v{version}?",
+        "rollback_dialog_description": "Current active version will be archived",
+        "rollback_confirm": "Rollback",
+        "empty": "Change history will appear after editing"
       },
-      "status": {
-        "PENDING": "New",
-        "EDITED": "In progress",
-        "ACCEPTED": "Accepted",
-        "REJECTED": "Rejected"
-      },
-      "card": {
-        "target_store": "Store",
-        "target_stores": "Stores",
-        "target_network": "Network",
-        "time_estimate": "{minutes} min",
-        "bonus_points": "{points} points",
-        "rationale": "Why AI suggested this",
-        "source_info": "Data source",
-        "with_edits": "With edits"
-      },
-      "actions": {
-        "accept": "Accept",
-        "accept_with_edits": "Accept with edits",
-        "reject": "Reject",
-        "edit": "Edit",
-        "ask_ai": "Ask AI",
-        "helpful": "Helpful",
-        "not_helpful": "Not helpful",
-        "reset_to_original": "Reset to AI proposal",
-        "bulk_accept": "Accept selected",
-        "bulk_reject": "Reject selected",
-        "history": "History",
-        "ai_settings": "AI Settings"
-      },
-      "detail": {
-        "title": "Suggestion details",
-        "proposed_section": "What is proposed",
-        "rationale_section": "Why AI suggested",
-        "data_sources_section": "Data sources",
-        "related_data_section": "Related data",
-        "changed_indicator": "Changed",
-        "ai_remembered": "AI considered your previous edits",
-        "form": {
-          "title": "Title",
-          "description": "Description",
-          "type": "Task type",
-          "store": "Store",
-          "zone": "Zone",
-          "work_type": "Work type",
-          "duration": "Duration",
-          "planned_start": "Start",
-          "planned_end": "End",
-          "assignee": "Assignee",
-          "requires_photo": "Photo required",
-          "manager_comment": "Manager comment",
-          "discount_percent": "Discount, %",
-          "bonus_points": "Points for completion",
-          "marketing_channel": "Marketing channel"
+      "ab_test_tab": {
+        "active_section_title": "Active test",
+        "running_badge": "Running",
+        "completed_badge": "Completed",
+        "running_label": "Test started {startDate} ({days} days)",
+        "version_a_title": "Version A (control)",
+        "version_b_title": "Version B (treatment)",
+        "stats": {
+          "impressions": "Impressions",
+          "applications": "Applications",
+          "helpful_rate": "Helpful"
         },
-        "edit_reasons": {
-          "title": "Edit reason",
-          "timing": "Different timing",
-          "assignee": "Different assignee",
-          "scope": "Different scope",
-          "priority": "Priority change",
-          "other": "Other"
+        "p_value_label": "p = {value}",
+        "significant_badge": "Statistically significant",
+        "not_enough_data": "Not enough data",
+        "actions": {
+          "apply_better": "Apply better as active",
+          "finish_test": "Finish test"
+        },
+        "create_section_title": "Create new A/B test",
+        "create_form": {
+          "control_label": "Base version (control)",
+          "treatment_label": "Version B (treatment)",
+          "traffic_b_label": "% traffic to B",
+          "duration_label": "Duration (days)",
+          "submit": "Start test"
         }
       },
-      "reject_dialog": {
-        "title": "Reject suggestion",
-        "message": "Please provide a reason for rejection — this helps improve AI suggestions quality.",
-        "reason_label": "Reason",
-        "comment_label": "Comment",
-        "comment_placeholder": "Describe in detail (minimum 10 characters)",
-        "reasons": {
-          "not_relevant": "Not relevant now",
-          "already_in_progress": "Already in progress",
-          "disagree_analysis": "Disagree with analysis",
-          "too_generic": "Too generic",
-          "other": "Other"
-        }
+      "metrics_tab": {
+        "stats": {
+          "applications_30d": "Applications in 30 days",
+          "helpful": "Helpful",
+          "helpful_rate": "Helpful rate %",
+          "ai_feedback": "AI feedback score"
+        },
+        "history_chart_title": "Helpful rate dynamics, 90 days",
+        "info_alert": "Metrics update daily. Helpfulness is calculated from worker feedback."
       },
-      "bulk_reject_dialog": {
-        "title": "Reject {count} suggestions",
-        "message": "Selected reason will be applied to all suggestions."
+      "generate_dialog": {
+        "title": "Hint generation",
+        "context_label": "Context",
+        "style_label": "Style",
+        "style_concise": "Concise",
+        "style_detailed": "Detailed",
+        "style_friendly": "Friendly",
+        "variants_label": "Variants count",
+        "loading": "Generating…",
+        "submit": "Generate",
+        "use_variant": "Load into editor"
+      },
+      "preview_drawer": {
+        "title": "Preview in mobile app",
+        "section_why": "Why it matters",
+        "section_steps": "3 steps",
+        "section_errors": "Common mistakes"
       },
       "empty": {
-        "pending": {
-          "title": "No new suggestions",
-          "description": "AI has not generated new recommendations yet. Suggestions will appear automatically when anomalies are detected."
-        },
-        "filtered": {
-          "title": "Nothing found",
-          "description": "Try changing the filter parameters."
-        },
-        "accepted": {
-          "title": "No accepted suggestions",
-          "description": "Accepted suggestions are displayed here for analysis."
-        },
-        "rejected": {
-          "title": "No rejected suggestions",
-          "description": "Rejected suggestions help AI learn from your decisions."
-        }
+        "no_hint_title": "Hint not yet created for this type",
+        "no_hint_cta": "Create first version"
       },
-      "read_only": {
-        "banner": "You are viewing suggestions in read-only mode. Contact a supervisor to make decisions.",
-        "tooltip": "Not available for your role"
-      },
-      "forbidden": {
-        "title": "Access restricted",
-        "description": "AI suggestions section is only available to employees with decision-making authority."
+      "states": {
+        "draft_dirty_indicator": "Unsaved changes",
+        "generating": "Generating…",
+        "forbidden_title": "Access restricted",
+        "forbidden_subtitle": "Only available to NETWORK_OPS"
       },
       "toasts": {
-        "accepted": "Suggestion accepted, task created",
-        "accepted_goal": "Suggestion accepted, goal activated",
-        "accepted_bonus": "Suggestion accepted, bonus task added",
-        "rejected": "Suggestion rejected",
-        "saved": "Changes saved",
-        "bulk_accepted": "Accepted suggestions: {count}",
-        "bulk_rejected": "Rejected suggestions: {count}",
+        "saved_draft": "Version saved as draft",
+        "activated": "Version activated",
+        "rolled_back": "Rollback complete",
+        "generated": "Generated {count} variants",
+        "ab_test_started": "A/B test started",
+        "ab_test_finished": "Test finished",
         "error": "Operation failed"
       }
     }
