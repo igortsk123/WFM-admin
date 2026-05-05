@@ -4359,6 +4359,161 @@
         "error": "Failed to process file",
         "too_large": "File exceeds 5 MB"
       }
+    },
+    "bonusTasks": {
+      "page_title": "Bonus tasks",
+      "page_subtitle": "Hour budget → distribution strategy → tasks for staff after plan. 1 point ≈ 1 ruble.",
+      "page_subtitle_director": "View budget and active bonus tasks for your store",
+      "breadcrumbs": {
+        "home": "Home",
+        "goals_bonus": "Goals & Bonuses",
+        "bonus_tasks": "Bonus tasks"
+      },
+      "actions": {
+        "create": "Create bonus task",
+        "history": "History",
+        "remove": "Remove",
+        "publish": "Publish",
+        "reject": "Reject",
+        "ask_ai": "Ask AI",
+        "edit_budget": "Edit budget",
+        "view_pool": "View pool",
+        "open_goal": "To goals",
+        "configure_budget": "Configure budget"
+      },
+      "filters": {
+        "period_today": "Today",
+        "period_week": "This week",
+        "period_prev_week": "Last week",
+        "period_custom": "Custom",
+        "scope_label": "Store/Workshop"
+      },
+      "budget_card": {
+        "title": "Object budgets",
+        "regional_badge": "Set by regional",
+        "toggle_hours": "In hours",
+        "toggle_money": "In money",
+        "hours_unit": "h per week",
+        "money_unit": "₽ per week",
+        "used_label": "Used {value} ({percent}%)",
+        "summary_collapse_title": "By object",
+        "set_by_regional_hint": "Set by regional director"
+      },
+      "strategies_card": {
+        "title": "Active strategies",
+        "manual_label": "Manual",
+        "manual_hint": "Supervisor creates tasks manually",
+        "ai_label": "AI",
+        "ai_hint": "AI proposes, needs approval",
+        "yesterday_label": "Yesterday's incomplete",
+        "yesterday_hint": "Auto-transfer to bonus pool",
+        "footer_hint": "Combinable. AI works on top of the active goal."
+      },
+      "yesterday_pool_card": {
+        "title": "Yesterday's incomplete pool",
+        "auto_badge": "Auto",
+        "tasks_summary": "{tasks} tasks = {hours}",
+        "used_label": "used {used} / {total}"
+      },
+      "active_goal_card": {
+        "title": "Active goal",
+        "ai_badge": "AI",
+        "proposals_count": "{count} bonus proposals"
+      },
+      "tabs": {
+        "active": "Active",
+        "ai_proposals": "AI proposals",
+        "completed": "Completed",
+        "metrics": "Metrics"
+      },
+      "task_card": {
+        "points_suffix": "points",
+        "rubles_suffix": "₽",
+        "any_assignee": "Any matching",
+        "expires_in": "Expires in {time}",
+        "status": {
+          "NEW": "New",
+          "IN_PROGRESS": "Taken",
+          "COMPLETED": "Under review"
+        }
+      },
+      "ai_proposals": {
+        "section_description": "AI proposes bonus tasks based on active goal '{goal}'. You can adjust before publishing.",
+        "rationale_title": "Why proposed",
+        "all_link": "All AI suggestions"
+      },
+      "completed_tab": {
+        "columns": {
+          "date": "Date",
+          "task": "Task",
+          "user": "Employee",
+          "store": "Store",
+          "goal": "Goal",
+          "points": "Points",
+          "source": "Source",
+          "status": "Status"
+        },
+        "source": {
+          "YESTERDAY_INCOMPLETE": "Yesterday's incomplete",
+          "SUPERVISOR_BUDGET": "Supervisor's budget",
+          "GOAL_LINKED": "From goal"
+        }
+      },
+      "metrics": {
+        "distribution_title": "Points distribution",
+        "distribution_subtitle_top": "+15% to salary",
+        "distribution_subtitle_avg": "+10%",
+        "distribution_subtitle_low": "0-5%",
+        "best_performers_title": "Top performers",
+        "avg_claim_title": "Avg time to claim",
+        "coverage_title": "Coverage",
+        "coverage_hint": "Share of tasks that were claimed",
+        "by_stores_title": "By stores",
+        "honest_curve_title": "Distribution curve",
+        "honest_curve_warning": "Distribution is too even — review the budget"
+      },
+      "create_dialog": {
+        "title": "Create bonus task",
+        "step1_title": "Points source",
+        "step2_title": "Task parameters",
+        "source_yesterday": "Yesterday's incomplete",
+        "source_budget": "Supervisor's budget",
+        "source_goal": "From active goal",
+        "name_label": "Name",
+        "work_type_label": "Work type",
+        "zone_label": "Zone",
+        "points_label": "Points (₽)",
+        "window_label": "Publish window",
+        "visibility_label": "Visible to",
+        "visibility_any": "Any matching on shift",
+        "visibility_specific": "Specific person",
+        "goal_link_label": "Goal (opt.)",
+        "after_planned_label": "Visible only after planned tasks closed",
+        "after_planned_hint": "Workers won't see until they close all planned tasks of the shift",
+        "submit": "Publish"
+      },
+      "remove_dialog": {
+        "title": "Remove bonus task?",
+        "description": "If someone took it — points return to budget",
+        "reason_label": "Reason (optional)",
+        "confirm": "Remove"
+      },
+      "empty": {
+        "no_budget_title": "Budget not configured",
+        "no_budget_subtitle": "Set hour budget for this object to create bonus tasks",
+        "no_active_tasks": "No active bonus tasks",
+        "no_proposals": "AI didn't propose new tasks",
+        "no_completed": "No completed bonus tasks in this period"
+      },
+      "toasts": {
+        "task_created": "Bonus task published",
+        "task_removed": "Task removed",
+        "proposal_published": "Proposal published",
+        "proposal_rejected": "Proposal rejected",
+        "budget_updated": "Budget updated",
+        "budget_exceeded": "Budget exceeded",
+        "error": "Operation failed"
+      }
     }
   }
 }
