@@ -175,7 +175,7 @@
     "ai": "ИИ-аналитика",
     "aiChat": "ИИ-чат",
     "aiSuggestions": "Предложения ИИ",
-    "documents": "Докуме����ты",
+    "documents": "Докуме������ты",
     "help": "Помощь",
     "users": "Пользователи",
     "reports": "Отчёты",
@@ -394,7 +394,7 @@
       "write_offs": "Списания",
       "promo_quality": "Качество промо",
       "price_accuracy": "Точность цен",
-      "impulse_zones": "Импульсные зоны",
+      "impulse_zones": "��мпульсные зоны",
       "productivity": "Производительность",
       "custom": "Произвольная"
     },
@@ -593,7 +593,7 @@
   },
   "states": {
     "loading": "Загрузка...",
-    "empty_title": "Нет данных",
+    "empty_title": "��ет данных",
     "empty_description": "Здесь пока ничего нет",
     "error_title": "��роизошл�� ошибка",
     "error_description": "Не удалось загрузить данные. Попробуйте ещё раз.",
@@ -1390,7 +1390,7 @@
         "archive": "Архивировать"
       },
       "bulk": {
-        "selected": "{count, plural, one {Выбран # сотрудник} few {Выбрано # сотрудника} many {Выбрано # сотрудников} other {Выбрано # сотрудников}}",
+        "selected": "{count, plural, one {Выбран # сотрудник} few {Выбр��но # сотрудника} many {Выбрано # сотрудников} other {Выбрано # сотрудников}}",
         "assign_permission": "Назначить привилегию",
         "archive": "Архивировать",
         "cancel": "Отмена"
@@ -1550,7 +1550,7 @@
         "col_hours": "Часы",
         "col_volume": "Объём",
         "col_amount": "Сумма",
-        "col_status": "Статус",
+        "col_status": "С��атус",
         "empty": "Услуги не найдены",
         "sheet_title": "Детали услуги"
       },
@@ -1875,7 +1875,7 @@
         "store_required": "Выберите магазин",
         "position_required": "Выберите должност��",
         "hired_at_future": "Дата найма не может быть в будущем",
-        "invite_method_required": "Выберите способ приглашения"
+        "invite_method_required": "Выберит�� способ приглашения"
       },
       "dialogs": {
         "cancel_title": "Уйти без сохранения?",
@@ -2147,7 +2147,7 @@
       "period": {
         "today": "Сегодня",
         "prev": "Предыдущий период",
-        "next": "Следующий период",
+        "next": "Следующ��й период",
         "datepicker_label": "Выбрать дату",
         "range_day": "{date}",
         "range_week": "{from} – {to}",
@@ -2501,7 +2501,7 @@
         "created": "Зона создана",
         "updated": "Зона обновлена",
         "deleted": "Зона удалена",
-        "in_use_warning": "Зона используется — удаление заблокировано",
+        "in_use_warning": "Зона использу��тся — удаление заблокировано",
         "error": "Не удалось выполнить операцию"
       }
     },
@@ -2747,7 +2747,7 @@
       },
       "detail_sheet": {
         "info_section": "Сведения",
-        "tags_section": "Теги",
+        "tags_section": "��еги",
         "ai_usage_section": "Использования ИИ",
         "history_section": "История",
         "no_tags": "Без тегов",
@@ -3161,7 +3161,7 @@
         "history_card": "История платежей",
         "col_date": "Дата",
         "col_amount": "Сумма",
-        "col_status": "Статус",
+        "col_status": "��татус",
         "col_invoice": "Счёт",
         "download_pdf": "Скачать PDF",
         "status_paid": "Оплачен",
@@ -3345,7 +3345,7 @@
         },
         "supply": {
           "title": "Поставки",
-          "description": "План поставок и факт прихода товара. Позволяет ИИ предсказывать риск OOS до того как полка опустеет.",
+          "description": "План поставок и факт прихода товара. Позволяет ИИ п��едсказывать риск OOS до того как полка опустеет.",
           "stat_suppliers": "Поставщиков",
           "stat_week": "Поставок за неделю",
           "stat_last": "Последняя поставка",
@@ -3400,7 +3400,7 @@
         "force_sync_cancel": "Отмена",
         "force_sync_running": "Синхронизация: {entity} ({done}/{total})…",
         "mapping_desc": "Сопоставление полей LAMA → WFM",
-        "mapping_sub_users": "Пользователи",
+        "mapping_sub_users": "Пользоват��ли",
         "mapping_sub_stores": "Магазины",
         "mapping_sub_positions": "Должности",
         "mapping_col_lama": "Поле LAMA",
@@ -3640,7 +3640,7 @@
         "webhook.create": "Webhook создан",
         "webhook.update": "Webhook обновлён",
         "webhook.delete": "Webhook удалён",
-        "regulation.create": "Регламент создан",
+        "regulation.create": "��егламент создан",
         "regulation.publish": "Регламент опубликован",
         "regulation.archive": "Регламент в архив",
         "freelance.application.approve": "Заявка внештата принята",
@@ -4139,7 +4139,7 @@
         "GROWING": "Растущие",
         "STABLE": "Стабильные",
         "DECLINING": "Падающие",
-        "leaders_subtitle": "Высокое выполнение и положительный тренд",
+        "leaders_subtitle": "Высокое выполнение и положит��льный тренд",
         "growing_subtitle": "Ниже медианы, но улучшаются",
         "stable_subtitle": "Около медианы, без существенных изменений",
         "declining_subtitle": "Ниже медианы и тренд ухудшается"
@@ -4291,7 +4291,7 @@
       "remove_dialog": {
         "title": "Снять активную цель?",
         "description": "Цель можно сменить в любой момент. История сохранится.",
-        "reason_label": "Комментарий (опционально)",
+        "reason_label": "Комментарий (опционал��но)",
         "reason_placeholder": "Например: цель достигнута раньше срока, либо появились более срочные задачи",
         "confirm": "Снять цель"
       },
@@ -4891,7 +4891,7 @@
       },
       "context_banner": {
         "general": "Общий чат с помощником",
-        "suggestion": "По предложению: «{title}»",
+        "suggestion": "По пред��ожению: «{title}»",
         "goal": "По цели: «{title}»",
         "task": "По задаче: {id} «{title}»",
         "chart": "По графику «{title}»",
@@ -5550,7 +5550,7 @@
     },
     "freelanceApplications": {
       "page_title": "Заявки на внештат",
-      "page_subtitle": "Список заявок, фильтр по статусу и источнику",
+      "page_subtitle": "Список заявок, фильтр п�� статусу и источнику",
       "breadcrumbs": {
         "home": "Главная",
         "freelance": "Внештат",
@@ -5825,7 +5825,7 @@
         "CANCELLED": "Отменена"
       },
       "toasts": {
-        "decision_saved": "Решение сохранено",
+        "decision_saved": "Решение сохра��ено",
         "bonus_pool_created": "Бонусный пул создан",
         "bonus_pool_link": "Перейти?",
         "assignment_created": "Исполнитель назначен",
@@ -6491,16 +6491,18 @@
         "export": "Экспорт"
       },
       "filters": {
-        "search": "Поиск",
-        "status": "Статус"
+        "search": "Поиск по имени или телефону",
+        "status": "Статус",
+        "status_placeholder": "Все статусы"
       },
       "columns": {
         "name": "ФИО",
         "phone": "Телефон",
-        "stores": "Магазины",
-        "month_amount": "Доход за месяц",
-        "no_show_rate": "% невыходов",
-        "status": "Статус"
+        "services_30d": "Услуг за 30д",
+        "earned_30d": "Заработано за 30д",
+        "status": "Статус",
+        "added": "Добавлен",
+        "open": "Открыть"
       },
       "status": {
         "ACTIVE": "Активен",
@@ -6509,12 +6511,61 @@
       },
       "empty": {
         "no_freelancers": "Исполнителей пока нет",
-        "cta": "Добавить первого"
+        "no_freelancers_description": "Их добавляет директор магазина или региональный менеджер.",
+        "no_results": "Ничего не найдено",
+        "no_results_description": "Попробуйте изменить условия поиска или фильтр."
       },
       "toasts": {
         "created": "Исполнитель добавлен",
         "error": "Не удалось"
-      }
+      },
+      "menu": {
+        "open": "Открыть"
+      },
+      "detail": {
+        "page_title": "Профиль исполнителя",
+        "back": "Мои исполнители",
+        "hero": {
+          "added": "Добавлен",
+          "phone": "Телефон"
+        },
+        "kpi": {
+          "services_30d": "Услуг за 30 дней",
+          "earned_30d": "Заработано вами за 30д",
+          "active_shifts_today": "Активных смен сегодня"
+        },
+        "tabs": {
+          "services": "Услуги",
+          "earnings": "Заработок"
+        },
+        "services": {
+          "col_date": "Дата",
+          "col_store": "Объект",
+          "col_work_type": "Тип работ",
+          "col_hours": "Часы",
+          "col_volume": "Объём",
+          "col_commission": "Агентское",
+          "col_status": "Статус",
+          "empty_title": "Услуг пока не было",
+          "empty_description": "У этого исполнителя ещё нет услуг."
+        },
+        "earnings": {
+          "col_date": "Дата",
+          "col_freelancer": "Исполнитель",
+          "col_service": "Услуга",
+          "col_commission": "Агентское",
+          "col_status": "Статус",
+          "empty_title": "Заработка пока нет",
+          "empty_description": "Заработок появится после выплат исполнителю."
+        },
+        "error_title": "Не удалось загрузить",
+        "error_description": "Не удалось загрузить данные исполнителя. Попробуйте снова.",
+        "retry": "Повторить",
+        "not_found": "Исполнитель не найден"
+      },
+      "error_title": "Не удалось загрузить",
+      "error_description": "Не удалось загрузить список исполнителей.",
+      "retry": "Повторить"
     },
     "agentEarnings": {
       "page_title": "Реестр доходов",
@@ -6695,7 +6746,7 @@
     "actions": {
       "pause": "На паузу",
       "block": "Заблокировать",
-      "edit": "Редактировать"
+      "edit": "Реда��тировать"
     },
     "block_dialog": {
       "title": "Заблокировать агента?",

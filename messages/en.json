@@ -6465,16 +6465,18 @@
         "export": "Export"
       },
       "filters": {
-        "search": "Search",
-        "status": "Status"
+        "search": "Search by name or phone",
+        "status": "Status",
+        "status_placeholder": "All statuses"
       },
       "columns": {
         "name": "Name",
         "phone": "Phone",
-        "stores": "Stores",
-        "month_amount": "Monthly earnings",
-        "no_show_rate": "No-show %",
-        "status": "Status"
+        "services_30d": "Services 30d",
+        "earned_30d": "Earned 30d",
+        "status": "Status",
+        "added": "Added",
+        "open": "Open"
       },
       "status": {
         "ACTIVE": "Active",
@@ -6483,12 +6485,61 @@
       },
       "empty": {
         "no_freelancers": "No performers yet",
-        "cta": "Add first"
+        "no_freelancers_description": "They are added by the store director or regional manager.",
+        "no_results": "No results",
+        "no_results_description": "Try adjusting your search or filter."
       },
       "toasts": {
         "created": "Performer added",
         "error": "Failed"
-      }
+      },
+      "menu": {
+        "open": "Open"
+      },
+      "detail": {
+        "page_title": "Performer profile",
+        "back": "My performers",
+        "hero": {
+          "added": "Added",
+          "phone": "Phone"
+        },
+        "kpi": {
+          "services_30d": "Services 30d",
+          "earned_30d": "Earned by you 30d",
+          "active_shifts_today": "Active shifts today"
+        },
+        "tabs": {
+          "services": "Services",
+          "earnings": "Earnings"
+        },
+        "services": {
+          "col_date": "Date",
+          "col_store": "Store",
+          "col_work_type": "Work type",
+          "col_hours": "Hours",
+          "col_volume": "Volume",
+          "col_commission": "Agent fee",
+          "col_status": "Status",
+          "empty_title": "No services yet",
+          "empty_description": "This performer has no services yet."
+        },
+        "earnings": {
+          "col_date": "Date",
+          "col_freelancer": "Performer",
+          "col_service": "Service",
+          "col_commission": "Agent fee",
+          "col_status": "Status",
+          "empty_title": "No earnings yet",
+          "empty_description": "Earnings appear when services are paid."
+        },
+        "error_title": "Failed to load",
+        "error_description": "Could not load performer data. Please try again.",
+        "retry": "Retry",
+        "not_found": "Performer not found"
+      },
+      "error_title": "Failed to load",
+      "error_description": "Could not load performers list.",
+      "retry": "Retry"
     },
     "agentEarnings": {
       "page_title": "Earnings registry",

@@ -234,6 +234,78 @@ export async function getMyFreelancerById(
   return { data: { ...stripRating(freelancer), services } };
 }
 
+/**
+ * Get full detail for a single freelancer in the agent's roster.
+ * Includes KPI (30-day stats, active shifts today) and full service + earning history.
+ * Rating field is intentionally omitted.
+ * @param userId Freelancer user ID
+ * @returns Freelancer profile + KPI + services[] + earnings[]
+ * @endpoint GET /agent/me/freelancers/:id/detail
+ * @roles AGENT
+ */
+export async function getMyFreelancerDetailById(userId: number): Promise<
+  ApiResponse<{
+    freelancer: Omit<User, "rating">;
+    services_count_30d: number;
+    earned_30d: number;
+    active_shifts_today: number;
+    services: Service[];
+    earnings: AgentEarning[];
+  }>
+> {
+  await delay(rand(300, 500));
+
+  if (isClientDirect()) {
+    throw new Error("Кабинет агента недоступен в режиме CLIENT_DIRECT.");
+  }
+
+  const freelancer = MOCK_FREELANCERS.find(
+    (f) => f.id === userId && f.agent_id === MOCK_AGENT_ID
+  );
+  if (!freelancer) throw new Error(`Freelancer ${userId} not found in agent's roster`);
+
+  const now = new Date("2026-05-01");
+  const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+  const today = now.toISOString().slice(0, 10);
+
+  const services = MOCK_FREELANCE_SERVICES.filter(
+    (s) => s.freelancer_id === userId
+  );
+
+  const recentPaid = services.filter(
+    (s) =>
+      s.status === "PAID" && new Date(s.service_date) >= thirtyDaysAgo
+  );
+
+  const earnings = MOCK_AGENT_EARNINGS.filter(
+    (e) => e.agent_id === MOCK_AGENT_ID && e.freelancer_id === userId
+  );
+
+  const earned_30d = earnings
+    .filter((e) => new Date(e.period_date) >= thirtyDaysAgo)
+    .reduce((sum, e) => sum + e.commission_amount, 0);
+
+  const active_shifts_today = MOCK_FREELANCE_ASSIGNMENTS.filter((a) => {
+    const aDate = a.scheduled_start.slice(0, 10);
+    return (
+      a.freelancer_id === userId &&
+      aDate === today &&
+      (a.status === "CHECKED_IN" || a.status === "WORKING" || a.status === "SCHEDULED")
+    );
+  }).length;
+
+  return {
+    data: {
+      freelancer: stripRating(freelancer),
+      services_count_30d: recentPaid.length,
+      earned_30d,
+      active_shifts_today,
+      services,
+      earnings,
+    },
+  };
+}
+
 // ═════════════��═════════════════════════════════════════════════════
 // EARNINGS
 // ═══════════════════════════════════════════════════════════════════
