@@ -157,7 +157,7 @@
     "integrations": "Integrations",
     "audit": "Audit",
     "notifications": "Notifications",
-    "ai_coach": "AI coach",
+    "ai_coach": "AI Coach",
     "risk_rules": "Risk rules",
     "leaderboards": "Leaderboards",
     "freelance_dashboard": "Freelance",
@@ -5051,6 +5051,135 @@
       "toasts": {
         "exported": "File exported",
         "issue_reported": "Message sent to development team",
+        "error": "Operation failed"
+      }
+    },
+    "aiCoach": {
+      "page_title": "AI Coach",
+      "page_subtitle": "Hints for work types: why, steps, common mistakes",
+      "beta_badge": "Beta",
+      "breadcrumbs": {
+        "home": "Home",
+        "future": "Future",
+        "ai_coach": "AI Coach"
+      },
+      "left_panel": {
+        "title": "Work types",
+        "search_placeholder": "Search work type",
+        "filter_all": "All",
+        "filter_with_hint": "With AI hint",
+        "filter_without": "Without AI hint",
+        "no_version": "—",
+        "add_for_missing": "Add hint for type without hints"
+      },
+      "editor": {
+        "version_meta": "Version v{version} · Active since {activatedAt} · Created by {createdBy}",
+        "tabs": {
+          "edit": "Edit",
+          "history": "History",
+          "ab_test": "A/B test",
+          "metrics": "Metrics"
+        }
+      },
+      "edit_tab": {
+        "why_card_title": "Why it matters",
+        "why_card_hint": "Used as the first block in the task card",
+        "why_placeholder": "Explain in 2-3 sentences why this task matters",
+        "steps_card_title": "3 steps",
+        "step_label": "Step {n}",
+        "errors_card_title": "Common mistakes",
+        "error_placeholder": "Describe a typical mistake",
+        "actions": {
+          "generate_via_ai": "Generate via AI",
+          "preview": "Preview",
+          "save_draft": "Save as version",
+          "activate": "Activate"
+        }
+      },
+      "history_tab": {
+        "active_badge": "active",
+        "applied_count": "Applications {count}",
+        "helpful_count": "Helpful {applied} ({rate}%)",
+        "rollback": "Rollback",
+        "compare": "Compare to active",
+        "rollback_dialog_title": "Rollback to v{version}?",
+        "rollback_dialog_description": "Current active version will be archived",
+        "rollback_confirm": "Rollback",
+        "empty": "Change history will appear after editing"
+      },
+      "ab_test_tab": {
+        "active_section_title": "Active test",
+        "running_badge": "Running",
+        "completed_badge": "Completed",
+        "running_label": "Test started {startDate} ({days} days)",
+        "version_a_title": "Version A (control)",
+        "version_b_title": "Version B (treatment)",
+        "stats": {
+          "impressions": "Impressions",
+          "applications": "Applications",
+          "helpful_rate": "Helpful"
+        },
+        "p_value_label": "p = {value}",
+        "significant_badge": "Statistically significant",
+        "not_enough_data": "Not enough data",
+        "actions": {
+          "apply_better": "Apply better as active",
+          "finish_test": "Finish test"
+        },
+        "create_section_title": "Create new A/B test",
+        "create_form": {
+          "control_label": "Base version (control)",
+          "treatment_label": "Version B (treatment)",
+          "traffic_b_label": "% traffic to B",
+          "duration_label": "Duration (days)",
+          "submit": "Start test"
+        }
+      },
+      "metrics_tab": {
+        "stats": {
+          "applications_30d": "Applications in 30 days",
+          "helpful": "Helpful",
+          "helpful_rate": "Helpful rate %",
+          "ai_feedback": "AI feedback score"
+        },
+        "history_chart_title": "Helpful rate dynamics, 90 days",
+        "info_alert": "Metrics update daily. Helpfulness is calculated from worker feedback."
+      },
+      "generate_dialog": {
+        "title": "Hint generation",
+        "context_label": "Context",
+        "style_label": "Style",
+        "style_concise": "Concise",
+        "style_detailed": "Detailed",
+        "style_friendly": "Friendly",
+        "variants_label": "Variants count",
+        "loading": "Generating…",
+        "submit": "Generate",
+        "use_variant": "Load into editor"
+      },
+      "preview_drawer": {
+        "title": "Preview in mobile app",
+        "section_why": "Why it matters",
+        "section_steps": "3 steps",
+        "section_errors": "Common mistakes"
+      },
+      "empty": {
+        "no_hint_title": "Hint not yet created for this type",
+        "no_hint_cta": "Create first version"
+      },
+      "states": {
+        "draft_dirty_indicator": "Unsaved changes",
+        "generating": "Generating…",
+        "forbidden_title": "Access restricted",
+        "forbidden_subtitle": "Only available to NETWORK_OPS"
+      },
+      "toasts": {
+        "saved_draft": "Version saved as draft",
+        "activated": "Version activated",
+        "rolled_back": "Rollback complete",
+        "generated": "Generated {count} variants",
+        "ab_test_started": "A/B test started",
+        "ab_test_finished": "Test finished",
         "error": "Operation failed"
       }
     }

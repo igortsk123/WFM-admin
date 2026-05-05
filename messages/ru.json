@@ -157,7 +157,7 @@
     "integrations": "Интеграции",
     "audit": "Аудит",
     "notifications": "Уведомления",
-    "ai_coach": "ИИ-коуч",
+    "ai_coach": "AI Coach",
     "risk_rules": "Правила рисков",
     "leaderboards": "Рейтинги",
     "freelance_dashboard": "Фриланс",
@@ -5052,6 +5052,135 @@
       "toasts": {
         "exported": "Файл экспортирован",
         "issue_reported": "Сообщение отправлено команде разработки",
+        "error": "Не удалось выполнить операцию"
+      }
+    },
+    "aiCoach": {
+      "page_title": "AI Coach",
+      "page_subtitle": "Подсказки для типов работ: зачем, шаги, ошибки",
+      "beta_badge": "Beta",
+      "breadcrumbs": {
+        "home": "Главная",
+        "future": "Будущее",
+        "ai_coach": "AI Coach"
+      },
+      "left_panel": {
+        "title": "Типы работ",
+        "search_placeholder": "Поиск типа работ",
+        "filter_all": "Все",
+        "filter_with_hint": "С AI hint",
+        "filter_without": "Без AI hint",
+        "no_version": "—",
+        "add_for_missing": "Добавить hint для типа без подсказок"
+      },
+      "editor": {
+        "version_meta": "Версия v{version} · Активна с {activatedAt} · Создал {createdBy}",
+        "tabs": {
+          "edit": "Редактирование",
+          "history": "История",
+          "ab_test": "A/B тест",
+          "metrics": "Метрики"
+        }
+      },
+      "edit_tab": {
+        "why_card_title": "Зачем важно",
+        "why_card_hint": "Используется в карточке задачи как первый блок",
+        "why_placeholder": "Объясните в 2-3 предложениях, зачем эта задача важна",
+        "steps_card_title": "3 шага",
+        "step_label": "Шаг {n}",
+        "errors_card_title": "Частые ошибки",
+        "error_placeholder": "Опишите типичную ошибку",
+        "actions": {
+          "generate_via_ai": "Сгенерировать через AI",
+          "preview": "Превью",
+          "save_draft": "Сохранить как версию",
+          "activate": "Активировать"
+        }
+      },
+      "history_tab": {
+        "active_badge": "active",
+        "applied_count": "Применений {count}",
+        "helpful_count": "Полезных {applied} ({rate}%)",
+        "rollback": "Откатить",
+        "compare": "Сравнить с активной",
+        "rollback_dialog_title": "Откатить к версии v{version}?",
+        "rollback_dialog_description": "Текущая активная версия будет переведена в архив",
+        "rollback_confirm": "Откатить",
+        "empty": "История изменений появится после редактирования"
+      },
+      "ab_test_tab": {
+        "active_section_title": "Активный тест",
+        "running_badge": "Идёт",
+        "completed_badge": "Завершён",
+        "running_label": "Тест запущен {startDate} ({days} дней)",
+        "version_a_title": "Версия A (control)",
+        "version_b_title": "Версия B (treatment)",
+        "stats": {
+          "impressions": "Просмотров",
+          "applications": "Применений",
+          "helpful_rate": "Полезных"
+        },
+        "p_value_label": "p = {value}",
+        "significant_badge": "Статистически значимо",
+        "not_enough_data": "Недостаточно данных",
+        "actions": {
+          "apply_better": "Применить лучшую как активную",
+          "finish_test": "Завершить тест"
+        },
+        "create_section_title": "Создать новый A/B тест",
+        "create_form": {
+          "control_label": "Базовая версия (control)",
+          "treatment_label": "Версия B (treatment)",
+          "traffic_b_label": "% трафика на B",
+          "duration_label": "Длительность (дней)",
+          "submit": "Запустить тест"
+        }
+      },
+      "metrics_tab": {
+        "stats": {
+          "applications_30d": "Применений за 30 дней",
+          "helpful": "Полезных",
+          "helpful_rate": "Helpful rate %",
+          "ai_feedback": "AI feedback score"
+        },
+        "history_chart_title": "Динамика helpful rate за 90 дней",
+        "info_alert": "Метрики обновляются раз в сутки. Полезность считается на основе feedback от работников."
+      },
+      "generate_dialog": {
+        "title": "Генерация подсказки",
+        "context_label": "Контекст",
+        "style_label": "Стиль",
+        "style_concise": "Краткий",
+        "style_detailed": "Подробный",
+        "style_friendly": "Дружелюбный",
+        "variants_label": "Кол-во вариантов",
+        "loading": "Генерирую…",
+        "submit": "Сгенерировать",
+        "use_variant": "Загрузить в редактор"
+      },
+      "preview_drawer": {
+        "title": "Превью в моб. приложении",
+        "section_why": "Зачем важно",
+        "section_steps": "3 шага",
+        "section_errors": "Частые ошибки"
+      },
+      "empty": {
+        "no_hint_title": "Hint для этого типа ещё не создан",
+        "no_hint_cta": "Создать первую версию"
+      },
+      "states": {
+        "draft_dirty_indicator": "Несохранённые изменения",
+        "generating": "Идёт генерация…",
+        "forbidden_title": "Доступ ограничен",
+        "forbidden_subtitle": "Доступно только NETWORK_OPS"
+      },
+      "toasts": {
+        "saved_draft": "Версия сохранена как черновик",
+        "activated": "Версия активирована",
+        "rolled_back": "Откат выполнен",
+        "generated": "Сгенерировано {count} вариантов",
+        "ab_test_started": "A/B тест запущен",
+        "ab_test_finished": "Тест завершён",
         "error": "Не удалось выполнить операцию"
       }
     }
