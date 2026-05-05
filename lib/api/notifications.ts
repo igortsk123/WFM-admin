@@ -27,6 +27,22 @@ export interface NotificationsListResponse {
   archived_count: number;
 }
 
+/** Filter params для notifications screen (chat 34). */
+export interface NotificationListParams extends ApiListParams {
+  search?: string;
+  is_read?: boolean;
+  /** Multi-фильтр по категориям. */
+  categories?: NotificationCategory[];
+  /** Single category (legacy). */
+  category?: NotificationCategory;
+  /** ISO date (created_at >= date_from). */
+  date_from?: string;
+  /** ISO date (created_at <= date_to). */
+  date_to?: string;
+  /** Включать ли архивные. По умолчанию false. */
+  include_archived?: boolean;
+}
+
 export interface NotificationPreferences {
   push_enabled: boolean;
   blocked_categories: NotificationCategory[];
@@ -41,28 +57,37 @@ export interface NotificationPreferences {
  * @endpoint GET /notifications/list
  */
 export async function getNotifications(
-  params: ApiListParams & {
-    is_read?: boolean;
-    category?: NotificationCategory;
-    date_from?: string;
-  } = {}
+  params: NotificationListParams = {}
 ): Promise<NotificationsListResponse> {
   await delay(300);
 
   const {
     is_read,
     category,
+    categories,
     date_from,
+    date_to,
+    include_archived = false,
     search,
     page = 1,
     page_size = 20,
   } = params;
 
-  let filtered = [...MOCK_NOTIFICATIONS].filter((n) => !n.is_archived);
+  let filtered = [...MOCK_NOTIFICATIONS];
+  if (!include_archived) filtered = filtered.filter((n) => !n.is_archived);
 
   if (is_read !== undefined) filtered = filtered.filter((n) => n.is_read === is_read);
-  if (category) filtered = filtered.filter((n) => n.category === category);
+
+  // Multi-категории (если указаны) — иначе single category для legacy.
+  const effectiveCategories = categories && categories.length > 0
+    ? categories
+    : (category ? [category] : null);
+  if (effectiveCategories) {
+    filtered = filtered.filter((n) => effectiveCategories.includes(n.category));
+  }
+
   if (date_from) filtered = filtered.filter((n) => n.created_at >= date_from);
+  if (date_to) filtered = filtered.filter((n) => n.created_at <= date_to);
 
   if (search) {
     const q = search.toLowerCase();

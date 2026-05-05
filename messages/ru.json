@@ -2750,6 +2750,73 @@
         "downloaded": "Документ скачан",
         "error": "Не удалось выполнить операцию"
       }
+    },
+    "notifications": {
+      "page_title": "Уведомления",
+      "breadcrumbs": {
+        "home": "Главная",
+        "notifications": "Уведомления"
+      },
+      "actions": {
+        "mark_all_read": "Отметить всё прочитанным",
+        "preferences": "Настройки",
+        "more": "Ещё"
+      },
+      "tabs": {
+        "all": "Все",
+        "unread": "Непрочитанные",
+        "archived": "Архив",
+        "unread_count": "{count} непрочитанных"
+      },
+      "filters": {
+        "search_placeholder": "Поиск по заголовку / тексту",
+        "category": "Категория",
+        "category_all": "Все категории",
+        "date_range": "Период",
+        "date_from": "С",
+        "date_to": "По",
+        "clear_all": "Очистить все",
+        "open_filters": "Фильтры"
+      },
+      "category": {
+        "TASK": "Задачи",
+        "GOAL": "Цели",
+        "BONUS": "Бонусы",
+        "FREELANCE": "Внештат",
+        "SYSTEM": "Система",
+        "AI": "ИИ"
+      },
+      "row": {
+        "mark_read": "Отметить прочитанной",
+        "archive": "Архивировать",
+        "open_link": "Открыть",
+        "time_ago": "{ts}"
+      },
+      "empty": {
+        "no_notifications_title": "Уведомлений пока нет",
+        "no_notifications_subtitle": "Здесь появятся уведомления о задачах, целях, выплатах",
+        "no_unread_title": "Все уведомления прочитаны",
+        "no_unread_subtitle": "Хорошая работа",
+        "no_archived_title": "В архиве пусто",
+        "filtered_title": "Никого не найдено",
+        "filtered_reset": "Сбросить фильтры"
+      },
+      "preferences_sheet": {
+        "title": "Настройки уведомлений",
+        "push_enabled_label": "Push-уведомления",
+        "push_enabled_hint": "Получать уведомления в мобильном приложении и браузере",
+        "categories_section": "Категории",
+        "categories_section_hint": "Выберите какие категории уведомлений хотите получать",
+        "save": "Сохранить",
+        "cancel": "Отмена"
+      },
+      "toasts": {
+        "marked_read": "Отмечено прочитанной",
+        "archived": "Перемещено в архив",
+        "all_marked_read": "Все уведомления отмечены прочитанными",
+        "preferences_saved": "Настройки сохранены",
+        "error": "Не удалось выполнить операцию"
+      }
     }
   }
 }

@@ -212,6 +212,7 @@ export {
 export {
   type NotificationsListResponse,
   type NotificationPreferences,
+  type NotificationListParams,
   getNotifications,
   markRead,
   markAllRead,

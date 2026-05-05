@@ -2750,6 +2750,73 @@
         "downloaded": "Document downloaded",
         "error": "Operation failed"
       }
+    },
+    "notifications": {
+      "page_title": "Notifications",
+      "breadcrumbs": {
+        "home": "Home",
+        "notifications": "Notifications"
+      },
+      "actions": {
+        "mark_all_read": "Mark all as read",
+        "preferences": "Preferences",
+        "more": "More"
+      },
+      "tabs": {
+        "all": "All",
+        "unread": "Unread",
+        "archived": "Archive",
+        "unread_count": "{count} unread"
+      },
+      "filters": {
+        "search_placeholder": "Search by title / body",
+        "category": "Category",
+        "category_all": "All categories",
+        "date_range": "Date range",
+        "date_from": "From",
+        "date_to": "To",
+        "clear_all": "Clear all",
+        "open_filters": "Filters"
+      },
+      "category": {
+        "TASK": "Tasks",
+        "GOAL": "Goals",
+        "BONUS": "Bonus",
+        "FREELANCE": "Freelance",
+        "SYSTEM": "System",
+        "AI": "AI"
+      },
+      "row": {
+        "mark_read": "Mark as read",
+        "archive": "Archive",
+        "open_link": "Open",
+        "time_ago": "{ts}"
+      },
+      "empty": {
+        "no_notifications_title": "No notifications yet",
+        "no_notifications_subtitle": "Notifications about tasks, goals, payouts will appear here",
+        "no_unread_title": "All caught up",
+        "no_unread_subtitle": "Nice work",
+        "no_archived_title": "Archive is empty",
+        "filtered_title": "Nothing found",
+        "filtered_reset": "Reset filters"
+      },
+      "preferences_sheet": {
+        "title": "Notification preferences",
+        "push_enabled_label": "Push notifications",
+        "push_enabled_hint": "Receive notifications in the mobile app and browser",
+        "categories_section": "Categories",
+        "categories_section_hint": "Pick which categories you want to receive",
+        "save": "Save",
+        "cancel": "Cancel"
+      },
+      "toasts": {
+        "marked_read": "Marked as read",
+        "archived": "Moved to archive",
+        "all_marked_read": "All notifications marked as read",
+        "preferences_saved": "Preferences saved",
+        "error": "Operation failed"
+      }
     }
   }
 }
