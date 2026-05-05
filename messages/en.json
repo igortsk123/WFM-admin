@@ -3148,6 +3148,19 @@
           "description": "Programmatic data access",
           "stat_total": "Keys",
           "manage": "Manage in Organization settings"
+        },
+        "nominal_account": {
+          "title": "Nominal account",
+          "description": "Payment service for freelance contractors. Holds 5% commission, generates closing documents.",
+          "stat_paid_30d": "Paid past 30 days",
+          "stat_errors": "Errors",
+          "stat_docs": "Documents generated",
+          "connect": "Connect",
+          "configure": "Configure",
+          "fix": "Fix",
+          "status_not_connected": "Not connected",
+          "status_connected": "Connected",
+          "status_error": "Error"
         }
       },
       "status": {
@@ -3199,6 +3212,16 @@
         "webhook_deleted": "Webhook deleted",
         "test_sent": "Test request sent",
         "error": "Operation failed"
+      },
+      "nominal_sheet": {
+        "title": "Nominal account setup",
+        "endpoint_label": "Endpoint URL",
+        "api_key_label": "API key",
+        "client_id_label": "Client ID",
+        "last_transaction_label": "Last transaction",
+        "save": "Save",
+        "test": "Test connection",
+        "disconnect": "Disconnect"
       }
     }
   }
