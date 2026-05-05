@@ -2556,6 +2556,95 @@
         "in_use_warning": "Используется — удаление заблокировано",
         "error": "Не удалось выполнить операцию"
       }
+    },
+    "hints": {
+      "page_title": "Подсказки",
+      "page_subtitle": "Подсказки для пар (Тип работы, Зона). Выводятся работнику в мобильном приложении.",
+      "breadcrumbs": {
+        "home": "Главная",
+        "taxonomy": "Таксономия",
+        "hints": "Подсказки"
+      },
+      "actions": {
+        "create": "Добавить подсказку",
+        "import": "Импорт",
+        "export": "Экспорт",
+        "more": "Ещё"
+      },
+      "stats": {
+        "total_hints": "Всего подсказок",
+        "covered_pairs": "Покрытых пар",
+        "empty_pairs": "Без подсказок",
+        "coverage_format": "{covered} / {total}",
+        "view_empty_list": "Список непокрытых"
+      },
+      "view": {
+        "label": "Вид",
+        "pair": "Пары",
+        "table": "Таблица"
+      },
+      "pair_view": {
+        "work_types_card": "Типы работ",
+        "zones_card": "Зоны",
+        "search_placeholder": "Поиск",
+        "select_pair_title": "Выберите тип работы и зону",
+        "select_pair_subtitle": "Слева — типы работ, справа — зоны для выбранного",
+        "no_pair_selected": "Не выбрана пара",
+        "header": "Подсказки для «{work_type} / {zone}»",
+        "header_count": "{count, plural, one {# подсказка} few {# подсказки} many {# подсказок} other {# подсказок}}",
+        "empty_pair_title": "Подсказок пока нет",
+        "empty_pair_cta": "Добавить подсказку",
+        "add_btn": "Добавить подсказку"
+      },
+      "table_view": {
+        "col_text": "Текст",
+        "col_work_type": "Тип работы",
+        "col_zone": "Зона",
+        "col_created_at": "Создана",
+        "col_updated_at": "Обновлена",
+        "col_actions": "Действия"
+      },
+      "filters": {
+        "search_placeholder": "Поиск по тексту",
+        "work_type": "Тип работы",
+        "zone": "Зона",
+        "empty_pairs_only": "Только непокрытые пары",
+        "clear_all": "Очистить все"
+      },
+      "row_actions": {
+        "edit": "Редактировать",
+        "duplicate": "Дублировать",
+        "delete": "Удалить"
+      },
+      "dialogs": {
+        "create_title": "Новая подсказка",
+        "edit_title": "Редактирование подсказки",
+        "fields": {
+          "text": "Текст подсказки",
+          "text_placeholder": "Например: «Проверьте срок годности перед выкладкой»",
+          "work_type_id": "Тип работы",
+          "zone_id": "Зона"
+        },
+        "save": "Сохранить",
+        "cancel": "Отмена",
+        "delete_confirm_title": "Удалить подсказку?",
+        "delete_confirm_warning": "Подсказка перестанет показываться работнику.",
+        "delete_action": "Удалить"
+      },
+      "empty": {
+        "no_hints_title": "Подсказок пока нет",
+        "no_hints_subtitle": "Добавьте первую подсказку",
+        "no_hints_cta": "Создать подсказку",
+        "filtered_title": "Никого не найдено",
+        "filtered_reset": "Сбросить фильтры"
+      },
+      "toasts": {
+        "created": "Подсказка создана",
+        "updated": "Подсказка обновлена",
+        "deleted": "Подсказка удалена",
+        "reordered": "Порядок сохранён",
+        "error": "Не удалось выполнить операцию"
+      }
     }
   }
 }

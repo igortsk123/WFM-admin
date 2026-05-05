@@ -2556,6 +2556,95 @@
         "in_use_warning": "In use — deletion blocked",
         "error": "Operation failed"
       }
+    },
+    "hints": {
+      "page_title": "Hints",
+      "page_subtitle": "Hints for (work type, zone) pairs. Shown to workers in the mobile app.",
+      "breadcrumbs": {
+        "home": "Home",
+        "taxonomy": "Taxonomy",
+        "hints": "Hints"
+      },
+      "actions": {
+        "create": "Add hint",
+        "import": "Import",
+        "export": "Export",
+        "more": "More"
+      },
+      "stats": {
+        "total_hints": "Total hints",
+        "covered_pairs": "Covered pairs",
+        "empty_pairs": "Empty pairs",
+        "coverage_format": "{covered} / {total}",
+        "view_empty_list": "View empty"
+      },
+      "view": {
+        "label": "View",
+        "pair": "Pairs",
+        "table": "Table"
+      },
+      "pair_view": {
+        "work_types_card": "Work types",
+        "zones_card": "Zones",
+        "search_placeholder": "Search",
+        "select_pair_title": "Select a work type and zone",
+        "select_pair_subtitle": "Pick from the lists on the left and right",
+        "no_pair_selected": "No pair selected",
+        "header": "Hints for '{work_type} / {zone}'",
+        "header_count": "{count, plural, one {# hint} other {# hints}}",
+        "empty_pair_title": "No hints yet",
+        "empty_pair_cta": "Add hint",
+        "add_btn": "Add hint"
+      },
+      "table_view": {
+        "col_text": "Text",
+        "col_work_type": "Work type",
+        "col_zone": "Zone",
+        "col_created_at": "Created",
+        "col_updated_at": "Updated",
+        "col_actions": "Actions"
+      },
+      "filters": {
+        "search_placeholder": "Search by text",
+        "work_type": "Work type",
+        "zone": "Zone",
+        "empty_pairs_only": "Empty pairs only",
+        "clear_all": "Clear all"
+      },
+      "row_actions": {
+        "edit": "Edit",
+        "duplicate": "Duplicate",
+        "delete": "Delete"
+      },
+      "dialogs": {
+        "create_title": "New hint",
+        "edit_title": "Edit hint",
+        "fields": {
+          "text": "Hint text",
+          "text_placeholder": "E.g. 'Check expiration dates before shelving'",
+          "work_type_id": "Work type",
+          "zone_id": "Zone"
+        },
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete_confirm_title": "Delete hint?",
+        "delete_confirm_warning": "The hint will no longer be shown to the worker.",
+        "delete_action": "Delete"
+      },
+      "empty": {
+        "no_hints_title": "No hints yet",
+        "no_hints_subtitle": "Add the first hint",
+        "no_hints_cta": "Create hint",
+        "filtered_title": "Nothing found",
+        "filtered_reset": "Reset filters"
+      },
+      "toasts": {
+        "created": "Hint created",
+        "updated": "Hint updated",
+        "deleted": "Hint deleted",
+        "reordered": "Order saved",
+        "error": "Operation failed"
+      }
     }
   }
 }

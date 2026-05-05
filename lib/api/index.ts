@@ -118,10 +118,16 @@ export {
 // ═══════════════════════════════════════════════════════════════════
 
 export {
+  type HintWithLabels,
+  type HintsListParams,
+  type HintsCoverage,
   getHints,
   createHint,
   updateHint,
   deleteHint,
+  getAllHints,
+  getHintsCoverage,
+  reorderHints,
 } from "./hints";
 
 // ═══════════════════════════════════════════════════════════════════
