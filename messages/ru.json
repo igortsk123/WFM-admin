@@ -4669,6 +4669,143 @@
         "exported": "Файл экспортирован",
         "error": "Не удалось выполнить операцию"
       }
+    },
+    "aiSuggestions": {
+      "page_title": "Предложения от ИИ",
+      "page_subtitle": "Аналитика → конкретные действия. Принимайте, редактируйте или уточняйте у ИИ",
+      "breadcrumbs": {
+        "home": "Главная",
+        "ai_suggestions": "Предложения ИИ"
+      },
+      "actions": {
+        "history": "История",
+        "ai_settings": "Настройки ИИ",
+        "accept": "Принять",
+        "edit": "Редактировать",
+        "reject": "Отклонить",
+        "ask_ai": "Спросить у ИИ",
+        "accept_with_changes": "Принять с правками и создать",
+        "accept_and_create": "Принять и создать",
+        "ask_ai_more": "Спросить у ИИ подробнее",
+        "reset_to_proposal": "Сбросить к предложению ИИ",
+        "bulk_accept_all": "Принять всё как есть",
+        "bulk_reject_all": "Отклонить всё",
+        "bulk_clear_selection": "Снять выбор"
+      },
+      "stats": {
+        "new_today": "Новых сегодня",
+        "in_progress": "В работе",
+        "accepted_week": "Принято за неделю",
+        "rejected_week": "Отклонено за неделю",
+        "rejected_review_link": "посмотреть причины"
+      },
+      "tabs": {
+        "all": "Все",
+        "pending": "Новые",
+        "in_progress": "В работе",
+        "accepted": "Принятые",
+        "rejected": "Отклонённые"
+      },
+      "filters": {
+        "type_label": "Тип",
+        "scope_label": "Объект",
+        "priority_label": "Приоритет ИИ",
+        "period_label": "Период",
+        "clear": "Очистить"
+      },
+      "type": {
+        "TASK_SUGGESTION": "Задача",
+        "GOAL_SUGGESTION": "Цель",
+        "BONUS_TASK_SUGGESTION": "Бонусная задача",
+        "INSIGHT": "Наблюдение"
+      },
+      "priority": {
+        "high": "Высокий",
+        "medium": "Средний",
+        "low": "Низкий"
+      },
+      "card": {
+        "rationale_title": "Почему ИИ это предложил",
+        "data_sources_label": "Источники данных",
+        "edited_chip": "Изменено",
+        "select_for_bulk": "Выбрать для массового действия",
+        "selected_count": "Выбрано {count} предложений",
+        "bulk_hint": "Массовое одобрение = принять без редактирования. Если нужны правки — открывайте по одному."
+      },
+      "detail_panel": {
+        "empty_title": "Выберите предложение слева",
+        "empty_subtitle": "Откроется подробная информация и возможность редактирования",
+        "what_proposed_section": "Что предлагается",
+        "rationale_section": "Почему ИИ это предложил",
+        "related_data_section": "Связанные данные",
+        "actions_section": "Действия",
+        "edit_hint": "Можно скорректировать любое поле перед принятием. Каждая правка сохраняется — система учится на ваших решениях.",
+        "discount_locked_hint": "Размер скидки задаётся ИИ на основе истории срабатываний. Чтобы изменить — отклоните и спросите ИИ.",
+        "ai_remembered_hint": "В прошлый раз для похожих задач вы меняли {field} с {before} на {after}. Запомнить и предлагать сразу?",
+        "remember_yes": "Да, запомнить",
+        "remember_no": "Нет, не учитывать"
+      },
+      "task_form_fields": {
+        "title": "Название задачи",
+        "description": "Описание",
+        "type": "Тип задачи",
+        "store": "Магазин",
+        "zone": "Зона",
+        "work_type": "Тип работы",
+        "planned_minutes": "Длительность плана, мин",
+        "scheduled_start": "Запланированное начало",
+        "deadline": "Дедлайн",
+        "assignee": "Исполнитель",
+        "by_permission": "По привилегии",
+        "requires_photo": "Требовать фото",
+        "manager_comment": "Комментарий менеджера",
+        "marketing_channel": "Маркетинг-канал",
+        "discount_pct": "Размер скидки %"
+      },
+      "edit_reason_chips": {
+        "promo_parallel": "У нас параллельно акция",
+        "size_problematic": "Этот размер обычно проблемный",
+        "free_employee_better": "Свободный сотрудник лучше подойдёт",
+        "other": "Другая причина"
+      },
+      "reject_dialog": {
+        "title": "Отклонить предложение?",
+        "reason_label": "Причина (обязательно)",
+        "reason_placeholder": "Опишите подробнее...",
+        "reason_options": {
+          "not_relevant": "Не релевантно сейчас",
+          "already_in_progress": "Уже в работе",
+          "disagree": "Не согласен с анализом",
+          "too_general": "Слишком общее",
+          "other": "Другое"
+        },
+        "confirm": "Отклонить"
+      },
+      "bulk_reject_dialog": {
+        "title": "Отклонить {count} предложений?",
+        "reason_label": "Общая причина для всех (обязательно)",
+        "confirm": "Отклонить все"
+      },
+      "empty": {
+        "no_pending_title": "Пока нет новых предложений",
+        "no_pending_subtitle": "ИИ анализирует данные. Новые предложения появятся в течение часа",
+        "no_filtered_title": "Ничего не найдено",
+        "no_filtered_subtitle": "Сбросьте фильтры или выберите другой период"
+      },
+      "forbidden": {
+        "title": "Доступ ограничен",
+        "subtitle": "Доступ только для супервайзеров и руководителей"
+      },
+      "read_only_banner": "Вы в режиме просмотра. Решения по предложениям ИИ принимают супервайзер или директор сети.",
+      "read_only_tooltip": "Решение принимает супервайзер или директор сети",
+      "toasts": {
+        "accepted": "Создано: {entity}",
+        "rejected": "Предложение отклонено",
+        "bulk_accepted": "Принято {count} предложений",
+        "bulk_rejected": "Отклонено {count} предложений",
+        "remembered": "ИИ запомнит для похожих случаев",
+        "error": "Не удалось выполнить операцию"
+      }
     }
   }
 }
