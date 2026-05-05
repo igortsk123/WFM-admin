@@ -19,6 +19,7 @@ import { MOCK_POSITIONS } from "@/lib/mock-data/positions";
 import { MOCK_PRODUCT_CATEGORIES } from "@/lib/mock-data/product-categories";
 import { MOCK_TASKS } from "@/lib/mock-data/tasks";
 import { MOCK_STORES } from "@/lib/mock-data/stores";
+import { MOCK_ASSIGNMENTS } from "@/lib/mock-data/assignments";
 
 const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
 
@@ -67,6 +68,15 @@ export interface ZoneListParams extends ApiListParams {
 export interface PositionWithCounts extends Position {
   employees_count: number;
   stores_count: number;
+  /** Лейбл роли (для табличной колонки): WORKER / MANAGER (по role_id 1/2). */
+  role_label?: "WORKER" | "MANAGER";
+}
+
+/** Filter params для positions list (chat 32). */
+export interface PositionListParams extends ApiListParams {
+  search?: string;
+  /** Фильтр по role_id: 1 = WORKER, 2 = MANAGER. */
+  role_id?: 1 | 2;
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -284,29 +294,48 @@ export async function deleteZone(id: number): Promise<ApiMutationResponse> {
  * @endpoint GET /taxonomy/positions
  */
 export async function getPositions(
-  params: ApiListParams = {}
+  params: PositionListParams = {}
 ): Promise<ApiListResponse<PositionWithCounts>> {
   await delay(250);
 
-  const { search, page = 1, page_size = 50 } = params;
+  const { search, role_id, page = 1, page_size = 50 } = params;
 
   let filtered = [...MOCK_POSITIONS];
 
   if (search) {
     const q = search.toLowerCase();
     filtered = filtered.filter(
-      (p) => p.name.toLowerCase().includes(q) || p.code.toLowerCase().includes(q)
+      (p) =>
+        p.name.toLowerCase().includes(q) ||
+        p.code.toLowerCase().includes(q) ||
+        (p.description?.toLowerCase().includes(q) ?? false),
     );
+  }
+
+  if (role_id) {
+    filtered = filtered.filter((p) => p.role_id === role_id);
   }
 
   const total = filtered.length;
   const paginated = filtered.slice((page - 1) * page_size, page * page_size);
 
-  const data: PositionWithCounts[] = paginated.map((pos, idx) => ({
-    ...pos,
-    employees_count: 3 + idx * 2,
-    stores_count: MOCK_STORES.filter((s) => !s.archived).length,
-  }));
+  // Реальное employees_count из MOCK_ASSIGNMENTS (active assignments на эту position).
+  const data: PositionWithCounts[] = paginated.map((pos) => {
+    const employees_count = MOCK_ASSIGNMENTS.filter(
+      (a) => a.active && a.position_id === pos.id,
+    ).length;
+    const stores_count = new Set(
+      MOCK_ASSIGNMENTS.filter((a) => a.active && a.position_id === pos.id).map(
+        (a) => a.store_id,
+      ),
+    ).size;
+    return {
+      ...pos,
+      employees_count,
+      stores_count,
+      role_label: pos.role_id === 2 ? "MANAGER" : "WORKER",
+    };
+  });
 
   return { data, total, page, page_size };
 }

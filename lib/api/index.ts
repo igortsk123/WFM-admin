@@ -183,6 +183,7 @@ export {
   type ZoneWithCounts,
   type ZoneListParams,
   type PositionWithCounts,
+  type PositionListParams,
   getWorkTypes,
   createWorkType,
   updateWorkType,
