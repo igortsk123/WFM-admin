@@ -4295,6 +4295,70 @@
         "created": "Goal created",
         "error": "Operation failed"
       }
+    },
+    "hintsManager": {
+      "page_title": "Upload hints",
+      "page_subtitle": "Upload an Excel template with hints — they will appear for workers in tasks",
+      "breadcrumbs": {
+        "home": "Home",
+        "taxonomy": "Taxonomy",
+        "hints": "Hints",
+        "manager": "Upload"
+      },
+      "template_card": {
+        "title": "Download template",
+        "description": "Excel template with columns: Work type, Zone, Hint text, Priority (1-3)",
+        "download_button": "Download template.xlsx",
+        "hint": "The template contains example hints for basic work types"
+      },
+      "upload_card": {
+        "title": "Upload file",
+        "dropzone_label": "Drop a .xlsx file or click to select",
+        "allowed_hint": "Only .xlsx, up to 5 MB",
+        "select_file": "Select file"
+      },
+      "preview": {
+        "stats": {
+          "recognized": "Recognized: {count} rows",
+          "warnings": "With warnings: {count}",
+          "errors": "Errors: {count}"
+        },
+        "columns": {
+          "work_type": "Work type",
+          "zone": "Zone",
+          "text": "Text",
+          "priority": "Priority",
+          "status": "Status"
+        },
+        "row_status": {
+          "NEW": "New",
+          "DUPLICATE": "Duplicate",
+          "UPDATE": "Update",
+          "ERROR": "Error"
+        },
+        "actions": {
+          "download_errors": "Download errors CSV",
+          "apply": "Apply"
+        }
+      },
+      "current_catalog": {
+        "title": "Current catalogue",
+        "stats_total": "Total hints: {count}",
+        "stats_by_work_type": "Work types: {count}",
+        "open_link": "Open catalogue"
+      },
+      "empty": {
+        "no_file_title": "No file selected",
+        "no_file_subtitle": "Upload a .xlsx — preview and apply button will appear"
+      },
+      "toasts": {
+        "uploaded": "File parsed",
+        "applied": "Hints saved",
+        "template_downloaded": "Template downloaded",
+        "errors_csv_downloaded": "Error CSV downloaded",
+        "error": "Failed to process file",
+        "too_large": "File exceeds 5 MB"
+      }
     }
   }
 }
