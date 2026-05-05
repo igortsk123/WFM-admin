@@ -3296,6 +3296,97 @@
         "exported": "Журнал экспортирован",
         "id_copied": "ID скопирован",
         "error": "Не удалось выполнить операцию"
+      },
+      "actions_labels": {
+        "task.create": "Создание задачи",
+        "task.update": "Обновление задачи",
+        "task.start": "Задача начата",
+        "task.pause": "Задача приостановлена",
+        "task.resume": "Задача возобновлена",
+        "task.complete": "Задача завершена",
+        "task.approve": "Задача принята",
+        "task.reject": "Задача отклонена",
+        "task.delete": "Задача удалена",
+        "user.create": "Сотрудник создан",
+        "user.update": "Профиль сотрудника обновлён",
+        "user.activate": "Сотрудник активирован",
+        "user.deactivate": "Сотрудник деактивирован",
+        "permission.grant": "Допуск выдан",
+        "permission.revoke": "Допуск отозван",
+        "shift.open": "Смена открыта",
+        "shift.close": "Смена закрыта",
+        "shift.force_close": "Смена принудительно закрыта",
+        "settings.update": "Настройки обновлены",
+        "api_key.create": "API-ключ создан",
+        "api_key.revoke": "API-ключ отозван",
+        "webhook.create": "Webhook создан",
+        "webhook.update": "Webhook обновлён",
+        "webhook.delete": "Webhook удалён",
+        "regulation.create": "Регламент создан",
+        "regulation.publish": "Регламент опубликован",
+        "regulation.archive": "Регламент в архив",
+        "freelance.application.approve": "Заявка внештата принята",
+        "freelance.application.reject": "Заявка внештата отклонена",
+        "freelance.payout.create": "Выплата внештата создана",
+        "freelance.payout.complete": "Выплата внештата выполнена",
+        "login": "Вход в систему",
+        "logout": "Выход",
+        "login.failed": "Неудачная попытка входа"
+      },
+      "diff_fields": {
+        "title": "Заголовок",
+        "description": "Описание",
+        "comment": "Комментарий",
+        "review_state": "Статус проверки",
+        "review_comment": "Причина отклонения",
+        "state": "Статус",
+        "state_from": "Из статуса",
+        "state_to": "В статус",
+        "assignee_id": "Исполнитель",
+        "creator_id": "Создатель",
+        "planned_minutes": "Плановое время, мин",
+        "phone": "Телефон",
+        "email": "E-mail",
+        "first_name": "Имя",
+        "last_name": "Фамилия",
+        "middle_name": "Отчество",
+        "position_id": "Должность",
+        "preferred_locale": "Язык интерфейса",
+        "default_duration_min": "Длительность по умолчанию, мин",
+        "dairy_writeoff_norm_pct": "Норма списаний (молочка), %",
+        "oos_norm_pct": "Норма OOS, %",
+        "writeoff_norm_pct": "Норма списаний, %"
+      },
+      "login_method": {
+        "phone_otp.telegram": "Phone OTP · Telegram",
+        "phone_otp.max": "Phone OTP · MAX",
+        "phone_otp.sms_fallback": "Phone OTP · SMS",
+        "phone_otp.call": "Phone OTP · Звонок",
+        "totp.authenticator": "TOTP · Authenticator",
+        "email_magic_link": "Email magic link",
+        "sso": "SSO"
+      },
+      "device_type": {
+        "desktop": "Десктоп",
+        "mobile": "Мобильный",
+        "tablet": "Планшет"
+      },
+      "platform_action": {
+        "badge": "Cross-tenant",
+        "tooltip": "Действие администратора платформы, повлиявшее на несколько тенантов"
+      },
+      "diff": {
+        "before": "Было",
+        "after": "Стало",
+        "added": "Добавлено",
+        "removed": "Удалено",
+        "no_changes": "Нет изменений",
+        "view_json": "Показать JSON"
+      },
+      "export": {
+        "csv_starting": "Готовим CSV…",
+        "csv_done": "CSV готов",
+        "max_rows_warning": "Слишком много записей — уточните фильтры (макс. 10 000 строк за раз)"
       }
     }
   }
