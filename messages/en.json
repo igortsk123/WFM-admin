@@ -6602,26 +6602,33 @@
     },
     "agentDocuments": {
       "page_title": "Documents",
-      "page_subtitle": "Contracts, acts, reports",
+      "page_subtitle": "Contracts, acts, invoices",
       "actions": {
         "upload": "Upload",
         "download": "Download"
       },
       "filters": {
         "type": "Type",
-        "year": "Year"
+        "type_all": "All types",
+        "year": "Year",
+        "date_range": "Period",
+        "date_from": "From",
+        "date_to": "To",
+        "apply": "Apply"
       },
       "columns": {
         "title": "Title",
         "type": "Type",
-        "date": "Date",
+        "period": "Period",
+        "date": "Created",
         "size": "Size",
         "status": "Status"
       },
       "type": {
         "CONTRACT": "Contract",
-        "ACT": "Act",
+        "CLOSING_ACT": "Act",
         "INVOICE": "Invoice",
+        "ACT": "Act",
         "REPORT": "Report",
         "OTHER": "Other"
       },
@@ -6631,11 +6638,27 @@
         "DRAFT": "Draft"
       },
       "empty": {
-        "no_documents": "No documents yet"
+        "no_documents": "No documents yet",
+        "no_documents_description": "They appear automatically after payouts to your account.",
+        "no_results": "No results found",
+        "no_results_description": "Try adjusting your filters."
       },
       "toasts": {
         "uploaded": "Document uploaded",
-        "error": "Failed"
+        "error": "Failed",
+        "download_link": "Link is valid for 5 minutes"
+      },
+      "detail_sheet": {
+        "title": "Document",
+        "meta_type": "Type",
+        "meta_period": "Period",
+        "meta_created_at": "Created",
+        "download": "Download"
+      },
+      "error": {
+        "title": "Failed to load",
+        "description": "An error occurred while loading documents.",
+        "retry": "Retry"
       }
     },
     "serviceNorms": {
