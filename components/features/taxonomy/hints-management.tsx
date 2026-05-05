@@ -726,7 +726,7 @@ function TableView({ onEdit, onDelete }: TableViewProps) {
   React.useEffect(() => {
     const timer = setTimeout(() => load(searchText), 300);
     return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [searchText]);
 
   if (isError) {

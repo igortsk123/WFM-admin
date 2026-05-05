@@ -995,7 +995,7 @@ export function AuditLog() {
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [entries, selectedId]);
 
   function handleSelect(id: string) {
