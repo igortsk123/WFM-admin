@@ -409,14 +409,6 @@ function PreviewPane({
         </div>
       )}
 
-      {/* Report text */}
-      {task.report_text && (
-        <div className="bg-muted/30 border-l-2 border-primary p-4 rounded-r-lg">
-          <p className="text-xs font-medium text-muted-foreground mb-1">{t("report_label")}</p>
-          <p className="text-sm leading-relaxed">{task.report_text}</p>
-        </div>
-      )}
-
       {/* Timing */}
       {task.planned_minutes && (
         <div className="bg-card border rounded-lg p-4">
@@ -648,7 +640,7 @@ export function ReviewQueue() {
   const [zoneFilter, setZoneFilter] = React.useState("")
   const [workTypeFilter, setWorkTypeFilter] = React.useState("")
   const [assigneeFilter, setAssigneeFilter] = React.useState("")
-  const [sortBy, setSortBy] = React.useState<SortOption>("oldest")
+  const [sortBy, setSortBy] = React.useState<SortOption>("newest")
 
   // ── Data ───────────────────────────────────────────────────────────────────
   const [tasks, setTasks] = React.useState<TaskWithAvatar[]>([])

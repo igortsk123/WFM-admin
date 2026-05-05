@@ -11,13 +11,24 @@ interface RejectDialogContentProps {
   onReject: (reason: string) => Promise<void>
   onClose: () => void
   isPending?: boolean
+  /** Имя первой невыполненной подзадачи — используется для автозаполнения. */
+  incompleteSubtaskName?: string
 }
 
-export function RejectDialogContent({ onReject, onClose, isPending }: RejectDialogContentProps) {
+export function RejectDialogContent({ onReject, onClose, isPending, incompleteSubtaskName }: RejectDialogContentProps) {
   const t = useTranslations("screen.taskDetail")
   const tCommon = useTranslations("common")
-  const [reason, setReason] = useState("")
+  const initialReason = incompleteSubtaskName
+    ? `НЕСДЕЛАНО: ${incompleteSubtaskName}`
+    : ""
+  const [reason, setReason] = useState(initialReason)
   const isValid = reason.trim().length >= 10
+
+  const QUICK_REASONS = [
+    t("reject_quick_wrong_photo"),
+    t("reject_quick_not_done"),
+    t("reject_quick_overdue"),
+  ]
 
   async function handleSubmit() {
     if (!isValid) return
@@ -33,6 +44,20 @@ export function RejectDialogContent({ onReject, onClose, isPending }: RejectDial
       </DialogHeader>
 
       <div className="flex flex-col gap-3 py-2">
+        <div className="flex flex-wrap gap-1.5">
+          {QUICK_REASONS.map((q) => (
+            <Button
+              key={q}
+              type="button"
+              variant="outline"
+              size="sm"
+              className="h-7 text-xs"
+              onClick={() => setReason((prev) => (prev.trim() ? `${prev.trim()}\n${q}` : q))}
+            >
+              {q}
+            </Button>
+          ))}
+        </div>
         <div className="flex flex-col gap-1.5">
           <Label htmlFor="reject-reason">{t("reject_reason_label")}</Label>
           <Textarea
