@@ -1804,6 +1804,161 @@
         "saved": "Сохранено"
       },
       "load_more": "Показать ещё"
+    },
+    "stores": {
+      "page_title": "Магазины",
+      "breadcrumbs": {
+        "home": "Главная",
+        "stores": "Магазины"
+      },
+      "counter": "{count, plural, one {# магазин} few {# магазина} many {# магазинов} other {# магазинов}}",
+      "actions": {
+        "import_lama": "Импорт из LAMA",
+        "sync_lama": "Синхронизировать с LAMA",
+        "add": "Добавить магазин",
+        "export_csv": "Экспорт CSV",
+        "more": "Ещё",
+        "open": "Открыть карточку",
+        "edit": "Редактировать",
+        "change_director": "Сменить директора",
+        "force_sync_lama": "Принудительная LAMA-синхр.",
+        "archive": "Архивировать",
+        "open_on_map": "Открыть на карте"
+      },
+      "tabs": {
+        "all": "Все",
+        "active": "Активные",
+        "archived": "Архив"
+      },
+      "view": {
+        "list": "Список",
+        "map": "Карта"
+      },
+      "stats": {
+        "total": "Всего магазинов",
+        "active": "Активных",
+        "archived": "В архиве",
+        "no_director": "Без управляющего",
+        "open_link": "Открыть"
+      },
+      "filters": {
+        "search_placeholder": "Поиск по названию, коду, адресу",
+        "city": "Город",
+        "format": "Формат",
+        "region": "Регион",
+        "supervisor": "Супервайзер",
+        "store_type": "Тип магазина",
+        "clear_all": "Очистить все",
+        "open_filters": "Фильтры",
+        "close": "Закрыть",
+        "apply": "Применить"
+      },
+      "columns": {
+        "code": "Код",
+        "name": "Название",
+        "address": "Адрес",
+        "city": "Город",
+        "region": "Регион",
+        "format": "Формат",
+        "director": "Директор",
+        "staff": "Сотрудников",
+        "active_shifts": "Активных смен",
+        "shifts_today": "Смен сегодня",
+        "tasks_today": "Задач сегодня",
+        "permissions_coverage": "Покрытие привилегий",
+        "lama_sync": "LAMA синхр.",
+        "status": "Статус",
+        "shifts_ratio": "{open} из {total}"
+      },
+      "director": {
+        "unassigned": "Не назначен",
+        "assign": "Назначить"
+      },
+      "status": {
+        "active": "Активен",
+        "archived": "В архиве"
+      },
+      "format_label": {
+        "SUPERMARKET": "Супермаркет",
+        "HYPERMARKET": "Гипермаркет",
+        "CONVENIENCE": "Магазин у дома",
+        "SMALL_SHOP": "Малый формат",
+        "SEWING_WORKSHOP": "Швейный цех",
+        "PRODUCTION_LINE": "Производственная линия",
+        "WAREHOUSE_HUB": "Склад/хаб",
+        "OFFICE": "Офис"
+      },
+      "lama": {
+        "never": "Не синхронизировано",
+        "fresh": "Синхр. {when}",
+        "stale": "Не обновлялось {when}"
+      },
+      "bulk": {
+        "selected": "{count, plural, one {Выбран # магазин} few {Выбрано # магазина} many {Выбрано # магазинов} other {Выбрано # магазинов}}",
+        "archive": "Архивировать",
+        "change_format": "Сменить формат",
+        "export": "Экспорт",
+        "cancel": "Отмена"
+      },
+      "dialogs": {
+        "archive_title": "Архивировать магазин?",
+        "archive_description": "Магазин не будет в Store switcher и в выборе при создании задач. Действие обратимо.",
+        "archive_confirm": "Архивировать",
+        "bulk_archive_title": "Архивировать {count} магазинов?",
+        "bulk_archive_description": "Магазины не будут в Store switcher и в выборе при создании задач. Действие обратимо.",
+        "sync_lama_title": "Синхронизировать с LAMA?",
+        "sync_lama_description": "Будет запрошено актуальное расписание смен и сотрудников из LAMA. Может занять до 1 минуты.",
+        "sync_lama_confirm": "Синхронизировать",
+        "add_title": "Добавить магазин",
+        "edit_title": "Редактировать магазин",
+        "fields": {
+          "name": "Название",
+          "external_code": "Код магазина",
+          "address": "Адрес",
+          "city": "Город",
+          "region": "Регион",
+          "store_type": "Тип магазина",
+          "object_type": "Тип объекта",
+          "object_format": "Формат объекта",
+          "legal_entity": "Юр. лицо",
+          "manager": "Директор магазина",
+          "supervisor": "Супервайзер"
+        },
+        "save": "Сохранить",
+        "cancel": "Отмена"
+      },
+      "empty": {
+        "all": {
+          "title": "Магазинов пока нет",
+          "subtitle": "Добавьте первый магазин или импортируйте из LAMA",
+          "cta": "Добавить магазин"
+        },
+        "archived": {
+          "title": "В архиве пусто",
+          "subtitle": "Архивированные магазины появятся здесь"
+        },
+        "filtered": {
+          "title": "Ничего не найдено",
+          "subtitle": "Попробуйте изменить фильтры или сбросить их",
+          "reset": "Сбросить фильтры"
+        },
+        "forbidden": {
+          "title": "Недостаточно прав",
+          "subtitle": "У вас нет доступа к разделу «Магазины»"
+        }
+      },
+      "error": {
+        "title": "Не удалось загрузить магазины",
+        "retry": "Повторить"
+      },
+      "toast": {
+        "archived": "Магазин архивирован",
+        "bulk_archived": "Архивировано магазинов: {count}",
+        "sync_started": "Синхронизация с LAMA запущена",
+        "sync_finished": "Синхронизация с LAMA завершена",
+        "saved": "Изменения сохранены",
+        "error": "Не удалось выполнить операцию"
+      }
     }
   }
 }
