@@ -2478,7 +2478,7 @@
         "created": "Zone created",
         "updated": "Zone updated",
         "deleted": "Zone deleted",
-        "in_use_warning": "Zone in use — deletion blocked",
+        "in_use_warning": "Zone in use �� deletion blocked",
         "error": "Operation failed"
       }
     },
@@ -3947,6 +3947,31 @@
         "export_csv": "Export CSV",
         "share": "Share"
       },
+      "toolbar": {
+        "export_csv": "Export CSV",
+        "group_by_city": "Group by city",
+        "all_cities": "All cities",
+        "custom_range_from": "From",
+        "custom_range_to": "To"
+      },
+      "period": {
+        "week": "Week",
+        "month": "Month",
+        "quarter": "Quarter",
+        "custom": "Custom"
+      },
+      "view": {
+        "table": "Table",
+        "heatmap": "Heatmap",
+        "scatter": "Scatter"
+      },
+      "period_banner": "{count, plural, one {# store} other {# stores}} · {from} – {to}",
+      "ai_banner": {
+        "text": "AI noticed: leading stores (SPAR Tomsk Lenin Ave, FC Tomsk Global Market) show completion rate >92%. Laggards (Food City Lenin Ave 217 — 78%) have a higher return rate driven by rapid staff growth. Suggested actions: strengthen onboarding for new employees, add guidelines to high-return tasks.",
+        "suggestions_btn": "AI suggestions for laggards",
+        "ask_btn": "Ask for details"
+      },
+      "hint_alert": "Colors indicate network position, not an absolute score. Every store matters.",
       "filters": {
         "period_label": "Period",
         "from": "From",
@@ -3967,12 +3992,19 @@
         "stable_subtitle": "Near median with no significant changes",
         "declining_subtitle": "Below median and trending worse"
       },
+      "comparison_badge": {
+        "LEADERS": "Leader",
+        "GROWING": "Growing",
+        "STABLE": "Stable",
+        "DECLINING": "Lagging"
+      },
       "metric": {
         "completion_rate": "Completion, %",
         "return_rate": "Returns, %",
         "on_time_rate": "On-time, %",
-        "hours_diff_pct": "Hours actual vs plan, %",
-        "fot_diff_pct": "Payroll actual vs plan, %"
+        "hours_diff_pct": "Hours Δ, %",
+        "fot_diff_pct": "Payroll plan/actual, %",
+        "avg_duration": "Avg duration"
       },
       "median_card": {
         "title": "Network medians",
@@ -3983,19 +4015,42 @@
         "fot_diff_pct": "Payroll variance"
       },
       "table": {
+        "hint": "Colors indicate network position, not an absolute score. Every store matters.",
         "columns": {
           "rank": "#",
           "store": "Store",
+          "city": "City",
+          "employees": "Employees",
+          "tasks_done": "Tasks done",
           "external_code": "Code",
           "completion_rate": "Completion",
           "return_rate": "Returns",
           "on_time_rate": "On-time",
           "hours_diff_pct": "Hours Δ",
           "fot_diff_pct": "Payroll Δ",
+          "trend": "Trend",
           "trend_completion": "Completion trend",
           "trend_return": "Returns trend",
-          "quadrant": "Quadrant"
+          "quadrant": "Comparison"
         }
+      },
+      "heatmap": {
+        "legend_leaders": "Leaders",
+        "legend_median": "Average",
+        "legend_support": "Needs support",
+        "tooltip_rank": "{rank}th of {total}"
+      },
+      "scatter_view": {
+        "title": "Performance map",
+        "subtitle": "Each store is a point on two axes",
+        "x_axis_label": "X Axis",
+        "y_axis_label": "Y Axis",
+        "size_label": "Point size",
+        "quadrant_leaders": "Leaders",
+        "quadrant_growing": "Growing",
+        "quadrant_stable": "Stable",
+        "quadrant_declining": "Lagging",
+        "median_line_label": "Network median"
       },
       "row_actions": {
         "open_store": "Open store",
@@ -4017,8 +4072,15 @@
       "empty": {
         "no_data_title": "No data for the selected period",
         "no_data_subtitle": "Widen the period or wait for store data to come in",
-        "loading": "Calculating comparison…"
+        "loading": "Calculating comparison…",
+        "too_few_stores_title": "Comparison unavailable",
+        "too_few_stores_subtitle": "At least 2 stores are required for comparison"
       },
+      "forbidden_title": "Access denied",
+      "forbidden_desc": "This section is available to network and regional operators only.",
+      "error_title": "Failed to load report",
+      "error_desc": "Try refreshing the page or try again later.",
+      "retry": "Retry",
       "toasts": {
         "exported_xlsx": "Report saved as XLSX",
         "exported_csv": "Report saved as CSV",

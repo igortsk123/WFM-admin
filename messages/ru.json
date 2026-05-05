@@ -1272,7 +1272,7 @@
       "btn_approve": "Принять",
       "btn_reject": "Отклонить",
       "reject_dialog_title": "Отклонить подзадачу",
-      "reject_reason_label": "Причина отклонения",
+      "reject_reason_label": "П��ичина отклонения",
       "reject_reason_placeholder": "Опишите причину (минимум 10 символов)...",
       "reject_reason_hint": "Минимум 10 символов",
       "bulk_selected": "{count, plural, one {��ыбрана # подзадача} few {Выбрано # подзадачи} other {Выбрано # подзадач}}",
@@ -1386,7 +1386,7 @@
         },
         "archived": {
           "title": "В архиве пусто",
-          "subtitle": "Архивированные сотрудники появятся зде��ь"
+          "subtitle": "Архи��ированные сотрудники появятся зде��ь"
         },
         "filtered": {
           "title": "Никого не найдено",
@@ -2182,7 +2182,7 @@
       },
       "empty": {
         "no_shifts_title": "В выбранный период смен нет",
-        "no_shifts_subtitle": "LAMA не передала ни одной смены — обратитесь в HR-отдел",
+        "no_shifts_subtitle": "LAMA не передала ни од��ой смены — обратитесь в HR-отдел",
         "no_results_title": "Ник��го не найд��но",
         "no_results_subtitle": "Попробуйте изменить фильтры",
         "no_results_reset": "Сбросить фильтры"
@@ -3948,6 +3948,31 @@
         "export_csv": "Экспорт CSV",
         "share": "Поделиться"
       },
+      "toolbar": {
+        "export_csv": "Экспорт CSV",
+        "group_by_city": "Группировать по городу",
+        "all_cities": "Все города",
+        "custom_range_from": "С",
+        "custom_range_to": "По"
+      },
+      "period": {
+        "week": "Неделя",
+        "month": "Месяц",
+        "quarter": "Квартал",
+        "custom": "Кастом"
+      },
+      "view": {
+        "table": "Таблица",
+        "heatmap": "Тепловая карта",
+        "scatter": "Разброс"
+      },
+      "period_banner": "{count, plural, one {# магазин} few {# магазина} other {# магазинов}} · {from} – {to}",
+      "ai_banner": {
+        "text": "ИИ заметил: магазины-лидеры (СПАР Томск пр. Ленина, FC Томск Global Market) показывают completion rate >92%. У отстающих (Food City пр. Ленина 217 — 78%) ключевая разница — высокий return rate из-за быстрого роста штата. Возможные действия: усилить инструктаж новых сотрудников, добавить регламенты в часто-возвращаемые задачи.",
+        "suggestions_btn": "Предложения ИИ для отстающих",
+        "ask_btn": "Спросить подробнее"
+      },
+      "hint_alert": "Цвета показывают позицию в сети, не абсолютную оценку. Все магазины важны.",
       "filters": {
         "period_label": "Период",
         "from": "С",
@@ -3968,12 +3993,19 @@
         "stable_subtitle": "Около медианы, без существенных изменений",
         "declining_subtitle": "Ниже медианы и тренд ухудшается"
       },
+      "comparison_badge": {
+        "LEADERS": "Лидер",
+        "GROWING": "Растёт",
+        "STABLE": "Стабильный",
+        "DECLINING": "Проседает"
+      },
       "metric": {
         "completion_rate": "Выполнение, %",
         "return_rate": "Возврат, %",
         "on_time_rate": "Вовремя, %",
-        "hours_diff_pct": "Часы факт vs план, %",
-        "fot_diff_pct": "ФОТ факт vs план, %"
+        "hours_diff_pct": "Δ часов, %",
+        "fot_diff_pct": "ФОТ план/факт, %",
+        "avg_duration": "Ср. длительность"
       },
       "median_card": {
         "title": "Медианы по сети",
@@ -3984,19 +4016,42 @@
         "fot_diff_pct": "Отклонение ФОТ"
       },
       "table": {
+        "hint": "Цвета показывают позицию в сети, не абсолютную оценку. Все магазины важны.",
         "columns": {
           "rank": "#",
           "store": "Магазин",
+          "city": "Город",
+          "employees": "Сотрудников",
+          "tasks_done": "Задач выполнено",
           "external_code": "Код",
           "completion_rate": "Выполнение",
           "return_rate": "Возврат",
           "on_time_rate": "Вовремя",
-          "hours_diff_pct": "Часы Δ",
+          "hours_diff_pct": "Δ часов",
           "fot_diff_pct": "ФОТ Δ",
+          "trend": "Тренд",
           "trend_completion": "Тренд выполнения",
           "trend_return": "Тренд возврата",
-          "quadrant": "Квадрант"
+          "quadrant": "Сравнение"
         }
+      },
+      "heatmap": {
+        "legend_leaders": "Лидеры",
+        "legend_median": "Среднее",
+        "legend_support": "Нужна поддержка",
+        "tooltip_rank": "{rank}-й из {total}"
+      },
+      "scatter_view": {
+        "title": "Карта эффективности",
+        "subtitle": "Каждый магазин — точка по двум осям",
+        "x_axis_label": "Ось X",
+        "y_axis_label": "Ось Y",
+        "size_label": "Размер точки",
+        "quadrant_leaders": "Лидеры",
+        "quadrant_growing": "Растут",
+        "quadrant_stable": "Стабильные",
+        "quadrant_declining": "Проседают",
+        "median_line_label": "Медиана сети"
       },
       "row_actions": {
         "open_store": "Открыть магазин",
@@ -4018,8 +4073,15 @@
       "empty": {
         "no_data_title": "Нет данных за выбранный период",
         "no_data_subtitle": "Расширьте период или дождитесь данных от магазинов",
-        "loading": "Считаем сравнение…"
+        "loading": "Считаем сравнение…",
+        "too_few_stores_title": "Сравнение недоступно",
+        "too_few_stores_subtitle": "Для сравнения необходимо минимум 2 магазина"
       },
+      "forbidden_title": "Недостаточно прав",
+      "forbidden_desc": "Раздел доступен только для сетевых и региональных операторов.",
+      "error_title": "Не удалось загрузить отчёт",
+      "error_desc": "Попробуйте обновить страницу или повторить позже.",
+      "retry": "Повторить",
       "toasts": {
         "exported_xlsx": "Отчёт сохранён в XLSX",
         "exported_csv": "Отчёт сохранён в CSV",
