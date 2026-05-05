@@ -300,6 +300,11 @@ const buildNavGroups = (pendingAISuggestionsCount: number): NavGroup[] => [
         href: ADMIN_ROUTES.freelanceAgents,
         hideIf: (ctx) => ctx.paymentMode !== "NOMINAL_ACCOUNT",
       },
+      {
+        labelKey: "freelance_freelancers",
+        icon: Users,
+        href: ADMIN_ROUTES.freelanceFreelancers,
+      },
     ],
   },
 
