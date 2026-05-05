@@ -92,6 +92,7 @@ import { ADMIN_ROUTES } from "@/lib/constants/routes";
 import { formatDateTime, formatRelative } from "@/lib/utils/format";
 import type { Locale } from "@/lib/types";
 import { cn } from "@/lib/utils";
+import { ExternalHrCard } from "@/components/features/integrations/external-hr-card";
 
 // ═══════════════════════════════════════════════════════════════════
 // MOCK ORG (fashion detection)
@@ -1246,6 +1247,11 @@ export function IntegrationsHub() {
               }}
             />
           )}
+
+          {/* External HR System Card — only when freelance_module_enabled */}
+          {MOCK_ORG.freelance_module_enabled && (
+            <ExternalHrCard canConfigure={true} />
+          )}
         </div>
       </section>
 
@@ -1537,7 +1543,7 @@ export function IntegrationsHub() {
             </div>
             <div className="space-y-1.5">
               <Label>API Key</Label>
-              <Input type="password" placeholder="••••••••••••••••" />
+              <Input type="password" placeholder="•••••••••••••���••" />
             </div>
           </div>
         }
