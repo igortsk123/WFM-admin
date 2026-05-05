@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import {
   Loader2,
@@ -323,6 +324,7 @@ export function TaskForm({ mode, taskId, initialTask }: TaskFormProps) {
   const tCommon = useTranslations("common");
   const tPermission = useTranslations("permission");
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { user } = useAuth();
 
   // ─── 403 guard ───────────────────────────────────────────────────
@@ -331,13 +333,10 @@ export function TaskForm({ mode, taskId, initialTask }: TaskFormProps) {
     user.role === "REGIONAL" ||
     user.role === "NETWORK_OPS";
 
-  // Override access: NETWORK_OPS / REGIONAL can toggle; SUPERVISOR sees disabled
-  const canOverride =
-    user.role === "NETWORK_OPS" ||
-    user.role === "REGIONAL" ||
-    user.role === "OPERATOR";
-
   const isFashion = user.organization.business_vertical === "FASHION_RETAIL";
+
+  // Авто-подстановка магазина из URL (`/tasks/new?store_id=N`)
+  const prefilledStoreId = mode === "create" ? searchParams.get("store_id") : null;
 
   // ─── Form data state ─────────────────────────────────────────────
   const [formData, setFormData] = useState<FormData>({
@@ -361,6 +360,7 @@ export function TaskForm({ mode, taskId, initialTask }: TaskFormProps) {
 
   const defaultValues: Partial<TaskFormValues> = {
     type: "PLANNED",
+    store_id: prefilledStoreId ?? undefined,
     assignment_type: "specific",
     is_chain: false,
     next_assignment_type: "specific",
@@ -387,7 +387,6 @@ export function TaskForm({ mode, taskId, initialTask }: TaskFormProps) {
   const watchedAssignmentType = watch("assignment_type");
   const watchedIsChain = watch("is_chain");
   const watchedNextAssignmentType = watch("next_assignment_type");
-  const watchedOverride = watch("override_enabled");
   const watchedRequiresPhoto = watch("requires_photo");
 
   // Live summary watches
@@ -1284,7 +1283,7 @@ export function TaskForm({ mode, taskId, initialTask }: TaskFormProps) {
                         <Select
                           value={field.value}
                           onValueChange={field.onChange}
-                          disabled={watchedOverride ? false : loadingData}
+                          disabled={loadingData}
                         >
                           <FormControl>
                             <SelectTrigger>
@@ -1326,76 +1325,6 @@ export function TaskForm({ mode, taskId, initialTask }: TaskFormProps) {
                       </FormItem>
                     )}
                   />
-
-                  {/* Override block */}
-                  <div className="rounded-lg border border-border">
-                    <div className="flex items-center justify-between p-3 gap-4">
-                      <div className="space-y-0.5">
-                        <p className="text-sm font-medium text-foreground">
-                          {t("override_label")}
-                        </p>
-                        {!canOverride && (
-                          <p className="text-xs text-muted-foreground">
-                            {t("override_hint_disabled")}
-                          </p>
-                        )}
-                      </div>
-                      {canOverride ? (
-                        <FormField
-                          control={form.control}
-                          name="override_enabled"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormControl>
-                                <Switch
-                                  checked={field.value}
-                                  onCheckedChange={field.onChange}
-                                />
-                              </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                      ) : (
-                        <Tooltip>
-                          <TooltipTrigger asChild>
-                            <span>
-                              <Switch disabled checked={false} />
-                            </span>
-                          </TooltipTrigger>
-                          <TooltipContent>
-                            <p className="text-xs max-w-48">{t("override_hint_disabled")}</p>
-                          </TooltipContent>
-                        </Tooltip>
-                      )}
-                    </div>
-
-                    {watchedOverride && canOverride && (
-                      <div className="px-3 pb-3">
-                        <FormField
-                          control={form.control}
-                          name="override_justification"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-sm">
-                                {t("override_justification")}
-                              </FormLabel>
-                              <FormControl>
-                                <Textarea
-                                  {...field}
-                                  value={field.value ?? ""}
-                                  placeholder={t("override_justification_placeholder")}
-                                  rows={2}
-                                  className="resize-none text-sm"
-                                  minLength={10}
-                                />
-                              </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-                      </div>
-                    )}
-                  </div>
 
                   <FormField
                     control={form.control}
