@@ -3075,11 +3075,34 @@
         "legal_added": "Юр.лицо добавлено",
         "legal_updated": "Юр.лицо обновлено",
         "legal_removed": "Юр.лицо удалено",
-        "error": "Не удалось выполнить операцию"
+        "error": "Не удалось выполнить операцию",
+        "payment_mode_changed": "Режим оплаты изменён",
+        "module_toggled": "Состояние модуля изменено"
       },
       "states": {
         "forbidden_title": "Нет доступа",
         "forbidden_subtitle": "Только NETWORK_OPS может настраивать организацию"
+      },
+      "freelance_section": {
+        "title": "Внештат и тарифы",
+        "payment_mode_label": "Режим оплаты исполнителям",
+        "payment_mode_NOMINAL_ACCOUNT": "Через сервис «Номинальный счёт»",
+        "payment_mode_CLIENT_DIRECT": "Клиент платит исполнителям самостоятельно",
+        "payment_mode_locked_hint": "Этот параметр зафиксирован в договоре с Beyond Violet. Для изменения свяжитесь с поддержкой.",
+        "external_hr_label": "Внешняя HR-система",
+        "external_hr_connected": "Подключена",
+        "external_hr_disconnected": "Не подключена",
+        "external_hr_manage_link": "Управление в Интеграциях",
+        "freelance_module_label": "Модуль внештата",
+        "freelance_module_on": "Активен",
+        "freelance_module_off": "Отключён"
+      },
+      "platform_admin": {
+        "edit_payment_mode": "Изменить режим оплаты",
+        "edit_payment_mode_warning_title": "Изменить режим оплаты исполнителям?",
+        "edit_payment_mode_warning_description": "Изменение режима повлияет на финансовые операции. Открытые заявки могут потерять связь с активными выплатами.",
+        "edit_payment_mode_confirm": "Изменить",
+        "module_toggle": "Переключить модуль внештата"
       }
     }
   }
