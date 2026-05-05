@@ -181,6 +181,7 @@ export {
   type WorkTypeWithCount,
   type WorkTypeListParams,
   type ZoneWithCounts,
+  type ZoneListParams,
   type PositionWithCounts,
   getWorkTypes,
   createWorkType,

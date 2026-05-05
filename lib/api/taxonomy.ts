@@ -48,6 +48,20 @@ export interface WorkTypeListParams extends ApiListParams {
 export interface ZoneWithCounts extends Zone {
   tasks_count: number;
   stores_count: number;
+  /** Имя магазина — для локальных зон (scope=STORE). Undefined для глобальных. */
+  store_name?: string;
+}
+
+/** Filter params для zones list (chat 31). */
+export interface ZoneListParams extends ApiListParams {
+  /** Search по name / code / description. */
+  search?: string;
+  /** Scope: GLOBAL = только store_id=null, STORE = только store_id != null. */
+  scope?: "GLOBAL" | "STORE";
+  /** Single store filter — для tab «По магазинам» с выбранным магазином. */
+  store_id?: number;
+  /** Approved-фильтр (true / false / undefined). Локальные зоны требуют approve. */
+  approved?: boolean;
 }
 
 export interface PositionWithCounts extends Position {
@@ -183,21 +197,24 @@ export async function deleteWorkType(id: number): Promise<ApiMutationResponse> {
  * @endpoint GET /taxonomy/zones
  */
 export async function getZones(
-  params: ApiListParams & { store_id?: number; scope?: "GLOBAL" | "STORE" } = {}
+  params: ZoneListParams = {}
 ): Promise<ApiListResponse<ZoneWithCounts>> {
   await delay(300);
 
-  const { store_id, scope, search, page = 1, page_size = 50 } = params;
+  const { store_id, scope, search, approved, page = 1, page_size = 50 } = params;
 
   let filtered = [...MOCK_ZONES];
 
   if (scope === "GLOBAL") filtered = filtered.filter((z) => !z.store_id);
   if (scope === "STORE") filtered = filtered.filter((z) => !!z.store_id);
   if (store_id) filtered = filtered.filter((z) => !z.store_id || z.store_id === store_id);
+  if (approved !== undefined) filtered = filtered.filter((z) => z.approved === approved);
 
   if (search) {
     const q = search.toLowerCase();
-    filtered = filtered.filter((z) => z.name.toLowerCase().includes(q) || z.code.toLowerCase().includes(q));
+    filtered = filtered.filter(
+      (z) => z.name.toLowerCase().includes(q) || z.code.toLowerCase().includes(q),
+    );
   }
 
   const total = filtered.length;
@@ -207,6 +224,9 @@ export async function getZones(
     ...zone,
     tasks_count: MOCK_TASKS.filter((t) => t.zone_id === zone.id && !t.archived).length,
     stores_count: zone.store_id ? 1 : MOCK_STORES.filter((s) => !s.archived).length,
+    store_name: zone.store_id
+      ? MOCK_STORES.find((s) => s.id === zone.store_id)?.name
+      : undefined,
   }));
 
   return { data, total, page, page_size };
