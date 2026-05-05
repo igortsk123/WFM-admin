@@ -621,7 +621,7 @@ export function ApplicationForm() {
                       {t("alerts.retroactive_desc")}
                     </AlertDescription>
                     <div className="mt-2 flex items-center gap-2 text-sm">
-                      <Checkbox id="retro-check" checked readOnly aria-readonly="true" />
+                      <Checkbox id="retro-check" checked tabIndex={-1} className="pointer-events-none" onCheckedChange={() => {}} />
                       <label htmlFor="retro-check" className="cursor-default select-none">
                         {t("form.retroactive_label")}
                       </label>
@@ -636,7 +636,7 @@ export function ApplicationForm() {
                     <AlertTitle>{t("alerts.urgent_title")}</AlertTitle>
                     <AlertDescription>{t("alerts.urgent_desc")}</AlertDescription>
                     <div className="mt-2 flex items-center gap-2 text-sm">
-                      <Checkbox id="urgent-check" checked readOnly aria-readonly="true" />
+                      <Checkbox id="urgent-check" checked tabIndex={-1} className="pointer-events-none" onCheckedChange={() => {}} />
                       <label htmlFor="urgent-check" className="cursor-default select-none">
                         {t("form.urgent_label")}
                       </label>

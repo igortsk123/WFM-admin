@@ -304,7 +304,7 @@
     "production_line": "Производственная линия"
   },
   "role": {
-    "title": "Роль",
+    "title": "Р��ль",
     "titlePlural": "Роли",
     "STORE_DIRECTOR": "Директор магазина",
     "SUPERVISOR": "Супервайзер",
@@ -587,7 +587,7 @@
     "today": "Сегодня",
     "yesterday": "Вчера",
     "tomorrow": "Завтра",
-    "days_ago": "{n, plural, one {# день наза��} few {# дня назад} other {# дней назад}}"
+    "days_ago": "{n, plural, one {# день назад} few {# дня назад} other {# дней назад}}"
   },
   "store": {
     "title": "Магазин",
@@ -928,7 +928,7 @@
       "btn_reject": "Отклонить",
       "approve_dialog_title": "Принять задачу",
       "approve_dialog_desc": "После принятия задача будет закрыта. Комментарий необязателен.",
-      "approve_comment_label": "Комментарий (необязательно)",
+      "approve_comment_label": "Комментарий (необязател��но)",
       "approve_comment_placeholder": "Всё отлично, задача выполнена верно...",
       "approve_submit": "Принять задачу",
       "approve_toast": "Задача принята",
@@ -1128,7 +1128,7 @@
         "details_link": "Подробнее",
         "stat_staff_label": "Закрыто штатными",
         "stat_staff_subtext": "Основной ресурс",
-        "stat_bonus_label": "Закрыто бонусами",
+        "stat_bonus_label": "Закрыто бонуса��и",
         "stat_bonus_subtext": "Дешевле внештата примерно в 2 раза",
         "stat_freelance_label": "Требует внештат",
         "stat_freelance_subtext": "Когда своих ресурсов недостаточно",
@@ -1759,7 +1759,7 @@
         "position": "Должность и магазин",
         "position_sub": "Где и кем работает",
         "permissions": "Привилегии",
-        "permissions_sub": "Компетенции работника",
+        "permissions_sub": "Компетенции работ��ика",
         "invite": "Приглашение",
         "invite_sub": "Способ отправки"
       },
@@ -2145,7 +2145,7 @@
       "filters": {
         "store": "Магазин",
         "store_all": "Вся сеть",
-        "zone": "Зона",
+        "zone": "��она",
         "position": "Должность",
         "user": "Сотрудник",
         "status": "Статус",
@@ -2305,7 +2305,7 @@
         "mark_late_confirm": "Сохранить",
         "mark_overtime_title": "Зафиксировать переработку",
         "mark_overtime_label": "Причина переработки",
-        "mark_overtime_placeholder": "Например: дополнительная задача",
+        "mark_overtime_placeholder": "Напр��мер: дополнительная задача",
         "mark_overtime_confirm": "Сохранить",
         "force_close_title": "Закрыть смену принудительно?",
         "force_close_description": "Смена будет помечена как закрытая системой. Сотрудник получит уведомление.",
@@ -2562,7 +2562,7 @@
         "no_positions_title": "Должностей пока нет",
         "no_positions_subtitle": "Создайте первую должность",
         "no_positions_cta": "Добавить должность",
-        "filtered_title": "Никого не найдено",
+        "filtered_title": "Никого не ��айдено",
         "filtered_reset": "Сбросить фильтры"
       },
       "toasts": {
@@ -2895,7 +2895,7 @@
           "totp_setup_secret_hint": "Секрет для ручного ввода в приложение",
           "totp_setup_scan_hint": "Отсканируйте QR-код в Yandex Key, Authy или FreeOTP",
           "totp_setup_next": "Далее",
-          "totp_setup_enter_code": "Введите 6-значный код из приложения",
+          "totp_setup_enter_code": "Введите 6-зн��чный код из приложения",
           "totp_setup_confirm": "Подтвердить",
           "totp_backup_warning": "Сохраните резервные коды — они показываются только один раз",
           "totp_backup_done": "Готово",
@@ -2903,7 +2903,7 @@
           "totp_disable_description": "Введите текущий код из приложения для подтверждения",
           "sessions_card": "Активные сессии",
           "session_current": "Текущая сессия",
-          "session_revoke": "Завершить",
+          "session_revoke": "Завершит��",
           "session_revoke_all": "Завершить все остальные",
           "session_revoke_all_confirm_title": "Завершить все остальные сессии?",
           "session_revoke_all_confirm_message": "Все другие устройства будут выведены из аккаунта"
@@ -4445,7 +4445,7 @@
         "ai_hint": "ИИ предлагает, нужно одобрение",
         "yesterday_label": "Невыполненные вчера",
         "yesterday_hint": "Авто-перенос в бонусный пул",
-        "footer_hint": "Можно комбинировать. ИИ работает поверх активной цели."
+        "footer_hint": "Мож��о комбинировать. ИИ работает поверх активной цели."
       },
       "yesterday_pool_card": {
         "title": "Пул незавершённых вчера",
@@ -4590,7 +4590,7 @@
         "paid": "Выплачены"
       },
       "filters": {
-        "store_label": "Магазин",
+        "store_label": "Магази��",
         "all_stores": "Все"
       },
       "actions": {
@@ -4770,7 +4770,7 @@
         "bulk_hint": "Массовое одобрение = принять без редактирования. Если нужны правки — открывайте по одному."
       },
       "detail_panel": {
-        "empty_title": "Выберите предложение слева",
+        "empty_title": "Выберите пр��дложение слева",
         "empty_subtitle": "Откроется подробная информация и возможность редактирования",
         "what_proposed_section": "Что предлагается",
         "rationale_section": "Почему ИИ это предложил",
@@ -5075,7 +5075,7 @@
         },
         "period_label": "Период когда заметили",
         "details_label": "Подробнее",
-        "auto_attached_hint": "К сообщению автоматически приложатся метрики и последние 10 reject-комментариев",
+        "auto_attached_hint": "К сообщению автоматически приложатся метрики и последние 10 reject-комментари��в",
         "submit": "Отправить"
       },
       "empty": {
@@ -5238,7 +5238,7 @@
         "reviewed_share_title": "Доля проверяемых задач",
         "reviewed_share_value": "{percent}%",
         "reviewed_share_prev": "было {percent}%",
-        "reviewed_share_saved": "Сбережено: {hours} ч/мес",
+        "reviewed_share_saved": "��бережено: {hours} ч/мес",
         "defect_rate_title": "Defect rate",
         "defect_rate_value": "{percent}%",
         "defect_rate_hint": "Доля задач с проблемами, прошедших sampling"
@@ -5667,60 +5667,165 @@
         "applications": "Заявки",
         "detail": "Заявка"
       },
-      "actions": {
-        "approve": "Утвердить",
-        "reject": "Отклонить",
-        "request_revision": "Запросить правки",
-        "replace_with_bonus": "Заменить бонусом",
-        "edit": "Редактировать",
-        "cancel": "Отменить заявку"
+      "header": {
+        "title": "Заявка №{shortId} • {storeName}",
+        "created_by": "Создал {name} ({role}) {time}",
+        "source_internal": "Внутренняя",
+        "source_external": "Внешняя HR",
+        "urgent_alert_title": "Срочная заявка",
+        "urgent_alert_desc": "Стандартный 3-дневный буфер не соблюдён.",
+        "retroactive_alert_title": "Ретроактивная заявка",
+        "retroactive_alert_desc": "Заявка зафиксирована задним числом для отчётности.",
+        "external_alert_title": "Заявка из внешней HR-системы",
+        "external_alert_desc": "Заявка получена из HR-системы клиента ({ref}). Согласование пропускается, требуется только назначение исполнителя."
       },
-      "sections": {
-        "summary": "Резюме",
-        "service_details": "Детали услуги",
-        "budget": "Бюджет",
-        "history": "История согласования",
-        "linked_bonus": "Связанный бонусный пул",
-        "documents": "Документы"
+      "params_card": {
+        "title": "Параметры заявки",
+        "planned_date": "Дата выхода",
+        "hours_requested": "Часов запрошено",
+        "hours_approved": "Согласовано",
+        "hours_unit": "ч",
+        "work_type": "Тип работ",
+        "location": "Объект",
+        "comment": "Комментарий заявителя",
+        "no_comment": "—"
       },
-      "summary": {
-        "store": "Объект",
-        "service": "Услуга",
-        "amount": "Сумма",
-        "agent": "Агент",
-        "no_agent": "Без агента",
-        "created_by": "Автор",
-        "created_at": "Создана"
+      "finance_card": {
+        "title": "Финансовая картина",
+        "client_direct_banner": "Стоимость справочная по нормативам. Оплата на стороне клиента.",
+        "external_banner": "Заявка из внешней HR-системы. Бюджетные лимиты показаны справочно, без блокировки.",
+        "cost_label": "Расчётная стоимость",
+        "cost_breakdown": "{hours} ч × {rate} ₽/ч",
+        "budget_usage_title": "Использование бюджета ({period})",
+        "budget_limit": "Лимит",
+        "budget_actual": "Потрачено",
+        "budget_planned": "По плану",
+        "budget_overspend": "Перерасход",
+        "period_DAY": "день",
+        "period_WEEK": "неделя",
+        "period_MONTH": "месяц",
+        "simulator_title": "Если согласую…",
+        "simulator_hours_label": "Часов к согласованию",
+        "simulator_new_cost": "Новая стоимость",
+        "simulator_new_budget": "Бюджет после согласования",
+        "simulator_overspend_after": "Перерасход после согласования",
+        "simulator_blocked_alert": "Согласование заблокировано: превышение лимита ({period}) на {pct}%",
+        "simulator_blocked_details": "После согласования расход составит {actual} ₽ при лимите {limit} ₽."
       },
-      "history_event": {
-        "submitted": "Отправлено на согласование",
-        "approved": "Утверждено",
-        "rejected": "Отклонено",
-        "revision_requested": "Запрошены правки",
-        "replaced_with_bonus": "Заменено бонусом",
-        "fulfilled": "Закрыта"
+      "history_card": {
+        "title": "История изменений",
+        "collapse_hint": "Свернуть",
+        "expand_hint": "Развернуть",
+        "action_CREATED": "Заявка создана",
+        "action_APPROVED_FULL": "Согласовано полностью",
+        "action_APPROVED_PARTIAL": "Согласовано частично",
+        "action_REJECTED": "Отклонено",
+        "action_REPLACED_WITH_BONUS": "Заменено бонусным пулом",
+        "action_APPROVED_MIXED": "Смешанное согласование",
+        "action_CANCELLED": "Отменено",
+        "action_DRAFT": "Черновик",
+        "action_PENDING": "На рассмотрении"
       },
-      "approve_dialog": {
-        "title": "Утвердить заявку?",
-        "description": "Сумма {amount} ₽ будет списана из бюджета {store}",
-        "confirm": "Утвердить"
+      "decision_card": {
+        "title": "Принять решение",
+        "option_full": "Согласовать полностью",
+        "option_partial": "Согласовать частично",
+        "option_reject": "Отклонить",
+        "option_bonus": "Заменить бонусным пулом",
+        "option_mixed": "Смешанное (часть внештатом, часть бонусом)",
+        "partial_hours_label": "Часов согласовать",
+        "reject_reason_label": "Причина отказа",
+        "reject_reason_hint": "Не менее 10 символов",
+        "bonus_info": "Создаём бонусный пул на {hours} ч для штатных сотрудников магазина. Стоимость бонуса ≈ в 2 раза ниже внештата.",
+        "bonus_savings": "Экономия: {savings} ₽",
+        "mixed_freelance_label": "Часов внештатом",
+        "mixed_bonus_label": "Часов бонусом",
+        "mixed_sum_hint": "Сумма должна быть равна {total} ч",
+        "mixed_savings": "Экономия vs полный внештат: {savings} ₽",
+        "comment_label": "Комментарий к решению",
+        "comment_optional": "Необязательно",
+        "comment_required": "Обязательно для отказа",
+        "submit_label": "Согласовать",
+        "submit_blocked_tooltip": "Согласование заблокировано: бюджет превышен",
+        "confirm_dialog_title": "Подтвердить решение по заявке?",
+        "confirm_dialog_desc": "Выбрано: {decision}",
+        "confirm_dialog_ok": "Подтвердить"
       },
-      "reject_dialog": {
-        "title": "Отклонить заявку?",
-        "reason_label": "Причина (обязательно)",
-        "confirm": "Отклонить"
+      "assignment_card": {
+        "title": "Назначение исполнителя",
+        "approved_summary": "Согласовано {hours} ч на {date}",
+        "no_assignee_warning": "Исполнитель не назначен",
+        "assign_cta": "Назначить исполнителя",
+        "create_tasks_cta": "Задачи на смену",
+        "assignment_status_SCHEDULED": "Запланирован",
+        "assignment_status_CHECKED_IN": "Отметился",
+        "assignment_status_WORKING": "Работает",
+        "assignment_status_DONE": "Выполнено",
+        "assignment_status_NO_SHOW": "Не вышел",
+        "remove_assignment": "Удалить",
+        "sheet_title": "Назначить исполнителя",
+        "sheet_phone_label": "Телефон исполнителя",
+        "sheet_phone_placeholder": "+7 (XXX) XXX-XX-XX",
+        "sheet_phone_not_found": "Исполнитель не найден — будет создан новый",
+        "sheet_new_freelancer_label": "Создать нового исполнителя",
+        "sheet_agent_label": "Агент",
+        "sheet_agent_placeholder": "Выберите агента",
+        "sheet_agent_optional": "Необязательно",
+        "sheet_start_label": "Начало смены",
+        "sheet_end_label": "Конец смены",
+        "sheet_submit": "Назначить",
+        "sheet_cancel": "Отмена"
       },
-      "replace_bonus_dialog": {
-        "title": "Заменить заявку бонусным пулом?",
-        "description": "Бонус ≈50% от полной стоимости. Экономия: {saved} ₽",
-        "amount_label": "Размер бонусного пула, ₽",
-        "confirm": "Создать бонус"
+      "external_block": {
+        "title": "Заявка из внешней HR-системы",
+        "desc": "Согласование пройдено на стороне клиента. Требуется только назначить исполнителя (если нет) и задачи.",
+        "ref_label": "Внешний номер для трассировки"
+      },
+      "terminal_block": {
+        "rejected_title": "Заявка отклонена",
+        "bonus_title": "Заменена бонусным пулом",
+        "cancelled_title": "Заявка отменена",
+        "reason_label": "Причина",
+        "decided_by": "Решение принял",
+        "decided_at": "Дата решения",
+        "go_bonus_pool": "Перейти к бонусному пулу"
+      },
+      "related_card": {
+        "title": "Связанные сущности",
+        "bonus_pool": "Бонусный пул",
+        "services": "Услуги по заявке",
+        "payout": "Выплата"
+      },
+      "status": {
+        "DRAFT": "Черновик",
+        "PENDING": "На рассмотрении",
+        "APPROVED_FULL": "Согласована",
+        "APPROVED_PARTIAL": "Частично согласована",
+        "REJECTED": "Отклонена",
+        "REPLACED_WITH_BONUS": "Заменена бонусом",
+        "MIXED": "Смешанная",
+        "CANCELLED": "Отменена"
       },
       "toasts": {
-        "approved": "Заявка утверждена",
-        "rejected": "Заявка отклонена",
-        "replaced": "Заявка заменена бонусом",
-        "error": "Не удалось выполнить действие"
+        "decision_saved": "Решение сохранено",
+        "bonus_pool_created": "Бонусный пул создан",
+        "bonus_pool_link": "Перейти?",
+        "assignment_created": "Исполнитель назначен",
+        "assignment_removed": "Назначение удалено",
+        "error": "Не удалось выполнить действие",
+        "conflict": "Данные изменились. Обновите страницу.",
+        "budget_blocked": "Согласование заблокировано: превышение бюджета"
+      },
+      "states": {
+        "loading": "Загрузка заявки...",
+        "not_found_title": "Заявка не найдена",
+        "not_found_desc": "Заявка с таким ID не существует или была удалена.",
+        "not_found_cta": "К списку заявок",
+        "error_title": "Ошибка загрузки",
+        "error_desc": "Не удалось загрузить заявку. Попробуйте снова.",
+        "error_retry": "Повторить",
+        "forbidden_title": "Нет доступа",
+        "forbidden_desc": "Эта заявка не входит в ваш рабочий периметр."
       }
     },
     "freelanceServicesList": {
@@ -5733,123 +5838,362 @@
       },
       "tabs": {
         "all": "Все",
-        "delivered": "Оказанные",
-        "no_show": "Невыходы"
+        "pending": "На подтверждении",
+        "ready": "Готовы к оплате",
+        "paid": "Выплачено",
+        "confirmed": "Подтверждены",
+        "no_show": "Невыходы",
+        "disputed": "Спорные"
       },
       "filters": {
         "search": "Поиск",
         "status": "Статус",
-        "store": "Магазин",
+        "store": "Объект",
+        "store_placeholder": "Все объекты",
+        "freelancer": "Исполнитель",
+        "freelancer_placeholder": "ФИО или телефон",
         "agent": "Агент",
-        "date_range": "Период"
+        "agent_placeholder": "Все агенты",
+        "work_type": "Тип работ",
+        "work_type_placeholder": "Все типы",
+        "date_range": "Период",
+        "date_from": "Дата с",
+        "date_to": "Дата по"
       },
       "columns": {
         "date": "Дата",
         "store": "Объект",
-        "service": "Услуга",
         "performer": "Исполнитель",
-        "agent": "Агент",
+        "work_type": "Тип работ",
+        "hours": "Часы",
+        "hours_tooltip": "обещано / фактически / к оплате",
+        "volume": "Объём",
         "amount": "Сумма",
-        "status": "Статус"
+        "amount_indicative": "(справочно)",
+        "agent": "Агент",
+        "source": "Источник",
+        "legal_status": "Юр. статус",
+        "status": "Статус",
+        "actions": "Действия"
       },
       "status": {
-        "DELIVERED": "Оказана",
+        "PLANNED": "Запланирована",
+        "IN_PROGRESS": "Выполняется",
+        "COMPLETED": "Ждёт подтверждения",
+        "CONFIRMED": "Подтверждена",
+        "READY_TO_PAY": "Готова к оплате",
+        "PAID": "Выплачена",
         "NO_SHOW": "Невыход",
-        "CANCELLED": "Отменена"
+        "DISPUTED": "Спор"
       },
-      "no_show_alert": "Невыход — приоритетная коммуникация с агентом",
+      "no_show_legal_status": {
+        "OPEN": "Открыт",
+        "IN_LEGAL": "У юристов",
+        "RESOLVED": "Решён",
+        "WRITTEN_OFF": "Списан"
+      },
+      "source": {
+        "INTERNAL": "Внутренняя",
+        "EXTERNAL": "Внешняя"
+      },
+      "hours_badge": {
+        "underload": "Недозагрузка не по вине"
+      },
+      "adjusted_tooltip": "Скорректировано вручную, см. детали",
+      "actions": {
+        "confirm": "Подтвердить услугу",
+        "dispute": "Отклонить",
+        "download_act": "Скачать акт",
+        "open_no_show": "Открыть отчёт о невыходе",
+        "adjust_amount": "Корректировать сумму",
+        "to_legal": "Передать юристам"
+      },
       "empty": {
-        "no_services": "Нет оказанных услуг за период"
+        "all_title": "Услуги пока не оказывались",
+        "all_description": "Оказанные услуги будут отображаться здесь",
+        "no_show_title": "Невыходов нет",
+        "no_show_description": "Невыходов нет за выбранный период",
+        "pending_title": "Все услуги подтверждены",
+        "pending_description": "Нет услуг, ожидающих подтверждения",
+        "generic_title": "Нет данных",
+        "generic_description": "По выбранным фильтрам ничего не найдено"
+      },
+      "sheet": {
+        "title": "Детали услуги",
+        "freelancer_section": "Исполнитель",
+        "hours_section": "Часы",
+        "scheduled": "Обещано",
+        "actual": "Фактически",
+        "payable": "К оплате",
+        "geo_checkin": "Геолокация",
+        "geo_match": "Совпадает",
+        "geo_no_match": "Не совпадает",
+        "assignment": "Назначение",
+        "related_payout": "Выплата",
+        "adjustment_history": "История корректировок",
+        "adjusted_by": "Кем скорректировано",
+        "adjusted_at": "Когда",
+        "from_amount": "Было",
+        "to_amount": "Стало",
+        "reason": "Причина",
+        "no_show_report": "Отчёт о невыходе",
+        "legal_comment": "Комментарий юриста"
+      },
+      "adjust_dialog": {
+        "title": "Корректировать сумму",
+        "description": "Изменение суммы будет сохранено в аудит-логе",
+        "new_amount_label": "Новая сумма",
+        "reason_label": "Причина корректировки",
+        "reason_placeholder": "Минимум 10 символов",
+        "submit": "Применить"
+      },
+      "dispute_dialog": {
+        "title": "Отклонить услугу",
+        "description": "Укажите причину отклонения. Статус изменится на «Спор».",
+        "reason_label": "Причина",
+        "reason_placeholder": "Минимум 10 символов",
+        "submit": "Отклонить"
       },
       "toasts": {
-        "error": "Не удалось загрузить"
-      }
+        "confirmed": "Услуга подтверждена",
+        "disputed": "Услуга отклонена",
+        "adjusted": "Сумма скорректирована",
+        "legal_sent": "Передано юристам",
+        "error": "Не удалось выполнить действие",
+        "load_error": "Не удалось загрузить",
+        "data_changed": "Данные изменились — обновите страницу"
+      },
+      "export": "Экспорт"
     },
     "freelancePayoutsList": {
-      "page_title": "Реестр выплат внештата",
-      "page_subtitle": "Управляемые периоды и реестры",
+      "page_title": "Реестр выплат",
+      "page_subtitle": "Выплаты исполнителям через Номинальный счёт",
       "breadcrumbs": {
         "home": "Главная",
         "freelance": "Внештат",
-        "payouts": "Выплаты"
+        "payouts": "Реестр выплат"
       },
       "actions": {
-        "create_register": "Создать реестр",
-        "approve": "Утвердить",
-        "send_to_payment": "Отправить в оплату",
-        "export": "Экспорт"
+        "export_csv": "Экспорт CSV",
+        "connect_nominal": "Номинальный счёт"
+      },
+      "alerts": {
+        "not_connected_title": "Сервис «Номинальный счёт» не подключён",
+        "not_connected_desc": "Выплаты не могут быть проведены. Подключите сервис в разделе интеграций.",
+        "not_connected_action": "Подключить",
+        "error_title": "Ошибка подключения к Номинальному счёту",
+        "error_desc": "Последняя ошибка: {message}"
+      },
+      "tabs": {
+        "pending": "Ожидают",
+        "processing": "В обработке",
+        "paid": "Выплачено",
+        "failed": "Ошибки"
       },
       "filters": {
-        "period": "Период",
-        "status": "Статус",
-        "store": "Магазин"
+        "freelancer": "Исполнитель",
+        "freelancer_placeholder": "Все исполнители",
+        "agent": "Агент",
+        "agent_placeholder": "Все агенты",
+        "date_range": "Период выплаты",
+        "store": "Объект",
+        "store_placeholder": "Все объекты"
       },
-      "status": {
-        "OPEN": "Открыт",
-        "READY": "Готов к утверждению",
-        "APPROVED": "Утверждён",
-        "PAYING": "В оплате",
-        "PAID": "Оплачен"
+      "kpi": {
+        "paid_total": "Всего выплачено",
+        "fee_total": "Комиссия",
+        "agent_total": "Агентам",
+        "pending_total": "В обработке"
       },
       "columns": {
-        "register_id": "№ реестра",
-        "period": "Период",
-        "stores": "Магазины",
-        "lines_count": "Записей",
-        "amount": "Сумма",
+        "payout_date": "Дата выплаты",
+        "freelancer": "Исполнитель",
+        "stores": "Объект(ы)",
+        "services_count": "Услуг",
+        "hours_total": "Часов",
+        "gross_amount": "Сумма брутто",
+        "nominal_fee": "Комиссия 5%",
+        "net_amount": "Сумма нетто",
+        "agent_commission": "Агентское",
         "status": "Статус"
       },
-      "summary": {
-        "total_amount": "Сумма к оплате",
-        "lines_total": "Записей",
-        "agents_total": "Агентов"
+      "fee_tooltip": "Комиссия Номинального счёта",
+      "menu": {
+        "download_act": "Скачать акт",
+        "open_details": "Открыть детали",
+        "retry": "Перезапустить"
+      },
+      "retry_dialog": {
+        "title": "Перезапустить выплату?",
+        "message": "Выплата будет повторно отправлена в Номинальный счёт. Убедитесь, что данные исполнителя корректны.",
+        "confirm": "Перезапустить"
+      },
+      "sheet": {
+        "title": "Детали выплаты",
+        "amount_card": "Сумма выплаты",
+        "gross": "Брутто",
+        "fee": "Комиссия НС",
+        "net": "Нетто",
+        "agent_commission": "Агентское",
+        "services_table": "Услуги в выплате",
+        "service_date": "Дата",
+        "service_store": "Объект",
+        "service_hours": "Часов",
+        "service_amount": "Сумма",
+        "documents_card": "Документы",
+        "closing_doc": "Закрывающий документ",
+        "nominal_ref": "Ссылка НС",
+        "history_card": "История попыток",
+        "attempt_at": "Попытка",
+        "attempt_status": "Статус",
+        "failure_reason": "Причина ошибки",
+        "no_history": "История пуста",
+        "retry_action": "Перезапустить",
+        "download_act": "Скачать акт"
       },
       "empty": {
-        "no_payouts": "Нет реестров за период"
+        "title": "Выплат пока не было",
+        "description": "Выплаты появятся после подтверждения услуг и ночного расчёта.",
+        "action": "Перейти к услугам"
       },
+      "notification_subscribe": "Уведомлять при появлении новых ошибок",
       "toasts": {
-        "approved": "Реестр утверждён",
-        "sent": "Отправлено в оплату",
-        "error": "Не удалось"
+        "retry_success": "Выплата поставлена в очередь повторно",
+        "retry_error": "Не удалось перезапустить выплату",
+        "export_success": "Экспорт запущен",
+        "doc_error": "Не удалось получить ссылку на документ"
       }
+    },
+    "actions": {
+      "create_register": "Создать реестр",
+      "approve": "Утвердить",
+      "send_to_payment": "Отправить в оплату",
+      "export": "Экспорт"
+    },
+    "filters": {
+      "period": "Период",
+      "status": "Статус",
+      "store": "Магаз��н"
+    },
+    "status": {
+      "OPEN": "Открыт",
+      "READY": "Готов к утверждению",
+      "APPROVED": "Утверждён",
+      "PAYING": "В оплате",
+      "PAID": "Оплачен"
+    },
+    "columns": {
+      "register_id": "№ реестра",
+      "period": "Период",
+      "stores": "Магазины",
+      "lines_count": "Записей",
+      "amount": "Сумма",
+      "status": "Статус"
+    },
+    "summary": {
+      "total_amount": "Сумма к оплате",
+      "lines_total": "Записей",
+      "agents_total": "Агентов"
+    },
+    "empty": {
+      "no_payouts": "Нет реестров за период"
+    },
+    "toasts": {
+      "approved": "Реестр утверждён",
+      "sent": "Отправлено в оплату",
+      "error": "Не удалось"
     },
     "freelanceBudgetLimits": {
       "page_title": "Лимиты бюджета на внештат",
-      "page_subtitle": "Настройка месячных лимитов на объекты",
+      "page_subtitle": "Настройка лимитов расходов на внештатных исполнителей по объектам",
       "breadcrumbs": {
         "home": "Главная",
         "freelance": "Внештат",
         "limits": "Лимиты"
       },
-      "actions": {
-        "set_default": "Задать по сети",
-        "save": "Сохранить",
-        "reset": "Сбросить"
+      "info_banner": "Лимиты предотвращают перерасход на внештатных исполнителей. При превышении блокируется согласование внутренних заявок (источник INTERNAL — независимо от того, платим мы или клиент сам). Для заявок из внешней HR-системы (EXTERNAL) лимиты только справочные, без блокировки.",
+      "tabs": {
+        "active": "Активные",
+        "expired": "Истёкшие"
       },
       "filters": {
+        "object": "Объект",
+        "object_placeholder": "Все объекты",
         "period": "Период",
-        "store_type": "Тип объекта"
+        "period_placeholder": "Все периоды",
+        "search_object": "Поиск объекта..."
+      },
+      "period": {
+        "DAY": "День",
+        "WEEK": "Неделя",
+        "MONTH": "Месяц",
+        "all": "Все"
       },
       "table": {
-        "columns": {
-          "object": "Объект",
-          "current_limit": "Текущий лимит",
-          "spent": "Потрачено",
-          "new_limit": "Новый лимит",
-          "diff": "Изменение"
-        }
+        "object": "Объект",
+        "period": "Период",
+        "limit": "Лимит",
+        "valid_from": "Действует с",
+        "valid_to": "Действует по",
+        "set_by": "Установил",
+        "usage": "Текущий статус",
+        "actions": "Действия"
       },
-      "presets": {
-        "by_revenue": "По выручке",
-        "by_size": "По площади",
-        "by_employees": "По штату",
-        "manual": "Вручную"
+      "indefinite": "Бессрочно",
+      "usage": {
+        "of": "из",
+        "indicative": "справочно по нормативам"
       },
-      "warning_overspent": "Объект уже превысил предложенный лимит",
+      "menu": {
+        "edit": "Изменить",
+        "terminate": "Завершить",
+        "history": "История изменений"
+      },
+      "terminate_dialog": {
+        "title": "Завершить лимит",
+        "message": "Действие лимита будет завершено сегодня. Новые заявки на этот объект и период не будут блокироваться.",
+        "confirm": "Завершить"
+      },
+      "sheet": {
+        "create_title": "Установить лимит",
+        "edit_title": "Изменить лимит",
+        "object_label": "Объект",
+        "object_placeholder": "Выберите объект",
+        "period_label": "Период",
+        "period_placeholder": "Выберите период",
+        "amount_label": "Лимит, ₽",
+        "valid_from_label": "Действует с",
+        "valid_to_label": "Действует по",
+        "valid_to_placeholder": "Без ограничения (необязательно)",
+        "submit_create": "Установить",
+        "submit_edit": "Сохранить"
+      },
+      "history_sheet": {
+        "title": "История изменений"
+      },
+      "empty": {
+        "no_limits_title": "Лимиты не настроены",
+        "no_limits_desc_regional": "Установите лимит, чтобы контролировать расходы на внештат по объектам.",
+        "no_limits_desc_supervisor": "Обратитесь к региональному директору для настройки лимитов."
+      },
+      "mobile_tab_placeholder": "Выберите вкладку",
+      "actions": {
+        "add": "+ Установить лимит"
+      },
+      "validation": {
+        "amount_required": "Укажите лимит",
+        "amount_positive": "Лимит должен быть больше нуля",
+        "valid_from_required": "Укажите дату начала",
+        "valid_to_after_from": "Дата окончания должна быть позже даты начала",
+        "duplicate": "Лимит для этого объекта и периода уже существует"
+      },
       "toasts": {
-        "saved": "Лимиты сохранены",
-        "error": "Не удалось"
-      }
+        "created": "Лимит установлен",
+        "updated": "Лимит обновлён",
+        "terminated": "Лимит завершён",
+        "error": "Не удалось выполнить действие"
+      },
+      "module_disabled": "Модуль внештата отключён"
     },
     "freelanceAgents": {
       "page_title": "Справочник агентов",
@@ -6049,109 +6393,355 @@
       "page_subtitle": "Доходы по периодам и реестрам",
       "filters": {
         "period": "Период",
-        "register": "Реестр"
-      },
-      "kpi": {
-        "total_amount": "Сумма",
-        "agent_fee": "Комиссия агента",
-        "to_freelancers": "К исполнителям",
-        "tax_withheld": "Удержано налогов"
-      },
-      "columns": {
-        "date": "Дата",
-        "service": "Услуга",
-        "freelancer": "Исполнитель",
-        "store": "Объект",
-        "amount": "Сумма",
-        "register": "Реестр"
-      },
-      "empty": {
-        "no_earnings": "Нет доходов за период"
-      }
-    },
-    "agentDocuments": {
-      "page_title": "Документы",
-      "page_subtitle": "Договоры, акты, отчёты",
-      "actions": {
-        "upload": "Загрузить",
-        "download": "Скачать"
-      },
-      "filters": {
-        "type": "��ип",
-        "year": "Год"
-      },
-      "columns": {
-        "title": "Название",
-        "type": "Тип",
-        "date": "Дата",
-        "size": "Размер",
-        "status": "Статус"
-      },
-      "type": {
-        "CONTRACT": "Договор",
-        "ACT": "Акт",
-        "INVOICE": "Счёт",
-        "REPORT": "Отчёт",
-        "OTHER": "Другое"
-      },
-      "status": {
-        "SIGNED": "Подписан",
-        "PENDING_SIGNATURE": "Ожидает подписи",
-        "DRAFT": "Черновик"
-      },
-      "empty": {
-        "no_documents": "Документов пока нет"
-      },
-      "toasts": {
-        "uploaded": "Документ загружен",
-        "error": "Не удалось"
-      }
-    },
-    "serviceNorms": {
-      "page_title": "Нормативы работ",
-      "page_subtitle": "Стандартные единицы и ставки для услуг",
-      "breadcrumbs": {
-        "home": "Главная",
-        "taxonomy": "Таксономия",
-        "norms": "Нормативы"
-      },
-      "actions": {
-        "create": "Создать норматив",
-        "import": "Импорт",
-        "export": "Экспорт"
-      },
-      "filters": {
-        "search": "Поиск",
-        "category": "Категория"
-      },
-      "columns": {
-        "code": "Код",
-        "name": "Название",
-        "unit": "Ед.",
-        "rate": "Ставка, ₽",
-        "norm_per_hour": "Норма/час",
-        "category": "Категория",
+        "limit": "Лимит",
+        "valid_from": "Действует с",
+        "valid_to": "Действует по",
+        "set_by": "Установил",
+        "usage": "Текущий статус",
         "actions": "Действия"
       },
-      "form": {
-        "code_label": "Код",
-        "name_label": "Название",
-        "unit_label": "Единица",
-        "rate_label": "Ставка, ₽",
-        "norm_per_hour_label": "Норма/час",
-        "category_label": "Категория",
-        "description_label": "Описание",
-        "submit": "Сохранить"
+      "indefinite": "Бессрочно",
+      "usage": {
+        "of": "из",
+        "indicative": "справочно по нормативам"
+      },
+      "menu": {
+        "edit": "Изменить",
+        "terminate": "Завершить",
+        "history": "История изменений"
+      },
+      "terminate_dialog": {
+        "title": "Завершить лимит",
+        "message": "Действие лимита будет завершено сегодня. Новые заявки на этот объект и период не будут блокироваться.",
+        "confirm": "Завершить"
+      },
+      "sheet": {
+        "create_title": "Установить лимит",
+        "edit_title": "Изменить лимит",
+        "object_label": "Объект",
+        "object_placeholder": "Выберите объект",
+        "period_label": "Период",
+        "period_placeholder": "Выберите период",
+        "amount_label": "Лимит, ₽",
+        "valid_from_label": "Действует с",
+        "valid_to_label": "Действует по",
+        "valid_to_placeholder": "Без ограничения (необязательно)",
+        "submit_create": "Установить",
+        "submit_edit": "Сохранить"
+      },
+      "history_sheet": {
+        "title": "История изменений"
       },
       "empty": {
-        "no_norms": "Нормативы пока не заданы",
-        "cta": "Создать первый"
+        "no_limits_title": "Лимиты не настроены",
+        "no_limits_desc_regional": "Установите лимит, чтобы контролировать расходы на внештат по объектам.",
+        "no_limits_desc_supervisor": "Обратитесь к региональному директору для настройки лимитов."
+      },
+      "mobile_tab_placeholder": "Выберите вкладку",
+      "actions": {
+        "add": "+ Установить лимит"
+      },
+      "validation": {
+        "amount_required": "Укажите лимит",
+        "amount_positive": "Лимит должен быть больше нуля",
+        "valid_from_required": "Укажите дату начала",
+        "valid_to_after_from": "Дата окончания должна быть позже даты начала",
+        "duplicate": "Лимит для этого объекта и периода уже существует"
       },
       "toasts": {
-        "saved": "Норматив сохранён",
-        "deleted": "Удалён",
-        "error": "Не удалось"
+        "created": "Лимит установлен",
+        "updated": "Лимит обновлён",
+        "terminated": "Лимит завершён",
+        "error": "Не удалось выполнить действие"
+      },
+      "module_disabled": "Модуль внештата отключён"
+    }
+  },
+  "freelanceBudgetLimits": {
+    "page_title": "Лимиты бюджета на внештат",
+    "page_subtitle": "Настройка месячных лимитов на объекты",
+    "breadcrumbs": {
+      "home": "Главная",
+      "freelance": "Внештат",
+      "limits": "Лимиты"
+    },
+    "actions": {
+      "set_default": "Задать по сети",
+      "save": "Сохранить",
+      "reset": "Сбросить"
+    },
+    "filters": {
+      "period": "Период",
+      "store_type": "Тип объекта"
+    },
+    "table": {
+      "columns": {
+        "object": "Объект",
+        "current_limit": "Текущий лимит",
+        "spent": "Потрачено",
+        "new_limit": "Новый лимит",
+        "diff": "Изменение"
       }
+    },
+    "presets": {
+      "by_revenue": "По выручке",
+      "by_size": "По площади",
+      "by_employees": "По штату",
+      "manual": "Вручную"
+    },
+    "warning_overspent": "Объект уже превысил предложенный лимит",
+    "toasts": {
+      "saved": "Лимиты сохранены",
+      "error": "Не удалось"
+    }
+  },
+  "freelanceAgents": {
+    "page_title": "Справочник агентов",
+    "page_subtitle": "Внешние агенты, обеспечивающие исполнителей",
+    "breadcrumbs": {
+      "home": "Главная",
+      "freelance": "Внештат",
+      "agents": "Агенты"
+    },
+    "actions": {
+      "new_agent": "Новый агент",
+      "export": "Экспорт"
+    },
+    "filters": {
+      "search": "Поиск",
+      "status": "Статус",
+      "tier": "Уровень"
+    },
+    "columns": {
+      "agent": "Агент",
+      "tier": "Уровень",
+      "performers": "Исполнителей",
+      "month_amount": "Оборот за месяц",
+      "rating": "Рейтинг",
+      "no_show_rate": "% невыходов",
+      "status": "Статус"
+    },
+    "tier": {
+      "BRONZE": "Бронза",
+      "SILVER": "Серебро",
+      "GOLD": "Золото",
+      "PLATINUM": "Платина"
+    },
+    "status": {
+      "ACTIVE": "Активен",
+      "PAUSED": "На паузе",
+      "BLOCKED": "Заблокирован"
+    },
+    "empty": {
+      "no_agents": "Агентов пока нет"
+    },
+    "toasts": {
+      "created": "Агент создан",
+      "error": "Не удалось"
+    }
+  },
+  "freelanceAgentDetail": {
+    "page_title": "Карточка агента",
+    "breadcrumbs": {
+      "home": "Главная",
+      "freelance": "Внештат",
+      "agents": "Агенты",
+      "detail": "Агент"
+    },
+    "tabs": {
+      "summary": "Обзор",
+      "performers": "Исполнители",
+      "services": "Услуги",
+      "payouts": "Выплаты",
+      "documents": "Документы",
+      "history": "История"
+    },
+    "kpi": {
+      "tier": "Уровень",
+      "rating": "Рейтинг",
+      "month_amount": "Оборот за месяц",
+      "no_show_rate": "% невыходов",
+      "total_performers": "Всего исполнителей",
+      "active_performers": "Активных"
+    },
+    "actions": {
+      "pause": "На паузу",
+      "block": "Заблокировать",
+      "edit": "Редактировать"
+    },
+    "block_dialog": {
+      "title": "Заблокировать агента?",
+      "reason_label": "Причина",
+      "confirm": "Заблокировать"
+    },
+    "toasts": {
+      "saved": "Сохранено",
+      "blocked": "Агент заблокирован",
+      "paused": "Агент на паузе",
+      "error": "Не удалось"
+    }
+  },
+  "agentDashboard": {
+    "page_title": "Кабинет агента",
+    "page_subtitle": "Сводка по вашим исполнителям",
+    "kpi": {
+      "active_performers": "Активных исполнителей",
+      "month_earnings": "Доход за месяц",
+      "pending_payouts": "Ожидают выплаты",
+      "no_show_count": "Невыходов за месяц"
+    },
+    "sections": {
+      "recent_services": "Последние услуги",
+      "alerts": "Уведомления",
+      "tier_progress": "Прогресс по уровню"
+    },
+    "tier_progress": {
+      "current_tier": "Текущий уровень",
+      "next_tier": "До {tier}",
+      "progress_label": "Оборот за квартал"
+    },
+    "alerts_empty": "Уведомлений нет"
+  },
+  "agentFreelancers": {
+    "page_title": "Мои исполнители",
+    "page_subtitle": "Список физлиц, работающих через вас",
+    "actions": {
+      "add": "Добавить",
+      "export": "Экспорт"
+    },
+    "filters": {
+      "search": "Поиск",
+      "status": "Статус"
+    },
+    "columns": {
+      "name": "ФИО",
+      "phone": "Телефон",
+      "stores": "Магазины",
+      "month_amount": "Доход за месяц",
+      "no_show_rate": "% невыходов",
+      "status": "Статус"
+    },
+    "status": {
+      "ACTIVE": "Активен",
+      "PAUSED": "На паузе",
+      "BLOCKED": "Заблокирован"
+    },
+    "empty": {
+      "no_freelancers": "Исполнителей пока нет",
+      "cta": "Добавить первого"
+    },
+    "toasts": {
+      "created": "Исполнитель добавлен",
+      "error": "Не удалось"
+    }
+  },
+  "agentEarnings": {
+    "page_title": "Реестр доходов",
+    "page_subtitle": "Доходы по периодам и реестрам",
+    "filters": {
+      "period": "Период",
+      "register": "Реестр"
+    },
+    "kpi": {
+      "total_amount": "Сумма",
+      "agent_fee": "Комиссия агента",
+      "to_freelancers": "К исполнителям",
+      "tax_withheld": "Удержано налогов"
+    },
+    "columns": {
+      "date": "Дата",
+      "service": "Услуга",
+      "freelancer": "Исполнитель",
+      "store": "Объект",
+      "amount": "Сумма",
+      "register": "Реестр"
+    },
+    "empty": {
+      "no_earnings": "Нет доходов за период"
+    }
+  },
+  "agentDocuments": {
+    "page_title": "Документы",
+    "page_subtitle": "Договоры, акты, отчёты",
+    "actions": {
+      "upload": "Загрузить",
+      "download": "Скачать"
+    },
+    "filters": {
+      "type": "��ип",
+      "year": "Год"
+    },
+    "columns": {
+      "title": "Название",
+      "type": "Тип",
+      "date": "Дата",
+      "size": "Размер",
+      "status": "Статус"
+    },
+    "type": {
+      "CONTRACT": "Договор",
+      "ACT": "Акт",
+      "INVOICE": "Счёт",
+      "REPORT": "Отчёт",
+      "OTHER": "Другое"
+    },
+    "status": {
+      "SIGNED": "Подписан",
+      "PENDING_SIGNATURE": "Ожидает подписи",
+      "DRAFT": "Черновик"
+    },
+    "empty": {
+      "no_documents": "Документов пока нет"
+    },
+    "toasts": {
+      "uploaded": "Документ загружен",
+      "error": "Не удалось"
+    }
+  },
+  "serviceNorms": {
+    "page_title": "Нормативы работ",
+    "page_subtitle": "Стандартные единицы и ставки для услуг",
+    "breadcrumbs": {
+      "home": "Главная",
+      "taxonomy": "Таксономия",
+      "norms": "Нормативы"
+    },
+    "actions": {
+      "create": "Создать норматив",
+      "import": "Импорт",
+      "export": "Экспорт"
+    },
+    "filters": {
+      "search": "Поиск",
+      "category": "Категория"
+    },
+    "columns": {
+      "code": "Код",
+      "name": "Название",
+      "unit": "Ед.",
+      "rate": "Ставка, ₽",
+      "norm_per_hour": "Норма/час",
+      "category": "Категория",
+      "actions": "Действия"
+    },
+    "form": {
+      "code_label": "Код",
+      "name_label": "Название",
+      "unit_label": "Единица",
+      "rate_label": "Ставка, ₽",
+      "norm_per_hour_label": "Норма/час",
+      "category_label": "Категория",
+      "description_label": "Описание",
+      "submit": "Сохранить"
+    },
+    "empty": {
+      "no_norms": "Нормативы пока не заданы",
+      "cta": "Создать первый"
+    },
+    "toasts": {
+      "saved": "Норматив сохранён",
+      "deleted": "Удалён",
+      "error": "Не удалось"
     }
   }
 }
