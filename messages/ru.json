@@ -1580,7 +1580,7 @@
         "change_position_title": "Сменить должность",
         "change_position_select": "Выберите должность",
         "change_position_warning": "При смене должности может измениться функциональная роль",
-        "transfer_store_title": "Перевести в магаз��н",
+        "transfer_store_title": "Перевести в ��агаз��н",
         "transfer_store_select": "Выберите магазин",
         "archive_title": "Архивировать сотрудника?",
         "archive_description": "Сотрудник будет скрыт из списков задач и смен. Это действие обратимо."
@@ -3792,7 +3792,63 @@
         "exported_csv": "Отчёт сохранён в CSV",
         "share_link_copied": "Ссылка скопирована",
         "export_failed": "Не удалось экспортировать отчёт"
-      }
+      },
+      "ai_banner": {
+        "text": "За месяц completion rate вырос на 2,1 п.п. за счёт улучшений в магазинах СПАР Томск. Слабая точка — return rate в Food City пр. Ленина 217 (8,2% при норме 5%). Возможные причины: новые сотрудники, недостаточно инструктажа.",
+        "suggestions_btn": "Предложения ИИ",
+        "ask_btn": "Спросить подробнее"
+      },
+      "period_banner": "Период: {from} — {to} · {scope} · Обновлено {updated_at}",
+      "sections": {
+        "kpi_overview": "Ключевые метрики",
+        "trends": "Динамика",
+        "breakdown": "Детализация",
+        "leaderboards": "Рейтинг сотрудников"
+      },
+      "trends": {
+        "completion_title": "Динамика выполнения",
+        "hours_title": "План vs Факт часы",
+        "completion_line": "Выполнение, %",
+        "on_time_line": "Вовремя, %",
+        "plan_line": "План",
+        "actual_line": "Факт",
+        "deviation_line": "Отклонение, %"
+      },
+      "breakdown": {
+        "work_type_title": "По типам работ",
+        "zone_title": "По зонам",
+        "click_hint": "Нажмите на столбец → задачи по типу работы",
+        "completion_label": "Выполнение"
+      },
+      "leaderboards": {
+        "top_title": "Топ-10 по продуктивности",
+        "support_title": "Нужна поддержка",
+        "support_hint": "Эти сотрудники могут вырасти при поддержке",
+        "col_rank": "#",
+        "col_employee": "Сотрудник",
+        "col_store": "Магазин",
+        "col_tasks": "Задач выполнено",
+        "col_completion": "Выполнение",
+        "col_returns": "Возвратов",
+        "col_score": "Рейтинг",
+        "col_strength": "Сильная сторона"
+      },
+      "toolbar": {
+        "export_btn": "Экспорт",
+        "compare_btn": "Сравнить магазины",
+        "all_stores": "Вся сеть",
+        "store_placeholder": "Магазин"
+      },
+      "ai_chart_tooltip": "Что значит этот график",
+      "ask_in_chat": "Подробнее в чате",
+      "forbidden_title": "Недостаточно прав",
+      "forbidden_desc": "Этот отчёт недоступен для вашей роли.",
+      "error_title": "Не удалось загрузить отчёт",
+      "error_desc": "Проверьте соединение и попробуйте снова.",
+      "period_updated": "Обновлено {date}",
+      "scope_network": "Вся сеть",
+      "custom_range_from": "С",
+      "custom_range_to": "По"
     },
     "reportsPlanFact": {
       "page_title": "План / Факт",

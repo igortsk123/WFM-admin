@@ -3791,7 +3791,63 @@
         "exported_csv": "Report saved as CSV",
         "share_link_copied": "Link copied",
         "export_failed": "Failed to export report"
-      }
+      },
+      "ai_banner": {
+        "text": "This month completion rate grew by 2.1 p.p. driven by improvements in SPAR Tomsk stores. Weak point — return rate at Food City Lenin Ave 217 (8.2% vs 5% norm). Possible causes: new staff, insufficient training.",
+        "suggestions_btn": "AI Suggestions",
+        "ask_btn": "Ask for details"
+      },
+      "period_banner": "Period: {from} — {to} · {scope} · Updated {updated_at}",
+      "sections": {
+        "kpi_overview": "Key metrics",
+        "trends": "Trends",
+        "breakdown": "Breakdown",
+        "leaderboards": "Employee leaderboard"
+      },
+      "trends": {
+        "completion_title": "Completion trends",
+        "hours_title": "Plan vs Actual hours",
+        "completion_line": "Completion, %",
+        "on_time_line": "On-time, %",
+        "plan_line": "Plan",
+        "actual_line": "Actual",
+        "deviation_line": "Deviation, %"
+      },
+      "breakdown": {
+        "work_type_title": "By work type",
+        "zone_title": "By zone",
+        "click_hint": "Click a bar → tasks by work type",
+        "completion_label": "Completion"
+      },
+      "leaderboards": {
+        "top_title": "Top 10 by productivity",
+        "support_title": "Needs support",
+        "support_hint": "These employees can grow with support",
+        "col_rank": "#",
+        "col_employee": "Employee",
+        "col_store": "Store",
+        "col_tasks": "Tasks completed",
+        "col_completion": "Completion",
+        "col_returns": "Returns",
+        "col_score": "Score",
+        "col_strength": "Strength"
+      },
+      "toolbar": {
+        "export_btn": "Export",
+        "compare_btn": "Compare stores",
+        "all_stores": "All stores",
+        "store_placeholder": "Store"
+      },
+      "ai_chart_tooltip": "What does this chart mean",
+      "ask_in_chat": "More in chat",
+      "forbidden_title": "Access denied",
+      "forbidden_desc": "This report is not available for your role.",
+      "error_title": "Failed to load report",
+      "error_desc": "Check your connection and try again.",
+      "period_updated": "Updated {date}",
+      "scope_network": "All stores",
+      "custom_range_from": "From",
+      "custom_range_to": "To"
     },
     "reportsPlanFact": {
       "page_title": "Plan / Actual",
