@@ -304,7 +304,7 @@
     "production_line": "Производственная линия"
   },
   "role": {
-    "title": "Роль",
+    "title": "Р��ль",
     "titlePlural": "Роли",
     "STORE_DIRECTOR": "Директор магазина",
     "SUPERVISOR": "Супервайзер",
@@ -587,7 +587,7 @@
     "today": "Сегодня",
     "yesterday": "Вчера",
     "tomorrow": "Завтра",
-    "days_ago": "{n, plural, one {# день назад} few {# дня назад} other {# дней назад}}"
+    "days_ago": "{n, plural, one {# день ��азад} few {# дня назад} other {# дней назад}}"
   },
   "store": {
     "title": "Магазин",
@@ -1269,7 +1269,7 @@
       "col_subtask": "Подзадача",
       "col_task": "Задача",
       "col_store": "Магазин",
-      "col_proposed_by": "Предл��жил",
+      "col_proposed_by": "Пр��дл��жил",
       "col_duration": "Длительность",
       "col_hints": "Подсказок",
       "col_created": "Создано",
@@ -3045,7 +3045,7 @@
         "col_op_time": "Нормативное время операции (мин)"
       },
       "legal": {
-        "title": "Юридические лица",
+        "title": "��ридические лица",
         "description": "Несколько юридических лиц внутри одной организации (для retail-сетей с несколькими ИП)",
         "add_entity": "Добавить юр.лицо",
         "col_name": "Название",
@@ -3337,7 +3337,7 @@
           "title": "Промо-активности",
           "description": "Календарь промо-акций, цены, планограммы. ИИ предлагает задачи по выкладке к старту промо.",
           "stat_active": "Активных промо",
-          "stat_tomorrow": "Стартует завтра",
+          "stat_tomorrow": "Стартует завт��а",
           "stat_today_end": "Заканчивается сегодня",
           "sheet_title": "Подключить промо"
         },
@@ -4564,7 +4564,7 @@
         "select_employee_placeholder": "Выберите сотрудника",
         "visible_now_title": "Видит сейчас (до закрытия плановых задач)",
         "visible_now_summary": "{sum} ₽ доступных бонусов на сегодня",
-        "visible_now_hint": "Конкретные задачи откроются после закрытия планового блока.",
+        "visible_now_hint": "Конкретные задачи откроютс�� после закрытия планового блока.",
         "after_planned_title": "Откроется после планового блока",
         "empty_no_bonuses": "Нет доступных бонусов для этого сотрудника"
       },
@@ -4590,7 +4590,7 @@
         "paid": "Выплачены"
       },
       "filters": {
-        "store_label": "Магазин",
+        "store_label": "Магази��",
         "all_stores": "Все"
       },
       "actions": {
@@ -4770,7 +4770,7 @@
         "bulk_hint": "Массовое одобрение = принять без редактирования. Если нужны правки — открывайте по одному."
       },
       "detail_panel": {
-        "empty_title": "Выберите предложение слева",
+        "empty_title": "Выберите пр��дложение слева",
         "empty_subtitle": "Откроется подробная информация и возможность редактирования",
         "what_proposed_section": "Что предлагается",
         "rationale_section": "Почему ИИ это предложил",
@@ -5075,7 +5075,7 @@
         },
         "period_label": "Период когда заметили",
         "details_label": "Подробнее",
-        "auto_attached_hint": "К сообщению автоматически приложатся метрики и последние 10 reject-комментариев",
+        "auto_attached_hint": "К сообщению автоматически приложатся метрики и последние 10 reject-комментари��в",
         "submit": "Отправить"
       },
       "empty": {
@@ -5214,7 +5214,7 @@
       "toasts": {
         "saved_draft": "Версия сохранена как черновик",
         "activated": "Версия активирована",
-        "rolled_back": "Откат выполнен",
+        "rolled_back": "От��ат выполнен",
         "generated": "Сгенерировано {count} вариантов",
         "ab_test_started": "A/B тест запущен",
         "ab_test_finished": "Тест завершён",
@@ -5238,7 +5238,7 @@
         "reviewed_share_title": "Доля проверяемых задач",
         "reviewed_share_value": "{percent}%",
         "reviewed_share_prev": "было {percent}%",
-        "reviewed_share_saved": "Сбережено: {hours} ч/мес",
+        "reviewed_share_saved": "��бережено: {hours} ч/мес",
         "defect_rate_title": "Defect rate",
         "defect_rate_value": "{percent}%",
         "defect_rate_hint": "Доля задач с проблемами, прошедших sampling"
@@ -5727,13 +5727,104 @@
       }
     },
     "freelancePayoutsList": {
-      "page_title": "Реестр выплат внештата",
-      "page_subtitle": "Управляемые периоды и реестры",
+      "page_title": "Реестр выплат",
+      "page_subtitle": "Выплаты исполнителям через Номинальный счёт",
       "breadcrumbs": {
         "home": "Главная",
         "freelance": "Внештат",
-        "payouts": "Выплаты"
+        "payouts": "Реестр выплат"
       },
+      "actions": {
+        "export_csv": "Экспорт CSV",
+        "connect_nominal": "Номинальный счёт"
+      },
+      "alerts": {
+        "not_connected_title": "Сервис «Номинальный счёт» не подключён",
+        "not_connected_desc": "Выплаты не могут быть проведены. Подключите сервис в разделе интеграций.",
+        "not_connected_action": "Подключить",
+        "error_title": "Ошибка подключения к Номинальному счёту",
+        "error_desc": "Последняя ошибка: {message}"
+      },
+      "tabs": {
+        "pending": "Ожидают",
+        "processing": "В обработке",
+        "paid": "Выплачено",
+        "failed": "Ошибки"
+      },
+      "filters": {
+        "freelancer": "Исполнитель",
+        "freelancer_placeholder": "Все исполнители",
+        "agent": "Агент",
+        "agent_placeholder": "Все агенты",
+        "date_range": "Период выплаты",
+        "store": "Объект",
+        "store_placeholder": "Все объекты"
+      },
+      "kpi": {
+        "paid_total": "Всего выплачено",
+        "fee_total": "Комиссия",
+        "agent_total": "Агентам",
+        "pending_total": "В обработке"
+      },
+      "columns": {
+        "payout_date": "Дата выплаты",
+        "freelancer": "Исполнитель",
+        "stores": "Объект(ы)",
+        "services_count": "Услуг",
+        "hours_total": "Часов",
+        "gross_amount": "Сумма брутто",
+        "nominal_fee": "Комиссия 5%",
+        "net_amount": "Сумма нетто",
+        "agent_commission": "Агентское",
+        "status": "Статус"
+      },
+      "fee_tooltip": "Комиссия Номинального счёта",
+      "menu": {
+        "download_act": "Скачать акт",
+        "open_details": "Открыть детали",
+        "retry": "Перезапустить"
+      },
+      "retry_dialog": {
+        "title": "Перезапустить выплату?",
+        "message": "Выплата будет повторно отправлена в Номинальный счёт. Убедитесь, что данные исполнителя корректны.",
+        "confirm": "Перезапустить"
+      },
+      "sheet": {
+        "title": "Детали выплаты",
+        "amount_card": "Сумма выплаты",
+        "gross": "Брутто",
+        "fee": "Комиссия НС",
+        "net": "Нетто",
+        "agent_commission": "Агентское",
+        "services_table": "Услуги в выплате",
+        "service_date": "Дата",
+        "service_store": "Объект",
+        "service_hours": "Часов",
+        "service_amount": "Сумма",
+        "documents_card": "Документы",
+        "closing_doc": "Закрывающий документ",
+        "nominal_ref": "Ссылка НС",
+        "history_card": "История попыток",
+        "attempt_at": "Попытка",
+        "attempt_status": "Статус",
+        "failure_reason": "Причина ошибки",
+        "no_history": "История пуста",
+        "retry_action": "Перезапустить",
+        "download_act": "Скачать акт"
+      },
+      "empty": {
+        "title": "Выплат пока не было",
+        "description": "Выплаты появятся после подтверждения услуг и ночного расчёта.",
+        "action": "Перейти к услугам"
+      },
+      "notification_subscribe": "Уведомлять при появлении новых ошибок",
+      "toasts": {
+        "retry_success": "Выплата поставлена в очередь повторно",
+        "retry_error": "Не удалось перезапустить выплату",
+        "export_success": "Экспорт запущен",
+        "doc_error": "Не удалось получить ссылку на документ"
+      }
+    },
       "actions": {
         "create_register": "Создать реестр",
         "approve": "Утвердить",
@@ -5743,7 +5834,7 @@
       "filters": {
         "period": "Период",
         "status": "Статус",
-        "store": "Магазин"
+        "store": "Магаз��н"
       },
       "status": {
         "OPEN": "Открыт",

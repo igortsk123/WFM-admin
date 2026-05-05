@@ -5726,51 +5726,102 @@
       }
     },
     "freelancePayoutsList": {
-      "page_title": "Freelance payouts registry",
-      "page_subtitle": "Managed payout periods and registries",
+      "page_title": "Payouts registry",
+      "page_subtitle": "Freelancer payouts via Nominal Account",
       "breadcrumbs": {
         "home": "Home",
         "freelance": "Freelance",
-        "payouts": "Payouts"
+        "payouts": "Payouts registry"
       },
       "actions": {
-        "create_register": "Create registry",
-        "approve": "Approve",
-        "send_to_payment": "Send to payment",
-        "export": "Export"
+        "export_csv": "Export CSV",
+        "connect_nominal": "Nominal Account"
+      },
+      "alerts": {
+        "not_connected_title": "Nominal Account service is not connected",
+        "not_connected_desc": "Payouts cannot be processed. Please connect the service in integrations.",
+        "not_connected_action": "Connect",
+        "error_title": "Nominal Account connection error",
+        "error_desc": "Last error: {message}"
+      },
+      "tabs": {
+        "pending": "Pending",
+        "processing": "Processing",
+        "paid": "Paid",
+        "failed": "Failed"
       },
       "filters": {
-        "period": "Period",
-        "status": "Status",
-        "store": "Store"
+        "freelancer": "Freelancer",
+        "freelancer_placeholder": "All freelancers",
+        "agent": "Agent",
+        "agent_placeholder": "All agents",
+        "date_range": "Payout date",
+        "store": "Object",
+        "store_placeholder": "All objects"
       },
-      "status": {
-        "OPEN": "Open",
-        "READY": "Ready to approve",
-        "APPROVED": "Approved",
-        "PAYING": "Paying",
-        "PAID": "Paid"
+      "kpi": {
+        "paid_total": "Total paid",
+        "fee_total": "Commission",
+        "agent_total": "To agents",
+        "pending_total": "In progress"
       },
       "columns": {
-        "register_id": "Registry #",
-        "period": "Period",
-        "stores": "Stores",
-        "lines_count": "Lines",
-        "amount": "Amount",
+        "payout_date": "Payout date",
+        "freelancer": "Freelancer",
+        "stores": "Object(s)",
+        "services_count": "Services",
+        "hours_total": "Hours",
+        "gross_amount": "Gross",
+        "nominal_fee": "5% fee",
+        "net_amount": "Net",
+        "agent_commission": "Agent fee",
         "status": "Status"
       },
-      "summary": {
-        "total_amount": "Total amount",
-        "lines_total": "Lines",
-        "agents_total": "Agents"
+      "fee_tooltip": "Nominal Account commission",
+      "menu": {
+        "download_act": "Download act",
+        "open_details": "Open details",
+        "retry": "Retry"
+      },
+      "retry_dialog": {
+        "title": "Retry payout?",
+        "message": "The payout will be re-submitted to Nominal Account. Ensure freelancer details are correct.",
+        "confirm": "Retry"
+      },
+      "sheet": {
+        "title": "Payout details",
+        "amount_card": "Payout amount",
+        "gross": "Gross",
+        "fee": "Nominal Account fee",
+        "net": "Net",
+        "agent_commission": "Agent commission",
+        "services_table": "Services in payout",
+        "service_date": "Date",
+        "service_store": "Object",
+        "service_hours": "Hours",
+        "service_amount": "Amount",
+        "documents_card": "Documents",
+        "closing_doc": "Closing document",
+        "nominal_ref": "Nominal Account ref",
+        "history_card": "Attempt history",
+        "attempt_at": "Attempt",
+        "attempt_status": "Status",
+        "failure_reason": "Failure reason",
+        "no_history": "No history",
+        "retry_action": "Retry",
+        "download_act": "Download act"
       },
       "empty": {
-        "no_payouts": "No registries for the period"
+        "title": "No payouts yet",
+        "description": "Payouts will appear after service confirmation and nightly calculation.",
+        "action": "Go to services"
       },
+      "notification_subscribe": "Notify on new errors",
       "toasts": {
-        "approved": "Registry approved",
-        "sent": "Sent to payment",
-        "error": "Failed"
+        "retry_success": "Payout queued for retry",
+        "retry_error": "Failed to retry payout",
+        "export_success": "Export started",
+        "doc_error": "Failed to get document link"
       }
     },
     "freelanceBudgetLimits": {
