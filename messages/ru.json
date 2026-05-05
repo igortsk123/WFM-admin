@@ -175,7 +175,7 @@
     "ai": "ИИ-аналитика",
     "aiChat": "ИИ-чат",
     "aiSuggestions": "Предложения ИИ",
-    "documents": "Документы",
+    "documents": "Докуме��ты",
     "help": "Помощь",
     "users": "Пользователи",
     "reports": "Отчёты",
@@ -587,7 +587,7 @@
     "today": "Сегодня",
     "yesterday": "Вчера",
     "tomorrow": "Завтра",
-    "days_ago": "{n, plural, one {# день назад} few {# дня назад} other {# дней назад}}"
+    "days_ago": "{n, plural, one {# день наза��} few {# дня назад} other {# дней назад}}"
   },
   "store": {
     "title": "Магазин",
@@ -1269,7 +1269,7 @@
       "col_subtask": "Подзадача",
       "col_task": "Задача",
       "col_store": "Магазин",
-      "col_proposed_by": "Предл��жил",
+      "col_proposed_by": "Пр��дл��жил",
       "col_duration": "Длительность",
       "col_hints": "Подсказок",
       "col_created": "Создано",
@@ -1572,7 +1572,7 @@
         "download": "Скачать"
       },
       "dialogs": {
-        "edit_profile_title": "Редактировать профиль",
+        "edit_profile_title": "Редактировать ��рофиль",
         "edit_profile_name": "ФИО",
         "edit_profile_first_name": "Имя",
         "edit_profile_last_name": "Фамилия",
@@ -2325,7 +2325,7 @@
       "toast": {
         "marked_late": "Опоздание зафиксировано",
         "marked_overtime": "Переработка зафиксирована",
-        "force_closed": "Смена закрыта",
+        "force_closed": "Смена ��акрыта",
         "cancelled": "Смена отменена",
         "saved": "Сохранено",
         "error": "Не удалось выполнить операцию"
@@ -2650,7 +2650,7 @@
       "empty": {
         "no_hints_title": "Подсказок пока нет",
         "no_hints_subtitle": "Добавьте первую подсказку",
-        "no_hints_cta": "Создать подсказку",
+        "no_hints_cta": "Создать по��сказку",
         "filtered_title": "Никого не найдено",
         "filtered_reset": "Сбросить фильтры"
       },
@@ -3337,7 +3337,7 @@
           "title": "Промо-активности",
           "description": "Календарь промо-акций, цены, планограммы. ИИ предлагает задачи по выкладке к старту промо.",
           "stat_active": "Активных промо",
-          "stat_tomorrow": "Стартует завтра",
+          "stat_tomorrow": "Стартует завт��а",
           "stat_today_end": "Заканчивается сегодня",
           "sheet_title": "Подключить промо"
         },
@@ -4564,7 +4564,7 @@
         "select_employee_placeholder": "Выберите сотрудника",
         "visible_now_title": "Видит сейчас (до закрытия плановых задач)",
         "visible_now_summary": "{sum} ₽ доступных бонусов на сегодня",
-        "visible_now_hint": "Конкретные задачи откроются после закрытия планового блока.",
+        "visible_now_hint": "Конкретные задачи откроютс�� после закрытия планового блока.",
         "after_planned_title": "Откроется после планового блока",
         "empty_no_bonuses": "Нет доступных бонусов для этого сотрудника"
       },
@@ -5214,7 +5214,7 @@
       "toasts": {
         "saved_draft": "Версия сохранена как черновик",
         "activated": "Версия активирована",
-        "rolled_back": "Откат выполнен",
+        "rolled_back": "От��ат выполнен",
         "generated": "Сгенерировано {count} вариантов",
         "ab_test_started": "A/B тест запущен",
         "ab_test_finished": "Тест завершён",
@@ -5589,6 +5589,8 @@
       "form": {
         "store_label": "Объект",
         "store_placeholder": "Выберите магазин/цех",
+        "store_search_placeholder": "Поиск объекта...",
+        "store_empty": "Объекты не найдены",
         "service_label": "Услуга",
         "service_placeholder": "Выберите услугу",
         "quantity_label": "Количество (часы/штуки)",
@@ -5598,27 +5600,64 @@
         "agent_label": "Агент",
         "agent_optional": "Опционально",
         "comment_label": "Комментарий",
+        "comment_placeholder": "Опишите контекст: почему нужен внештат, какие задачи планируются",
+        "date_label": "Дата выхода",
+        "date_placeholder": "Выберите дату",
         "date_from_label": "С",
         "date_to_label": "По",
-        "submit": "Отправить на согласование",
+        "hours_label": "Запрошено часов",
+        "work_type_label": "Тип работ",
+        "work_type_placeholder": "Выберите тип работ",
+        "work_type_search_placeholder": "Поиск типа работ...",
+        "work_type_empty": "Типы работ не найдены",
+        "submit": "Создать заявку",
         "save_draft": "Сохранить черновик",
-        "cancel": "Отмена"
+        "cancel": "Отмена",
+        "urgent_label": "Срочная",
+        "retroactive_label": "Задним числом"
+      },
+      "cost_section": {
+        "title": "Стоимость и бюджет",
+        "formula": "{hours} ч × {rate} ₽/ч = {total} ₽",
+        "client_direct_hint": "справочно по нормативам",
+        "budget_month_label": "Бюджет за месяц",
+        "budget_usage": "Потрачено {spent} ₽ из {limit} ₽ ({pct}%)",
+        "no_norms": "Норматив не найден для выбранного типа работ"
       },
       "validation": {
         "store_required": "Выберите объект",
         "service_required": "Выберите услугу",
         "amount_min": "Минимум 1 ₽",
-        "date_invalid": "Дата окончания должна быть позже начала"
+        "date_invalid": "Дата окончания должна быть позже начала",
+        "date_required": "Укажите дату выхода",
+        "date_too_early": "Заявку нужно подавать минимум за 3 дня",
+        "hours_required": "Укажите количество часов",
+        "hours_min": "Минимум 0.5 часа",
+        "hours_max": "Максимум 24 часа",
+        "work_type_required": "Выберите тип работ"
+      },
+      "alerts": {
+        "store_director_too_early_title": "Слишком ранняя заявка",
+        "store_director_too_early_desc": "Заявку нужно подавать минимум за 3 дня. Срочные заявки оформляет супервайзер.",
+        "urgent_title": "Срочная заявка",
+        "urgent_desc": "Будет помечена как «Срочная»",
+        "retroactive_title": "Заявка задним числом",
+        "retroactive_desc": "Будет создана сразу в статусе APPROVED_FULL для отчётности",
+        "no_budget_title": "Лимиты бюджета не настроены",
+        "no_budget_desc": "Для выбранного объекта нет лимитов. Настройте лимиты перед созданием заявки.",
+        "no_budget_link": "Настроить лимиты"
       },
       "budget_warning": {
         "title": "Превышение бюджета",
         "description": "Заявка превысит лимит бюджета объекта на {amount} ₽"
       },
       "toasts": {
-        "submitted": "Заявка отправлена на согласование",
+        "submitted": "Заявка создана и отправлена на согласование",
+        "retroactive": "Заявка зафиксирована задним числом",
         "draft_saved": "Черновик сохранён",
         "error": "Не удалось создать заявку"
-      }
+      },
+      "module_disabled": "Модуль внештата отключён"
     },
     "freelanceApplicationDetail": {
       "page_title": "Заявка на внештат",
@@ -5985,7 +6024,7 @@
         "download": "Скачать"
       },
       "filters": {
-        "type": "Тип",
+        "type": "��ип",
         "year": "Год"
       },
       "columns": {
