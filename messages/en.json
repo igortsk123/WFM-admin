@@ -3416,6 +3416,103 @@
         "csv_done": "CSV ready",
         "max_rows_warning": "Too many records — refine filters (max 10,000 rows at a time)"
       }
+    },
+    "reportsKpi": {
+      "page_title": "KPI report",
+      "page_subtitle": "Network and store performance",
+      "breadcrumbs": {
+        "home": "Home",
+        "reports": "Reports",
+        "kpi": "KPI"
+      },
+      "actions": {
+        "export_xlsx": "Export XLSX",
+        "export_csv": "Export CSV",
+        "share": "Share",
+        "compare": "Compare with previous period"
+      },
+      "filters": {
+        "period_label": "Period",
+        "store_label": "Store",
+        "all_stores": "Whole network",
+        "from": "From",
+        "to": "To",
+        "compare_with": "Compare with",
+        "previous_period": "Previous period",
+        "previous_year": "Same period last year",
+        "apply": "Apply",
+        "reset": "Reset"
+      },
+      "period": {
+        "week": "Week",
+        "month": "Month",
+        "quarter": "Quarter",
+        "year": "Year",
+        "custom": "Custom"
+      },
+      "scope": {
+        "network": "Network",
+        "store": "Store"
+      },
+      "metrics": {
+        "completion_rate": "Task completion",
+        "return_rate": "Returned for rework",
+        "on_time_rate": "On-time completion",
+        "hours_plan": "Planned hours",
+        "hours_actual": "Actual hours",
+        "fot_ratio": "Payroll actual / plan"
+      },
+      "metric_card": {
+        "vs_prev": "vs previous period",
+        "no_change": "no change",
+        "view_details": "Details"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "performers": "Performers",
+        "by_work_type": "By work type",
+        "by_zone": "By zone"
+      },
+      "performers": {
+        "top_title": "Top performers",
+        "top_subtitle": "Best by task completion over the period",
+        "needs_support_title": "Needs support",
+        "needs_support_subtitle": "Employees with low performance",
+        "columns": {
+          "rank": "#",
+          "name": "Employee",
+          "store": "Store",
+          "completion_rate": "Completion",
+          "tasks_completed": "Tasks",
+          "on_time_rate": "On-time",
+          "rating": "Rating"
+        },
+        "row_actions": {
+          "open_profile": "Open profile",
+          "set_goal": "Set goal"
+        }
+      },
+      "dimension": {
+        "by_work_type_title": "Performance by work type",
+        "by_zone_title": "Performance by zone",
+        "columns": {
+          "label": "Name",
+          "completion_rate": "Completion, %",
+          "tasks_total": "Tasks total",
+          "on_time_rate": "On-time, %"
+        }
+      },
+      "empty": {
+        "no_data_title": "No data for the selected period",
+        "no_data_subtitle": "Try a wider period or pick a different store",
+        "loading": "Calculating metrics…"
+      },
+      "toasts": {
+        "exported_xlsx": "Report saved as XLSX",
+        "exported_csv": "Report saved as CSV",
+        "share_link_copied": "Link copied",
+        "export_failed": "Failed to export report"
+      }
     }
   }
 }

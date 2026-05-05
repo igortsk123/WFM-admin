@@ -10,6 +10,9 @@ import {
   MOCK_KPI_STORE_4,
   MOCK_KPI_STORE_7,
   type KpiReport,
+  type KpiMetric,
+  type KpiPerformer,
+  type KpiByDimension,
 } from "@/lib/mock-data/reports-kpi";
 import { MOCK_PLAN_FACT, type PlanFactSummary } from "@/lib/mock-data/reports-plan-fact";
 import { MOCK_STORE_COMPARE, type StoreCompareReport } from "@/lib/mock-data/reports-compare";
@@ -29,7 +32,14 @@ export interface ReportParams {
   to?: string;
 }
 
-export type { KpiReport as KpiReportData, PlanFactSummary as PlanFactReportData, StoreCompareReport as StoreCompareReportData };
+export type {
+  KpiReport as KpiReportData,
+  KpiMetric,
+  KpiPerformer,
+  KpiByDimension,
+  PlanFactSummary as PlanFactReportData,
+  StoreCompareReport as StoreCompareReportData,
+};
 
 // ═══════════════════════════════════════════════════════════════════
 // KPI REPORT
