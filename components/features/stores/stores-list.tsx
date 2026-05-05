@@ -519,7 +519,7 @@ function StoreDialog({ open, onOpenChange, store, onSuccess }: StoreDialogProps)
           {/* Object type */}
           <div className="grid gap-1.5">
             <Label>{t("dialogs.fields.object_type")}</Label>
-            <Select value={objectType} onValueChange={setObjectType}>
+            <Select value={objectType} onValueChange={(v) => setObjectType(v as typeof objectType)}>
               <SelectTrigger className="h-9">
                 <SelectValue />
               </SelectTrigger>
@@ -1316,7 +1316,9 @@ export function StoresList() {
           confirmLabel={t("dialogs.archive_confirm")}
           cancelLabel={t("dialogs.cancel")}
           variant="destructive"
-          onConfirm={() => archivingId !== null && handleArchiveSingle(archivingId)}
+          onConfirm={() => {
+            if (archivingId !== null) handleArchiveSingle(archivingId);
+          }}
           onOpenChange={(open) => !open && setArchivingId(null)}
         />
       </AlertDialog>

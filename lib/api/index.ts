@@ -131,6 +131,7 @@ export {
 export {
   type ShiftListParams,
   type ShiftDetail,
+  type ShiftHistoryEvent,
   type ScheduleView,
   type ScheduleParams,
   type ScheduleSlot,
@@ -141,6 +142,11 @@ export {
   getSchedule,
   reopenShift,
   forceCloseShift,
+  // Shift-detail actions (chat 29)
+  getShiftHistory,
+  markShiftLate,
+  markShiftOvertime,
+  cancelShift,
 } from "./shifts";
 
 // ═══════════════════════════════════════════════════════════════════

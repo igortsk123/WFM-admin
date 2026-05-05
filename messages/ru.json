@@ -179,7 +179,8 @@
     "users": "Пользователи",
     "reports": "Отчёты",
     "organization": "Организация",
-    "employee_new": "Добавить сотрудника"
+    "employee_new": "Добавить сотрудника",
+    "shift_detail_demo": "Смена (демо)"
   },
   "task": {
     "title": "Задача",
@@ -2202,6 +2203,126 @@
         "force_close_warning_title": "Закрыть смену принудительно?",
         "force_close_warning_description": "Смена {user} будет помечена как закрытая системой. Сотрудник получит уведомление.",
         "force_close_warning_action": "Закрыть смену"
+      }
+    },
+    "shiftDetail": {
+      "page_title": "Смена",
+      "breadcrumbs": {
+        "home": "Главная",
+        "schedule": "Расписание",
+        "shift": "Смена #{id}"
+      },
+      "hero": {
+        "store": "Магазин",
+        "zone": "Зона",
+        "position": "Должность",
+        "time_range": "{from}–{to}",
+        "today": "Сегодня",
+        "tomorrow": "Завтра",
+        "yesterday": "Вчера"
+      },
+      "kpi": {
+        "planned_min": "План (мин)",
+        "actual_min": "Факт (мин)",
+        "late_min": "Опоздание (мин)",
+        "overtime_min": "Переработка (мин)",
+        "tasks_completed": "Задач завершено"
+      },
+      "tabs": {
+        "overview": "Обзор",
+        "tasks": "Задачи",
+        "zones": "Зоны",
+        "breaks": "Перерывы",
+        "history": "История"
+      },
+      "overview": {
+        "general_info": "Общая информация",
+        "user_label": "Сотрудник",
+        "store_label": "Магазин",
+        "zone_label": "Зона",
+        "position_label": "Должность",
+        "status_label": "Статус",
+        "planned_label": "План",
+        "actual_label": "Факт",
+        "late_reason_label": "Причина опоздания",
+        "overtime_reason_label": "Причина переработки",
+        "no_late_reason": "Не указана",
+        "no_overtime_reason": "Не указана"
+      },
+      "tasks": {
+        "col_title": "Задача",
+        "col_state": "Статус",
+        "col_review": "Проверка",
+        "col_planned": "План (мин)",
+        "col_actual": "Факт (мин)",
+        "col_completed_at": "Завершена",
+        "empty": "В эту смену работник не выполнял задач"
+      },
+      "zones": {
+        "col_zone": "Зона",
+        "col_minutes": "Минут",
+        "no_breakdown": "Нет распределения по зонам"
+      },
+      "breaks": {
+        "col_from": "Начало",
+        "col_to": "Конец",
+        "col_type": "Тип",
+        "type_lunch": "Обед",
+        "type_rest": "Перерыв",
+        "type_custom": "Прочее",
+        "no_breaks": "Перерывы не зафиксированы"
+      },
+      "history": {
+        "type_OPENED": "Открыта",
+        "type_PAUSED": "Приостановлена",
+        "type_RESUMED": "Возобновлена",
+        "type_CLOSED": "Закрыта",
+        "type_LATE_MARKED": "Зафиксировано опоздание",
+        "type_OVERTIME_ADDED": "Зафиксирована переработка",
+        "type_FORCE_CLOSED": "Принудительно закрыта",
+        "type_CANCELLED": "Отменена",
+        "by_label": "Кем",
+        "empty": "История пуста"
+      },
+      "actions": {
+        "mark_late": "Зафиксировать опоздание",
+        "mark_overtime": "Зафиксировать переработку",
+        "force_close": "Принудительно закрыть",
+        "cancel_shift": "Отменить смену",
+        "sync_lama": "Синхронизировать LAMA",
+        "more": "Ещё"
+      },
+      "dialogs": {
+        "mark_late_title": "Зафиксировать опоздание",
+        "mark_late_label": "Причина опоздания",
+        "mark_late_placeholder": "Например: задержка транспорта",
+        "mark_late_confirm": "Сохранить",
+        "mark_overtime_title": "Зафиксировать переработку",
+        "mark_overtime_label": "Причина переработки",
+        "mark_overtime_placeholder": "Например: дополнительная задача",
+        "mark_overtime_confirm": "Сохранить",
+        "force_close_title": "Закрыть смену принудительно?",
+        "force_close_description": "Смена будет помечена как закрытая системой. Сотрудник получит уведомление.",
+        "force_close_confirm": "Закрыть смену",
+        "cancel_shift_title": "Отменить смену?",
+        "cancel_shift_label": "Причина отмены",
+        "cancel_shift_warning": "Действие необратимо. Смена не появится в расписании.",
+        "cancel_shift_confirm": "Отменить смену"
+      },
+      "states": {
+        "not_found_title": "Смена не найдена",
+        "not_found_subtitle": "Смена с ID {id} не существует или была удалена",
+        "forbidden_title": "Нет доступа",
+        "forbidden_subtitle": "У вас нет прав на просмотр этой смены",
+        "error_retry": "Повторить"
+      },
+      "toast": {
+        "marked_late": "Опоздание зафиксировано",
+        "marked_overtime": "Переработка зафиксирована",
+        "force_closed": "Смена закрыта",
+        "cancelled": "Смена отменена",
+        "saved": "Сохранено",
+        "error": "Не удалось выполнить операцию"
       }
     }
   }

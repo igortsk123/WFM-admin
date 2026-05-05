@@ -179,7 +179,8 @@
     "users": "Users",
     "reports": "Reports",
     "organization": "Organisation",
-    "employee_new": "Add employee"
+    "employee_new": "Add employee",
+    "shift_detail_demo": "Shift (demo)"
   },
   "task": {
     "title": "Task",
@@ -2202,6 +2203,126 @@
         "force_close_warning_title": "Force-close shift?",
         "force_close_warning_description": "{user}'s shift will be marked as system-closed. The employee will be notified.",
         "force_close_warning_action": "Close shift"
+      }
+    },
+    "shiftDetail": {
+      "page_title": "Shift",
+      "breadcrumbs": {
+        "home": "Home",
+        "schedule": "Schedule",
+        "shift": "Shift #{id}"
+      },
+      "hero": {
+        "store": "Store",
+        "zone": "Zone",
+        "position": "Position",
+        "time_range": "{from}–{to}",
+        "today": "Today",
+        "tomorrow": "Tomorrow",
+        "yesterday": "Yesterday"
+      },
+      "kpi": {
+        "planned_min": "Planned (min)",
+        "actual_min": "Actual (min)",
+        "late_min": "Late (min)",
+        "overtime_min": "Overtime (min)",
+        "tasks_completed": "Tasks done"
+      },
+      "tabs": {
+        "overview": "Overview",
+        "tasks": "Tasks",
+        "zones": "Zones",
+        "breaks": "Breaks",
+        "history": "History"
+      },
+      "overview": {
+        "general_info": "General info",
+        "user_label": "Employee",
+        "store_label": "Store",
+        "zone_label": "Zone",
+        "position_label": "Position",
+        "status_label": "Status",
+        "planned_label": "Plan",
+        "actual_label": "Actual",
+        "late_reason_label": "Late reason",
+        "overtime_reason_label": "Overtime reason",
+        "no_late_reason": "Not provided",
+        "no_overtime_reason": "Not provided"
+      },
+      "tasks": {
+        "col_title": "Task",
+        "col_state": "State",
+        "col_review": "Review",
+        "col_planned": "Planned (min)",
+        "col_actual": "Actual (min)",
+        "col_completed_at": "Completed",
+        "empty": "No tasks performed during this shift"
+      },
+      "zones": {
+        "col_zone": "Zone",
+        "col_minutes": "Minutes",
+        "no_breakdown": "No zone breakdown available"
+      },
+      "breaks": {
+        "col_from": "From",
+        "col_to": "To",
+        "col_type": "Type",
+        "type_lunch": "Lunch",
+        "type_rest": "Rest",
+        "type_custom": "Other",
+        "no_breaks": "No breaks recorded"
+      },
+      "history": {
+        "type_OPENED": "Opened",
+        "type_PAUSED": "Paused",
+        "type_RESUMED": "Resumed",
+        "type_CLOSED": "Closed",
+        "type_LATE_MARKED": "Late marked",
+        "type_OVERTIME_ADDED": "Overtime added",
+        "type_FORCE_CLOSED": "Force-closed",
+        "type_CANCELLED": "Cancelled",
+        "by_label": "By",
+        "empty": "History is empty"
+      },
+      "actions": {
+        "mark_late": "Mark as late",
+        "mark_overtime": "Mark overtime",
+        "force_close": "Force close",
+        "cancel_shift": "Cancel shift",
+        "sync_lama": "Sync LAMA",
+        "more": "More"
+      },
+      "dialogs": {
+        "mark_late_title": "Mark shift as late",
+        "mark_late_label": "Late reason",
+        "mark_late_placeholder": "E.g. transport delay",
+        "mark_late_confirm": "Save",
+        "mark_overtime_title": "Mark overtime",
+        "mark_overtime_label": "Overtime reason",
+        "mark_overtime_placeholder": "E.g. extra task",
+        "mark_overtime_confirm": "Save",
+        "force_close_title": "Force-close the shift?",
+        "force_close_description": "The shift will be marked as system-closed. Employee will be notified.",
+        "force_close_confirm": "Close shift",
+        "cancel_shift_title": "Cancel shift?",
+        "cancel_shift_label": "Cancel reason",
+        "cancel_shift_warning": "Irreversible. The shift won't appear in the schedule.",
+        "cancel_shift_confirm": "Cancel shift"
+      },
+      "states": {
+        "not_found_title": "Shift not found",
+        "not_found_subtitle": "Shift with ID {id} does not exist or has been removed",
+        "forbidden_title": "Access denied",
+        "forbidden_subtitle": "You don't have permission to view this shift",
+        "error_retry": "Retry"
+      },
+      "toast": {
+        "marked_late": "Late marked",
+        "marked_overtime": "Overtime marked",
+        "force_closed": "Shift closed",
+        "cancelled": "Shift cancelled",
+        "saved": "Saved",
+        "error": "Operation failed"
       }
     }
   }
