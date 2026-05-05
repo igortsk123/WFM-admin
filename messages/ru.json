@@ -175,7 +175,7 @@
     "ai": "ИИ-аналитика",
     "aiChat": "ИИ-чат",
     "aiSuggestions": "Предложения ИИ",
-    "documents": "Документы",
+    "documents": "Докуме��ты",
     "help": "Помощь",
     "users": "Пользователи",
     "reports": "Отчёты",
@@ -587,7 +587,7 @@
     "today": "Сегодня",
     "yesterday": "Вчера",
     "tomorrow": "Завтра",
-    "days_ago": "{n, plural, one {# день назад} few {# дня назад} other {# дней назад}}"
+    "days_ago": "{n, plural, one {# день наза��} few {# дня назад} other {# дней назад}}"
   },
   "store": {
     "title": "Магазин",
@@ -1269,7 +1269,7 @@
       "col_subtask": "Подзадача",
       "col_task": "Задача",
       "col_store": "Магазин",
-      "col_proposed_by": "Предл��жил",
+      "col_proposed_by": "Пр��дл��жил",
       "col_duration": "Длительность",
       "col_hints": "Подсказок",
       "col_created": "Создано",
@@ -1759,7 +1759,7 @@
         "position": "Должность и магазин",
         "position_sub": "Где и кем работает",
         "permissions": "Привилегии",
-        "permissions_sub": "Компетенции работника",
+        "permissions_sub": "Компетенции работ��ика",
         "invite": "Приглашение",
         "invite_sub": "Способ отправки"
       },
@@ -2562,7 +2562,7 @@
         "no_positions_title": "Должностей пока нет",
         "no_positions_subtitle": "Создайте первую должность",
         "no_positions_cta": "Добавить должность",
-        "filtered_title": "Никого не найдено",
+        "filtered_title": "Никого не ��айдено",
         "filtered_reset": "Сбросить фильтры"
       },
       "toasts": {
@@ -2895,7 +2895,7 @@
           "totp_setup_secret_hint": "Секрет для ручного ввода в приложение",
           "totp_setup_scan_hint": "Отсканируйте QR-код в Yandex Key, Authy или FreeOTP",
           "totp_setup_next": "Далее",
-          "totp_setup_enter_code": "Введите 6-значный код из приложения",
+          "totp_setup_enter_code": "Введите 6-зн��чный код из приложения",
           "totp_setup_confirm": "Подтвердить",
           "totp_backup_warning": "Сохраните резервные коды — они показываются только один раз",
           "totp_backup_done": "Готово",
@@ -2903,7 +2903,7 @@
           "totp_disable_description": "Введите текущий код из приложения для подтверждения",
           "sessions_card": "Активные сессии",
           "session_current": "Текущая сессия",
-          "session_revoke": "Завершить",
+          "session_revoke": "Завершит��",
           "session_revoke_all": "Завершить все остальные",
           "session_revoke_all_confirm_title": "Завершить все остальные сессии?",
           "session_revoke_all_confirm_message": "Все другие устройства будут выведены из аккаунта"
@@ -3337,7 +3337,7 @@
           "title": "Промо-активности",
           "description": "Календарь промо-акций, цены, планограммы. ИИ предлагает задачи по выкладке к старту промо.",
           "stat_active": "Активных промо",
-          "stat_tomorrow": "Стартует завтра",
+          "stat_tomorrow": "Стартует завт��а",
           "stat_today_end": "Заканчивается сегодня",
           "sheet_title": "Подключить промо"
         },
@@ -4564,7 +4564,7 @@
         "select_employee_placeholder": "Выберите сотрудника",
         "visible_now_title": "Видит сейчас (до закрытия плановых задач)",
         "visible_now_summary": "{sum} ₽ доступных бонусов на сегодня",
-        "visible_now_hint": "Конкретные задачи откроются после закрытия планового блока.",
+        "visible_now_hint": "Конкретные задачи откроютс�� после закрытия планового блока.",
         "after_planned_title": "Откроется после планового блока",
         "empty_no_bonuses": "Нет доступных бонусов для этого сотрудника"
       },
@@ -4590,7 +4590,7 @@
         "paid": "Выплачены"
       },
       "filters": {
-        "store_label": "Магазин",
+        "store_label": "Магази��",
         "all_stores": "Все"
       },
       "actions": {
@@ -4770,7 +4770,7 @@
         "bulk_hint": "Массовое одобрение = принять без редактирования. Если нужны правки — открывайте по одному."
       },
       "detail_panel": {
-        "empty_title": "Выберите предложение слева",
+        "empty_title": "Выберите пр��дложение слева",
         "empty_subtitle": "Откроется подробная информация и возможность редактирования",
         "what_proposed_section": "Что предлагается",
         "rationale_section": "Почему ИИ это предложил",
@@ -5075,7 +5075,7 @@
         },
         "period_label": "Период когда заметили",
         "details_label": "Подробнее",
-        "auto_attached_hint": "К сообщению автоматически приложатся метрики и последние 10 reject-комментариев",
+        "auto_attached_hint": "К сообщению автоматически приложатся метрики и последние 10 reject-комментари��в",
         "submit": "Отправить"
       },
       "empty": {
@@ -5214,7 +5214,7 @@
       "toasts": {
         "saved_draft": "Версия сохранена как черновик",
         "activated": "Версия активирована",
-        "rolled_back": "Откат выполнен",
+        "rolled_back": "От��ат выполнен",
         "generated": "Сгенерировано {count} вариантов",
         "ab_test_started": "A/B тест запущен",
         "ab_test_finished": "Тест завершён",
@@ -5238,7 +5238,7 @@
         "reviewed_share_title": "Доля проверяемых задач",
         "reviewed_share_value": "{percent}%",
         "reviewed_share_prev": "было {percent}%",
-        "reviewed_share_saved": "Сбережено: {hours} ч/мес",
+        "reviewed_share_saved": "��бережено: {hours} ч/мес",
         "defect_rate_title": "Defect rate",
         "defect_rate_value": "{percent}%",
         "defect_rate_hint": "Доля задач с проблемами, прошедших sampling"
@@ -5694,37 +5694,132 @@
       },
       "tabs": {
         "all": "Все",
-        "delivered": "Оказанные",
-        "no_show": "Невыходы"
+        "pending": "На подтверждении",
+        "ready": "Готовы к оплате",
+        "paid": "Выплачено",
+        "confirmed": "Подтверждены",
+        "no_show": "Невыходы",
+        "disputed": "Спорные"
       },
       "filters": {
         "search": "Поиск",
         "status": "Статус",
-        "store": "Магазин",
+        "store": "Объект",
+        "store_placeholder": "Все объекты",
+        "freelancer": "Исполнитель",
+        "freelancer_placeholder": "ФИО или телефон",
         "agent": "Агент",
-        "date_range": "Период"
+        "agent_placeholder": "Все агенты",
+        "work_type": "Тип работ",
+        "work_type_placeholder": "Все типы",
+        "date_range": "Период",
+        "date_from": "Дата с",
+        "date_to": "Дата по"
       },
       "columns": {
         "date": "Дата",
         "store": "Объект",
-        "service": "Услуга",
         "performer": "Исполнитель",
-        "agent": "Агент",
+        "work_type": "Тип работ",
+        "hours": "Часы",
+        "hours_tooltip": "обещано / фактически / к оплате",
+        "volume": "Объём",
         "amount": "Сумма",
-        "status": "Статус"
+        "amount_indicative": "(справочно)",
+        "agent": "Агент",
+        "source": "Источник",
+        "legal_status": "Юр. статус",
+        "status": "Статус",
+        "actions": "Действия"
       },
       "status": {
-        "DELIVERED": "Оказана",
+        "PLANNED": "Запланирована",
+        "IN_PROGRESS": "Выполняется",
+        "COMPLETED": "Ждёт подтверждения",
+        "CONFIRMED": "Подтверждена",
+        "READY_TO_PAY": "Готова к оплате",
+        "PAID": "Выплачена",
         "NO_SHOW": "Невыход",
-        "CANCELLED": "Отменена"
+        "DISPUTED": "Спор"
       },
-      "no_show_alert": "Невыход — приоритетная коммуникация с агентом",
+      "no_show_legal_status": {
+        "OPEN": "Открыт",
+        "IN_LEGAL": "У юристов",
+        "RESOLVED": "Решён",
+        "WRITTEN_OFF": "Списан"
+      },
+      "source": {
+        "INTERNAL": "Внутренняя",
+        "EXTERNAL": "Внешняя"
+      },
+      "hours_badge": {
+        "underload": "Недозагрузка не по вине"
+      },
+      "adjusted_tooltip": "Скорректировано вручную, см. детали",
+      "actions": {
+        "confirm": "Подтвердить услугу",
+        "dispute": "Отклонить",
+        "download_act": "Скачать акт",
+        "open_no_show": "Открыть отчёт о невыходе",
+        "adjust_amount": "Корректировать сумму",
+        "to_legal": "Передать юристам"
+      },
       "empty": {
-        "no_services": "Нет оказанных услуг за период"
+        "all_title": "Услуги пока не оказывались",
+        "all_description": "Оказанные услуги будут отображаться здесь",
+        "no_show_title": "Невыходов нет",
+        "no_show_description": "Невыходов нет за выбранный период",
+        "pending_title": "Все услуги подтверждены",
+        "pending_description": "Нет услуг, ожидающих подтверждения",
+        "generic_title": "Нет данных",
+        "generic_description": "По выбранным фильтрам ничего не найдено"
+      },
+      "sheet": {
+        "title": "Детали услуги",
+        "freelancer_section": "Исполнитель",
+        "hours_section": "Часы",
+        "scheduled": "Обещано",
+        "actual": "Фактически",
+        "payable": "К оплате",
+        "geo_checkin": "Геолокация",
+        "geo_match": "Совпадает",
+        "geo_no_match": "Не совпадает",
+        "assignment": "Назначение",
+        "related_payout": "Выплата",
+        "adjustment_history": "История корректировок",
+        "adjusted_by": "Кем скорректировано",
+        "adjusted_at": "Когда",
+        "from_amount": "Было",
+        "to_amount": "Стало",
+        "reason": "Причина",
+        "no_show_report": "Отчёт о невыходе",
+        "legal_comment": "Комментарий юриста"
+      },
+      "adjust_dialog": {
+        "title": "Корректировать сумму",
+        "description": "Изменение суммы будет сохранено в аудит-логе",
+        "new_amount_label": "Новая сумма",
+        "reason_label": "Причина корректировки",
+        "reason_placeholder": "Минимум 10 символов",
+        "submit": "Применить"
+      },
+      "dispute_dialog": {
+        "title": "Отклонить услугу",
+        "description": "Укажите причину отклонения. Статус изменится на «Спор».",
+        "reason_label": "Причина",
+        "reason_placeholder": "Минимум 10 символов",
+        "submit": "Отклонить"
       },
       "toasts": {
-        "error": "Не удалось загрузить"
-      }
+        "confirmed": "Услуга подтверждена",
+        "disputed": "Услуга отклонена",
+        "adjusted": "Сумма скорректирована",
+        "legal_sent": "Передано юристам",
+        "error": "Не удалось выполнить действие",
+        "load_error": "Не удалось загрузить",
+        "data_changed": "Данные изменились — обновите страницу"
+      },
+      "export": "Экспорт"
     },
     "freelancePayoutsList": {
       "page_title": "Реестр выплат внештата",

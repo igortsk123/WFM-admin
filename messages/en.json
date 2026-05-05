@@ -5684,7 +5684,7 @@
       }
     },
     "freelanceServicesList": {
-      "page_title": "Delivered services registry",
+      "page_title": "Freelance services registry",
       "page_subtitle": "Including no-show registry",
       "breadcrumbs": {
         "home": "Home",
@@ -5693,37 +5693,132 @@
       },
       "tabs": {
         "all": "All",
-        "delivered": "Delivered",
-        "no_show": "No-shows"
+        "pending": "Awaiting confirmation",
+        "ready": "Ready to pay",
+        "paid": "Paid",
+        "confirmed": "Confirmed",
+        "no_show": "No-shows",
+        "disputed": "Disputed"
       },
       "filters": {
         "search": "Search",
         "status": "Status",
-        "store": "Store",
+        "store": "Object",
+        "store_placeholder": "All objects",
+        "freelancer": "Performer",
+        "freelancer_placeholder": "Name or phone",
         "agent": "Agent",
-        "date_range": "Period"
+        "agent_placeholder": "All agents",
+        "work_type": "Work type",
+        "work_type_placeholder": "All types",
+        "date_range": "Period",
+        "date_from": "Date from",
+        "date_to": "Date to"
       },
       "columns": {
         "date": "Date",
         "store": "Object",
-        "service": "Service",
         "performer": "Performer",
-        "agent": "Agent",
+        "work_type": "Work type",
+        "hours": "Hours",
+        "hours_tooltip": "promised / actual / payable",
+        "volume": "Volume",
         "amount": "Amount",
-        "status": "Status"
+        "amount_indicative": "(indicative)",
+        "agent": "Agent",
+        "source": "Source",
+        "legal_status": "Legal status",
+        "status": "Status",
+        "actions": "Actions"
       },
       "status": {
-        "DELIVERED": "Delivered",
+        "PLANNED": "Planned",
+        "IN_PROGRESS": "In progress",
+        "COMPLETED": "Awaiting confirmation",
+        "CONFIRMED": "Confirmed",
+        "READY_TO_PAY": "Ready to pay",
+        "PAID": "Paid",
         "NO_SHOW": "No-show",
-        "CANCELLED": "Cancelled"
+        "DISPUTED": "Disputed"
       },
-      "no_show_alert": "No-show — priority comms with agent",
+      "no_show_legal_status": {
+        "OPEN": "Open",
+        "IN_LEGAL": "In legal",
+        "RESOLVED": "Resolved",
+        "WRITTEN_OFF": "Written off"
+      },
+      "source": {
+        "INTERNAL": "Internal",
+        "EXTERNAL": "External"
+      },
+      "hours_badge": {
+        "underload": "Underload not at fault"
+      },
+      "adjusted_tooltip": "Manually adjusted, see details",
+      "actions": {
+        "confirm": "Confirm service",
+        "dispute": "Dispute",
+        "download_act": "Download act",
+        "open_no_show": "Open no-show report",
+        "adjust_amount": "Adjust amount",
+        "to_legal": "Send to legal"
+      },
       "empty": {
-        "no_services": "No delivered services for the period"
+        "all_title": "No services yet",
+        "all_description": "Delivered services will appear here",
+        "no_show_title": "No no-shows",
+        "no_show_description": "No no-shows for the selected period",
+        "pending_title": "All services confirmed",
+        "pending_description": "No services awaiting confirmation",
+        "generic_title": "No data",
+        "generic_description": "Nothing found for the selected filters"
+      },
+      "sheet": {
+        "title": "Service details",
+        "freelancer_section": "Performer",
+        "hours_section": "Hours",
+        "scheduled": "Promised",
+        "actual": "Actual",
+        "payable": "Payable",
+        "geo_checkin": "Geo check-in",
+        "geo_match": "Match",
+        "geo_no_match": "No match",
+        "assignment": "Assignment",
+        "related_payout": "Payout",
+        "adjustment_history": "Adjustment history",
+        "adjusted_by": "Adjusted by",
+        "adjusted_at": "When",
+        "from_amount": "From",
+        "to_amount": "To",
+        "reason": "Reason",
+        "no_show_report": "No-show report",
+        "legal_comment": "Legal comment"
+      },
+      "adjust_dialog": {
+        "title": "Adjust amount",
+        "description": "Amount change will be saved to audit log",
+        "new_amount_label": "New amount",
+        "reason_label": "Reason for adjustment",
+        "reason_placeholder": "At least 10 characters",
+        "submit": "Apply"
+      },
+      "dispute_dialog": {
+        "title": "Dispute service",
+        "description": "Provide a reason. Status will change to Disputed.",
+        "reason_label": "Reason",
+        "reason_placeholder": "At least 10 characters",
+        "submit": "Dispute"
       },
       "toasts": {
-        "error": "Failed to load"
-      }
+        "confirmed": "Service confirmed",
+        "disputed": "Service disputed",
+        "adjusted": "Amount adjusted",
+        "legal_sent": "Sent to legal",
+        "error": "Failed to perform action",
+        "load_error": "Failed to load",
+        "data_changed": "Data changed — please refresh"
+      },
+      "export": "Export"
     },
     "freelancePayoutsList": {
       "page_title": "Freelance payouts registry",
