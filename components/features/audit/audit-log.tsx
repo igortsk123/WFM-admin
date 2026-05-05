@@ -608,7 +608,7 @@ function DetailPanelContent({
                   {String(entry.payload.to_amount ?? "—")} ₽
                 </span>
               </div>
-              {entry.payload.reason && (
+              {Boolean(entry.payload.reason) && (
                 <p className="text-xs text-muted-foreground">
                   <span className="font-medium">{t("diff_fields.reason")}:</span>{" "}
                   {String(entry.payload.reason)}
