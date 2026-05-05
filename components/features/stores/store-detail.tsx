@@ -39,6 +39,9 @@ import {
   updateStore,
   archiveStore,
   restoreStore,
+  createStoreZone,
+  updateStoreZone,
+  deleteStoreZone,
   type StoreDetail as StoreDetailData,
   type StoreHistoryEvent,
   type StoreZoneWithCounts,
@@ -70,6 +73,8 @@ import {
 } from "@/components/ui/dialog"
 import {
   AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
@@ -460,6 +465,7 @@ function ZoneCard({ zone, storeCode, onEdit, onDelete }: ZoneCardProps) {
 
 export function StoreDetail({ storeId }: StoreDetailProps) {
   const t = useTranslations("screen.storeDetail")
+  const tCommon = useTranslations("common")
   const locale = useLocale()
 
   const [data, setData] = useState<StoreDetailData | null>(null)
@@ -475,6 +481,10 @@ export function StoreDetail({ storeId }: StoreDetailProps) {
   const [archiveOpen, setArchiveOpen] = useState(false)
   const [restoreLoading, setRestoreLoading] = useState(false)
   const [addressCopied, setAddressCopied] = useState(false)
+  const [zoneDialog, setZoneDialog] = useState<{ mode: "add" | "edit"; zone?: StoreZoneWithCounts } | null>(null)
+  const [zoneForm, setZoneForm] = useState({ name: "", code: "" })
+  const [zoneSaving, setZoneSaving] = useState(false)
+  const [zoneDeleteId, setZoneDeleteId] = useState<number | null>(null)
 
   const activityItems = buildActivityFeedItems()
 
@@ -535,6 +545,54 @@ export function StoreDetail({ storeId }: StoreDetailProps) {
       setAddressCopied(true)
       setTimeout(() => setAddressCopied(false), 2000)
     })
+  }
+
+  function openZoneAdd() {
+    setZoneForm({ name: "", code: "" })
+    setZoneDialog({ mode: "add" })
+  }
+
+  function openZoneEdit(zone: StoreZoneWithCounts) {
+    setZoneForm({ name: zone.name, code: zone.code ?? "" })
+    setZoneDialog({ mode: "edit", zone })
+  }
+
+  async function handleZoneSubmit() {
+    if (!data || !zoneForm.name.trim()) return
+    setZoneSaving(true)
+    try {
+      const result = zoneDialog?.mode === "edit" && zoneDialog.zone
+        ? await updateStoreZone(storeId, zoneDialog.zone.id, { name: zoneForm.name.trim(), code: zoneForm.code.trim() || undefined })
+        : await createStoreZone(storeId, { name: zoneForm.name.trim(), code: zoneForm.code.trim() || undefined })
+      if (result.success) {
+        toast.success(zoneDialog?.mode === "edit" ? t("zones.toast_updated") : t("zones.toast_added"))
+        setZoneDialog(null)
+        fetchData()
+      } else {
+        toast.error(result.error?.message ?? t("toast.error"))
+      }
+    } catch {
+      toast.error(t("toast.error"))
+    } finally {
+      setZoneSaving(false)
+    }
+  }
+
+  async function handleZoneDelete(zoneId: number) {
+    if (!data) return
+    try {
+      const result = await deleteStoreZone(storeId, zoneId)
+      if (result.success) {
+        toast.success(t("zones.toast_deleted"))
+        fetchData()
+      } else {
+        toast.error(result.error?.message ?? t("toast.error"))
+      }
+    } catch {
+      toast.error(t("toast.error"))
+    } finally {
+      setZoneDeleteId(null)
+    }
   }
 
   // ── History lazy load on tab switch ───────────────────────────────────
@@ -607,13 +665,70 @@ export function StoreDetail({ storeId }: StoreDetailProps) {
           onArchived={fetchData}
         />
 
+        {/* Zone add/edit dialog */}
+        <Dialog open={zoneDialog !== null} onOpenChange={(v) => !v && setZoneDialog(null)}>
+          <DialogContent className="sm:max-w-[420px]">
+            <DialogHeader>
+              <DialogTitle>{zoneDialog?.mode === "edit" ? t("zones.dialog_edit_title") : t("zones.dialog_add_title")}</DialogTitle>
+            </DialogHeader>
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="zone-name">{t("zones.field_name")}</Label>
+                <Input
+                  id="zone-name"
+                  value={zoneForm.name}
+                  onChange={(e) => setZoneForm({ ...zoneForm, name: e.target.value })}
+                  placeholder={t("zones.field_name_placeholder")}
+                  autoFocus
+                />
+              </div>
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="zone-code">{t("zones.field_code")}</Label>
+                <Input
+                  id="zone-code"
+                  value={zoneForm.code}
+                  onChange={(e) => setZoneForm({ ...zoneForm, code: e.target.value })}
+                  placeholder={t("zones.field_code_placeholder")}
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => setZoneDialog(null)} disabled={zoneSaving}>
+                {tCommon("cancel")}
+              </Button>
+              <Button onClick={handleZoneSubmit} disabled={zoneSaving || !zoneForm.name.trim()}>
+                {tCommon("save")}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Zone delete confirm */}
+        <AlertDialog open={zoneDeleteId !== null} onOpenChange={(v) => !v && setZoneDeleteId(null)}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>{t("zones.delete_dialog_title")}</AlertDialogTitle>
+              <AlertDialogDescription>{t("zones.delete_dialog_desc")}</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>{tCommon("cancel")}</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={() => zoneDeleteId !== null && handleZoneDelete(zoneDeleteId)}
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+              >
+                {t("zones.delete")}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
         {/* ── PageHeader breadcrumb ── */}
         <PageHeader
-          title={`${data.external_code} — ${data.address_full}`}
+          title={`${data.store_type} — ${data.address_full}`}
           breadcrumbs={[
             { label: t("breadcrumbs.home"), href: ADMIN_ROUTES.dashboard },
             { label: t("breadcrumbs.stores"), href: ADMIN_ROUTES.stores },
-            { label: data.external_code },
+            { label: data.name },
           ]}
         />
 
@@ -1022,7 +1137,7 @@ export function StoreDetail({ storeId }: StoreDetailProps) {
                 <h3 className="text-base font-semibold text-foreground">
                   {t("zones.title", { count: data.zones.length })}
                 </h3>
-                <Button size="sm" variant="outline" className="gap-2">
+                <Button size="sm" variant="outline" className="gap-2" onClick={openZoneAdd}>
                   <Plus className="size-4" />
                   {t("zones.add")}
                 </Button>
@@ -1032,7 +1147,7 @@ export function StoreDetail({ storeId }: StoreDetailProps) {
                   icon={LayoutGrid}
                   title="Зоны не настроены"
                   description="Добавьте зоны для управления расписанием и задачами"
-                  action={{ label: t("zones.add"), onClick: () => {} }}
+                  action={{ label: t("zones.add"), onClick: openZoneAdd }}
                 />
               ) : (
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -1041,6 +1156,8 @@ export function StoreDetail({ storeId }: StoreDetailProps) {
                       key={zone.id}
                       zone={zone}
                       storeCode={data.external_code}
+                      onEdit={zone.is_global ? undefined : openZoneEdit}
+                      onDelete={zone.is_global ? undefined : (z) => setZoneDeleteId(z.id)}
                     />
                   ))}
                 </div>

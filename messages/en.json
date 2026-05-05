@@ -1718,7 +1718,18 @@
         "stat_shifts": "Active shifts",
         "delete_disabled": "Cannot delete a zone with active tasks",
         "edit": "Edit",
-        "delete": "Delete"
+        "delete": "Delete",
+        "dialog_add_title": "New zone",
+        "dialog_edit_title": "Edit zone",
+        "field_name": "Name",
+        "field_name_placeholder": "e.g. Dairy aisle",
+        "field_code": "Code",
+        "field_code_placeholder": "DAIRY",
+        "delete_dialog_title": "Delete zone?",
+        "delete_dialog_desc": "Zone will be removed. Related tasks remain but lose their zone link.",
+        "toast_added": "Zone added",
+        "toast_updated": "Zone updated",
+        "toast_deleted": "Zone deleted"
       },
       "schedule": {
         "view_full": "Open store schedule",

@@ -183,6 +183,9 @@ export {
   restoreStore,
   syncLama,
   syncLamaForStore,
+  createStoreZone,
+  updateStoreZone,
+  deleteStoreZone,
 } from "./stores";
 
 // ═══════════════════════════════════════════════════════════════════
