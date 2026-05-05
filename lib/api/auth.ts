@@ -369,6 +369,86 @@ export async function updateUserLocale(
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// Sessions (chat 35)
+// ═══════════════════════════════════════════════════════════════════
+
+/** Активная сессия пользователя — устройство + IP + местоположение */
+export interface ActiveSession {
+  id: string;
+  device_name: string;
+  device_type: "desktop" | "mobile" | "tablet";
+  ip: string;
+  city: string;
+  last_activity_at: string;
+  is_current: boolean;
+}
+
+/**
+ * Get active sessions for the current user.
+ * @returns List of active sessions
+ * @endpoint GET /auth/sessions
+ */
+export async function getActiveSessions(): Promise<ApiResponse<ActiveSession[]>> {
+  await delay(300);
+
+  const sessions: ActiveSession[] = [
+    {
+      id: "sess-001",
+      device_name: "Chrome on macOS",
+      device_type: "desktop",
+      ip: "213.87.143.12",
+      city: "Томск",
+      last_activity_at: new Date().toISOString(),
+      is_current: true,
+    },
+    {
+      id: "sess-002",
+      device_name: "Safari on iPhone",
+      device_type: "mobile",
+      ip: "79.111.55.22",
+      city: "Томск",
+      last_activity_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+      is_current: false,
+    },
+  ];
+
+  return { data: sessions };
+}
+
+/**
+ * Terminate a specific session (other than current).
+ * @param sessionId Session ID to terminate
+ * @returns Success status
+ * @endpoint DELETE /auth/sessions/:id
+ */
+export async function terminateSession(
+  sessionId: string,
+): Promise<ApiMutationResponse> {
+  await delay(300);
+
+  if (!sessionId) {
+    return {
+      success: false,
+      error: { code: "MISSING_SESSION_ID", message: "Session ID is required" },
+    };
+  }
+
+  console.log(`[v0] Terminated session: ${sessionId}`);
+  return { success: true };
+}
+
+/**
+ * Terminate all sessions except current.
+ * @returns Success status
+ * @endpoint DELETE /auth/sessions
+ */
+export async function terminateAllOtherSessions(): Promise<ApiMutationResponse> {
+  await delay(400);
+  console.log("[v0] Terminated all other sessions");
+  return { success: true };
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // Profile Settings (chat 35)
 // ═══════════════════════════════════════════════════════════════════
 

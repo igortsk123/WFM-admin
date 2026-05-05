@@ -2877,15 +2877,30 @@
           "current_password": "Current password",
           "new_password": "New password",
           "confirm_password": "Confirm password",
+          "password_sso_hint": "Account is protected by Beyond Violet SMS code — no password required",
           "totp_card": "Two-factor authentication (TOTP)",
           "totp_enabled": "Enabled",
           "totp_disabled": "Not configured",
+          "totp_hint": "Works offline with any authenticator app (Yandex Key, Authy, FreeOTP)",
           "totp_setup": "Set up",
           "totp_disable": "Disable",
+          "totp_setup_title": "Set up TOTP",
+          "totp_setup_description": "Two-factor authentication via authenticator app",
+          "totp_setup_secret_hint": "Manual entry key for the authenticator app",
+          "totp_setup_scan_hint": "Scan the QR code in Yandex Key, Authy, or FreeOTP",
+          "totp_setup_next": "Next",
+          "totp_setup_enter_code": "Enter the 6-digit code from your app",
+          "totp_setup_confirm": "Confirm",
+          "totp_backup_warning": "Save your backup codes — they are shown only once",
+          "totp_backup_done": "Done",
+          "totp_disable_title": "Disable two-factor authentication?",
+          "totp_disable_description": "Enter your current app code to confirm",
           "sessions_card": "Active sessions",
           "session_current": "Current session",
           "session_revoke": "Sign out",
-          "session_revoke_all": "Sign out all others"
+          "session_revoke_all": "Sign out all others",
+          "session_revoke_all_confirm_title": "Sign out all other sessions?",
+          "session_revoke_all_confirm_message": "All other devices will be signed out of your account"
         },
         "notifications": {
           "title": "Notifications",
@@ -2907,8 +2922,17 @@
           "timezone": "Time zone",
           "theme": "Theme",
           "theme_light": "Light",
+          "theme_light_hint": "Default for daytime work",
           "theme_dark": "Dark",
-          "theme_system": "System"
+          "theme_system": "System",
+          "theme_system_hint": "Follows your device settings",
+          "timezone_search": "Search time zone...",
+          "timezone_not_found": "Not found",
+          "regional_title": "Regional settings",
+          "regional_date": "Date format",
+          "regional_time": "Time format",
+          "regional_number": "Number format",
+          "regional_currency": "Currency"
         }
       },
       "save_bar": {
@@ -2948,6 +2972,10 @@
         "payment_mode_client_direct": "Client direct",
         "freelance_enabled": "Freelance on",
         "freelance_disabled": "Freelance off"
+      },
+      "logout_confirm": {
+        "title": "Sign out?",
+        "message": "You will be redirected to the login page"
       }
     },
     "organizationSettings": {
