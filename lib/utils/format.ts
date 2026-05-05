@@ -46,28 +46,28 @@ export function formatDateTime(date: Date, locale: Locale = "ru"): string {
 }
 
 /**
- * Format relative time (e.g., "2 hours ago", "in 3 days")
+ * Format relative time (e.g., "2 hours ago", "in 3 days").
+ * Использует Math.trunc для дискретных порогов: 12 ч → "12 часов назад",
+ * НЕ "1 день назад". Для разницы >30 дней даёт абсолютную дату.
  */
 export function formatRelative(date: Date, locale: Locale = "ru"): string {
   const now = new Date();
   const diffMs = date.getTime() - now.getTime();
-  const diffSeconds = Math.round(diffMs / 1000);
-  const diffMinutes = Math.round(diffSeconds / 60);
-  const diffHours = Math.round(diffMinutes / 60);
-  const diffDays = Math.round(diffHours / 24);
+  const sign = diffMs >= 0 ? 1 : -1;
+  const absSec = Math.floor(Math.abs(diffMs) / 1000);
 
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
 
-  if (Math.abs(diffDays) >= 1) {
-    return rtf.format(diffDays, "day");
-  }
-  if (Math.abs(diffHours) >= 1) {
-    return rtf.format(diffHours, "hour");
-  }
-  if (Math.abs(diffMinutes) >= 1) {
-    return rtf.format(diffMinutes, "minute");
-  }
-  return rtf.format(diffSeconds, "second");
+  if (absSec < 60) return rtf.format(sign * absSec, "second");
+  const absMin = Math.floor(absSec / 60);
+  if (absMin < 60) return rtf.format(sign * absMin, "minute");
+  const absHour = Math.floor(absMin / 60);
+  if (absHour < 24) return rtf.format(sign * absHour, "hour");
+  const absDay = Math.floor(absHour / 24);
+  if (absDay < 30) return rtf.format(sign * absDay, "day");
+
+  // >30 дней — абсолютная дата
+  return formatDate(date, locale);
 }
 
 // ═══════════════════════════════════════════════════════════════════

@@ -55,6 +55,7 @@ import { ADMIN_ROUTES } from "@/lib/constants/routes"
 import { useAuth } from "@/lib/contexts/auth-context"
 import type { ArchiveReason, TaskState, SubtaskReviewState, TaskEvent, Subtask } from "@/lib/types"
 import { cn } from "@/lib/utils"
+import { formatRelative } from "@/lib/utils/format"
 
 // ──────────────────────────────────────────────────────────────────
 // helpers
@@ -83,15 +84,7 @@ function fmtTime(iso: string, locale: string): string {
 }
 
 function fmtRelative(iso: string, locale: string): string {
-  const diff = Date.now() - new Date(iso).getTime()
-  const rtf = new Intl.RelativeTimeFormat(locale === "en" ? "en" : "ru", { numeric: "auto" })
-  const sec = Math.round(diff / 1000)
-  if (sec < 60) return rtf.format(-sec, "second")
-  const min = Math.round(sec / 60)
-  if (min < 60) return rtf.format(-min, "minute")
-  const hr = Math.round(min / 60)
-  if (hr < 24) return rtf.format(-hr, "hour")
-  return rtf.format(-Math.round(hr / 24), "day")
+  return formatRelative(new Date(iso), locale === "en" ? "en" : "ru")
 }
 
 function getDeviationClass(planned: number, actual: number) {
