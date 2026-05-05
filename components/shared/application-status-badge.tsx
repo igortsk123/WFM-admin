@@ -5,6 +5,10 @@ interface ApplicationStatusBadgeProps {
   status: ApplicationStatus;
   size?: "sm" | "md";
   className?: string;
+  /** Срочная заявка — показать дополнительный индикатор. */
+  urgent?: boolean;
+  /** Ретроактивная заявка — показать дополнительный индикатор. */
+  retroactive?: boolean;
 }
 
 const STATUS_CONFIG: Record<
@@ -57,19 +61,35 @@ export function ApplicationStatusBadge({
   status,
   size = "md",
   className,
+  urgent,
+  retroactive,
 }: ApplicationStatusBadgeProps) {
   const config = STATUS_CONFIG[status];
 
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-md font-medium whitespace-nowrap",
-        size === "sm" ? "px-1.5 py-0.5 text-xs" : "px-2.5 py-1 text-xs",
-        config.className,
-        className
+    <span className="inline-flex items-center gap-1">
+      <span
+        className={cn(
+          "inline-flex items-center rounded-md font-medium whitespace-nowrap",
+          size === "sm" ? "px-1.5 py-0.5 text-xs" : "px-2.5 py-1 text-xs",
+          config.className,
+          className
+        )}
+      >
+        {config.labelRu}
+      </span>
+      {urgent && (
+        <span
+          className="inline-block size-1.5 rounded-full bg-destructive"
+          aria-label="urgent"
+        />
       )}
-    >
-      {config.labelRu}
+      {retroactive && (
+        <span
+          className="inline-block size-1.5 rounded-full bg-warning"
+          aria-label="retroactive"
+        />
+      )}
     </span>
   );
 }
