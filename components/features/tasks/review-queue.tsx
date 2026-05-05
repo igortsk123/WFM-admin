@@ -35,6 +35,7 @@ import { getStores } from "@/lib/api/stores"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
 import { useAuth } from "@/lib/contexts/auth-context"
 import { cn } from "@/lib/utils"
+import { formatRelative } from "@/lib/utils/format"
 
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -108,15 +109,7 @@ function fmtWaitTime(iso: string, t: ReturnType<typeof useTranslations>): string
 }
 
 function fmtRelative(iso: string, locale: string): string {
-  const diff = Date.now() - new Date(iso).getTime()
-  const rtf = new Intl.RelativeTimeFormat(locale === "en" ? "en" : "ru", { numeric: "auto" })
-  const sec = Math.round(diff / 1000)
-  if (sec < 60) return rtf.format(-sec, "second")
-  const min = Math.round(sec / 60)
-  if (min < 60) return rtf.format(-min, "minute")
-  const hr = Math.round(min / 60)
-  if (hr < 24) return rtf.format(-hr, "hour")
-  return rtf.format(-Math.round(hr / 24), "day")
+  return formatRelative(new Date(iso), locale === "en" ? "en" : "ru")
 }
 
 function fmtMin(min: number): string {
