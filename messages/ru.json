@@ -4898,6 +4898,162 @@
         "share_link_copied": "Ссылка на диалог скопирована",
         "error": "Не удалось выполнить операцию"
       }
+    },
+    "networkGoals": {
+      "page_title": "Цели по сети",
+      "page_subtitle": "Куда движется каждый магазин и как работает помощник ИИ",
+      "breadcrumbs": {
+        "home": "Главная",
+        "goals_bonus": "Цели и бонусы",
+        "network": "По сети"
+      },
+      "actions": {
+        "export_xlsx": "Экспорт XLSX",
+        "period": "Период",
+        "report_ai_issue": "Уведомить разработчиков ИИ",
+        "drill_to_supervisor": "Открыть",
+        "compare_regions": "Сравнить",
+        "open_goal": "Открыть цель",
+        "open_store": "Открыть магазин",
+        "contact_director": "Связаться с директором",
+        "store_goals_history": "История целей этого магазина"
+      },
+      "kpi_supervisor": {
+        "active_goals_title": "Активных целей",
+        "active_goals_subtitle": "{without} без цели",
+        "anomalies_title": "Аномалии в плане-факте",
+        "anomalies_subtitle": "{count} магазина с перерасходом >100% часов",
+        "productivity_title": "Продуктивность",
+        "productivity_subtitle": "средняя {percent}%",
+        "completion_title": "Завершение плана",
+        "completion_subtitle": "{percent}%"
+      },
+      "kpi_network_ops": {
+        "active_goals_title": "Активных целей",
+        "active_goals_subtitle": "{without} без цели",
+        "avg_progress_title": "Средний прогресс",
+        "avg_progress_subtitle": "{percent}%",
+        "ai_accept_rate_title": "Принято от ИИ",
+        "ai_accept_rate_subtitle": "{percent}% за неделю · норма >60%",
+        "ai_alarm_title": "Тревога ИИ",
+        "ai_alarm_subtitle": "{count} супервайзера < 30% accept rate"
+      },
+      "tabs": {
+        "by_stores": "По магазинам",
+        "by_supervisors": "По супервайзерам",
+        "by_regions": "По регионам",
+        "ai_quality": "Работа ИИ"
+      },
+      "stores_tab": {
+        "filters": {
+          "tenant_label": "Тенант",
+          "region_label": "Регион",
+          "status_label": "Статус",
+          "category_label": "Категория"
+        },
+        "status_options": {
+          "with_goal": "Есть цель",
+          "without_goal": "Без цели",
+          "completed": "Завершена"
+        },
+        "columns": {
+          "store": "Магазин",
+          "active_goal": "Активная цель",
+          "progress": "Прогресс",
+          "set_by": "Установил",
+          "days_left": "Дней до конца",
+          "source": "Источник",
+          "trend": "Тренд за 7 дней",
+          "actions": "Действия"
+        },
+        "source": {
+          "ai": "AI",
+          "manager": "Manager"
+        }
+      },
+      "supervisors_tab": {
+        "stores_count": "{count} магазинов",
+        "stats": {
+          "goals_set": "Целей установлено",
+          "avg_progress": "Средний прогресс",
+          "ai_accepted": "Принято от ИИ",
+          "ai_rejected": "Отклонено от ИИ"
+        },
+        "ai_warning_chip": "ИИ работает неадекватно для этого scope?"
+      },
+      "regions_tab": {
+        "columns": {
+          "region": "Регион",
+          "stores": "Магазинов",
+          "active_goals": "Активных целей",
+          "avg_progress": "Средний прогресс",
+          "ai_accepted": "Принято от ИИ",
+          "ai_rejected": "Отклонено от ИИ",
+          "trend": "Тренд"
+        }
+      },
+      "ai_quality_tab": {
+        "stats": {
+          "generated": "Suggestions сгенерировано",
+          "accepted": "Принято",
+          "avg_decision_time": "Среднее время до решения",
+          "helpful_rate": "Helpful rate"
+        },
+        "by_type_card": {
+          "title": "Принятие по типам suggestion",
+          "warning_low_accept": "ИИ слабо работает в этой категории",
+          "columns": {
+            "type": "Тип",
+            "proposed": "Предложено",
+            "accepted": "Принято",
+            "rejected": "Отклонено",
+            "accept_rate": "Accept rate, %"
+          }
+        },
+        "reject_reasons_card": {
+          "title": "Топ причины отклонения",
+          "expand_examples": "Примеры reject-кейсов"
+        },
+        "anomalies_card": {
+          "title": "Аномалии в работе ИИ",
+          "report_button": "Сообщить разработчикам ИИ"
+        },
+        "history_card": {
+          "title": "История работы ИИ (90 дней)",
+          "lines": {
+            "proposed": "Предложено",
+            "accepted": "Принято",
+            "accept_rate": "Accept rate %"
+          }
+        }
+      },
+      "report_dialog": {
+        "title": "Сообщить о проблеме с ИИ",
+        "type_label": "Тип проблемы",
+        "type_options": {
+          "nonsense": "ИИ предлагает чушь",
+          "wrong_volume": "Слишком много / мало suggestions",
+          "no_context": "Не учитывает контекст",
+          "other": "Другое"
+        },
+        "period_label": "Период когда заметили",
+        "details_label": "Подробнее",
+        "auto_attached_hint": "К сообщению автоматически приложатся метрики и последние 10 reject-комментариев",
+        "submit": "Отправить"
+      },
+      "empty": {
+        "no_data_title": "Цели ещё не установлены",
+        "no_data_cta": "Перейти к Предложениям ИИ"
+      },
+      "forbidden": {
+        "title": "Доступ ограничен",
+        "subtitle": "Доступно только директорам сети"
+      },
+      "toasts": {
+        "exported": "Файл экспортирован",
+        "issue_reported": "Сообщение отправлено команде разработки",
+        "error": "Не удалось выполнить операцию"
+      }
     }
   }
 }

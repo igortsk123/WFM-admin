@@ -4897,6 +4897,162 @@
         "share_link_copied": "Chat link copied",
         "error": "Operation failed"
       }
+    },
+    "networkGoals": {
+      "page_title": "Network goals",
+      "page_subtitle": "Where each store is heading and how AI assistant performs",
+      "breadcrumbs": {
+        "home": "Home",
+        "goals_bonus": "Goals & Bonuses",
+        "network": "Network"
+      },
+      "actions": {
+        "export_xlsx": "Export XLSX",
+        "period": "Period",
+        "report_ai_issue": "Notify AI developers",
+        "drill_to_supervisor": "Open",
+        "compare_regions": "Compare",
+        "open_goal": "Open goal",
+        "open_store": "Open store",
+        "contact_director": "Contact director",
+        "store_goals_history": "This store's goal history"
+      },
+      "kpi_supervisor": {
+        "active_goals_title": "Active goals",
+        "active_goals_subtitle": "{without} without goal",
+        "anomalies_title": "Plan-vs-actual anomalies",
+        "anomalies_subtitle": "{count} stores with >100% hour overrun",
+        "productivity_title": "Productivity",
+        "productivity_subtitle": "average {percent}%",
+        "completion_title": "Plan completion",
+        "completion_subtitle": "{percent}%"
+      },
+      "kpi_network_ops": {
+        "active_goals_title": "Active goals",
+        "active_goals_subtitle": "{without} without goal",
+        "avg_progress_title": "Average progress",
+        "avg_progress_subtitle": "{percent}%",
+        "ai_accept_rate_title": "Accepted from AI",
+        "ai_accept_rate_subtitle": "{percent}% this week · target >60%",
+        "ai_alarm_title": "AI alarm",
+        "ai_alarm_subtitle": "{count} supervisors < 30% accept rate"
+      },
+      "tabs": {
+        "by_stores": "By stores",
+        "by_supervisors": "By supervisors",
+        "by_regions": "By regions",
+        "ai_quality": "AI quality"
+      },
+      "stores_tab": {
+        "filters": {
+          "tenant_label": "Tenant",
+          "region_label": "Region",
+          "status_label": "Status",
+          "category_label": "Category"
+        },
+        "status_options": {
+          "with_goal": "Has goal",
+          "without_goal": "No goal",
+          "completed": "Completed"
+        },
+        "columns": {
+          "store": "Store",
+          "active_goal": "Active goal",
+          "progress": "Progress",
+          "set_by": "Set by",
+          "days_left": "Days left",
+          "source": "Source",
+          "trend": "Trend, 7 days",
+          "actions": "Actions"
+        },
+        "source": {
+          "ai": "AI",
+          "manager": "Manager"
+        }
+      },
+      "supervisors_tab": {
+        "stores_count": "{count} stores",
+        "stats": {
+          "goals_set": "Goals set",
+          "avg_progress": "Avg progress",
+          "ai_accepted": "Accepted from AI",
+          "ai_rejected": "Rejected from AI"
+        },
+        "ai_warning_chip": "AI underperforming for this scope?"
+      },
+      "regions_tab": {
+        "columns": {
+          "region": "Region",
+          "stores": "Stores",
+          "active_goals": "Active goals",
+          "avg_progress": "Avg progress",
+          "ai_accepted": "Accepted from AI",
+          "ai_rejected": "Rejected from AI",
+          "trend": "Trend"
+        }
+      },
+      "ai_quality_tab": {
+        "stats": {
+          "generated": "Suggestions generated",
+          "accepted": "Accepted",
+          "avg_decision_time": "Avg time to decision",
+          "helpful_rate": "Helpful rate"
+        },
+        "by_type_card": {
+          "title": "Acceptance by suggestion type",
+          "warning_low_accept": "AI underperforms in this category",
+          "columns": {
+            "type": "Type",
+            "proposed": "Proposed",
+            "accepted": "Accepted",
+            "rejected": "Rejected",
+            "accept_rate": "Accept rate, %"
+          }
+        },
+        "reject_reasons_card": {
+          "title": "Top rejection reasons",
+          "expand_examples": "Reject case examples"
+        },
+        "anomalies_card": {
+          "title": "AI anomalies",
+          "report_button": "Report to AI developers"
+        },
+        "history_card": {
+          "title": "AI history (90 days)",
+          "lines": {
+            "proposed": "Proposed",
+            "accepted": "Accepted",
+            "accept_rate": "Accept rate %"
+          }
+        }
+      },
+      "report_dialog": {
+        "title": "Report an AI issue",
+        "type_label": "Issue type",
+        "type_options": {
+          "nonsense": "AI proposes nonsense",
+          "wrong_volume": "Too many / too few suggestions",
+          "no_context": "Doesn't consider context",
+          "other": "Other"
+        },
+        "period_label": "Period when noticed",
+        "details_label": "Details",
+        "auto_attached_hint": "Metrics and last 10 reject comments will be auto-attached",
+        "submit": "Send"
+      },
+      "empty": {
+        "no_data_title": "No goals set yet",
+        "no_data_cta": "Go to AI Suggestions"
+      },
+      "forbidden": {
+        "title": "Access restricted",
+        "subtitle": "Only available to network directors"
+      },
+      "toasts": {
+        "exported": "File exported",
+        "issue_reported": "Message sent to development team",
+        "error": "Operation failed"
+      }
     }
   }
 }
