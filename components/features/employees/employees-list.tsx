@@ -8,19 +8,13 @@ import { type ColumnDef } from "@tanstack/react-table"
 import {
   Archive,
   Check,
-  ChevronLeft,
-  ChevronRight,
   ChevronsUpDown,
   Download,
   FileWarning,
-  Filter,
-  MoreHorizontal,
   MoreVertical,
   Plus,
-  Search,
   SearchX,
   Upload,
-  UserCog,
   Users,
   X,
 } from "lucide-react"
@@ -41,7 +35,6 @@ import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
-import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import {
@@ -59,11 +52,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 import { AlertDialog } from "@/components/ui/alert-dialog"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import {
   Command,
   CommandEmpty,
@@ -87,7 +76,6 @@ import { UserCell } from "@/components/shared/user-cell"
 import { PermissionPill } from "@/components/shared/permission-pill"
 import { ShiftStateBadge } from "@/components/shared/shift-state-badge"
 import { RoleBadge } from "@/components/shared/role-badge"
-import { EmptyState } from "@/components/shared/empty-state"
 import { ResponsiveDataTable } from "@/components/shared/responsive-data-table"
 import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet"
 import { ConfirmDialog } from "@/components/shared/confirm-dialog"
@@ -1433,7 +1421,7 @@ export function EmployeesList() {
   }
 
   // ── Filter panel (reused desktop + mobile sheet) ──────────────────
-  const filterPanel = (
+  const _filterPanel = (
     <div className="flex flex-col gap-3">
       {!hideStore && (
         <div className="space-y-1">

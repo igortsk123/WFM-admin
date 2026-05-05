@@ -6,7 +6,6 @@ import Link from "next/link";
 import {
   Building2,
   User2,
-  CalendarDays,
   Download,
   ExternalLink,
   AlertCircle,
@@ -39,11 +38,7 @@ import { FreelancerStatusBadge } from "@/components/shared/freelancer-status-bad
 import { UserCell } from "@/components/shared/user-cell";
 import { DataTableShell } from "@/components/shared/data-table-shell";
 import { EmptyState } from "@/components/shared/empty-state";
-import {
-  ActivityFeed,
-  type ActivityItem,
-  type ActivityType,
-} from "@/components/shared/activity-feed";
+import { ActivityFeed, type ActivityItem, type ActivityType } from "@/components/shared/activity-feed";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 
 import { Badge } from "@/components/ui/badge";
@@ -1078,7 +1073,7 @@ export function AgentDetail({ id }: { id: string }) {
 
   // ─── Tabs ─────────────────────────────────────────────────────────
 
-  const activePerformers = agent.freelancers.filter(
+  const _activePerformers = agent.freelancers.filter(
     (f) => f.freelancer_status === "ACTIVE"
   ).length;
 

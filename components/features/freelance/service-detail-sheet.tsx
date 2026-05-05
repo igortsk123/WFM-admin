@@ -15,7 +15,6 @@ import {
   MapPin,
   CheckCircle,
   XCircle,
-  Clock,
   Pencil,
   ExternalLink,
 } from "lucide-react";

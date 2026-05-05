@@ -65,11 +65,7 @@ import {
 } from "@/components/ui/tooltip";
 import { Combobox } from "@/components/ui/combobox";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { PageHeader } from "@/components/shared/page-header";
@@ -82,7 +78,6 @@ import {
   exportReport,
   type ReportPeriod,
   type PlanFactReportData,
-  type PlanFactByStore,
   type PlanFactByUser,
   type PlanFactByWorkType,
 } from "@/lib/api/reports";
@@ -746,7 +741,7 @@ function UsersTab({
 }) {
   const router = useRouter();
   const [storeFilter, setStoreFilter] = useState<string>("");
-  const [search, setSearch] = useState<string>("");
+  const [search] = useState<string>("");
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 10;
 

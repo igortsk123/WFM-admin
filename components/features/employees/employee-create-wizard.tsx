@@ -212,7 +212,7 @@ export function EmployeeCreateWizard() {
   const [storeOpen, setStoreOpen] = useState(false);
   const [positionOpen, setPositionOpen] = useState(false);
   const [agentOpen, setAgentOpen] = useState(false);
-  const [loadingData, setLoadingData] = useState(true);
+  const [, setLoadingData] = useState(true);
   const [summarySheetOpen, setSummarySheetOpen] = useState(false);
   // Payment mode for the demo org — determines agent field visibility
   const [isNominalAccount, setIsNominalAccount] = useState(true);

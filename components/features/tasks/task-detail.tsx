@@ -63,7 +63,7 @@ import { cn } from "@/lib/utils"
 
 type TabKey = "description" | "report" | "subtasks" | "history"
 
-function fmtMin(min: number, locale: string): string {
+function fmtMin(min: number, _locale: string): string {
   const h = Math.floor(min / 60)
   const m = min % 60
   if (h === 0) return `${m} мин`
@@ -100,10 +100,6 @@ function getDeviationClass(planned: number, actual: number) {
   if (pct <= 0) return "text-success"
   if (pct <= 20) return "text-warning"
   return "text-destructive"
-}
-
-function getInitials(firstName: string, lastName: string) {
-  return `${lastName.charAt(0)}${firstName.charAt(0)}`.toUpperCase()
 }
 
 // Map event_type to colour dot
@@ -206,7 +202,6 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
     settings: false,
   })
 
-  const tabsRef = useRef<HTMLDivElement>(null)
   const elapsedMin = useElapsed(task?.history_brief?.opened_at, task?.state)
 
   // ── tab URL sync ──────────────────────────────────────────────────

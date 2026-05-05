@@ -10,8 +10,6 @@ import {
   RefreshCw,
   ExternalLink,
   AlertTriangle,
-  Wallet,
-  TrendingUp,
   CircleDollarSign,
   Users,
   Info,
@@ -82,7 +80,6 @@ import { Combobox, type ComboboxOption } from "@/components/ui/combobox";
 import { PageHeader } from "@/components/shared/page-header";
 import { KpiCard } from "@/components/shared/kpi-card";
 import { UserCell } from "@/components/shared/user-cell";
-import { EmptyState } from "@/components/shared/empty-state";
 import { ResponsiveDataTable } from "@/components/shared/responsive-data-table";
 import { PayoutStatusBadge } from "@/components/shared/payout-status-badge";
 
@@ -94,7 +91,7 @@ import {
 } from "@/lib/api/freelance-payouts";
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
 import { useAuth } from "@/lib/contexts/auth-context";
-import type { Payout, PayoutStatus, Service } from "@/lib/types";
+import type { Payout, Service } from "@/lib/types";
 
 // ───────────────────────────────────────────────────────────────────
 // HELPERS

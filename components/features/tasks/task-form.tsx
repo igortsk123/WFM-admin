@@ -10,7 +10,6 @@ import { toast } from "sonner";
 import {
   Loader2,
   Lock,
-  ChevronRight,
   AlertTriangle,
   ChevronDown,
 } from "lucide-react";
@@ -39,26 +38,11 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Command,
@@ -75,7 +59,7 @@ import { useAuth } from "@/lib/contexts/auth-context";
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
 import { cn } from "@/lib/utils";
 
-import { createTask, updateTask, getTaskById } from "@/lib/api/tasks";
+import { createTask, updateTask } from "@/lib/api/tasks";
 import { getStores } from "@/lib/api/stores";
 import { getZones, getWorkTypes, getProductCategories } from "@/lib/api/taxonomy";
 import { getUsers } from "@/lib/api/users";

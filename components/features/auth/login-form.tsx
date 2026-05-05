@@ -2,11 +2,10 @@
 
 import { useState } from "react"
 import { useTranslations } from "next-intl"
-import { ListChecks, Users, BarChart3, X, ShieldCheck } from "lucide-react"
+import { ListChecks, Users, BarChart3 } from "lucide-react"
 
 import { useRouter } from "@/i18n/navigation"
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { LanguageSwitcher } from "@/components/shared/language-switcher"
 import { LoginMethodStep, type AuthMethod } from "./login-method-step"
 import { LoginPhoneFlow } from "./login-phone-flow"
@@ -25,7 +24,6 @@ const valueProps = [
 
 export function LoginForm() {
   const t = useTranslations("screen.login")
-  const tCommon = useTranslations("common")
   const router = useRouter()
   const [step, setStep] = useState<Step>("method-select")
 

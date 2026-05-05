@@ -11,17 +11,10 @@ import {
   EyeOff,
   Edit,
   Loader2,
-  AlertCircle,
-  ChevronRight,
   Search,
-  Calendar,
-  Filter,
-  Clock,
   AlertTriangle,
-  Info,
   Plus,
   X,
-  Download,
 } from "lucide-react";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -36,7 +29,6 @@ import { Switch } from "@/components/ui/switch";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Separator } from "@/components/ui/separator";
 import {
   Select,
   SelectContent,
@@ -60,7 +52,6 @@ import {
 } from "@/components/ui/sheet";
 
 import { PageHeader } from "@/components/shared/page-header";
-import { UserCell } from "@/components/shared/user-cell";
 
 import {
   getLamaConnection,
@@ -81,7 +72,6 @@ import type {
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
 import { formatDateTime, formatRelative } from "@/lib/utils/format";
 import type { Locale } from "@/lib/types";
-import { cn } from "@/lib/utils";
 
 // ═══════════════════════════════════════════════════════════════════
 // HELPERS

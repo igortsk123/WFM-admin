@@ -73,7 +73,6 @@ const BY_TYPE_DATA = [
 
 export function AiQualityPanel() {
   const t = useTranslations("screen.networkGoals.ai_quality_tab");
-  const tActions = useTranslations("screen.networkGoals.actions");
   const tToasts = useTranslations("screen.networkGoals.toasts");
   const tCommon = useTranslations("common");
 

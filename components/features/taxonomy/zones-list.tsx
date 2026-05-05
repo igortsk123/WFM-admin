@@ -428,7 +428,6 @@ export function ZonesList() {
 
   // Dialog / sheet state
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [sheetOpen, setSheetOpen] = useState(false);
   const [editingZone, setEditingZone] = useState<ZoneWithCounts | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<ZoneWithCounts | null>(null);
   const [deleteAlertOpen, setDeleteAlertOpen] = useState(false);

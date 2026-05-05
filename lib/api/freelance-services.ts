@@ -24,8 +24,6 @@ const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
 const rand = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
-const maybeError = () => Math.random() < 0.05;
-
 // Mutable in-memory copy
 let _services = [...MOCK_FREELANCE_SERVICES];
 

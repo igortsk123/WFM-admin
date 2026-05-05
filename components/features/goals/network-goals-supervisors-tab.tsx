@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 import { getSupervisorsAiQuality, type SupervisorAiQuality } from "@/lib/api/ai-performance";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { UserCell, EmptyState } from "@/components/shared";
@@ -21,9 +21,7 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "@/i18n/navigation";
 
 export function SupervisorsTab() {
-  const t = useTranslations("screen.networkGoals.supervisors_tab");
   const tCommon = useTranslations("common");
-  const router = useRouter();
 
   const [isLoading, setIsLoading] = React.useState(true);
   const [data, setData] = React.useState<SupervisorAiQuality[]>([]);

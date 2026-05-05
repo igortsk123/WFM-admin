@@ -27,7 +27,6 @@ import {
   getPermissionsCoverage,
   updateUserPermissions,
   bulkAssignPermission,
-  bulkRevokePermission,
   type UserWithAssignment,
   type PermissionCoverageRow,
 } from "@/lib/api/users";
@@ -66,10 +65,7 @@ import {
   DialogFooter,
   DialogDescription,
 } from "@/components/ui/dialog";
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -92,11 +88,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Label } from "@/components/ui/label";
 
 // ─────────────────────────────────────────────────────────────────────

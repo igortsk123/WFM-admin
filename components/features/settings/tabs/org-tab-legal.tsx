@@ -29,10 +29,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { AlertDialog } from "@/components/ui/alert-dialog";
 import {
   Form,
   FormControl,
@@ -42,28 +39,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 
 import { EmptyState } from "@/components/shared/empty-state";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { ResponsiveDataTable } from "@/components/shared/responsive-data-table";
 
-import {
-  addLegalEntity,
-  updateLegalEntity,
-  removeLegalEntity,
-} from "@/lib/api/organization";
+import { addLegalEntity, updateLegalEntity, removeLegalEntity } from "@/lib/api/organization";
 import type { LegalEntity } from "@/lib/types";
-import { cn } from "@/lib/utils";
 
 // ─── Schema ──────────────────────────────────────────────────────────────────
 

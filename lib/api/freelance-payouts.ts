@@ -143,7 +143,8 @@ export async function getPayoutById(
     (ae) => ae.payout_id === id && ae.agent_id === payout.agent_id
   ) ?? null;
 
-  const { services: _serviceIds, ...payoutRest } = payout;
+  const { services: _services, ...payoutRest } = payout;
+  void _services;
   return { data: { ...payoutRest, services, agent_earning } };
 }
 

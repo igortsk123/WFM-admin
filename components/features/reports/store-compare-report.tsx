@@ -36,7 +36,7 @@ import {
 } from "recharts";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -58,11 +58,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Combobox } from "@/components/ui/combobox";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Select,
   SelectContent,
@@ -109,13 +105,6 @@ type MetricKey =
   | "hours_diff_pct"
   | "fot_diff_pct";
 
-const METRICS: MetricKey[] = [
-  "completion_rate",
-  "return_rate",
-  "on_time_rate",
-  "hours_diff_pct",
-  "fot_diff_pct",
-];
 
 // Extract city from store name (last word before comma or at start)
 function extractCity(storeName: string): string {
@@ -633,7 +622,6 @@ function HeatmapView({ stores, t }: HeatmapViewProps) {
                 const value = row[key] as number;
                 const norm = normalize(value, key, inverted);
                 const bgClass = getHeatmapBg(norm);
-                const rank = sorted.length - sorted.findIndex((s) => s.store_id === row.store_id);
                 const isLast =
                   rIdx === sorted.length - 1 && cIdx === HEATMAP_METRICS.length - 1;
                 return (
@@ -764,7 +752,7 @@ function ScatterDotTooltip({
   );
 }
 
-function ScatterView({ stores, medians, t }: ScatterViewProps) {
+function ScatterView({ stores, medians: _medians, t }: ScatterViewProps) {
   const router = useRouter();
   const [xMetric, setXMetric] = useState<MetricKey>("completion_rate");
   const [yMetric, setYMetric] = useState<MetricKey>("on_time_rate");

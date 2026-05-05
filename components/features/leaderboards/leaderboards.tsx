@@ -16,7 +16,6 @@ import {
   Trophy,
   AlertCircle,
   RotateCcw,
-  Pencil,
   XCircle,
   MoreHorizontal,
   ChevronLeft,

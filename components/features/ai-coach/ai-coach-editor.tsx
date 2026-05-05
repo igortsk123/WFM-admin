@@ -20,13 +20,11 @@ import {
   BarChart3,
   FlaskConical,
   History,
-  Lock,
   Info,
 } from "lucide-react";
 
 import {
   getAiHints,
-  createAiHint,
   updateAiHint,
   activateAiHint,
   generateAiHint,
@@ -135,15 +133,6 @@ function getDaysDiff(from: string, to: string): number {
 // SUB-COMPONENTS
 // ═══════════════════════════════════════════════════════════════════
 
-function WorkTypeListSkeleton() {
-  return (
-    <div className="space-y-1.5 p-3">
-      {Array.from({ length: 8 }).map((_, i) => (
-        <Skeleton key={i} className="h-12 w-full rounded-lg" />
-      ))}
-    </div>
-  );
-}
 
 function EditorSkeleton() {
   return (
@@ -383,11 +372,10 @@ function EditorTabs({
   abTestLoading,
   workTypeName,
   workTypeId,
-  onHintsChange,
-  onAbTestChange,
+  onHintsChange: _onHintsChange,
+  onAbTestChange: _onAbTestChange,
 }: EditorTabsProps) {
   const t = useTranslations("screen.aiCoach");
-  const tCommon = useTranslations("common");
 
   const activeHint = hints.find((h) => h.version === Math.max(...hints.map((x) => x.version)));
 

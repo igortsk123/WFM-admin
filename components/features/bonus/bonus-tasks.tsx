@@ -9,7 +9,6 @@ import {
   MoreVertical,
   Clock,
   Target,
-  Zap,
   Users,
   TrendingUp,
   ArrowRight,
@@ -20,7 +19,6 @@ import {
   ChevronDown,
   ChevronUp,
   Eye,
-  Settings,
   CheckCircle2,
   CircleDot,
   User,
@@ -45,11 +43,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   Command,
   CommandEmpty,
@@ -57,17 +51,10 @@ import {
   CommandInput,
   CommandItem,
 } from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import {
   Dialog,
   DialogContent,
@@ -76,7 +63,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
@@ -254,7 +240,7 @@ function BonusTaskCard({
 }: BonusTaskCardProps) {
   const t = useTranslations("screen.bonusTasks");
   const [removeOpen, setRemoveOpen] = useState(false);
-  const [removeReason, setRemoveReason] = useState("");
+  const [removeReason] = useState("");
   const [removing, setRemoving] = useState(false);
 
   const handleRemove = async () => {

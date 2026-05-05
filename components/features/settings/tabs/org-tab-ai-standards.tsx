@@ -3,12 +3,11 @@
 import * as React from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { Check, Info, Loader2 } from "lucide-react";
+import { Info, Loader2 } from "lucide-react";
 
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -29,12 +28,7 @@ import type {
   FmcgOpsThresholds,
   FashionSeasonRow,
 } from "@/lib/api/organization";
-import {
-  updateFmcgGroupThreshold,
-  updateFmcgOpsThresholds,
-  updateFashionSeason,
-} from "@/lib/api/organization";
-import { cn } from "@/lib/utils";
+import { updateFmcgGroupThreshold, updateFmcgOpsThresholds, updateFashionSeason } from "@/lib/api/organization";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 

@@ -5,17 +5,14 @@ import { useTranslations } from "next-intl";
 import {
   Bell,
   Check,
-  ChevronDown,
   ChevronsUpDown,
   LogOut,
-  Settings,
   User,
   UserCircle,
 } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
-import { MOCK_STORES } from "@/lib/mock-data/stores";
 import { MOCK_ORGANIZATIONS } from "@/lib/mock-data/organizations";
 import type { FunctionalRole, Store, Organization } from "@/lib/types";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -38,11 +35,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { LanguageSwitcher } from "./language-switcher";
 import { cn } from "@/lib/utils";
 

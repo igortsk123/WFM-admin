@@ -22,11 +22,8 @@ import {
   CheckCircle2,
   XCircle,
   AlertCircle,
-  Eye,
-  EyeOff,
   Plus,
   X,
-  ChevronDown,
   Loader2,
   Info,
   Wallet,
@@ -1042,7 +1039,7 @@ export function IntegrationsHub() {
   const lamaLastSync = status.lama.last_sync_at
     ? formatRelative(new Date(status.lama.last_sync_at), locale)
     : "—";
-  const lamaLastSyncFull = status.lama.last_sync_at
+  const _lamaLastSyncFull = status.lama.last_sync_at
     ? formatDateTime(new Date(status.lama.last_sync_at), locale)
     : "—";
 
@@ -1054,7 +1051,7 @@ export function IntegrationsHub() {
 
   // Count connected AI sources (mock: only POS connected for FMCG)
   const connectedAiSources = isFashion ? 0 : 1; // POS is "connected" for FMCG demo
-  const totalAiSources = isFashion ? 5 : 4; // Marketing channel only for fashion
+  const _totalAiSources = isFashion ? 5 : 4; // Marketing channel only for fashion
 
   return (
     <div className="space-y-8">

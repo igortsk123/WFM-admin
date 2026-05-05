@@ -2,11 +2,7 @@
 
 import { useState, useCallback, useMemo } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import {
-  useQueryState,
-  parseAsString,
-  parseAsInteger,
-} from "nuqs";
+import { useQueryState, parseAsString, parseAsInteger } from "nuqs";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
 import { toast } from "sonner";
@@ -36,7 +32,6 @@ import { MOCK_FREELANCE_SERVICES } from "@/lib/mock-data/freelance-services";
 
 import { PageHeader } from "@/components/shared/page-header";
 import { ResponsiveDataTable } from "@/components/shared/responsive-data-table";
-import { EmptyState } from "@/components/shared/empty-state";
 import { ServiceStatusBadge } from "@/components/shared/service-status-badge";
 import { WorkTypeBadge } from "@/components/shared/work-type-badge";
 import { FreelancerStatusBadge } from "@/components/shared/freelancer-status-badge";
@@ -60,11 +55,7 @@ import {
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   Command,
   CommandEmpty,

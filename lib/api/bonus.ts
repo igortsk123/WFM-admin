@@ -12,7 +12,6 @@ import type {
   Task,
   BonusTaskSource,
   User,
-  FreelanceApplication,
 } from "@/lib/types";
 import { MOCK_BONUS_BUDGETS } from "@/lib/mock-data/future-placeholders";
 import { MOCK_TASKS } from "@/lib/mock-data/tasks";
