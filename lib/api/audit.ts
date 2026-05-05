@@ -84,8 +84,7 @@ export async function getAuditEntries(
   if (date_to) filtered = filtered.filter((e) => e.occurred_at <= date_to);
 
   if (platform_action_only) {
-    // Mock-флаг — для PLATFORM_ADMIN cross-tenant audit. В реальном backend поле platform_action.
-    filtered = filtered.filter((e) => (e as AuditEntry & { platform_action?: boolean }).platform_action);
+    filtered = filtered.filter((e) => e.platform_action === true);
   }
 
   if (search) {
