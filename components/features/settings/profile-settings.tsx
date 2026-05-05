@@ -24,6 +24,7 @@ import {
   ShieldCheck,
   ChevronRight,
   AlertCircle,
+  Building2,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -115,7 +116,8 @@ import { getMyAssignments } from "@/lib/api/users";
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
 
 import type { CurrentUser, ActiveSession } from "@/lib/api/auth";
-import type { Assignment } from "@/lib/types";
+import type { Assignment, FunctionalRole } from "@/lib/types";
+import { MOCK_ORGANIZATIONS } from "@/lib/mock-data/organizations";
 
 // ─── TIMEZONES ────────────────────────────────────────────────────────────────
 
@@ -139,7 +141,24 @@ const TIMEZONES = [
 
 // ─── SECTION TYPE ─────────────────────────────────────────────────────────────
 
-type Section = "profile" | "security" | "notifications" | "assignments" | "appearance";
+type Section =
+  | "profile"
+  | "security"
+  | "notifications"
+  | "assignments"
+  | "appearance"
+  | "organizations";
+
+function getSectionsForRole(role: FunctionalRole): Section[] {
+  switch (role) {
+    case "AGENT":
+      return ["profile", "notifications", "appearance"];
+    case "PLATFORM_ADMIN":
+      return ["profile", "security", "notifications", "assignments", "appearance", "organizations"];
+    default:
+      return ["profile", "security", "notifications", "assignments", "appearance"];
+  }
+}
 
 // ─── PROFILE FORM SCHEMA ──────────────────────────────────────────────────────
 
@@ -197,19 +216,22 @@ interface SidebarNavProps {
   activeSection: Section;
   onSelect: (s: Section) => void;
   onLogout: () => void;
+  availableSections: Section[];
 }
 
-function SidebarNav({ activeSection, onSelect, onLogout }: SidebarNavProps) {
+function SidebarNav({ activeSection, onSelect, onLogout, availableSections }: SidebarNavProps) {
   const t = useTranslations("screen.profile");
   const router = useRouter();
 
-  const items: { id: Section; icon: React.ElementType; label: string; href?: string }[] = [
+  const allItems: { id: Section; icon: React.ElementType; label: string; href?: string }[] = [
     { id: "profile", icon: UserIcon, label: t("sidebar.profile") },
     { id: "security", icon: Lock, label: t("sidebar.security") },
     { id: "notifications", icon: Bell, label: t("sidebar.notifications"), href: ADMIN_ROUTES.notifications },
     { id: "assignments", icon: Briefcase, label: t("sidebar.assignments") },
     { id: "appearance", icon: Palette, label: t("sidebar.appearance") },
+    { id: "organizations", icon: Building2, label: t("platform_admin.title") },
   ];
+  const items = allItems.filter((it) => availableSections.includes(it.id));
 
   return (
     <nav className="flex flex-col gap-1">
@@ -1303,6 +1325,92 @@ function AppearanceSection({ user, locale, onUserUpdate }: AppearanceSectionProp
 
 // ─── LOADING SKELETON ─────────────────────────────────────────────────────────
 
+// ─── ORGANIZATIONS SECTION (PLATFORM_ADMIN only) ──────────────────────────────
+
+function OrganizationsSection({ user }: { user: CurrentUser }) {
+  const t = useTranslations("screen.profile");
+  const orgs = MOCK_ORGANIZATIONS;
+  const currentOrgId = user.organization_id;
+
+  function handleSwitchOrg(orgId: string) {
+    const orgName = orgs.find((o) => o.id === orgId)?.name ?? orgId;
+    toast.success(`${t("toasts.org_switched")} — ${orgName}`);
+    console.log(`[v0] PLATFORM_ADMIN switching to org: ${orgId}`);
+  }
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader className="pb-4">
+          <div className="space-y-1">
+            <CardTitle className="text-base">{t("platform_admin.title")}</CardTitle>
+            <p className="text-sm text-muted-foreground">{t("platform_admin.description")}</p>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {orgs.map((org) => {
+              const isCurrent = org.id === currentOrgId;
+              return (
+                <div
+                  key={org.id}
+                  className={cn(
+                    "relative flex flex-col gap-3 rounded-xl border p-4 transition-colors",
+                    isCurrent
+                      ? "border-primary/40 bg-primary/5"
+                      : "border-border bg-card hover:border-border/80"
+                  )}
+                >
+                  {isCurrent && (
+                    <Badge className="absolute right-3 top-3 text-[11px] px-1.5 py-0 bg-primary text-primary-foreground">
+                      {t("platform_admin.current_org_label")}
+                    </Badge>
+                  )}
+                  <div className="flex size-10 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                    <Building2 className="size-5" />
+                  </div>
+                  <div className="space-y-1 flex-1">
+                    <p className="text-sm font-semibold leading-tight">{org.name}</p>
+                    <div className="flex flex-wrap gap-1.5 mt-2">
+                      <Badge variant="outline" className="text-[11px] px-1.5 py-0">
+                        {org.payment_mode === "NOMINAL_ACCOUNT"
+                          ? t("platform_admin.payment_mode_nominal")
+                          : t("platform_admin.payment_mode_client_direct")}
+                      </Badge>
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          "text-[11px] px-1.5 py-0",
+                          org.freelance_module_enabled
+                            ? "border-success/40 text-success bg-success/5"
+                            : "text-muted-foreground"
+                        )}
+                      >
+                        {org.freelance_module_enabled
+                          ? t("platform_admin.freelance_enabled")
+                          : t("platform_admin.freelance_disabled")}
+                      </Badge>
+                    </div>
+                  </div>
+                  <Button
+                    variant={isCurrent ? "secondary" : "outline"}
+                    size="sm"
+                    className="w-full mt-1"
+                    onClick={() => handleSwitchOrg(org.id)}
+                    disabled={isCurrent}
+                  >
+                    {t("platform_admin.switch_to_org")}
+                  </Button>
+                </div>
+              );
+            })}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 function ProfileSettingsSkeleton() {
   return (
     <div className="space-y-6">
@@ -1372,12 +1480,16 @@ export function ProfileSettings() {
     );
   }
 
+  const availableSections = getSectionsForRole(user.role);
+  const safeActiveSection = availableSections.includes(activeSection) ? activeSection : availableSections[0];
+
   const sectionContent: Record<Section, React.ReactNode> = {
     profile: <ProfileSection user={user} locale={locale} onUserUpdate={handleUserUpdate} />,
     security: <SecuritySection user={user} onUserUpdate={handleUserUpdate} />,
     notifications: <NotificationsSection />,
     assignments: <AssignmentsSection userId={user.id} />,
     appearance: <AppearanceSection user={user} locale={locale} onUserUpdate={handleUserUpdate} />,
+    organizations: <OrganizationsSection user={user} />,
   };
 
   const sectionLabels: Record<Section, string> = {
@@ -1386,6 +1498,7 @@ export function ProfileSettings() {
     notifications: t("sidebar.notifications"),
     assignments: t("sidebar.assignments"),
     appearance: t("sidebar.appearance"),
+    organizations: t("platform_admin.title"),
   };
 
   return (
@@ -1423,9 +1536,10 @@ export function ProfileSettings() {
         <aside className="hidden lg:block">
           <div className="sticky top-20">
             <SidebarNav
-              activeSection={activeSection}
+              activeSection={safeActiveSection}
               onSelect={setActiveSection}
               onLogout={() => setLogoutOpen(true)}
+              availableSections={availableSections}
             />
           </div>
         </aside>
@@ -1433,17 +1547,17 @@ export function ProfileSettings() {
         {/* Mobile: Tabs */}
         <div className="lg:hidden">
           <Tabs
-            value={activeSection}
+            value={safeActiveSection}
             onValueChange={(v) => setActiveSection(v as Section)}
           >
             <TabsList className="w-full overflow-x-auto flex-nowrap justify-start h-auto gap-1 p-1 mb-4">
-              {(["profile", "security", "notifications", "assignments", "appearance"] as Section[]).map((s) => (
+              {availableSections.map((s) => (
                 <TabsTrigger key={s} value={s} className="shrink-0 text-xs">
                   {sectionLabels[s]}
                 </TabsTrigger>
               ))}
             </TabsList>
-            {(["profile", "security", "notifications", "assignments", "appearance"] as Section[]).map((s) => (
+            {availableSections.map((s) => (
               <TabsContent key={s} value={s}>
                 {sectionContent[s]}
               </TabsContent>
@@ -1463,7 +1577,7 @@ export function ProfileSettings() {
 
         {/* Desktop content */}
         <div className="hidden lg:block">
-          {sectionContent[activeSection]}
+          {sectionContent[safeActiveSection]}
         </div>
       </div>
 
