@@ -4806,6 +4806,98 @@
         "remembered": "ИИ запомнит для похожих случаев",
         "error": "Не удалось выполнить операцию"
       }
+    },
+    "aiChat": {
+      "page_title": "Помощник",
+      "page_subtitle": "Уточните что-то про ваши данные у ИИ",
+      "threads": {
+        "search_placeholder": "Найти диалог",
+        "new_chat": "Новый диалог",
+        "filters": {
+          "all": "Все",
+          "tasks": "По задачам",
+          "goals": "По целям",
+          "charts": "По графикам",
+          "general": "Общие"
+        },
+        "row_actions": {
+          "rename": "Переименовать",
+          "archive": "В архив",
+          "attach_to": "Прикрепить к другому объекту"
+        },
+        "footer_count": "{total} диалогов · {week} этой неделей",
+        "context_label": {
+          "general": "Общий",
+          "suggestion": "Предложение",
+          "goal": "Цель",
+          "task": "Задача",
+          "chart": "График"
+        }
+      },
+      "context_banner": {
+        "general": "Общий чат с помощником",
+        "suggestion": "По предложению: «{title}»",
+        "goal": "По цели: «{title}»",
+        "task": "По задаче: {id} «{title}»",
+        "chart": "По графику «{title}»",
+        "open_link": "открыть",
+        "change_context": "Сменить контекст",
+        "close": "Закрыть контекст"
+      },
+      "messages": {
+        "typing_label": "ИИ анализирует…",
+        "empty_thread_title": "Спросите что угодно про ваши данные",
+        "empty_thread_subtitle": "ИИ читает данные из подключённых источников",
+        "suggestion_chips": {
+          "worst_oos": "Какие магазины с худшим OOS?",
+          "explain_returns": "Объясни, почему вырос возврат задач",
+          "today_priorities": "Что важно сделать сегодня?",
+          "team_status": "Как дела у моих сотрудников?"
+        },
+        "context_chips": {
+          "suggestion_data_source": "Откуда эти данные?",
+          "suggestion_similar": "Покажи похожие случаи",
+          "suggestion_disagree": "Не согласен — почему?",
+          "goal_actions": "Какие действия эффективнее?",
+          "goal_lagging": "Где мы отстаём?",
+          "goal_forecast": "Прогноз на конец недели",
+          "chart_meaning": "Что это значит?",
+          "chart_why": "Почему так?",
+          "chart_action": "Что сделать?"
+        },
+        "actions": {
+          "thumbs_up_tooltip": "Полезный ответ",
+          "thumbs_down_tooltip": "Не помог",
+          "copy": "Копировать",
+          "create_task_from_advice": "Создать задачу из этого совета"
+        }
+      },
+      "composer": {
+        "placeholder": "Спросите что-нибудь или скажите голосом",
+        "voice_button_tooltip": "Голосовой ввод",
+        "voice_coming_soon_toast": "Голосовой ввод появится скоро",
+        "send_button_tooltip": "Отправить",
+        "hint": "ИИ читает данные из подключённых источников. Принимая предложения — проверяйте обоснование."
+      },
+      "states": {
+        "error_sending": "Не удалось отправить сообщение",
+        "retry": "Повторить",
+        "offline_title": "Нет соединения с ИИ",
+        "offline_subtitle": "Попробуйте позже"
+      },
+      "delete_dialog": {
+        "title": "Удалить диалог?",
+        "description": "Действие нельзя отменить",
+        "confirm": "Удалить"
+      },
+      "toasts": {
+        "thanks_for_feedback": "Спасибо за оценку",
+        "thread_archived": "Диалог в архиве",
+        "thread_deleted": "Диалог удалён",
+        "thread_renamed": "Диалог переименован",
+        "share_link_copied": "Ссылка на диалог скопирована",
+        "error": "Не удалось выполнить операцию"
+      }
     }
   }
 }
