@@ -30,10 +30,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { AlertDialog } from "@/components/ui/alert-dialog";
 import {
   Form,
   FormControl,
@@ -61,7 +58,6 @@ import {
 } from "@/lib/api/organization";
 import type { ApiKey, ApiKeyScope, CreateApiKeyPayload } from "@/lib/api/organization";
 import { MOCK_USERS } from "@/lib/mock-data/users";
-import { cn } from "@/lib/utils";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 

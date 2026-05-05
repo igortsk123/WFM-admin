@@ -14,25 +14,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import {
-  AlertDialog,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { ResponsiveDataTable } from "@/components/shared/responsive-data-table";
 
 import { getBillingConfig } from "@/lib/api/organization";
 import type { BillingConfig, BillingHistoryEntry } from "@/lib/api/organization";
-import { cn } from "@/lib/utils";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 

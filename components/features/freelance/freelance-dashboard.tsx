@@ -30,7 +30,6 @@ import type {
 } from "@/lib/types";
 import { getBudgetUsage } from "@/lib/api/freelance-budget";
 import { getFreelanceApplications } from "@/lib/api/freelance-applications";
-import { getAssignmentsByApplication } from "@/lib/api/freelance-assignments";
 import { MOCK_FREELANCE_ASSIGNMENTS } from "@/lib/mock-data/freelance-assignments";
 
 import { Button } from "@/components/ui/button";

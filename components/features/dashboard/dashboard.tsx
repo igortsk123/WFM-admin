@@ -30,7 +30,6 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  ResponsiveContainer,
 } from "recharts"
 
 import { cn } from "@/lib/utils"
@@ -54,7 +53,6 @@ import {
 import { PageHeader } from "@/components/shared/page-header"
 import { KpiCard } from "@/components/shared/kpi-card"
 import { ActivityFeed, type ActivityItem } from "@/components/shared/activity-feed"
-import { TaskStateBadge } from "@/components/shared/task-state-badge"
 import { ReviewStateBadge } from "@/components/shared/review-state-badge"
 import { ResourceBalanceCard } from "./resource-balance-card"
 import { NetworkDashboard } from "./network-dashboard"

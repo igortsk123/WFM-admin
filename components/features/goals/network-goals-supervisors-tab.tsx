@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 
 import { getSupervisorsAiQuality, type SupervisorAiQuality } from "@/lib/api/ai-performance";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { UserCell, EmptyState } from "@/components/shared";

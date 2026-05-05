@@ -25,9 +25,6 @@ import {
   eachDayOfInterval,
   isSameDay,
   isSameMonth,
-  parseISO,
-  getWeek,
-  startOfDay,
 } from "date-fns";
 import { ru, enUS } from "date-fns/locale";
 import { toast } from "sonner";
@@ -37,11 +34,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@/components/ui/toggle-group";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import {
   Tooltip,
   TooltipContent,
@@ -61,7 +54,6 @@ import {
   PageHeader,
   FilterChip,
   EmptyState,
-  ShiftStateBadge,
   MobileFilterSheet,
 } from "@/components/shared";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";

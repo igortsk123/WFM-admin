@@ -15,7 +15,6 @@ import {
   RefreshCw,
   Users,
   Clock,
-  CheckCircle2,
   AlertCircle,
   LayoutGrid,
   Activity,
@@ -94,7 +93,6 @@ import {
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
 import { PageHeader } from "@/components/shared/page-header"
-import { KpiCard } from "@/components/shared/kpi-card"
 import { ActivityFeed } from "@/components/shared/activity-feed"
 import type { ActivityItem } from "@/components/shared/activity-feed"
 import { EmptyState } from "@/components/shared/empty-state"

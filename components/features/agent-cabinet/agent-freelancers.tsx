@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
-import { Link } from "@/i18n/navigation";
 import { useQueryState } from "nuqs";
 import {
   AlertCircle,

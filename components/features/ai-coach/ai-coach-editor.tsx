@@ -20,13 +20,11 @@ import {
   BarChart3,
   FlaskConical,
   History,
-  Lock,
   Info,
 } from "lucide-react";
 
 import {
   getAiHints,
-  createAiHint,
   updateAiHint,
   activateAiHint,
   generateAiHint,
