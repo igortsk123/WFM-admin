@@ -2407,6 +2407,79 @@
         "in_use_warning": "Тип используется в {count} задачах — удаление заблокировано",
         "error": "Не удалось выполнить операцию"
       }
+    },
+    "zones": {
+      "page_title": "Зоны",
+      "breadcrumbs": {
+        "home": "Главная",
+        "taxonomy": "Таксономия",
+        "zones": "Зоны"
+      },
+      "actions": {
+        "create": "Добавить зону",
+        "import": "Импорт",
+        "export": "Экспорт",
+        "more": "Ещё"
+      },
+      "tabs": {
+        "global": "Глобальные",
+        "by_store": "По магазинам"
+      },
+      "tabs_subtitle": {
+        "global": "Зоны, доступные во всех магазинах сети",
+        "by_store": "Локальные зоны конкретных магазинов"
+      },
+      "filters": {
+        "search_placeholder": "Поиск по названию, коду",
+        "store": "Магазин",
+        "store_all": "Все магазины",
+        "approved": "Только подтверждённые",
+        "clear_all": "Очистить все"
+      },
+      "card": {
+        "stores_count": "{count, plural, one {# магазин использует} few {# магазина используют} many {# магазинов используют} other {# магазинов используют}}",
+        "tasks_today": "Задач сегодня: {count}",
+        "store_label": "Магазин",
+        "pending_approval": "Ожидает подтверждения"
+      },
+      "dialogs": {
+        "create_title": "Новая зона",
+        "edit_title": "Редактирование: {name}",
+        "fields": {
+          "code": "Код",
+          "name": "Название",
+          "description": "Описание",
+          "scope": "Область видимости",
+          "scope_global": "Глобальная (вся сеть)",
+          "scope_store": "Локальная (магазин)",
+          "store_id": "Магазин",
+          "icon": "Иконка",
+          "active": "Активна"
+        },
+        "save": "Сохранить",
+        "cancel": "Отмена",
+        "delete_confirm_title": "Удалить зону «{name}»?",
+        "delete_confirm_warning": "Действие необратимо.",
+        "delete_in_use_error": "Используется в {count} задачах — удаление заблокировано",
+        "delete_action": "Удалить"
+      },
+      "empty": {
+        "no_zones_global_title": "Глобальных зон пока нет",
+        "no_zones_global_subtitle": "Создайте первую глобальную зону",
+        "no_zones_store_title": "В этом магазине нет локальных зон",
+        "no_zones_store_subtitle": "Локальные зоны переопределяют глобальные",
+        "no_store_selected_title": "Выберите магазин",
+        "no_store_selected_subtitle": "Чтобы посмотреть его локальные зоны",
+        "filtered_title": "Никого не найдено",
+        "filtered_reset": "Сбросить фильтры"
+      },
+      "toasts": {
+        "created": "Зона создана",
+        "updated": "Зона обновлена",
+        "deleted": "Зона удалена",
+        "in_use_warning": "Зона используется — удаление заблокировано",
+        "error": "Не удалось выполнить операцию"
+      }
     }
   }
 }

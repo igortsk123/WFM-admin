@@ -2407,6 +2407,79 @@
         "in_use_warning": "Type is used in {count} tasks — deletion blocked",
         "error": "Operation failed"
       }
+    },
+    "zones": {
+      "page_title": "Zones",
+      "breadcrumbs": {
+        "home": "Home",
+        "taxonomy": "Taxonomy",
+        "zones": "Zones"
+      },
+      "actions": {
+        "create": "Add zone",
+        "import": "Import",
+        "export": "Export",
+        "more": "More"
+      },
+      "tabs": {
+        "global": "Global",
+        "by_store": "By store"
+      },
+      "tabs_subtitle": {
+        "global": "Zones available across all stores",
+        "by_store": "Store-specific local zones"
+      },
+      "filters": {
+        "search_placeholder": "Search by name, code",
+        "store": "Store",
+        "store_all": "All stores",
+        "approved": "Only approved",
+        "clear_all": "Clear all"
+      },
+      "card": {
+        "stores_count": "{count, plural, one {# store uses it} other {# stores use it}}",
+        "tasks_today": "Tasks today: {count}",
+        "store_label": "Store",
+        "pending_approval": "Pending approval"
+      },
+      "dialogs": {
+        "create_title": "New zone",
+        "edit_title": "Edit: {name}",
+        "fields": {
+          "code": "Code",
+          "name": "Name",
+          "description": "Description",
+          "scope": "Scope",
+          "scope_global": "Global (all stores)",
+          "scope_store": "Local (single store)",
+          "store_id": "Store",
+          "icon": "Icon",
+          "active": "Active"
+        },
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete_confirm_title": "Delete zone '{name}'?",
+        "delete_confirm_warning": "Irreversible.",
+        "delete_in_use_error": "Used in {count} tasks — deletion blocked",
+        "delete_action": "Delete"
+      },
+      "empty": {
+        "no_zones_global_title": "No global zones yet",
+        "no_zones_global_subtitle": "Create the first global zone",
+        "no_zones_store_title": "No local zones in this store",
+        "no_zones_store_subtitle": "Local zones override global ones",
+        "no_store_selected_title": "Select a store",
+        "no_store_selected_subtitle": "To see its local zones",
+        "filtered_title": "Nothing found",
+        "filtered_reset": "Reset filters"
+      },
+      "toasts": {
+        "created": "Zone created",
+        "updated": "Zone updated",
+        "deleted": "Zone deleted",
+        "in_use_warning": "Zone in use — deletion blocked",
+        "error": "Operation failed"
+      }
     }
   }
 }
