@@ -37,12 +37,22 @@ export interface IntegrationsStatus {
     connected: boolean;
     last_sync_at?: string;
     shifts_synced_count: number;
+    /** Кол-во пользователей синхронизированных из LAMA (для stats card). */
+    users_synced_count?: number;
+    /** Кол-во магазинов из LAMA. */
+    stores_synced_count?: number;
+    /** Health: connected / degraded / disconnected. */
+    health?: "connected" | "degraded" | "disconnected";
     error?: string;
   };
   excel: {
     last_upload_at?: string;
     last_upload_type?: "EMPLOYEES" | "SCHEDULE" | "STORES";
     last_upload_status?: "SUCCESS" | "ERROR" | "PARTIAL";
+    /** Кол-во импортов за текущий месяц (для stats). */
+    monthly_imports_count?: number;
+    /** Имя пользователя последнего импорта. */
+    last_upload_by_name?: string;
   };
   webhooks: {
     total: number;
@@ -50,6 +60,32 @@ export interface IntegrationsStatus {
     failing: number;
   };
   api_keys_count: number;
+}
+
+/** Запись истории синхронизаций LAMA для tab «История» в /integrations/lama. */
+export interface LamaSyncEvent {
+  id: string;
+  occurred_at: string;
+  /** SCHEDULED — ночная авто-синхр.; MANUAL — кнопка «Синхронизировать сейчас». */
+  trigger: "SCHEDULED" | "MANUAL";
+  status: "SUCCESS" | "ERROR" | "PARTIAL";
+  duration_ms: number;
+  records_synced: number;
+  error_message?: string;
+  triggered_by_name?: string;
+}
+
+/** Запись Excel-импорта для tab «История импортов». */
+export interface ExcelImportEvent {
+  id: string;
+  uploaded_at: string;
+  uploaded_by_name: string;
+  file_name: string;
+  type: "EMPLOYEES" | "SCHEDULE" | "STORES";
+  status: "SUCCESS" | "ERROR" | "PARTIAL";
+  records_processed: number;
+  records_failed: number;
+  error_summary?: string;
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -191,4 +227,39 @@ export async function deleteWebhook(id: string): Promise<ApiMutationResponse> {
   await delay(350);
   console.log("[v0] Deleted webhook:", id);
   return { success: true };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// LAMA SYNC HISTORY (chat 37)
+// ═══════════════════════════════════════════════════════════════════
+
+/**
+ * Get LAMA sync history (для tab «История» в /integrations/lama).
+ * @endpoint GET /integrations/lama/history
+ */
+export async function getLamaSyncHistory(): Promise<ApiListResponse<LamaSyncEvent>> {
+  await delay(220);
+  // Mock — несколько записей.
+  const data: LamaSyncEvent[] = [
+    { id: "lama-1", occurred_at: "2026-04-28T06:00:00Z", trigger: "SCHEDULED", status: "SUCCESS", duration_ms: 12340, records_synced: 1482 },
+    { id: "lama-2", occurred_at: "2026-04-27T18:42:00Z", trigger: "MANUAL", status: "SUCCESS", duration_ms: 9210, records_synced: 47, triggered_by_name: "Иванова М. П." },
+    { id: "lama-3", occurred_at: "2026-04-27T06:00:00Z", trigger: "SCHEDULED", status: "PARTIAL", duration_ms: 18430, records_synced: 1465, error_message: "12 employees skipped: missing position_id" },
+    { id: "lama-4", occurred_at: "2026-04-26T06:00:00Z", trigger: "SCHEDULED", status: "SUCCESS", duration_ms: 10210, records_synced: 1480 },
+    { id: "lama-5", occurred_at: "2026-04-25T06:00:00Z", trigger: "SCHEDULED", status: "ERROR", duration_ms: 1200, records_synced: 0, error_message: "LAMA endpoint timeout" },
+  ];
+  return { data, total: data.length, page: 1, page_size: 20 };
+}
+
+/**
+ * Get Excel import history (для tab «История импортов»).
+ * @endpoint GET /integrations/excel/history
+ */
+export async function getExcelImportHistory(): Promise<ApiListResponse<ExcelImportEvent>> {
+  await delay(220);
+  const data: ExcelImportEvent[] = [
+    { id: "imp-1", uploaded_at: "2026-04-27T18:42:00Z", uploaded_by_name: "Иванова М. П.", file_name: "schedule-april.xlsx", type: "SCHEDULE", status: "SUCCESS", records_processed: 247, records_failed: 0 },
+    { id: "imp-2", uploaded_at: "2026-04-22T11:15:00Z", uploaded_by_name: "Морозова Е. С.", file_name: "new-employees.csv", type: "EMPLOYEES", status: "PARTIAL", records_processed: 18, records_failed: 2, error_summary: "2 строки пропущены: некорректный phone format" },
+    { id: "imp-3", uploaded_at: "2026-04-15T09:30:00Z", uploaded_by_name: "Иванова М. П.", file_name: "stores-update.xlsx", type: "STORES", status: "SUCCESS", records_processed: 8, records_failed: 0 },
+  ];
+  return { data, total: data.length, page: 1, page_size: 20 };
 }

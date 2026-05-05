@@ -3104,6 +3104,102 @@
         "edit_payment_mode_confirm": "Изменить",
         "module_toggle": "Переключить модуль внештата"
       }
+    },
+    "integrations": {
+      "page_title": "Интеграции",
+      "page_subtitle": "Подключения к внешним системам и автоматизация",
+      "breadcrumbs": {
+        "home": "Главная",
+        "integrations": "Интеграции",
+        "lama": "LAMA"
+      },
+      "cards": {
+        "lama": {
+          "title": "LAMA",
+          "description": "Источник данных: сотрудники, магазины, плановые смены",
+          "stat_users": "Пользователей",
+          "stat_stores": "Магазинов",
+          "stat_shifts": "Смен в плане",
+          "stat_last_sync": "Последняя синхр.",
+          "open": "Открыть",
+          "sync_now": "Синхронизировать сейчас"
+        },
+        "excel": {
+          "title": "Excel импорт",
+          "description": "Загрузка данных через CSV / XLSX",
+          "monthly_imports": "Импортов в этом месяце",
+          "last_import": "Последний",
+          "history_title": "Последние импорты",
+          "upload": "Загрузить файл",
+          "type_EMPLOYEES": "Сотрудники",
+          "type_SCHEDULE": "Расписание",
+          "type_STORES": "Магазины"
+        },
+        "webhooks": {
+          "title": "Webhooks",
+          "description": "HTTP-уведомления о событиях системы",
+          "stat_total": "Всего",
+          "stat_active": "Активных",
+          "stat_failing": "С ошибками",
+          "manage": "Управление"
+        },
+        "api_keys": {
+          "title": "API-ключи",
+          "description": "Программный доступ к данным",
+          "stat_total": "Ключей",
+          "manage": "Управление в Настройках организации"
+        }
+      },
+      "status": {
+        "connected": "Подключено",
+        "degraded": "С ошибками",
+        "disconnected": "Не подключено"
+      },
+      "lama_detail": {
+        "page_title": "LAMA",
+        "page_subtitle": "Управление синхронизацией с планировщиком",
+        "config_section": "Подключение",
+        "endpoint_label": "URL endpoint",
+        "credentials_label": "Учётные данные",
+        "schedule_label": "Расписание автосинхронизации",
+        "schedule_default": "Каждый день в 06:00 (Asia/Tomsk)",
+        "test_connection": "Проверить подключение",
+        "stats_section": "Статистика",
+        "history_section": "История синхронизаций",
+        "history_col_when": "Когда",
+        "history_col_trigger": "Тип",
+        "history_col_status": "Статус",
+        "history_col_duration": "Длительность",
+        "history_col_records": "Записей",
+        "history_col_error": "Ошибка",
+        "trigger_SCHEDULED": "Авто",
+        "trigger_MANUAL": "Вручную",
+        "history_status_SUCCESS": "Успех",
+        "history_status_PARTIAL": "Частично",
+        "history_status_ERROR": "Ошибка"
+      },
+      "webhooks_section": {
+        "title": "Webhooks",
+        "create": "Создать webhook",
+        "name": "Название",
+        "url": "URL",
+        "events": "События",
+        "secret": "Секрет (HMAC)",
+        "active": "Активен",
+        "test": "Тестовый запрос",
+        "delete": "Удалить",
+        "no_webhooks": "Webhooks не настроены"
+      },
+      "toasts": {
+        "lama_synced": "Синхронизация LAMA запущена",
+        "lama_sync_done": "Синхронизация завершена",
+        "excel_uploaded": "Файл загружен",
+        "webhook_created": "Webhook создан",
+        "webhook_updated": "Webhook обновлён",
+        "webhook_deleted": "Webhook удалён",
+        "test_sent": "Тестовый запрос отправлен",
+        "error": "Не удалось выполнить операцию"
+      }
     }
   }
 }

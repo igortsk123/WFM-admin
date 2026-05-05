@@ -3104,6 +3104,102 @@
         "edit_payment_mode_confirm": "Change",
         "module_toggle": "Toggle freelance module"
       }
+    },
+    "integrations": {
+      "page_title": "Integrations",
+      "page_subtitle": "External system connections and automation",
+      "breadcrumbs": {
+        "home": "Home",
+        "integrations": "Integrations",
+        "lama": "LAMA"
+      },
+      "cards": {
+        "lama": {
+          "title": "LAMA",
+          "description": "Source of truth: employees, stores, planned shifts",
+          "stat_users": "Users",
+          "stat_stores": "Stores",
+          "stat_shifts": "Planned shifts",
+          "stat_last_sync": "Last sync",
+          "open": "Open",
+          "sync_now": "Sync now"
+        },
+        "excel": {
+          "title": "Excel import",
+          "description": "Data upload via CSV / XLSX",
+          "monthly_imports": "Imports this month",
+          "last_import": "Last",
+          "history_title": "Recent imports",
+          "upload": "Upload file",
+          "type_EMPLOYEES": "Employees",
+          "type_SCHEDULE": "Schedule",
+          "type_STORES": "Stores"
+        },
+        "webhooks": {
+          "title": "Webhooks",
+          "description": "HTTP notifications about system events",
+          "stat_total": "Total",
+          "stat_active": "Active",
+          "stat_failing": "Failing",
+          "manage": "Manage"
+        },
+        "api_keys": {
+          "title": "API keys",
+          "description": "Programmatic data access",
+          "stat_total": "Keys",
+          "manage": "Manage in Organization settings"
+        }
+      },
+      "status": {
+        "connected": "Connected",
+        "degraded": "Degraded",
+        "disconnected": "Disconnected"
+      },
+      "lama_detail": {
+        "page_title": "LAMA",
+        "page_subtitle": "Manage sync with the planner",
+        "config_section": "Connection",
+        "endpoint_label": "Endpoint URL",
+        "credentials_label": "Credentials",
+        "schedule_label": "Auto-sync schedule",
+        "schedule_default": "Daily at 06:00 (Asia/Tomsk)",
+        "test_connection": "Test connection",
+        "stats_section": "Statistics",
+        "history_section": "Sync history",
+        "history_col_when": "When",
+        "history_col_trigger": "Type",
+        "history_col_status": "Status",
+        "history_col_duration": "Duration",
+        "history_col_records": "Records",
+        "history_col_error": "Error",
+        "trigger_SCHEDULED": "Auto",
+        "trigger_MANUAL": "Manual",
+        "history_status_SUCCESS": "Success",
+        "history_status_PARTIAL": "Partial",
+        "history_status_ERROR": "Error"
+      },
+      "webhooks_section": {
+        "title": "Webhooks",
+        "create": "Create webhook",
+        "name": "Name",
+        "url": "URL",
+        "events": "Events",
+        "secret": "Secret (HMAC)",
+        "active": "Active",
+        "test": "Test request",
+        "delete": "Delete",
+        "no_webhooks": "No webhooks configured"
+      },
+      "toasts": {
+        "lama_synced": "LAMA sync started",
+        "lama_sync_done": "Sync finished",
+        "excel_uploaded": "File uploaded",
+        "webhook_created": "Webhook created",
+        "webhook_updated": "Webhook updated",
+        "webhook_deleted": "Webhook deleted",
+        "test_sent": "Test request sent",
+        "error": "Operation failed"
+      }
     }
   }
 }

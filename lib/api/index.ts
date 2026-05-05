@@ -281,6 +281,8 @@ export {
 export {
   type Webhook,
   type IntegrationsStatus,
+  type LamaSyncEvent,
+  type ExcelImportEvent,
   getIntegrationsStatus,
   syncLamaForce,
   uploadExcel,
@@ -288,6 +290,8 @@ export {
   createWebhook,
   updateWebhook,
   deleteWebhook,
+  getLamaSyncHistory,
+  getExcelImportHistory,
 } from "./integrations";
 
 // ═══════════════════════════════════════════════════════════════════
