@@ -96,7 +96,7 @@ import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 
 import { useAuth } from "@/lib/contexts/auth-context";
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
-import type { User, BonusBudget } from "@/lib/types";
+import type { User as UserModel, BonusBudget } from "@/lib/types";
 import type { BonusTaskWithSource, FreelanceLinkInfo, ReplacedByBonusKpi } from "@/lib/api/bonus";
 
 import {
@@ -390,8 +390,8 @@ function EmployeePreviewSection({ storeId, locale }: EmployeePreviewSectionProps
   const t = useTranslations("screen.bonusTasks.preview");
   const [open, setOpen] = useState(false);
   const [comboOpen, setComboOpen] = useState(false);
-  const [employees, setEmployees] = useState<User[]>([]);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [employees, setEmployees] = useState<UserModel[]>([]);
+  const [selectedUser, setSelectedUser] = useState<UserModel | null>(null);
   const [preview, setPreview] = useState<{ visible_now_sum: number; available_tasks: BonusTaskWithSource[] } | null>(null);
   const [loadingEmployees, setLoadingEmployees] = useState(false);
   const [loadingPreview, setLoadingPreview] = useState(false);
@@ -564,7 +564,7 @@ function EmployeePreviewSection({ storeId, locale }: EmployeePreviewSectionProps
 
 const createSchema = z.object({
   title: z.string().min(5),
-  points: z.coerce.number().min(1),
+  points: z.number().min(1),
   source: z.enum(["YESTERDAY_INCOMPLETE", "SUPERVISOR_BUDGET", "GOAL_LINKED"]),
 });
 
@@ -635,7 +635,12 @@ function CreateBonusTaskDialog({ storeId, onCreated }: CreateBonusTaskDialogProp
                 <FormItem>
                   <FormLabel>{t("create_dialog.points_label")}</FormLabel>
                   <FormControl>
-                    <Input type="number" min={1} {...field} />
+                    <Input
+                      type="number"
+                      min={1}
+                      {...field}
+                      onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
