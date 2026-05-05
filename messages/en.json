@@ -1348,7 +1348,8 @@
       "tabs": {
         "all": "All",
         "active": "Active",
-        "archived": "Archive"
+        "archived": "Archive",
+        "employees": "Employees"
       },
       "filters": {
         "search_placeholder": "Search by name, phone",
@@ -1821,6 +1822,14 @@
         "employment_type": "Employment type",
         "employment_staff": "Staff",
         "employment_freelance": "Freelance",
+        "employment_full": "Full-time",
+        "employment_part": "Part-time",
+        "rate_fraction_label": "Rate fraction",
+        "rate_fraction_placeholder": "Full rate",
+        "rate_quarter": "1/4 rate (~2h)",
+        "rate_half": "1/2 rate (~4h)",
+        "rate_three_quarter": "3/4 rate (~6h)",
+        "rate_full": "Full rate (8h)",
         "freelance_hint": "Documents are required for freelance workers",
         "avatar": "Avatar",
         "avatar_drop": "Drag a photo or click to upload",
@@ -1866,6 +1875,8 @@
         "method_email": "Email",
         "method_none": "Don't send",
         "method_email_disabled_hint": "Add email on step 1 to enable",
+        "send_invite": "Send invitation",
+        "send_invite_hint": "Off by default — employee is created without activation",
         "message": "Message",
         "message_template": "Hi {fio}! You've been invited to WFM — task management for {store}. Download the app: {link}",
         "notify_manager": "Send a copy to the store manager",

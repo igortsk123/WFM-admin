@@ -438,7 +438,7 @@ export function EmployeesList() {
   // ── URL state ───────────────────────────────────────────────────
   const [statusParam, setStatusParam] = useQueryState(
     "status",
-    parseAsString.withDefault("all")
+    parseAsString.withDefault("active")
   )
   const [searchParam, setSearchParam] = useQueryState(
     "search",
@@ -843,8 +843,9 @@ export function EmployeesList() {
     {
       id: "hired_at",
       header: t("columns.hired_at"),
+      size: 110,
       cell: ({ row }) => (
-        <span className="text-xs text-muted-foreground">
+        <span className="text-xs text-muted-foreground whitespace-nowrap">
           {formatHiredAt(row.original.hired_at, locale)}
         </span>
       ),
@@ -1453,22 +1454,14 @@ export function EmployeesList() {
         <Tabs
           value={statusParam}
           onValueChange={(v) => {
-            setStatusParam(v === "all" ? null : v)
+            setStatusParam(v === "active" ? null : v)
             setPageParam(null)
             setSelectedIds(new Set())
           }}
         >
           <TabsList className="h-9">
-            <TabsTrigger value="all">
-              {t("tabs.all")}
-              {allCount > 0 && (
-                <Badge variant="secondary" className="ml-1.5 text-xs h-5 px-1.5">
-                  {allCount}
-                </Badge>
-              )}
-            </TabsTrigger>
             <TabsTrigger value="active">
-              {t("tabs.active")}
+              {t("tabs.employees")}
               {activeCount > 0 && (
                 <Badge variant="secondary" className="ml-1.5 text-xs h-5 px-1.5">
                   {activeCount}

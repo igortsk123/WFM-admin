@@ -1348,7 +1348,8 @@
       "tabs": {
         "all": "Все",
         "active": "Активные",
-        "archived": "Архив"
+        "archived": "Архив",
+        "employees": "Сотрудники"
       },
       "filters": {
         "search_placeholder": "Поиск по ФИО, телефону",
@@ -1821,6 +1822,14 @@
         "employment_type": "Тип занятости",
         "employment_staff": "Штатный",
         "employment_freelance": "Внештатный",
+        "employment_full": "Полная занятость",
+        "employment_part": "Частичная занятость",
+        "rate_fraction_label": "Доля ставки",
+        "rate_fraction_placeholder": "Полная ставка",
+        "rate_quarter": "1/4 ставки (~2 ч)",
+        "rate_half": "1/2 ставки (~4 ч)",
+        "rate_three_quarter": "3/4 ставки (~6 ч)",
+        "rate_full": "Полная ставка (8 ч)",
         "freelance_hint": "Для внештатников документы обязательны",
         "avatar": "Аватар",
         "avatar_drop": "Перетащите фото или нажмите чтобы выбрать",
@@ -1866,6 +1875,8 @@
         "method_email": "Email",
         "method_none": "Не отправлять",
         "method_email_disabled_hint": "Укажите email на шаге 1, чтобы выбрать",
+        "send_invite": "Отправить приглашение",
+        "send_invite_hint": "По умолчанию выкл. — сотрудник создаётся без активации",
         "message": "Сообщение",
         "message_template": "Здравствуйте, {fio}! Вас пригласили в WFM — систему управления задачами магазина {store}. Скачайте приложение по ссылке: {link}",
         "notify_manager": "Отправить копию управляющему магазина",
