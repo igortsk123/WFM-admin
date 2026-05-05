@@ -62,7 +62,6 @@ import {
   updateLegalEntity,
   removeLegalEntity,
 } from "@/lib/api/organization";
-import { MOCK_LEGAL_ENTITIES } from "@/lib/mock-data/legal-entities";
 import type { LegalEntity } from "@/lib/types";
 import { cn } from "@/lib/utils";
 

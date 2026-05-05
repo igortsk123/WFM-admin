@@ -222,12 +222,12 @@ export {
   type FmcgOpsThresholds,
   type FashionSeasonRow,
   type BillingInfo,
-  type LegalEntity,
   getOrganizationConfig,
   updateOrganizationConfig,
   updateFmcgGroupThreshold,
   updateFmcgOpsThresholds,
   updateFashionSeason,
+  getLegalEntities,
   addLegalEntity,
   updateLegalEntity,
   removeLegalEntity,
@@ -437,7 +437,7 @@ export {
   getRegulationsStats,
 } from "./regulations";
 
-// ═══════════════════════════════════════════════════════════════════
+// ═════════════════════════��═════════════════════════════════════════
 // Data Connectors API
 // ═══════════════════════════════════════════════════════════════════
 

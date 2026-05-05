@@ -22,6 +22,7 @@ import {
   getTaskPolicies,
   getTimezoneConfig,
   getBrandingConfig,
+  getLegalEntities,
 } from "@/lib/api/organization";
 import type {
   OrganizationConfig,
@@ -29,7 +30,7 @@ import type {
   TimezoneConfig,
   BrandingConfig,
 } from "@/lib/api/organization";
-import { MOCK_LEGAL_ENTITIES } from "@/lib/mock-data/legal-entities";
+import type { LegalEntity } from "@/lib/types";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { cn } from "@/lib/utils";
 
@@ -154,6 +155,7 @@ export function OrganizationSettings() {
   const [policiesConfig, setPoliciesConfig] = React.useState<TaskPoliciesConfig | null>(null);
   const [timezoneConfig, setTimezoneConfig] = React.useState<TimezoneConfig | null>(null);
   const [brandingConfig, setBrandingConfig] = React.useState<BrandingConfig | null>(null);
+  const [legalEntities, setLegalEntities] = React.useState<LegalEntity[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(false);
 
@@ -186,16 +188,18 @@ export function OrganizationSettings() {
     setLoading(true);
     setError(false);
     try {
-      const [orgRes, policiesRes, tzRes, brandingRes] = await Promise.all([
+      const [orgRes, policiesRes, tzRes, brandingRes, legalRes] = await Promise.all([
         getOrganizationConfig(orgId),
         getTaskPolicies(orgId),
         getTimezoneConfig(orgId),
         getBrandingConfig(orgId),
+        getLegalEntities(orgId),
       ]);
       setConfig(orgRes.data);
       setPoliciesConfig(policiesRes.data);
       setTimezoneConfig(tzRes.data);
       setBrandingConfig(brandingRes.data);
+      setLegalEntities(legalRes.data);
     } catch {
       setError(true);
     } finally {
@@ -208,7 +212,7 @@ export function OrganizationSettings() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canAccess]);
 
-  // ── Save handler ─────────────────────────────────────────────────────────
+  // ── Save handler ────────────────────────────────────────────���────────────
 
   async function handleSave() {
     setSubmitting(true);
@@ -266,12 +270,6 @@ export function OrganizationSettings() {
     if (dirty) setDirty(false);
     setActiveTab(tab as TabId);
   }
-
-  // ── Legal entities ───────────────────────────────────────────────────────
-
-  const legalEntities = MOCK_LEGAL_ENTITIES.filter(
-    (e) => e.organization_id === orgId
-  );
 
   // ── Render ───────────────────────────────────────────────────────────────
 

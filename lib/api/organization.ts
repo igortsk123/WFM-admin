@@ -7,8 +7,10 @@ import type {
   ApiResponse,
   ApiMutationResponse,
   Organization,
+  LegalEntity,
 } from "@/lib/types";
 import { MOCK_ORGANIZATIONS } from "@/lib/mock-data/organizations";
+import { MOCK_LEGAL_ENTITIES } from "@/lib/mock-data/legal-entities";
 
 const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
 
@@ -226,7 +228,18 @@ export async function updateFashionSeason(
 }
 
 /**
- * Add new legal entity to organization.
+ * Get legal entities for organization.
+ * @endpoint GET /organizations/:id/legal-entities
+ */
+export async function getLegalEntities(orgId: string): Promise<ApiResponse<LegalEntity[]>> {
+  await delay(200);
+  const entities = MOCK_LEGAL_ENTITIES.filter((e) => e.organization_id === orgId);
+  console.log(`[v0] getLegalEntities org=${orgId}: ${entities.length} entities`);
+  return { data: entities };
+}
+
+/**
+ * Add new legal entity.
  * @endpoint POST /organizations/:id/legal-entities
  */
 export async function addLegalEntity(
