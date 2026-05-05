@@ -1111,7 +1111,9 @@ function ChallengesTab({
           message={t("cancel_dialog.description")}
           confirmLabel={t("cancel_dialog.confirm")}
           variant="destructive"
-          onConfirm={() => cancelId && handleCancel(cancelId)}
+          onConfirm={async () => {
+            if (cancelId) await handleCancel(cancelId);
+          }}
           onOpenChange={(v) => !v && setCancelId(null)}
         />
       </AlertDialog>

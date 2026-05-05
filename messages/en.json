@@ -5684,6 +5684,166 @@
         "applications": "Applications",
         "detail": "Application"
       },
+      "header": {
+        "title": "Application #{shortId} • {storeName}",
+        "created_by": "Created by {name} ({role}) {time}",
+        "source_internal": "Internal",
+        "source_external": "External HR",
+        "urgent_alert_title": "Urgent application",
+        "urgent_alert_desc": "Standard 3-day buffer not observed.",
+        "retroactive_alert_title": "Retroactive application",
+        "retroactive_alert_desc": "Application recorded retroactively for reporting.",
+        "external_alert_title": "Application from external HR system",
+        "external_alert_desc": "Application received from client HR system ({ref}). Approval skipped — only assignee assignment is needed."
+      },
+      "params_card": {
+        "title": "Application parameters",
+        "planned_date": "Shift date",
+        "hours_requested": "Requested hours",
+        "hours_approved": "Approved",
+        "hours_unit": "h",
+        "work_type": "Work type",
+        "location": "Location",
+        "comment": "Requester comment",
+        "no_comment": "—"
+      },
+      "finance_card": {
+        "title": "Financial picture",
+        "client_direct_banner": "Costs are indicative per norms. Payment handled by client.",
+        "external_banner": "Application from external HR system. Budget limits shown for reference only — no blocking.",
+        "cost_label": "Estimated cost",
+        "cost_breakdown": "{hours} h × {rate} ₽/h",
+        "budget_usage_title": "Budget usage ({period})",
+        "budget_limit": "Limit",
+        "budget_actual": "Spent",
+        "budget_planned": "Planned today",
+        "budget_overspend": "Overspend",
+        "period_DAY": "day",
+        "period_WEEK": "week",
+        "period_MONTH": "month",
+        "simulator_title": "If I approve…",
+        "simulator_hours_label": "Hours to approve",
+        "simulator_new_cost": "New cost",
+        "simulator_new_budget": "Budget after approval",
+        "simulator_overspend_after": "Overspend after approval",
+        "simulator_blocked_alert": "Approval blocked: {period} limit exceeded by {pct}%",
+        "simulator_blocked_details": "After approval spend will be {actual} ₽ vs limit {limit} ₽."
+      },
+      "history_card": {
+        "title": "Change history",
+        "collapse_hint": "Collapse",
+        "expand_hint": "Expand",
+        "action_CREATED": "Application created",
+        "action_APPROVED_FULL": "Approved in full",
+        "action_APPROVED_PARTIAL": "Partially approved",
+        "action_REJECTED": "Rejected",
+        "action_REPLACED_WITH_BONUS": "Replaced with bonus pool",
+        "action_APPROVED_MIXED": "Mixed approval",
+        "action_CANCELLED": "Cancelled",
+        "action_DRAFT": "Draft",
+        "action_PENDING": "Pending review"
+      },
+      "decision_card": {
+        "title": "Make a decision",
+        "option_full": "Approve in full",
+        "option_partial": "Approve partially",
+        "option_reject": "Reject",
+        "option_bonus": "Replace with bonus pool",
+        "option_mixed": "Mixed (part freelance, part bonus)",
+        "partial_hours_label": "Hours to approve",
+        "reject_reason_label": "Rejection reason",
+        "reject_reason_hint": "At least 10 characters",
+        "bonus_info": "Creating a bonus pool for {hours} h for store staff. Bonus cost ≈ 2x cheaper than freelance.",
+        "bonus_savings": "Savings: {savings} ₽",
+        "mixed_freelance_label": "Freelance hours",
+        "mixed_bonus_label": "Bonus hours",
+        "mixed_sum_hint": "Sum must equal {total} h",
+        "mixed_savings": "Savings vs full freelance: {savings} ₽",
+        "comment_label": "Decision comment",
+        "comment_optional": "Optional",
+        "comment_required": "Required for rejection",
+        "submit_label": "Submit decision",
+        "submit_blocked_tooltip": "Approval blocked: budget exceeded",
+        "confirm_dialog_title": "Confirm decision on application?",
+        "confirm_dialog_desc": "Selected: {decision}",
+        "confirm_dialog_ok": "Confirm"
+      },
+      "assignment_card": {
+        "title": "Assignee",
+        "approved_summary": "Approved {hours} h on {date}",
+        "no_assignee_warning": "No assignee assigned",
+        "assign_cta": "Assign performer",
+        "create_tasks_cta": "Create shift tasks",
+        "assignment_status_SCHEDULED": "Scheduled",
+        "assignment_status_CHECKED_IN": "Checked in",
+        "assignment_status_WORKING": "Working",
+        "assignment_status_DONE": "Done",
+        "assignment_status_NO_SHOW": "No show",
+        "remove_assignment": "Remove",
+        "sheet_title": "Assign performer",
+        "sheet_phone_label": "Performer phone",
+        "sheet_phone_placeholder": "+7 (XXX) XXX-XX-XX",
+        "sheet_phone_not_found": "Performer not found — a new one will be created",
+        "sheet_new_freelancer_label": "Create new performer",
+        "sheet_agent_label": "Agent",
+        "sheet_agent_placeholder": "Select agent",
+        "sheet_agent_optional": "Optional",
+        "sheet_start_label": "Shift start",
+        "sheet_end_label": "Shift end",
+        "sheet_submit": "Assign",
+        "sheet_cancel": "Cancel"
+      },
+      "external_block": {
+        "title": "Application from external HR system",
+        "desc": "Approval completed on client side. Only assignee assignment and task creation is needed.",
+        "ref_label": "External reference for tracing"
+      },
+      "terminal_block": {
+        "rejected_title": "Application rejected",
+        "bonus_title": "Replaced with bonus pool",
+        "cancelled_title": "Application cancelled",
+        "reason_label": "Reason",
+        "decided_by": "Decision by",
+        "decided_at": "Decision date",
+        "go_bonus_pool": "Go to bonus pool"
+      },
+      "related_card": {
+        "title": "Related entities",
+        "bonus_pool": "Bonus pool",
+        "services": "Services for application",
+        "payout": "Payout"
+      },
+      "status": {
+        "DRAFT": "Draft",
+        "PENDING": "Pending",
+        "APPROVED_FULL": "Approved",
+        "APPROVED_PARTIAL": "Partially approved",
+        "REJECTED": "Rejected",
+        "REPLACED_WITH_BONUS": "Replaced with bonus",
+        "MIXED": "Mixed",
+        "CANCELLED": "Cancelled"
+      },
+      "toasts": {
+        "decision_saved": "Decision saved",
+        "bonus_pool_created": "Bonus pool created",
+        "bonus_pool_link": "Go?",
+        "assignment_created": "Performer assigned",
+        "assignment_removed": "Assignment removed",
+        "error": "Failed to perform action",
+        "conflict": "Data has changed. Please refresh.",
+        "budget_blocked": "Approval blocked: budget exceeded"
+      },
+      "states": {
+        "loading": "Loading application...",
+        "not_found_title": "Application not found",
+        "not_found_desc": "An application with this ID does not exist or has been deleted.",
+        "not_found_cta": "Back to applications",
+        "error_title": "Loading error",
+        "error_desc": "Failed to load application. Please try again.",
+        "error_retry": "Retry",
+        "forbidden_title": "Access denied",
+        "forbidden_desc": "This application is outside your working scope."
+      },
       "actions": {
         "approve": "Approve",
         "reject": "Reject",
@@ -5692,48 +5852,7 @@
         "edit": "Edit",
         "cancel": "Cancel application"
       },
-      "sections": {
-        "summary": "Summary",
-        "service_details": "Service details",
-        "budget": "Budget",
-        "history": "Approval history",
-        "linked_bonus": "Linked bonus pool",
-        "documents": "Documents"
-      },
-      "summary": {
-        "store": "Object",
-        "service": "Service",
-        "amount": "Amount",
-        "agent": "Agent",
-        "no_agent": "Without agent",
-        "created_by": "Author",
-        "created_at": "Created"
-      },
-      "history_event": {
-        "submitted": "Submitted for approval",
-        "approved": "Approved",
-        "rejected": "Rejected",
-        "revision_requested": "Revisions requested",
-        "replaced_with_bonus": "Replaced with bonus",
-        "fulfilled": "Fulfilled"
-      },
-      "approve_dialog": {
-        "title": "Approve application?",
-        "description": "{amount} ₽ will be charged to {store} budget",
-        "confirm": "Approve"
-      },
-      "reject_dialog": {
-        "title": "Reject application?",
-        "reason_label": "Reason (required)",
-        "confirm": "Reject"
-      },
-      "replace_bonus_dialog": {
-        "title": "Replace application with a bonus pool?",
-        "description": "Bonus ≈50% of full cost. Savings: {saved} ₽",
-        "amount_label": "Bonus pool amount, ₽",
-        "confirm": "Create bonus"
-      },
-      "toasts": {
+      "toasts_legacy": {
         "approved": "Application approved",
         "rejected": "Application rejected",
         "replaced": "Application replaced with bonus",
@@ -5741,7 +5860,7 @@
       }
     },
     "freelanceServicesList": {
-      "page_title": "Delivered services registry",
+      "page_title": "Freelance services registry",
       "page_subtitle": "Including no-show registry",
       "breadcrumbs": {
         "home": "Home",
@@ -5750,123 +5869,323 @@
       },
       "tabs": {
         "all": "All",
-        "delivered": "Delivered",
-        "no_show": "No-shows"
+        "pending": "Awaiting confirmation",
+        "ready": "Ready to pay",
+        "paid": "Paid",
+        "confirmed": "Confirmed",
+        "no_show": "No-shows",
+        "disputed": "Disputed"
       },
       "filters": {
         "search": "Search",
         "status": "Status",
-        "store": "Store",
+        "store": "Object",
+        "store_placeholder": "All objects",
+        "freelancer": "Performer",
+        "freelancer_placeholder": "Name or phone",
         "agent": "Agent",
-        "date_range": "Period"
+        "agent_placeholder": "All agents",
+        "work_type": "Work type",
+        "work_type_placeholder": "All types",
+        "date_range": "Period",
+        "date_from": "Date from",
+        "date_to": "Date to"
       },
       "columns": {
         "date": "Date",
         "store": "Object",
-        "service": "Service",
         "performer": "Performer",
-        "agent": "Agent",
+        "work_type": "Work type",
+        "hours": "Hours",
+        "hours_tooltip": "promised / actual / payable",
+        "volume": "Volume",
         "amount": "Amount",
-        "status": "Status"
+        "amount_indicative": "(indicative)",
+        "agent": "Agent",
+        "source": "Source",
+        "legal_status": "Legal status",
+        "status": "Status",
+        "actions": "Actions"
       },
       "status": {
-        "DELIVERED": "Delivered",
+        "PLANNED": "Planned",
+        "IN_PROGRESS": "In progress",
+        "COMPLETED": "Awaiting confirmation",
+        "CONFIRMED": "Confirmed",
+        "READY_TO_PAY": "Ready to pay",
+        "PAID": "Paid",
         "NO_SHOW": "No-show",
-        "CANCELLED": "Cancelled"
+        "DISPUTED": "Disputed"
       },
-      "no_show_alert": "No-show — priority comms with agent",
+      "no_show_legal_status": {
+        "OPEN": "Open",
+        "IN_LEGAL": "In legal",
+        "RESOLVED": "Resolved",
+        "WRITTEN_OFF": "Written off"
+      },
+      "source": {
+        "INTERNAL": "Internal",
+        "EXTERNAL": "External"
+      },
+      "hours_badge": {
+        "underload": "Underload not at fault"
+      },
+      "adjusted_tooltip": "Manually adjusted, see details",
+      "actions": {
+        "confirm": "Confirm service",
+        "dispute": "Dispute",
+        "download_act": "Download act",
+        "open_no_show": "Open no-show report",
+        "adjust_amount": "Adjust amount",
+        "to_legal": "Send to legal"
+      },
       "empty": {
-        "no_services": "No delivered services for the period"
+        "all_title": "No services yet",
+        "all_description": "Delivered services will appear here",
+        "no_show_title": "No no-shows",
+        "no_show_description": "No no-shows for the selected period",
+        "pending_title": "All services confirmed",
+        "pending_description": "No services awaiting confirmation",
+        "generic_title": "No data",
+        "generic_description": "Nothing found for the selected filters"
+      },
+      "sheet": {
+        "title": "Service details",
+        "freelancer_section": "Performer",
+        "hours_section": "Hours",
+        "scheduled": "Promised",
+        "actual": "Actual",
+        "payable": "Payable",
+        "geo_checkin": "Geo check-in",
+        "geo_match": "Match",
+        "geo_no_match": "No match",
+        "assignment": "Assignment",
+        "related_payout": "Payout",
+        "adjustment_history": "Adjustment history",
+        "adjusted_by": "Adjusted by",
+        "adjusted_at": "When",
+        "from_amount": "From",
+        "to_amount": "To",
+        "reason": "Reason",
+        "no_show_report": "No-show report",
+        "legal_comment": "Legal comment"
+      },
+      "adjust_dialog": {
+        "title": "Adjust amount",
+        "description": "Amount change will be saved to audit log",
+        "new_amount_label": "New amount",
+        "reason_label": "Reason for adjustment",
+        "reason_placeholder": "At least 10 characters",
+        "submit": "Apply"
+      },
+      "dispute_dialog": {
+        "title": "Dispute service",
+        "description": "Provide a reason. Status will change to Disputed.",
+        "reason_label": "Reason",
+        "reason_placeholder": "At least 10 characters",
+        "submit": "Dispute"
       },
       "toasts": {
-        "error": "Failed to load"
-      }
+        "confirmed": "Service confirmed",
+        "disputed": "Service disputed",
+        "adjusted": "Amount adjusted",
+        "legal_sent": "Sent to legal",
+        "error": "Failed to perform action",
+        "load_error": "Failed to load",
+        "data_changed": "Data changed — please refresh"
+      },
+      "export": "Export"
     },
     "freelancePayoutsList": {
-      "page_title": "Freelance payouts registry",
-      "page_subtitle": "Managed payout periods and registries",
+      "page_title": "Payouts registry",
+      "page_subtitle": "Freelancer payouts via Nominal Account",
       "breadcrumbs": {
         "home": "Home",
         "freelance": "Freelance",
-        "payouts": "Payouts"
+        "payouts": "Payouts registry"
       },
       "actions": {
-        "create_register": "Create registry",
-        "approve": "Approve",
-        "send_to_payment": "Send to payment",
-        "export": "Export"
+        "export_csv": "Export CSV",
+        "connect_nominal": "Nominal Account"
+      },
+      "alerts": {
+        "not_connected_title": "Nominal Account service is not connected",
+        "not_connected_desc": "Payouts cannot be processed. Please connect the service in integrations.",
+        "not_connected_action": "Connect",
+        "error_title": "Nominal Account connection error",
+        "error_desc": "Last error: {message}"
+      },
+      "tabs": {
+        "pending": "Pending",
+        "processing": "Processing",
+        "paid": "Paid",
+        "failed": "Failed"
       },
       "filters": {
-        "period": "Period",
-        "status": "Status",
-        "store": "Store"
+        "freelancer": "Freelancer",
+        "freelancer_placeholder": "All freelancers",
+        "agent": "Agent",
+        "agent_placeholder": "All agents",
+        "date_range": "Payout date",
+        "store": "Object",
+        "store_placeholder": "All objects"
       },
-      "status": {
-        "OPEN": "Open",
-        "READY": "Ready to approve",
-        "APPROVED": "Approved",
-        "PAYING": "Paying",
-        "PAID": "Paid"
+      "kpi": {
+        "paid_total": "Total paid",
+        "fee_total": "Commission",
+        "agent_total": "To agents",
+        "pending_total": "In progress"
       },
       "columns": {
-        "register_id": "Registry #",
-        "period": "Period",
-        "stores": "Stores",
-        "lines_count": "Lines",
-        "amount": "Amount",
+        "payout_date": "Payout date",
+        "freelancer": "Freelancer",
+        "stores": "Object(s)",
+        "services_count": "Services",
+        "hours_total": "Hours",
+        "gross_amount": "Gross",
+        "nominal_fee": "5% fee",
+        "net_amount": "Net",
+        "agent_commission": "Agent fee",
         "status": "Status"
       },
-      "summary": {
-        "total_amount": "Total amount",
-        "lines_total": "Lines",
-        "agents_total": "Agents"
+      "fee_tooltip": "Nominal Account commission",
+      "menu": {
+        "download_act": "Download act",
+        "open_details": "Open details",
+        "retry": "Retry"
+      },
+      "retry_dialog": {
+        "title": "Retry payout?",
+        "message": "The payout will be re-submitted to Nominal Account. Ensure freelancer details are correct.",
+        "confirm": "Retry"
+      },
+      "sheet": {
+        "title": "Payout details",
+        "amount_card": "Payout amount",
+        "gross": "Gross",
+        "fee": "Nominal Account fee",
+        "net": "Net",
+        "agent_commission": "Agent commission",
+        "services_table": "Services in payout",
+        "service_date": "Date",
+        "service_store": "Object",
+        "service_hours": "Hours",
+        "service_amount": "Amount",
+        "documents_card": "Documents",
+        "closing_doc": "Closing document",
+        "nominal_ref": "Nominal Account ref",
+        "history_card": "Attempt history",
+        "attempt_at": "Attempt",
+        "attempt_status": "Status",
+        "failure_reason": "Failure reason",
+        "no_history": "No history",
+        "retry_action": "Retry",
+        "download_act": "Download act"
       },
       "empty": {
-        "no_payouts": "No registries for the period"
+        "title": "No payouts yet",
+        "description": "Payouts will appear after service confirmation and nightly calculation.",
+        "action": "Go to services"
       },
+      "notification_subscribe": "Notify on new errors",
       "toasts": {
-        "approved": "Registry approved",
-        "sent": "Sent to payment",
-        "error": "Failed"
+        "retry_success": "Payout queued for retry",
+        "retry_error": "Failed to retry payout",
+        "export_success": "Export started",
+        "doc_error": "Failed to get document link"
       }
     },
     "freelanceBudgetLimits": {
       "page_title": "Freelance budget limits",
-      "page_subtitle": "Per-object monthly limits",
+      "page_subtitle": "Control freelance spending limits per object",
       "breadcrumbs": {
         "home": "Home",
         "freelance": "Freelance",
         "limits": "Limits"
       },
-      "actions": {
-        "set_default": "Set network default",
-        "save": "Save",
-        "reset": "Reset"
+      "info_banner": "Limits prevent overspending on freelance workers. Exceeding a limit blocks approval of internal applications (INTERNAL source — regardless of who pays). Applications from external HR systems (EXTERNAL) are advisory-only, without blocking.",
+      "tabs": {
+        "active": "Active",
+        "expired": "Expired"
       },
       "filters": {
+        "object": "Object",
+        "object_placeholder": "All objects",
         "period": "Period",
-        "store_type": "Object type"
+        "period_placeholder": "All periods",
+        "search_object": "Search object..."
+      },
+      "period": {
+        "DAY": "Day",
+        "WEEK": "Week",
+        "MONTH": "Month",
+        "all": "All"
       },
       "table": {
-        "columns": {
-          "object": "Object",
-          "current_limit": "Current limit",
-          "spent": "Spent",
-          "new_limit": "New limit",
-          "diff": "Change"
-        }
+        "object": "Object",
+        "period": "Period",
+        "limit": "Limit",
+        "valid_from": "Valid from",
+        "valid_to": "Valid to",
+        "set_by": "Set by",
+        "usage": "Current usage",
+        "actions": "Actions"
       },
-      "presets": {
-        "by_revenue": "By revenue",
-        "by_size": "By area",
-        "by_employees": "By headcount",
-        "manual": "Manual"
+      "indefinite": "Indefinite",
+      "usage": {
+        "of": "of",
+        "indicative": "advisory by norms"
       },
-      "warning_overspent": "Object already exceeds the proposed limit",
+      "menu": {
+        "edit": "Edit",
+        "terminate": "Terminate",
+        "history": "Change history"
+      },
+      "terminate_dialog": {
+        "title": "Terminate limit",
+        "message": "The limit will be terminated today. New applications for this object and period will no longer be blocked.",
+        "confirm": "Terminate"
+      },
+      "sheet": {
+        "create_title": "Set limit",
+        "edit_title": "Edit limit",
+        "object_label": "Object",
+        "object_placeholder": "Select object",
+        "period_label": "Period",
+        "period_placeholder": "Select period",
+        "amount_label": "Limit, ₽",
+        "valid_from_label": "Valid from",
+        "valid_to_label": "Valid to",
+        "valid_to_placeholder": "No end date (optional)",
+        "submit_create": "Set limit",
+        "submit_edit": "Save"
+      },
+      "history_sheet": {
+        "title": "Change history"
+      },
+      "empty": {
+        "no_limits_title": "No limits configured",
+        "no_limits_desc_regional": "Set a limit to control freelance spending per object.",
+        "no_limits_desc_supervisor": "Contact your regional director to configure limits."
+      },
+      "mobile_tab_placeholder": "Select tab",
+      "actions": {
+        "add": "+ Set limit"
+      },
+      "validation": {
+        "amount_required": "Specify a limit amount",
+        "amount_positive": "Limit must be greater than zero",
+        "valid_from_required": "Specify a start date",
+        "valid_to_after_from": "End date must be after start date",
+        "duplicate": "A limit for this object and period already exists"
+      },
       "toasts": {
-        "saved": "Limits saved",
-        "error": "Failed"
-      }
+        "created": "Limit set",
+        "updated": "Limit updated",
+        "terminated": "Limit terminated",
+        "error": "Action failed"
+      },
+      "module_disabled": "Freelance module is disabled"
     },
     "freelanceAgents": {
       "page_title": "Agents directory",
@@ -5877,40 +6196,93 @@
         "agents": "Agents"
       },
       "actions": {
-        "new_agent": "New agent",
+        "new_agent": "+ New agent",
         "export": "Export"
       },
+      "tabs": {
+        "active": "Active",
+        "blocked": "Blocked",
+        "archive": "Archive"
+      },
       "filters": {
-        "search": "Search",
+        "search": "Search by name / INN",
+        "type": "Type",
         "status": "Status",
         "tier": "Tier"
       },
+      "type": {
+        "INDIVIDUAL": "Individual",
+        "COMPANY": "Company"
+      },
       "columns": {
         "agent": "Agent",
-        "tier": "Tier",
+        "inn": "INN",
+        "contract": "Contract",
+        "commission": "Commission %",
         "performers": "Performers",
-        "month_amount": "Monthly turnover",
-        "rating": "Rating",
-        "no_show_rate": "No-show %",
+        "earned_30d": "Earned (30d)",
         "status": "Status"
       },
-      "tier": {
-        "BRONZE": "Bronze",
-        "SILVER": "Silver",
-        "GOLD": "Gold",
-        "PLATINUM": "Platinum"
+      "contract_status": {
+        "signed": "Signed",
+        "not_signed": "Not signed",
+        "pending": "Pending"
+      },
+      "commission_tooltip": "From service amount before taxes",
+      "menu": {
+        "open": "Open",
+        "edit": "Edit",
+        "block": "Block",
+        "archive": "Archive",
+        "unblock": "Unblock"
+      },
+      "block_dialog": {
+        "title": "Block agent?",
+        "description": "The agent will not be able to receive new orders. Provide a reason.",
+        "reason_label": "Block reason",
+        "reason_placeholder": "Enter reason (min 5 characters)...",
+        "confirm": "Block",
+        "cancel": "Cancel"
+      },
+      "sheet": {
+        "title_create": "New agent",
+        "title_edit": "Edit agent",
+        "field_name": "Name",
+        "field_name_placeholder": "Individual or Company name",
+        "field_type": "Type",
+        "field_inn": "INN",
+        "field_inn_placeholder_individual": "12 digits (individual)",
+        "field_inn_placeholder_company": "10 digits (company)",
+        "field_kpp": "KPP",
+        "field_kpp_placeholder": "9 digits",
+        "field_ogrn": "OGRN",
+        "field_ogrn_placeholder": "13 digits",
+        "field_contact_name": "Contact person",
+        "field_contact_phone": "Phone",
+        "field_contact_email": "Email",
+        "field_contract_url": "Contract (link or file)",
+        "field_contract_url_placeholder": "https://...",
+        "field_commission": "Commission %",
+        "field_status": "Status",
+        "submit_create": "Save",
+        "submit_edit": "Save changes"
       },
       "status": {
         "ACTIVE": "Active",
-        "PAUSED": "Paused",
-        "BLOCKED": "Blocked"
+        "BLOCKED": "Blocked",
+        "ARCHIVED": "Archived"
       },
       "empty": {
-        "no_agents": "No agents yet"
+        "no_agents": "No agents yet",
+        "description": "Add your first agent to get started"
       },
       "toasts": {
         "created": "Agent created",
-        "error": "Failed"
+        "updated": "Changes saved",
+        "blocked": "Agent blocked",
+        "unblocked": "Agent unblocked",
+        "archived": "Agent archived",
+        "error": "Action failed"
       }
     },
     "freelanceAgentDetail": {
@@ -5924,35 +6296,115 @@
       "tabs": {
         "summary": "Summary",
         "performers": "Performers",
-        "services": "Services",
-        "payouts": "Payouts",
-        "documents": "Documents",
+        "accruals": "Accruals",
         "history": "History"
       },
+      "hero": {
+        "type_individual": "Sole trader",
+        "type_company": "Legal entity",
+        "inn": "TIN",
+        "kpp": "KPP",
+        "ogrn": "OGRN",
+        "contact_person": "Contact person",
+        "phone": "Phone",
+        "email": "Email",
+        "contract": "Contract",
+        "contract_signed": "Signed",
+        "contract_unsigned": "Not signed",
+        "contract_download": "Download contract",
+        "commission": "Commission",
+        "commission_label": "{pct}% of service amount",
+        "signed_at": "Signing date",
+        "status": "Status"
+      },
       "kpi": {
-        "tier": "Tier",
-        "rating": "Rating",
-        "month_amount": "Monthly turnover",
-        "no_show_rate": "No-show %",
-        "total_performers": "Total performers",
-        "active_performers": "Active"
+        "active_performers": "Active performers",
+        "earned_30d": "Earned in 30 days",
+        "earned_all_time": "Earned all time",
+        "avg_per_performer": "Avg per performer"
+      },
+      "performers_tab": {
+        "empty_title": "No performers yet",
+        "empty_description": "Add performers via the employee profile",
+        "col_name": "Performer",
+        "col_phone": "Phone",
+        "col_status": "Status",
+        "col_added_at": "Added",
+        "col_services_30d": "Services 30d",
+        "col_earned_30d": "Earned 30d",
+        "col_open": "Open",
+        "filter_status": "Status"
+      },
+      "accruals_tab": {
+        "col_date": "Date",
+        "col_performer": "Performer",
+        "col_service": "Service",
+        "col_base": "Base",
+        "col_pct": "%",
+        "col_commission": "Commission",
+        "col_status": "Status",
+        "col_payout": "Payout",
+        "status_calculated": "Accrued",
+        "status_paid": "Paid",
+        "filter_status": "Status",
+        "filter_date_range": "Date range",
+        "kpi_accrued": "Accrued",
+        "kpi_paid": "Paid",
+        "kpi_pending": "Pending"
+      },
+      "history_tab": {
+        "created": "created the agent",
+        "updated": "updated agent details",
+        "blocked": "blocked the agent",
+        "unblocked": "unblocked the agent",
+        "archived": "archived the agent",
+        "commission_changed": "changed commission"
       },
       "actions": {
-        "pause": "Pause",
+        "edit": "Edit",
         "block": "Block",
-        "edit": "Edit"
+        "unblock": "Unblock",
+        "archive": "Archive"
       },
       "block_dialog": {
         "title": "Block agent?",
-        "reason_label": "Reason",
+        "description": "The agent will no longer accept new assignments.",
+        "reason_label": "Block reason",
+        "reason_placeholder": "Describe the reason (minimum 10 characters)",
         "confirm": "Block"
+      },
+      "unblock_dialog": {
+        "title": "Unblock agent?",
+        "description": "The agent will be able to accept new assignments again.",
+        "confirm": "Unblock"
+      },
+      "archive_dialog": {
+        "title": "Archive agent?",
+        "description": "The agent will be hidden from the list. This cannot be undone.",
+        "confirm": "Archive"
+      },
+      "edit_sheet": {
+        "title": "Edit agent",
+        "field_name": "Name",
+        "field_inn": "TIN",
+        "field_kpp": "KPP",
+        "field_ogrn": "OGRN",
+        "field_contact_person": "Contact person",
+        "field_phone": "Phone",
+        "field_email": "Email",
+        "field_commission": "Commission (%)",
+        "field_contract_url": "Contract URL",
+        "field_contract_signed_at": "Signing date"
       },
       "toasts": {
         "saved": "Saved",
         "blocked": "Agent blocked",
-        "paused": "Agent paused",
+        "unblocked": "Agent unblocked",
+        "archived": "Agent archived",
+        "archive_error_active_freelancers": "Detach all active performers first",
         "error": "Failed"
-      }
+      },
+      "not_available": "Agent module is not available in direct payment mode"
     },
     "agentDashboard": {
       "page_title": "Agent cabinet",

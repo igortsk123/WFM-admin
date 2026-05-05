@@ -35,7 +35,10 @@ export { AdminTopBar } from "./admin-topbar"
 export { ImpersonationBanner } from "./impersonation-banner"
 export { RoleSwitcher } from "./role-switcher"
 export { FreelancerStatusBadge, getFreelancerStatusLabel } from "./freelancer-status-badge"
-export { ApplicationStatusBadge } from "./application-status-badge"
+export { ApplicationStatusBadge, getApplicationStatusLabel } from "./application-status-badge"
+export { ServiceStatusBadge, getServiceStatusLabel } from "./service-status-badge"
+export { PayoutStatusBadge } from "./payout-status-badge"
+export { AgentStatusBadge, getAgentStatusLabel } from "./agent-status-badge"
 
 // Agent cabinet shell
 export { AgentSidebar } from "./agent-sidebar"
