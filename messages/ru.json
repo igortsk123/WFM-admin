@@ -2102,6 +2102,107 @@
         "saved": "Изменения сохранены",
         "error": "Не удалось выполнить операцию"
       }
+    },
+    "schedule": {
+      "page_title": "Расписание",
+      "page_subtitle": "Смены загружаются из LAMA автоматически. Чтобы изменить — обратитесь в HR-отдел.",
+      "breadcrumbs": {
+        "home": "Главная",
+        "schedule": "Расписание"
+      },
+      "actions": {
+        "sync_lama": "Принудительная синхронизация LAMA"
+      },
+      "view_switcher": {
+        "label": "Вид",
+        "day": "День",
+        "week": "Неделя",
+        "month": "Месяц"
+      },
+      "period": {
+        "today": "Сегодня",
+        "prev": "Предыдущий период",
+        "next": "Следующий период",
+        "datepicker_label": "Выбрать дату",
+        "range_day": "{date}",
+        "range_week": "{from} – {to}",
+        "range_month": "{month} {year}"
+      },
+      "aggregates": {
+        "total_planned": "Запланировано часов",
+        "total_actual": "Отработано часов",
+        "coverage": "Покрытие план/факт",
+        "open_shifts": "Открытых смен",
+        "conflicts": "Конфликтов"
+      },
+      "filters": {
+        "store": "Магазин",
+        "store_all": "Вся сеть",
+        "zone": "Зона",
+        "position": "Должность",
+        "user": "Сотрудник",
+        "status": "Статус",
+        "clear_all": "Очистить все",
+        "open_filters": "Фильтры"
+      },
+      "grid": {
+        "header_employee": "Сотрудник",
+        "lama_out_of_sync": "LAMA синхронизирована {hours} ч назад",
+        "future_feature_title": "Скоро: автоматическое распределение задач по сменам",
+        "future_feature_description": "Система сама подберёт оптимальное время и исполнителя для каждой задачи на основе плановых смен и компетенций",
+        "future_feature_cta": "Запустить распределение",
+        "future_feature_badge": "В разработке",
+        "tooltip_create_disabled": "Смены создаются в LAMA"
+      },
+      "legend": {
+        "label": "Легенда",
+        "planned": "Запланирована",
+        "opened": "Открыта",
+        "closed_normal": "Закрыта",
+        "closed_late": "Опоздание",
+        "closed_overtime": "Переработка",
+        "conflict": "Конфликт"
+      },
+      "slot": {
+        "status_NEW": "Запланирована",
+        "status_OPENED": "Открыта",
+        "status_CLOSED": "Закрыта",
+        "time_range": "{from}–{to}",
+        "late_hint": "Опоздание {minutes} мин",
+        "overtime_hint": "Переработка {minutes} мин",
+        "conflict_hint": "Перекрытие со сменой коллеги",
+        "actions": {
+          "open_shift": "Открыть смену",
+          "reopen": "Переоткрыть",
+          "force_close": "Принудительно закрыть",
+          "transfer": "Передать"
+        }
+      },
+      "empty": {
+        "no_shifts_title": "В выбранный период смен нет",
+        "no_shifts_subtitle": "LAMA не передала ни одной смены — обратитесь в HR-отдел",
+        "no_results_title": "Никого не найдено",
+        "no_results_subtitle": "Попробуйте изменить фильтры",
+        "no_results_reset": "Сбросить фильтры"
+      },
+      "month_cell": {
+        "shifts_count": "{count, plural, one {# смена} few {# смены} many {# смен} other {# смен}}",
+        "people_count": "{count, plural, one {# чел.} few {# чел.} many {# чел.} other {# чел.}}"
+      },
+      "toasts": {
+        "reopened": "Смена переоткрыта",
+        "force_closed": "Смена закрыта",
+        "synced": "Синхронизация запущена",
+        "error": "Не удалось выполнить действие"
+      },
+      "dialogs": {
+        "reopen_confirm_title": "Переоткрыть смену?",
+        "reopen_confirm_description": "Смена {user} вернётся в статус «Открыта». Действие будет залогировано.",
+        "reopen_confirm_action": "Переоткрыть",
+        "force_close_warning_title": "Закрыть смену принудительно?",
+        "force_close_warning_description": "Смена {user} будет помечена как закрытая системой. Сотрудник получит уведомление.",
+        "force_close_warning_action": "Закрыть смену"
+      }
     }
   }
 }

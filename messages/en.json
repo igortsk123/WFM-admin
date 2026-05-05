@@ -2102,6 +2102,107 @@
         "saved": "Changes saved",
         "error": "Operation failed"
       }
+    },
+    "schedule": {
+      "page_title": "Schedule",
+      "page_subtitle": "Shifts are pulled from LAMA automatically. To change them, contact HR.",
+      "breadcrumbs": {
+        "home": "Home",
+        "schedule": "Schedule"
+      },
+      "actions": {
+        "sync_lama": "Force LAMA sync"
+      },
+      "view_switcher": {
+        "label": "View",
+        "day": "Day",
+        "week": "Week",
+        "month": "Month"
+      },
+      "period": {
+        "today": "Today",
+        "prev": "Previous period",
+        "next": "Next period",
+        "datepicker_label": "Pick date",
+        "range_day": "{date}",
+        "range_week": "{from} – {to}",
+        "range_month": "{month} {year}"
+      },
+      "aggregates": {
+        "total_planned": "Planned hours",
+        "total_actual": "Actual hours",
+        "coverage": "Plan / actual coverage",
+        "open_shifts": "Open shifts",
+        "conflicts": "Conflicts"
+      },
+      "filters": {
+        "store": "Store",
+        "store_all": "All network",
+        "zone": "Zone",
+        "position": "Position",
+        "user": "Employee",
+        "status": "Status",
+        "clear_all": "Clear all",
+        "open_filters": "Filters"
+      },
+      "grid": {
+        "header_employee": "Employee",
+        "lama_out_of_sync": "LAMA last synced {hours}h ago",
+        "future_feature_title": "Coming soon: automatic task distribution across shifts",
+        "future_feature_description": "The system will pick the optimal slot and assignee for each task based on planned shifts and competencies",
+        "future_feature_cta": "Run distribution",
+        "future_feature_badge": "In development",
+        "tooltip_create_disabled": "Shifts are created in LAMA"
+      },
+      "legend": {
+        "label": "Legend",
+        "planned": "Planned",
+        "opened": "Opened",
+        "closed_normal": "Closed",
+        "closed_late": "Late",
+        "closed_overtime": "Overtime",
+        "conflict": "Conflict"
+      },
+      "slot": {
+        "status_NEW": "Planned",
+        "status_OPENED": "Opened",
+        "status_CLOSED": "Closed",
+        "time_range": "{from}–{to}",
+        "late_hint": "{minutes} min late",
+        "overtime_hint": "{minutes} min overtime",
+        "conflict_hint": "Overlaps with another shift",
+        "actions": {
+          "open_shift": "Open shift",
+          "reopen": "Reopen",
+          "force_close": "Force close",
+          "transfer": "Transfer"
+        }
+      },
+      "empty": {
+        "no_shifts_title": "No shifts in this period",
+        "no_shifts_subtitle": "LAMA returned no shifts — contact HR",
+        "no_results_title": "Nothing found",
+        "no_results_subtitle": "Try adjusting the filters",
+        "no_results_reset": "Reset filters"
+      },
+      "month_cell": {
+        "shifts_count": "{count, plural, one {# shift} other {# shifts}}",
+        "people_count": "{count, plural, one {# person} other {# people}}"
+      },
+      "toasts": {
+        "reopened": "Shift reopened",
+        "force_closed": "Shift force-closed",
+        "synced": "Sync started",
+        "error": "Action failed"
+      },
+      "dialogs": {
+        "reopen_confirm_title": "Reopen shift?",
+        "reopen_confirm_description": "{user}'s shift will return to «Opened». The change will be logged.",
+        "reopen_confirm_action": "Reopen",
+        "force_close_warning_title": "Force-close shift?",
+        "force_close_warning_description": "{user}'s shift will be marked as system-closed. The employee will be notified.",
+        "force_close_warning_action": "Close shift"
+      }
     }
   }
 }

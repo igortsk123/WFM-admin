@@ -131,9 +131,16 @@ export {
 export {
   type ShiftListParams,
   type ShiftDetail,
+  type ScheduleView,
+  type ScheduleParams,
+  type ScheduleSlot,
+  type ScheduleResponse,
   getShifts,
   getShiftById,
   syncLamaShifts,
+  getSchedule,
+  reopenShift,
+  forceCloseShift,
 } from "./shifts";
 
 // ═══════════════════════════════════════════════════════════════════
