@@ -5053,6 +5053,161 @@
         "issue_reported": "Message sent to development team",
         "error": "Operation failed"
       }
+    },
+    "aiSuggestions": {
+      "page_title": "AI Suggestions",
+      "title": "AI Suggestions",
+      "subtitle": "Analytics system recommendations for your business",
+      "breadcrumb_home": "Home",
+      "breadcrumb_ai": "Efficiency & AI",
+      "stats": {
+        "new_today": "New today",
+        "in_progress": "In progress",
+        "accepted_week": "Accepted this week",
+        "rejected_week": "Rejected this week"
+      },
+      "tabs": {
+        "all": "All",
+        "pending": "New",
+        "edited": "In progress",
+        "accepted": "Accepted",
+        "rejected": "Rejected"
+      },
+      "filters": {
+        "type": "Type",
+        "priority": "Priority",
+        "store": "Store",
+        "date_range": "Date range"
+      },
+      "type": {
+        "TASK_SUGGESTION": "Task",
+        "GOAL_SUGGESTION": "Goal",
+        "BONUS_TASK_SUGGESTION": "Bonus task",
+        "INSIGHT": "Insight"
+      },
+      "priority": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "status": {
+        "PENDING": "New",
+        "EDITED": "In progress",
+        "ACCEPTED": "Accepted",
+        "REJECTED": "Rejected"
+      },
+      "card": {
+        "target_store": "Store",
+        "target_stores": "Stores",
+        "target_network": "Network",
+        "time_estimate": "{minutes} min",
+        "bonus_points": "{points} points",
+        "rationale": "Why AI suggested this",
+        "source_info": "Data source",
+        "with_edits": "With edits"
+      },
+      "actions": {
+        "accept": "Accept",
+        "accept_with_edits": "Accept with edits",
+        "reject": "Reject",
+        "edit": "Edit",
+        "ask_ai": "Ask AI",
+        "helpful": "Helpful",
+        "not_helpful": "Not helpful",
+        "reset_to_original": "Reset to AI proposal",
+        "bulk_accept": "Accept selected",
+        "bulk_reject": "Reject selected",
+        "history": "History",
+        "ai_settings": "AI Settings"
+      },
+      "detail": {
+        "title": "Suggestion details",
+        "proposed_section": "What is proposed",
+        "rationale_section": "Why AI suggested",
+        "data_sources_section": "Data sources",
+        "related_data_section": "Related data",
+        "changed_indicator": "Changed",
+        "ai_remembered": "AI considered your previous edits",
+        "form": {
+          "title": "Title",
+          "description": "Description",
+          "type": "Task type",
+          "store": "Store",
+          "zone": "Zone",
+          "work_type": "Work type",
+          "duration": "Duration",
+          "planned_start": "Start",
+          "planned_end": "End",
+          "assignee": "Assignee",
+          "requires_photo": "Photo required",
+          "manager_comment": "Manager comment",
+          "discount_percent": "Discount, %",
+          "bonus_points": "Points for completion",
+          "marketing_channel": "Marketing channel"
+        },
+        "edit_reasons": {
+          "title": "Edit reason",
+          "timing": "Different timing",
+          "assignee": "Different assignee",
+          "scope": "Different scope",
+          "priority": "Priority change",
+          "other": "Other"
+        }
+      },
+      "reject_dialog": {
+        "title": "Reject suggestion",
+        "message": "Please provide a reason for rejection — this helps improve AI suggestions quality.",
+        "reason_label": "Reason",
+        "comment_label": "Comment",
+        "comment_placeholder": "Describe in detail (minimum 10 characters)",
+        "reasons": {
+          "not_relevant": "Not relevant now",
+          "already_in_progress": "Already in progress",
+          "disagree_analysis": "Disagree with analysis",
+          "too_generic": "Too generic",
+          "other": "Other"
+        }
+      },
+      "bulk_reject_dialog": {
+        "title": "Reject {count} suggestions",
+        "message": "Selected reason will be applied to all suggestions."
+      },
+      "empty": {
+        "pending": {
+          "title": "No new suggestions",
+          "description": "AI has not generated new recommendations yet. Suggestions will appear automatically when anomalies are detected."
+        },
+        "filtered": {
+          "title": "Nothing found",
+          "description": "Try changing the filter parameters."
+        },
+        "accepted": {
+          "title": "No accepted suggestions",
+          "description": "Accepted suggestions are displayed here for analysis."
+        },
+        "rejected": {
+          "title": "No rejected suggestions",
+          "description": "Rejected suggestions help AI learn from your decisions."
+        }
+      },
+      "read_only": {
+        "banner": "You are viewing suggestions in read-only mode. Contact a supervisor to make decisions.",
+        "tooltip": "Not available for your role"
+      },
+      "forbidden": {
+        "title": "Access restricted",
+        "description": "AI suggestions section is only available to employees with decision-making authority."
+      },
+      "toasts": {
+        "accepted": "Suggestion accepted, task created",
+        "accepted_goal": "Suggestion accepted, goal activated",
+        "accepted_bonus": "Suggestion accepted, bonus task added",
+        "rejected": "Suggestion rejected",
+        "saved": "Changes saved",
+        "bulk_accepted": "Accepted suggestions: {count}",
+        "bulk_rejected": "Rejected suggestions: {count}",
+        "error": "Operation failed"
+      }
     }
   }
 }
