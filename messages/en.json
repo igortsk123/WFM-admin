@@ -1804,6 +1804,161 @@
         "saved": "Saved"
       },
       "load_more": "Load more"
+    },
+    "stores": {
+      "page_title": "Stores",
+      "breadcrumbs": {
+        "home": "Home",
+        "stores": "Stores"
+      },
+      "counter": "{count, plural, one {# store} other {# stores}}",
+      "actions": {
+        "import_lama": "Import from LAMA",
+        "sync_lama": "Sync with LAMA",
+        "add": "Add store",
+        "export_csv": "Export CSV",
+        "more": "More",
+        "open": "Open card",
+        "edit": "Edit",
+        "change_director": "Change director",
+        "force_sync_lama": "Force LAMA sync",
+        "archive": "Archive",
+        "open_on_map": "Open on map"
+      },
+      "tabs": {
+        "all": "All",
+        "active": "Active",
+        "archived": "Archive"
+      },
+      "view": {
+        "list": "List",
+        "map": "Map"
+      },
+      "stats": {
+        "total": "Total stores",
+        "active": "Active",
+        "archived": "Archived",
+        "no_director": "Without director",
+        "open_link": "Open"
+      },
+      "filters": {
+        "search_placeholder": "Search by name, code, address",
+        "city": "City",
+        "format": "Format",
+        "region": "Region",
+        "supervisor": "Supervisor",
+        "store_type": "Store type",
+        "clear_all": "Clear all",
+        "open_filters": "Filters",
+        "close": "Close",
+        "apply": "Apply"
+      },
+      "columns": {
+        "code": "Code",
+        "name": "Name",
+        "address": "Address",
+        "city": "City",
+        "region": "Region",
+        "format": "Format",
+        "director": "Director",
+        "staff": "Staff",
+        "active_shifts": "Active shifts",
+        "shifts_today": "Shifts today",
+        "tasks_today": "Tasks today",
+        "permissions_coverage": "Permissions coverage",
+        "lama_sync": "LAMA sync",
+        "status": "Status",
+        "shifts_ratio": "{open} of {total}"
+      },
+      "director": {
+        "unassigned": "Not assigned",
+        "assign": "Assign"
+      },
+      "status": {
+        "active": "Active",
+        "archived": "Archived"
+      },
+      "format_label": {
+        "SUPERMARKET": "Supermarket",
+        "HYPERMARKET": "Hypermarket",
+        "CONVENIENCE": "Convenience",
+        "SMALL_SHOP": "Small shop",
+        "SEWING_WORKSHOP": "Sewing workshop",
+        "PRODUCTION_LINE": "Production line",
+        "WAREHOUSE_HUB": "Warehouse / hub",
+        "OFFICE": "Office"
+      },
+      "lama": {
+        "never": "Never synced",
+        "fresh": "Synced {when}",
+        "stale": "Not updated for {when}"
+      },
+      "bulk": {
+        "selected": "{count, plural, one {# store selected} other {# stores selected}}",
+        "archive": "Archive",
+        "change_format": "Change format",
+        "export": "Export",
+        "cancel": "Cancel"
+      },
+      "dialogs": {
+        "archive_title": "Archive store?",
+        "archive_description": "Store will be hidden from store switcher and task creation. Reversible.",
+        "archive_confirm": "Archive",
+        "bulk_archive_title": "Archive {count} stores?",
+        "bulk_archive_description": "Stores will be hidden from store switcher and task creation. Reversible.",
+        "sync_lama_title": "Sync with LAMA?",
+        "sync_lama_description": "The latest shift schedule and staff will be fetched from LAMA. May take up to a minute.",
+        "sync_lama_confirm": "Sync",
+        "add_title": "Add store",
+        "edit_title": "Edit store",
+        "fields": {
+          "name": "Name",
+          "external_code": "Store code",
+          "address": "Address",
+          "city": "City",
+          "region": "Region",
+          "store_type": "Store type",
+          "object_type": "Object type",
+          "object_format": "Object format",
+          "legal_entity": "Legal entity",
+          "manager": "Store director",
+          "supervisor": "Supervisor"
+        },
+        "save": "Save",
+        "cancel": "Cancel"
+      },
+      "empty": {
+        "all": {
+          "title": "No stores yet",
+          "subtitle": "Add your first store or import from LAMA",
+          "cta": "Add store"
+        },
+        "archived": {
+          "title": "Archive is empty",
+          "subtitle": "Archived stores will appear here"
+        },
+        "filtered": {
+          "title": "Nothing found",
+          "subtitle": "Try adjusting filters or reset them",
+          "reset": "Reset filters"
+        },
+        "forbidden": {
+          "title": "Insufficient permissions",
+          "subtitle": "You don't have access to Stores"
+        }
+      },
+      "error": {
+        "title": "Failed to load stores",
+        "retry": "Retry"
+      },
+      "toast": {
+        "archived": "Store archived",
+        "bulk_archived": "Archived stores: {count}",
+        "sync_started": "LAMA sync started",
+        "sync_finished": "LAMA sync finished",
+        "saved": "Changes saved",
+        "error": "Operation failed"
+      }
     }
   }
 }

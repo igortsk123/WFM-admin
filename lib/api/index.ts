@@ -149,6 +149,7 @@ export {
   createStore,
   updateStore,
   archiveStore,
+  bulkArchiveStores,
   syncLama,
 } from "./stores";
 
