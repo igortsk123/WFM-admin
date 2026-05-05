@@ -279,6 +279,7 @@ export {
 // ═══════════════════════════════════════════════════════════════════
 
 export {
+  type AuditListParams,
   getAuditEntries,
   getAuditEntryById,
 } from "./audit";
@@ -291,8 +292,20 @@ export {
   type ReportPeriod,
   type ReportParams,
   type KpiReportData,
+  type KpiMetric,
+  type KpiPerformer,
+  type KpiByDimension,
   type PlanFactReportData,
+  type PlanFactDay,
+  type PlanFactByStore,
+  type PlanFactByUser,
+  type PlanFactByWorkType,
+  type PlanFactBreakdown,
+  type PlanFactParams,
   type StoreCompareReportData,
+  type StoreComparisonRow,
+  type StoreQuadrant,
+  type NetworkMedians,
   getKpiReport,
   getPlanFactReport,
   getStoreCompareReport,

@@ -75,7 +75,9 @@ const NAV_GROUPS: NavGroup[] = [
       { labelKey: "network_goals", href: ADMIN_ROUTES.networkGoals, icon: Target, status: "planned" },
       { labelKey: "bonus_tasks", href: ADMIN_ROUTES.bonusTasks, icon: Award, status: "planned" },
       { labelKey: "payouts", href: ADMIN_ROUTES.payouts, icon: CreditCard, status: "planned" },
-      { labelKey: "reports_kpi", href: ADMIN_ROUTES.reportsKpi, icon: BarChart2, status: "planned" },
+      { labelKey: "reports_kpi", href: ADMIN_ROUTES.reportsKpi, icon: BarChart2, status: "ready" },
+      { labelKey: "reports_plan_fact", href: ADMIN_ROUTES.reportsPlanFact, icon: BarChart2, status: "ready" },
+      { labelKey: "reports_compare", href: ADMIN_ROUTES.reportsCompare, icon: BarChart2, status: "ready" },
     ],
   },
   {
@@ -100,7 +102,7 @@ const NAV_GROUPS: NavGroup[] = [
       { labelKey: "integrations", href: ADMIN_ROUTES.integrations, icon: Plug, status: "ready" },
       { labelKey: "settings_profile", href: ADMIN_ROUTES.settingsProfile, icon: Settings, status: "ready" },
       { labelKey: "settings_organization", href: ADMIN_ROUTES.settingsOrganization, icon: Settings, status: "ready" },
-      { labelKey: "audit", href: ADMIN_ROUTES.audit, icon: History, status: "planned" },
+      { labelKey: "audit", href: ADMIN_ROUTES.audit, icon: History, status: "ready" },
     ],
   },
 ]

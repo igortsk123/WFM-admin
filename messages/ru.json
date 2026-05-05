@@ -315,7 +315,7 @@
       "regional": "Региональный менеджер",
       "network_ops": "Операционный директор",
       "hr_manager": "HR-менеджер",
-      "operator": "Оператор",
+      "operator": "Опера��ор",
       "worker": "Работник",
       "agent": "Агент",
       "platform_admin": "Администратор платформы"
@@ -741,7 +741,7 @@
       "summary_plan": "План:",
       "summary_scheduled": "Запланировано:",
       "summary_due": "Дедлайн:",
-      "summary_policy": "Поли��ика:",
+      "summary_policy": "По��и��ика:",
       "summary_photo": "Фото:",
       "summary_not_set": "—",
       "summary_minutes": "{min} мин",
@@ -2182,7 +2182,7 @@
       "empty": {
         "no_shifts_title": "В выбранный период смен нет",
         "no_shifts_subtitle": "LAMA не передала ни одной смены — обратитесь в HR-отдел",
-        "no_results_title": "Никого не найд��но",
+        "no_results_title": "Ник��го не найд��но",
         "no_results_subtitle": "Попробуйте изменить фильтры",
         "no_results_reset": "Сбросить фильтры"
       },
@@ -2467,7 +2467,7 @@
         "no_zones_global_title": "Глобальных зон пока нет",
         "no_zones_global_subtitle": "Создайте первую глобальную зону",
         "no_zones_store_title": "В этом магазине нет локальных зон",
-        "no_zones_store_subtitle": "Локальные зоны переопределяют глобальные",
+        "no_zones_store_subtitle": "Локальные зоны пере��пределяют глобальные",
         "no_store_selected_title": "Выберите магазин",
         "no_store_selected_subtitle": "Чтобы посмотреть его локальные зоны",
         "filtered_title": "Никого не найдено",
@@ -2628,7 +2628,7 @@
       },
       "dialogs": {
         "create_title": "Новая подсказка",
-        "edit_title": "Редактирование подсказки",
+        "edit_title": "Редактирование подс��азки",
         "fields": {
           "text": "Текст подсказки",
           "text_placeholder": "Например: «Проверьте срок годности перед выкладкой»",
@@ -2877,15 +2877,30 @@
           "current_password": "Текущий пароль",
           "new_password": "Новый пароль",
           "confirm_password": "Подтверждение",
+          "password_sso_hint": "Аккаунт защищён через SMS-код Beyond Violet, пароль не используется",
           "totp_card": "Двухфакторная аутентификация (TOTP)",
           "totp_enabled": "Включена",
           "totp_disabled": "Не настроена",
+          "totp_hint": "Работает офлайн с любым приложением (Yandex Key, Authy, FreeOTP)",
           "totp_setup": "Настроить",
           "totp_disable": "Отключить",
+          "totp_setup_title": "Настройка TOTP",
+          "totp_setup_description": "Двухфакторная аутентификация через authenticator-приложение",
+          "totp_setup_secret_hint": "Секрет для ручного ввода в приложение",
+          "totp_setup_scan_hint": "Отсканируйте QR-код в Yandex Key, Authy или FreeOTP",
+          "totp_setup_next": "Далее",
+          "totp_setup_enter_code": "Введите 6-значный код из приложения",
+          "totp_setup_confirm": "Подтвердить",
+          "totp_backup_warning": "Сохраните резервные коды — они показываются только один раз",
+          "totp_backup_done": "Готово",
+          "totp_disable_title": "Отключить двухфакторную аутентификацию?",
+          "totp_disable_description": "Введите текущий код из приложения для подтверждения",
           "sessions_card": "Активные сессии",
           "session_current": "Текущая сессия",
           "session_revoke": "Завершить",
-          "session_revoke_all": "Завершить все остальные"
+          "session_revoke_all": "Завершить все остальные",
+          "session_revoke_all_confirm_title": "Завершить все остальные сессии?",
+          "session_revoke_all_confirm_message": "Все другие устройства будут выведены из аккаунта"
         },
         "notifications": {
           "title": "Уведомления",
@@ -2907,8 +2922,17 @@
           "timezone": "Часовой пояс",
           "theme": "Тема",
           "theme_light": "Светлая",
+          "theme_light_hint": "Базовая для дневной работы",
           "theme_dark": "Тёмная",
-          "theme_system": "Системная"
+          "theme_system": "Системная",
+          "theme_system_hint": "Совпадает с настройками устройства",
+          "timezone_search": "Поиск часового пояса...",
+          "timezone_not_found": "Не найдено",
+          "regional_title": "Региональные настройки",
+          "regional_date": "Формат даты",
+          "regional_time": "Формат времени",
+          "regional_number": "Формат чисел",
+          "regional_currency": "Валюта"
         }
       },
       "save_bar": {
@@ -2948,6 +2972,10 @@
         "payment_mode_client_direct": "Прямой расчёт",
         "freelance_enabled": "Внештат вкл.",
         "freelance_disabled": "Внештат выкл."
+      },
+      "logout_confirm": {
+        "title": "Выйти из аккаунта?",
+        "message": "Вы будете перенаправлены на страницу входа"
       }
     },
     "organizationSettings": {
@@ -3010,6 +3038,7 @@
         "col_op_time": "Нормативное время операции (мин)"
       },
       "legal": {
+        "title": "Юридические лица",
         "description": "Несколько юридических лиц внутри одной организации (для retail-сетей с несколькими ИП)",
         "add_entity": "Добавить юр.лицо",
         "col_name": "Название",
@@ -3257,6 +3286,445 @@
         "save": "Сохранить",
         "test": "Проверить подключение",
         "disconnect": "Отключить"
+      }
+    },
+    "audit": {
+      "page_title": "Аудит",
+      "page_subtitle": "Журнал всех действий в системе",
+      "breadcrumbs": {
+        "home": "Главная",
+        "audit": "Аудит"
+      },
+      "actions": {
+        "export": "Экспорт CSV",
+        "more": "Ещё"
+      },
+      "filters": {
+        "search_placeholder": "Поиск по действию / объекту / автору",
+        "actor": "Автор",
+        "entity_type": "Тип объекта",
+        "action": "Действие",
+        "date_range": "Период",
+        "date_from": "С",
+        "date_to": "По",
+        "platform_action_only": "Только cross-tenant действия",
+        "clear_all": "Очистить все",
+        "open_filters": "Фильтры"
+      },
+      "entity_type": {
+        "task": "Задача",
+        "subtask": "Подзадача",
+        "user": "Сотрудник",
+        "shift": "Смена",
+        "store": "Магазин",
+        "goal": "Цель",
+        "permission": "Привилегия",
+        "webhook": "Webhook",
+        "organization": "Организация",
+        "regulation": "Регламент",
+        "freelance_application": "Заявка на внештат",
+        "freelance_service": "Услуга внештата",
+        "freelance_payout": "Выплата внештата",
+        "all": "Все типы"
+      },
+      "columns": {
+        "occurred_at": "Когда",
+        "actor": "Автор",
+        "action": "Действие",
+        "entity_type": "Тип",
+        "entity_name": "Объект",
+        "details": "Детали",
+        "actions_col": "Действия"
+      },
+      "row_actions": {
+        "view_diff": "Показать diff",
+        "open_entity": "Открыть объект",
+        "copy_id": "Копировать ID"
+      },
+      "detail_sheet": {
+        "title": "Запись аудита",
+        "actor_section": "Кто",
+        "what_section": "Что",
+        "when_section": "Когда",
+        "diff_section": "Изменения",
+        "ip_label": "IP",
+        "user_agent_label": "User-Agent"
+      },
+      "empty": {
+        "no_entries_title": "В журнале пока пусто",
+        "no_entries_subtitle": "Действия появятся здесь по мере работы системы",
+        "filtered_title": "Никого не найдено",
+        "filtered_reset": "Сбросить фильтры"
+      },
+      "toasts": {
+        "exported": "Журнал экспортирован",
+        "id_copied": "ID скопирован",
+        "error": "Не удалось выполнить операцию"
+      },
+      "actions_labels": {
+        "task.create": "Создание задачи",
+        "task.update": "Обновление задачи",
+        "task.start": "Задача начата",
+        "task.pause": "Задача приостановлена",
+        "task.resume": "Задача возобновлена",
+        "task.complete": "Задача завершена",
+        "task.approve": "Задача принята",
+        "task.reject": "Задача отклонена",
+        "task.delete": "Задача удалена",
+        "user.create": "Сотрудник создан",
+        "user.update": "Профиль сотрудника обновлён",
+        "user.activate": "Сотрудник активирован",
+        "user.deactivate": "Сотрудник деактивирован",
+        "permission.grant": "Допуск выдан",
+        "permission.revoke": "Допуск отозван",
+        "shift.open": "Смена открыта",
+        "shift.close": "Смена закрыта",
+        "shift.force_close": "Смена принудительно закрыта",
+        "settings.update": "Настройки обновлены",
+        "api_key.create": "API-ключ создан",
+        "api_key.revoke": "API-ключ отозван",
+        "webhook.create": "Webhook создан",
+        "webhook.update": "Webhook обновлён",
+        "webhook.delete": "Webhook удалён",
+        "regulation.create": "Регламент создан",
+        "regulation.publish": "Регламент опубликован",
+        "regulation.archive": "Регламент в архив",
+        "freelance.application.approve": "Заявка внештата принята",
+        "freelance.application.reject": "Заявка внештата отклонена",
+        "freelance.payout.create": "Выплата внештата создана",
+        "freelance.payout.complete": "Выплата внештата выполнена",
+        "login": "Вход в систему",
+        "logout": "Выход",
+        "login.failed": "Неудачная попытка входа"
+      },
+      "diff_fields": {
+        "title": "Заголовок",
+        "description": "Описание",
+        "comment": "Комментарий",
+        "review_state": "Статус проверки",
+        "review_comment": "Причина отклонения",
+        "state": "Статус",
+        "state_from": "Из статуса",
+        "state_to": "В статус",
+        "assignee_id": "Исполнитель",
+        "creator_id": "Создатель",
+        "planned_minutes": "Плановое время, мин",
+        "phone": "Телефон",
+        "email": "E-mail",
+        "first_name": "Имя",
+        "last_name": "Фамилия",
+        "middle_name": "Отчество",
+        "position_id": "Должность",
+        "preferred_locale": "Язык интерфейса",
+        "default_duration_min": "Длительность по умолчанию, мин",
+        "dairy_writeoff_norm_pct": "Норма списаний (молочка), %",
+        "oos_norm_pct": "Норма OOS, %",
+        "writeoff_norm_pct": "Норма списаний, %"
+      },
+      "login_method": {
+        "phone_otp.telegram": "Phone OTP · Telegram",
+        "phone_otp.max": "Phone OTP · MAX",
+        "phone_otp.sms_fallback": "Phone OTP · SMS",
+        "phone_otp.call": "Phone OTP · Звонок",
+        "totp.authenticator": "TOTP · Authenticator",
+        "email_magic_link": "Email magic link",
+        "sso": "SSO"
+      },
+      "device_type": {
+        "desktop": "Десктоп",
+        "mobile": "Мобильный",
+        "tablet": "Планшет"
+      },
+      "platform_action": {
+        "badge": "Cross-tenant",
+        "tooltip": "Действие администратора платформы, повлиявшее на несколько тенантов"
+      },
+      "diff": {
+        "before": "Было",
+        "after": "Стало",
+        "added": "Добавлено",
+        "removed": "Удалено",
+        "no_changes": "Нет изменений",
+        "view_json": "Показать JSON"
+      },
+      "export": {
+        "csv_starting": "Готовим CSV…",
+        "csv_done": "CSV готов",
+        "max_rows_warning": "Слишком много записей — уточните фильтры (макс. 10 000 строк за раз)"
+      }
+    },
+    "reportsKpi": {
+      "page_title": "KPI отчёт",
+      "page_subtitle": "Эффективность сети и магазинов",
+      "breadcrumbs": {
+        "home": "Главная",
+        "reports": "Отчёты",
+        "kpi": "KPI"
+      },
+      "actions": {
+        "export_xlsx": "Экспорт XLSX",
+        "export_csv": "Экспорт CSV",
+        "share": "Поделиться",
+        "compare": "Сравнить с предыдущим периодом"
+      },
+      "filters": {
+        "period_label": "Период",
+        "store_label": "Магазин",
+        "all_stores": "Вся сеть",
+        "from": "С",
+        "to": "По",
+        "compare_with": "Сравнить с",
+        "previous_period": "Предыдущий период",
+        "previous_year": "Тот же период год назад",
+        "apply": "Применить",
+        "reset": "Сбросить"
+      },
+      "period": {
+        "week": "Неделя",
+        "month": "Месяц",
+        "quarter": "Квартал",
+        "year": "Год",
+        "custom": "Произвольный"
+      },
+      "scope": {
+        "network": "Сеть",
+        "store": "Магазин"
+      },
+      "metrics": {
+        "completion_rate": "Выполнение задач",
+        "return_rate": "Возврат на доработку",
+        "on_time_rate": "Выполнено вовремя",
+        "hours_plan": "Плановые часы",
+        "hours_actual": "Фактические часы",
+        "fot_ratio": "ФОТ факт / план"
+      },
+      "metric_card": {
+        "vs_prev": "к прошлому периоду",
+        "no_change": "без изменений",
+        "view_details": "Подробнее"
+      },
+      "tabs": {
+        "overview": "Обзор",
+        "performers": "Сотрудники",
+        "by_work_type": "По типам работ",
+        "by_zone": "По зонам"
+      },
+      "performers": {
+        "top_title": "Топ сотрудники",
+        "top_subtitle": "Лучшие по выполнению задач за период",
+        "needs_support_title": "Требуют поддержки",
+        "needs_support_subtitle": "Сотрудники с низкой результативностью",
+        "columns": {
+          "rank": "#",
+          "name": "Сотрудник",
+          "store": "Магазин",
+          "completion_rate": "Выполнение",
+          "tasks_completed": "Задач",
+          "on_time_rate": "Вовремя",
+          "rating": "Рейтинг"
+        },
+        "row_actions": {
+          "open_profile": "Открыть профиль",
+          "set_goal": "Назначить цель"
+        }
+      },
+      "dimension": {
+        "by_work_type_title": "Эффективность по типам работ",
+        "by_zone_title": "Эффективность по зонам",
+        "columns": {
+          "label": "Название",
+          "completion_rate": "Выполнение, %",
+          "tasks_total": "Всего задач",
+          "on_time_rate": "Вовремя, %"
+        }
+      },
+      "empty": {
+        "no_data_title": "Нет данных за выбранный период",
+        "no_data_subtitle": "Попробуйте расширить период или выбрать другой магазин",
+        "loading": "Считаем показатели…"
+      },
+      "toasts": {
+        "exported_xlsx": "Отчёт сохранён в XLSX",
+        "exported_csv": "Отчёт сохранён в CSV",
+        "share_link_copied": "Ссылка скопирована",
+        "export_failed": "Не удалось экспортировать отчёт"
+      }
+    },
+    "reportsPlanFact": {
+      "page_title": "План / Факт",
+      "page_subtitle": "Сравнение планируемых и фактических показателей",
+      "breadcrumbs": {
+        "home": "Главная",
+        "reports": "Отчёты",
+        "plan_fact": "План / Факт"
+      },
+      "actions": {
+        "export_xlsx": "Экспорт XLSX",
+        "export_csv": "Экспорт CSV",
+        "share": "Поделиться"
+      },
+      "filters": {
+        "period_label": "Период",
+        "store_label": "Магазин",
+        "all_stores": "Вся сеть",
+        "breakdown_label": "Разрез",
+        "metric_label": "Что сравнивать",
+        "from": "С",
+        "to": "По",
+        "apply": "Применить",
+        "reset": "Сбросить"
+      },
+      "metric": {
+        "hours": "Часы",
+        "tasks": "Задачи"
+      },
+      "breakdown": {
+        "days": "По дням",
+        "stores": "По магазинам",
+        "users": "По сотрудникам",
+        "work_types": "По типам работ"
+      },
+      "summary": {
+        "total_planned_hours": "Плановые часы",
+        "total_actual_hours": "Фактические часы",
+        "total_planned_tasks": "Плановые задачи",
+        "total_completed_tasks": "Выполнено задач",
+        "avg_completion_rate": "Среднее выполнение",
+        "best_day_title": "Лучший день",
+        "worst_day_title": "Худший день",
+        "worst_day_reason": "Причина"
+      },
+      "chart": {
+        "planned": "План",
+        "actual": "Факт",
+        "completion_rate_axis": "Выполнение, %",
+        "weekday_short": {
+          "Mon": "Пн",
+          "Tue": "Вт",
+          "Wed": "Ср",
+          "Thu": "Чт",
+          "Fri": "Пт",
+          "Sat": "Сб",
+          "Sun": "Вс"
+        }
+      },
+      "table": {
+        "columns": {
+          "date": "Дата",
+          "weekday": "День",
+          "planned_hours": "План, ч",
+          "actual_hours": "Факт, ч",
+          "planned_tasks": "План задач",
+          "completed_tasks": "Выполнено",
+          "completion_rate": "Выполнение, %",
+          "store": "Магазин",
+          "user": "Сотрудник",
+          "work_type": "Тип работ",
+          "delta": "Отклонение"
+        }
+      },
+      "empty": {
+        "no_data_title": "Нет данных за выбранный период",
+        "no_data_subtitle": "Расширьте период или выберите другой магазин",
+        "loading": "Считаем план/факт…"
+      },
+      "toasts": {
+        "exported_xlsx": "Отчёт сохранён в XLSX",
+        "exported_csv": "Отчёт сохранён в CSV",
+        "share_link_copied": "Ссылка скопирована",
+        "export_failed": "Не удалось экспортировать отчёт"
+      }
+    },
+    "reportsCompare": {
+      "page_title": "Сравнение магазинов",
+      "page_subtitle": "Бенчмаркинг по сети — лидеры, отстающие и тренды",
+      "breadcrumbs": {
+        "home": "Главная",
+        "reports": "Отчёты",
+        "compare": "Сравнение"
+      },
+      "actions": {
+        "export_xlsx": "Экспорт XLSX",
+        "export_csv": "Экспорт CSV",
+        "share": "Поделиться"
+      },
+      "filters": {
+        "period_label": "Период",
+        "from": "С",
+        "to": "По",
+        "sort_by_label": "Сортировка",
+        "quadrant_filter_label": "Квадрант",
+        "all_quadrants": "Все квадранты",
+        "apply": "Применить",
+        "reset": "Сбросить"
+      },
+      "quadrant": {
+        "LEADERS": "Лидеры",
+        "GROWING": "Растущие",
+        "STABLE": "Стабильные",
+        "DECLINING": "Падающие",
+        "leaders_subtitle": "Высокое выполнение и положительный тренд",
+        "growing_subtitle": "Ниже медианы, но улучшаются",
+        "stable_subtitle": "Около медианы, без существенных изменений",
+        "declining_subtitle": "Ниже медианы и тренд ухудшается"
+      },
+      "metric": {
+        "completion_rate": "Выполнение, %",
+        "return_rate": "Возврат, %",
+        "on_time_rate": "Вовремя, %",
+        "hours_diff_pct": "Часы факт vs план, %",
+        "fot_diff_pct": "ФОТ факт vs план, %"
+      },
+      "median_card": {
+        "title": "Медианы по сети",
+        "completion_rate": "Выполнение",
+        "return_rate": "Возврат на доработку",
+        "on_time_rate": "Выполнено вовремя",
+        "hours_diff_pct": "Отклонение часов",
+        "fot_diff_pct": "Отклонение ФОТ"
+      },
+      "table": {
+        "columns": {
+          "rank": "#",
+          "store": "Магазин",
+          "external_code": "Код",
+          "completion_rate": "Выполнение",
+          "return_rate": "Возврат",
+          "on_time_rate": "Вовремя",
+          "hours_diff_pct": "Часы Δ",
+          "fot_diff_pct": "ФОТ Δ",
+          "trend_completion": "Тренд выполнения",
+          "trend_return": "Тренд возврата",
+          "quadrant": "Квадрант"
+        }
+      },
+      "row_actions": {
+        "open_store": "Открыть магазин",
+        "open_kpi_report": "KPI отчёт магазина",
+        "open_plan_fact": "План/факт магазина"
+      },
+      "scatter": {
+        "title": "Карта эффективности",
+        "subtitle": "Каждый магазин — точка по двум осям",
+        "x_axis_label": "Выполнение, %",
+        "y_axis_label": "Тренд, п.п. за период",
+        "median_line_label": "Медиана сети"
+      },
+      "vs_median": {
+        "above": "Выше медианы",
+        "below": "Ниже медианы",
+        "equal": "На медиане"
+      },
+      "empty": {
+        "no_data_title": "Нет данных за выбранный период",
+        "no_data_subtitle": "Расширьте период или дождитесь данных от магазинов",
+        "loading": "Считаем сравнение…"
+      },
+      "toasts": {
+        "exported_xlsx": "Отчёт сохранён в XLSX",
+        "exported_csv": "Отчёт сохранён в CSV",
+        "share_link_copied": "Ссылка скопирована",
+        "export_failed": "Не удалось экспортировать отчёт"
       }
     }
   }

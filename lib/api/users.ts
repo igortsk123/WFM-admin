@@ -161,7 +161,7 @@ export interface UserCreateData extends Partial<User> {
 
 // ═══════════════════════════════════════════════════════════════════
 // LIST & GET
-// ═══════════════════════════════════════════════════════════════════
+// ════════════════════════════════════════════════════════════��══════
 
 /**
  * Get paginated list of users with filtering.
@@ -689,6 +689,29 @@ export async function bulkRevokePermission(
 
   console.log(`[v0] Bulk revoked ${permission} from users:`, userIds);
   return { success: true };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// PROFILE — MY ASSIGNMENTS (chat 35)
+// ═══════════════════════════════════════════════════════════════════
+
+/**
+ * Get all assignments for the current user (active + archived).
+ * Used by profile settings / assignments section.
+ * @param userId Current user's ID
+ * @returns List of assignments ordered active-first
+ * @endpoint GET /users/me/assignments
+ */
+export async function getMyAssignments(
+  userId: number,
+): Promise<ApiResponse<Assignment[]>> {
+  await delay(250);
+
+  const assignments = MOCK_ASSIGNMENTS.filter((a) => a.user_id === userId);
+  // Active first
+  assignments.sort((a, b) => (b.active ? 1 : 0) - (a.active ? 1 : 0));
+
+  return { data: assignments };
 }
 
 // ═══════════════════════════════════════════════════════════════════

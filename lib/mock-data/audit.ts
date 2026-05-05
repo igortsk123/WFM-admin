@@ -385,6 +385,7 @@ export const MOCK_AUDIT_ENTRIES: AuditEntry[] = [
     ip_address: "195.182.35.7",
     user_agent: UAS.mac_chrome,
     device_type: "desktop",
+    platform_action: true,
   },
   {
     id: "audit-023",
@@ -448,6 +449,7 @@ export const MOCK_AUDIT_ENTRIES: AuditEntry[] = [
     ip_address: "78.37.211.52",
     user_agent: UAS.mac_chrome,
     device_type: "desktop",
+    login_method: "phone_otp.telegram",
   },
   {
     id: "audit-027",
@@ -462,6 +464,7 @@ export const MOCK_AUDIT_ENTRIES: AuditEntry[] = [
     ip_address: "213.87.135.4",
     user_agent: UAS.android,
     device_type: "mobile",
+    login_method: "phone_otp.sms_fallback",
   },
   {
     id: "audit-028",
@@ -476,6 +479,7 @@ export const MOCK_AUDIT_ENTRIES: AuditEntry[] = [
     ip_address: "195.182.35.7",
     user_agent: UAS.mac_chrome,
     device_type: "desktop",
+    login_method: "totp.authenticator",
   },
   {
     id: "audit-029",
@@ -490,6 +494,7 @@ export const MOCK_AUDIT_ENTRIES: AuditEntry[] = [
     ip_address: "78.37.211.100",
     user_agent: UAS.win_edge,
     device_type: "desktop",
+    login_method: "email_magic_link",
   },
   {
     id: "audit-030",
@@ -504,5 +509,6 @@ export const MOCK_AUDIT_ENTRIES: AuditEntry[] = [
     ip_address: "91.243.56.18",
     user_agent: UAS.iphone,
     device_type: "mobile",
+    login_method: "phone_otp.max",
   },
 ];

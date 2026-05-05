@@ -69,18 +69,6 @@ export interface BillingInfo {
   next_invoice_amount_rub: number;
 }
 
-export interface LegalEntity {
-  id: number;
-  name: string;
-  inn?: string;
-  kpp?: string;
-  ogrn?: string;
-  /** Юрисдикция: RU / UK / OTHER (для будущей экспансии). */
-  tax_jurisdiction: "RU" | "UK" | "OTHER";
-  companies_house?: string;
-  vat_number?: string;
-}
-
 /** Public update payload for organization config. */
 export interface OrganizationConfigUpdateData {
   name?: string;
@@ -153,7 +141,7 @@ export async function getOrganizationConfig(
   };
 
   const legal_entities: LegalEntity[] = [
-    { id: 1, name: "ООО «СПАР Сибирь»", inn: "7017123456", kpp: "701701001", ogrn: "1027000123456", tax_jurisdiction: "RU" },
+    { id: 1, organization_id: orgId, name: "ООО «СПАР Сибирь»", inn: "7017123456", kpp: "701701001", ogrn: "1027000123456", tax_jurisdiction: "RU" },
   ];
 
   return {

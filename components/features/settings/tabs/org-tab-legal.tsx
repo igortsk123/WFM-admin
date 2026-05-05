@@ -270,6 +270,7 @@ export function OrgTabLegal({ orgId, initialEntities }: OrgTabLegalProps) {
     } else {
       const res = await addLegalEntity(orgId, {
         ...values,
+        organization_id: orgId,
         tax_jurisdiction: "RU",
       });
       const newEntity: LegalEntity = {

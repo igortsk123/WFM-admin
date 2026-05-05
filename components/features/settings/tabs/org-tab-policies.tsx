@@ -38,9 +38,9 @@ import type { TaskPoliciesConfig } from "@/lib/api/organization";
 const policiesSchema = z.object({
   acceptance_policy: z.enum(["AUTO", "MANUAL"]),
   requires_photo_default: z.boolean(),
-  deviation_pct: z.coerce.number().int().min(1).max(50),
-  auto_accept_hours: z.coerce.number().int().min(1).max(72),
-  min_reject_reason_length: z.coerce.number().int().min(1).max(500),
+  deviation_pct: z.number().int().min(1).max(50),
+  auto_accept_hours: z.number().int().min(1).max(72),
+  min_reject_reason_length: z.number().int().min(1).max(500),
   require_reject_category: z.boolean(),
 });
 
@@ -158,7 +158,13 @@ export function OrgTabPolicies({
                   <FormLabel>{t("policies.deviation_pct")}</FormLabel>
                   <FormControl>
                     <div className="flex items-center gap-2 w-32">
-                      <Input type="number" min={1} max={50} {...field} />
+                      <Input
+                        type="number"
+                        min={1}
+                        max={50}
+                        {...field}
+                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                      />
                       <span className="text-sm text-muted-foreground shrink-0">%</span>
                     </div>
                   </FormControl>
@@ -176,7 +182,13 @@ export function OrgTabPolicies({
                   <FormLabel>{t("policies.auto_accept_hours")}</FormLabel>
                   <FormControl>
                     <div className="flex items-center gap-2 w-32">
-                      <Input type="number" min={1} max={72} {...field} />
+                      <Input
+                        type="number"
+                        min={1}
+                        max={72}
+                        {...field}
+                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                      />
                       <span className="text-sm text-muted-foreground shrink-0">ч</span>
                     </div>
                   </FormControl>
@@ -204,7 +216,13 @@ export function OrgTabPolicies({
                   <FormLabel>{t("policies.min_reason_length")}</FormLabel>
                   <FormControl>
                     <div className="flex items-center gap-2 w-32">
-                      <Input type="number" min={1} max={500} {...field} />
+                      <Input
+                        type="number"
+                        min={1}
+                        max={500}
+                        {...field}
+                        onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                      />
                       <span className="text-sm text-muted-foreground shrink-0">симв.</span>
                     </div>
                   </FormControl>
