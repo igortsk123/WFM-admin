@@ -69,6 +69,9 @@ export async function getBonusPayoutById(
   return { data: { ...period, rows } };
 }
 
+/** Alias matching V0 prompt naming. */
+export const getPayoutDetail = getBonusPayoutById;
+
 // ═══════════════════════════════════════════════════════════════════
 // LIFECYCLE
 // ═══════════════════════════════════════════════════════════════════

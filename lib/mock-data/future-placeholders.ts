@@ -408,7 +408,7 @@ export const MOCK_BONUS_TASKS: BonusTask[] = [
 // PAYOUT PERIODS (bonus, 1 балл = 1 рубль)
 // ══════════════════════════════════════════════════════════════════
 
-export type PayoutPeriodStatus = "CALCULATING" | "READY" | "PAID";
+export type PayoutPeriodStatus = "OPEN" | "CALCULATING" | "READY" | "PAID";
 
 export interface BonusPayoutPeriod {
   id: string;
