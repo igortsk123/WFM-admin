@@ -39,3 +39,6 @@ export { ApplicationStatusBadge, getApplicationStatusLabel } from "./application
 export { ServiceStatusBadge, getServiceStatusLabel } from "./service-status-badge"
 export { PayoutStatusBadge } from "./payout-status-badge"
 export { AgentStatusBadge, getAgentStatusLabel } from "./agent-status-badge"
+
+// Agent cabinet shell
+export { AgentSidebar } from "./agent-sidebar"

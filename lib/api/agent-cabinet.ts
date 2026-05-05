@@ -16,12 +16,14 @@ import type {
   User,
   Service,
   Payout,
+  FreelancerAssignment,
 } from "@/lib/types";
 import { MOCK_FREELANCE_AGENTS } from "@/lib/mock-data/freelance-agents";
 import { MOCK_AGENT_EARNINGS } from "@/lib/mock-data/freelance-agent-earnings";
 import { MOCK_FREELANCERS } from "@/lib/mock-data/freelance-freelancers";
 import { MOCK_FREELANCE_SERVICES } from "@/lib/mock-data/freelance-services";
 import { MOCK_FREELANCE_PAYOUTS } from "@/lib/mock-data/freelance-payouts";
+import { MOCK_FREELANCE_ASSIGNMENTS } from "@/lib/mock-data/freelance-assignments";
 import { MOCK_ORGANIZATIONS } from "@/lib/mock-data/organizations";
 
 // ═══════════════════════════════════════════════════════════════════
@@ -108,6 +110,36 @@ export async function getMyAgentDashboard(): Promise<
       recent_payouts,
     },
   };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// TODAY'S ACTIVITY
+// ═══════════════════════════════════════════════════════════════════
+
+/**
+ * Get the agent's today's freelancer assignments.
+ * Returns assignments for today (SCHEDULED, CHECKED_IN, WORKING, DONE, NO_SHOW).
+ * @returns List of FreelancerAssignment for today belonging to this agent
+ * @endpoint GET /agent/me/today-activity
+ * @roles AGENT
+ */
+export async function getMyTodayActivity(): Promise<
+  ApiResponse<FreelancerAssignment[]>
+> {
+  await delay(rand(200, 400));
+
+  if (isClientDirect()) {
+    throw new Error("Кабинет агента недоступен в режиме CLIENT_DIRECT.");
+  }
+
+  const today = new Date("2026-05-01").toISOString().slice(0, 10);
+
+  const todayAssignments = MOCK_FREELANCE_ASSIGNMENTS.filter((a) => {
+    const aDate = a.scheduled_start.slice(0, 10);
+    return a.agent_id === MOCK_AGENT_ID && aDate === today;
+  });
+
+  return { data: todayAssignments };
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -202,7 +234,7 @@ export async function getMyFreelancerById(
   return { data: { ...stripRating(freelancer), services } };
 }
 
-// ═══════════════════════════════════════════════════════════════════
+// ═════════════��═════════════════════════════════════════════════════
 // EARNINGS
 // ═══════════════════════════════════════════════════════════════════
 
