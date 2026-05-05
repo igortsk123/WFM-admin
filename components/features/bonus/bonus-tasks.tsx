@@ -1,47 +1,69 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import { useTranslations, useLocale } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { useState, useCallback, useEffect } from "react";
+import { useTranslations } from "next-intl";
+import Link from "next/link";
 import {
-  Wallet,
-  Settings2,
-  Recycle,
-  Target,
+  Gift,
   Plus,
+  MoreVertical,
   Clock,
+  Target,
+  Zap,
+  Users,
+  TrendingUp,
+  ArrowRight,
   Sparkles,
-  MessageSquare,
-  X,
-  Timer,
-  Check,
+  RefreshCw,
+  ExternalLink,
+  Link2,
   ChevronDown,
-  ChevronRight,
+  ChevronUp,
+  Eye,
+  Settings,
+  CheckCircle2,
+  CircleDot,
+  User,
+  Coins,
+  BarChart3,
   AlertCircle,
 } from "lucide-react";
 import { toast } from "sonner";
-import {
-  Bar,
-  BarChart,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  Tooltip as RechartsTooltip,
-  Cell,
-} from "recharts";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuLabel,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import {
   AlertDialog,
   AlertDialogTrigger,
@@ -51,415 +73,160 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-} from "@/components/ui/drawer";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { PageHeader } from "@/components/shared/page-header";
+import { KpiCard } from "@/components/shared/kpi-card";
+import { EmptyState } from "@/components/shared/empty-state";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 
-import { PageHeader, EmptyState, ConfirmDialog, UserCell } from "@/components/shared";
-import type { FunctionalRole, BonusBudget, BonusTaskSource, Goal, Locale } from "@/lib/types";
+import { useAuth } from "@/lib/contexts/auth-context";
+import { ADMIN_ROUTES } from "@/lib/constants/routes";
+import type { User as UserModel, BonusBudget } from "@/lib/types";
+import type { BonusTaskWithSource, FreelanceLinkInfo, ReplacedByBonusKpi } from "@/lib/api/bonus";
+
 import {
   getBonusBudgets,
+  getBonusTasks,
   getBonusProposals,
+  getBonusMetrics,
   createBonusTask,
   removeBonusTask,
-  getBonusMetrics,
-  type BonusMetrics,
+  getBonusBudgetFreelanceLink,
+  getReplacedByBonusKpi,
+  getEmployeeBonusPreview,
+  updateBonusVisibilitySetting,
 } from "@/lib/api/bonus";
-import { MOCK_BONUS_TASKS, MOCK_GOALS, type BonusTask } from "@/lib/mock-data/future-placeholders";
-import { MOCK_STORES } from "@/lib/mock-data/stores";
-import { MOCK_WORK_TYPES } from "@/lib/mock-data/work-types";
-import { MOCK_ZONES } from "@/lib/mock-data/zones";
-import { ADMIN_ROUTES } from "@/lib/constants/routes";
-import { formatDate, formatCurrency } from "@/lib/utils/format";
-import { cn } from "@/lib/utils";
+import { getUsers } from "@/lib/api/users";
+import { MOCK_GOALS } from "@/lib/mock-data/future-placeholders";
 
 // ═══════════════════════════════════════════════════════════════════
 // TYPES
 // ═══════════════════════════════════════════════════════════════════
 
-type PeriodFilter = "today" | "week" | "prev_week" | "custom";
+type PeriodFilter = "today" | "week" | "prev_week";
+type VisibilityMode = "SUMMARY_ONLY" | "ALWAYS_LIST";
 
-interface StrategiesState {
-  manual: boolean;
-  ai: boolean;
-  yesterday: boolean;
+// ═══════════════════════════════════════════════════════════════════
+// SUB-COMPONENT: FreelanceLinkBadge
+// ═══════════════════════════════════════════════════════════════════
+
+interface FreelanceLinkBadgeProps {
+  budgetId: string;
+  locale: string;
 }
 
-// ═══════════════════════════════════════════════════════════════════
-// CONSTANTS
-// ═══════════════════════════════════════════════════════════════════
+function FreelanceLinkBadge({ budgetId, locale }: FreelanceLinkBadgeProps) {
+  const t = useTranslations("screen.bonusTasks.freelance_link");
+  const [info, setInfo] = useState<FreelanceLinkInfo | null>(null);
+  const [loading, setLoading] = useState(true);
 
-const POINTS_TO_RUBLES = 1; // 1 point = 1 ruble
-const HOUR_TO_POINTS = 500; // 1 hour ≈ 500 points (simplified)
-
-// Mock scope options
-const MOCK_SCOPE_OPTIONS = [
-  { id: "all", name: "Все магазины" },
-  ...MOCK_STORES.filter((s) => !s.archived).map((s) => ({
-    id: String(s.id),
-    name: s.name,
-  })),
-];
-
-// ═══════════════════════════════════════════════════════════════════
-// HELPER COMPONENTS
-// ═══════════════════════════════════════════════════════════════════
-
-function LoadingState() {
-  return (
-    <div className="space-y-6">
-      <div className="grid gap-4 md:grid-cols-3">
-        {[1, 2, 3].map((i) => (
-          <Skeleton key={i} className="h-44" />
-        ))}
-      </div>
-      <Skeleton className="h-12 w-full" />
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {[1, 2, 3, 4, 5].map((i) => (
-          <Skeleton key={i} className="h-48" />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function AILoadingState({ message }: { message: string }) {
-  return (
-    <div className="flex flex-col items-center justify-center py-12 gap-4">
-      <div className="relative">
-        <div className="size-16 rounded-full bg-primary/10 flex items-center justify-center">
-          <Sparkles className="size-8 text-primary animate-pulse" />
-        </div>
-      </div>
-      <p className="text-sm text-muted-foreground">{message}</p>
-    </div>
-  );
-}
-
-function BonusTaskStatusBadge({ state }: { state: BonusTask["state"] }) {
-  const variants: Record<BonusTask["state"], { className: string; label: string }> = {
-    ACTIVE: { className: "bg-info text-info-foreground", label: "Новая" },
-    COMPLETED: { className: "bg-success text-success-foreground", label: "На проверке" },
-    PROPOSED: { className: "bg-warning text-warning-foreground", label: "Предложена" },
-  };
-  const v = variants[state] || variants.ACTIVE;
-  return <Badge className={v.className}>{v.label}</Badge>;
-}
-
-function SourceBadge({ source, t }: { source: BonusTaskSource; t: (key: string) => string }) {
-  const variants: Record<BonusTaskSource, { className: string }> = {
-    YESTERDAY_INCOMPLETE: { className: "bg-warning/10 text-warning border-warning/20" },
-    SUPERVISOR_BUDGET: { className: "bg-primary/10 text-primary border-primary/20" },
-    GOAL_LINKED: { className: "bg-success/10 text-success border-success/20" },
-  };
-  const v = variants[source] || variants.SUPERVISOR_BUDGET;
-  return (
-    <Badge variant="outline" className={v.className}>
-      {t(`completed_tab.source.${source}` as Parameters<typeof t>[0])}
-    </Badge>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// BUDGET CARD
-// ═══════════════════════════════════════════════════════════════════
-
-function BudgetCard({
-  budgets,
-  isReadOnly,
-  canEditBudget,
-  scopeId,
-  t,
-  tCommon,
-  locale,
-  onEditBudget,
-}: {
-  budgets: BonusBudget[];
-  isReadOnly: boolean;
-  canEditBudget: boolean;
-  scopeId: string;
-  t: (key: string, values?: Record<string, string | number>) => string;
-  tCommon: (key: string) => string;
-  locale: Locale;
-  onEditBudget: () => void;
-}) {
-  const [showMoney, setShowMoney] = useState(false);
-  const [summaryOpen, setSummaryOpen] = useState(true);
-
-  // Calculate totals
-  const totalPoints = budgets.reduce((sum, b) => sum + b.total_points, 0);
-  const spentPoints = budgets.reduce((sum, b) => sum + b.spent_points, 0);
-  const usedPercent = totalPoints > 0 ? Math.round((spentPoints / totalPoints) * 100) : 0;
-
-  const totalHours = Math.round(totalPoints / HOUR_TO_POINTS);
-  const spentHours = Math.round(spentPoints / HOUR_TO_POINTS);
-
-  const totalMoney = totalPoints * POINTS_TO_RUBLES;
-  const spentMoney = spentPoints * POINTS_TO_RUBLES;
-
-  // Per-store breakdown
-  const storeBreakdown = budgets
-    .filter((b) => b.store_id)
-    .map((b) => {
-      const store = MOCK_STORES.find((s) => s.id === b.store_id);
-      const pct = b.total_points > 0 ? Math.round((b.spent_points / b.total_points) * 100) : 0;
-      return {
-        storeId: b.store_id!,
-        storeName: store?.name || `Store ${b.store_id}`,
-        total: b.total_points,
-        spent: b.spent_points,
-        pct,
-      };
+  useEffect(() => {
+    let cancelled = false;
+    getBonusBudgetFreelanceLink(budgetId).then((res) => {
+      if (!cancelled) {
+        setInfo(res.data);
+        setLoading(false);
+      }
     });
+    return () => { cancelled = true; };
+  }, [budgetId]);
+
+  if (loading) return <Skeleton className="h-6 w-40" />;
+  if (!info) return null;
+
+  const fmt = (n: number) =>
+    new Intl.NumberFormat(locale, { style: "currency", currency: "RUB", maximumFractionDigits: 0 }).format(n);
 
   return (
-    <Card>
-      <CardContent className="p-5">
-        <div className="flex items-start justify-between gap-3 mb-4">
-          <div className="flex items-center gap-3">
-            <span className="flex size-10 items-center justify-center rounded-full bg-primary/10">
-              <Wallet className="size-5 text-primary" />
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Link
+            href={ADMIN_ROUTES.freelanceApplicationDetail(info.application_id)}
+            className="inline-flex items-center gap-1.5 rounded-full bg-info/15 text-info border border-info/30 px-3 h-7 text-xs font-medium hover:bg-info/25 transition-colors"
+            aria-label={t("from_app_badge", { id: info.short_id })}
+          >
+            <Link2 className="size-3 shrink-0" aria-hidden="true" />
+            {t("from_app_badge", { id: info.short_id })}
+            <ExternalLink className="size-3 shrink-0 opacity-70" aria-hidden="true" />
+          </Link>
+        </TooltipTrigger>
+        <TooltipContent side="bottom" className="max-w-xs">
+          <p className="text-xs leading-relaxed">
+            {t("tooltip", {
+              full: fmt(info.full_cost),
+              bonus: fmt(info.bonus_cost),
+              saved: fmt(info.saved),
+            })}
+          </p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SUB-COMPONENT: BonusPoolCard (budget card with optional freelance link)
+// ═══════════════════════════════════════════════════════════════════
+
+interface BonusPoolCardProps {
+  budget: BonusBudget;
+  locale: string;
+  storeName?: string;
+}
+
+function BonusPoolCard({ budget, locale, storeName }: BonusPoolCardProps) {
+  const t = useTranslations("screen.bonusTasks.budget_card");
+  const usedPct = budget.total_points > 0
+    ? Math.round((budget.spent_points / budget.total_points) * 100)
+    : 0;
+
+  return (
+    <Card className="rounded-xl">
+      <CardHeader className="pb-2">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex flex-col gap-1 min-w-0">
+            <CardTitle className="text-sm font-semibold truncate">
+              {storeName ?? t("title")}
+            </CardTitle>
+            <span className="text-xs text-muted-foreground">
+              {budget.period_start} — {budget.period_end}
             </span>
-            <div>
-              <p className="font-semibold text-foreground">{t("budget_card.title")}</p>
-              <Badge variant="secondary" className="text-xs mt-1">
-                {t("budget_card.regional_badge")}
-              </Badge>
-            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <Label htmlFor="toggle-unit" className="text-xs text-muted-foreground">
-              {showMoney ? t("budget_card.toggle_money") : t("budget_card.toggle_hours")}
-            </Label>
-            <Switch
-              id="toggle-unit"
-              checked={showMoney}
-              onCheckedChange={setShowMoney}
-            />
-          </div>
+          <FreelanceLinkBadge budgetId={budget.id} locale={locale} />
         </div>
-
-        <div className="space-y-3">
-          <div>
-            <p className="text-2xl font-semibold text-foreground">
-              {showMoney
-                ? formatCurrency(totalMoney, locale)
-                : `${totalHours} ${t("budget_card.hours_unit")}`}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              {t("budget_card.used_label", {
-                value: showMoney
-                  ? formatCurrency(spentMoney, locale)
-                  : `${spentHours} ч`,
-                percent: usedPercent,
-              })}
-            </p>
-          </div>
-
-          <Progress value={usedPercent} className="h-2" />
-
-          {storeBreakdown.length > 0 && (
-            <Collapsible open={summaryOpen} onOpenChange={setSummaryOpen}>
-              <CollapsibleTrigger asChild>
-                <Button variant="ghost" size="sm" className="w-full justify-between px-0 h-8">
-                  <span className="text-sm text-muted-foreground">
-                    {t("budget_card.summary_collapse_title")}
-                  </span>
-                  {summaryOpen ? (
-                    <ChevronDown className="size-4" />
-                  ) : (
-                    <ChevronRight className="size-4" />
-                  )}
-                </Button>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="pt-2 space-y-2">
-                {storeBreakdown.map((s) => (
-                  <div key={s.storeId} className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground truncate max-w-[60%]">
-                      {s.storeName}
-                    </span>
-                    <span className="text-foreground">
-                      {showMoney
-                        ? `${formatCurrency(s.spent * POINTS_TO_RUBLES, locale)} (${s.pct}%)`
-                        : `${Math.round(s.spent / HOUR_TO_POINTS)} ч (${s.pct}%)`}
-                    </span>
-                  </div>
-                ))}
-              </CollapsibleContent>
-            </Collapsible>
-          )}
-        </div>
-
-        <div className="mt-4 pt-4 border-t">
-          {canEditBudget ? (
-            <Button variant="outline" size="sm" className="w-full" onClick={onEditBudget}>
-              {t("actions.edit_budget")}
-            </Button>
-          ) : (
-            <p className="text-xs text-muted-foreground text-center">
-              {t("budget_card.set_by_regional_hint")}
-            </p>
-          )}
-        </div>
-      </CardContent>
-    </Card>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// STRATEGIES CARD
-// ═══════════════════════════════════════════════════════════════════
-
-function StrategiesCard({
-  strategies,
-  isReadOnly,
-  t,
-  onToggle,
-}: {
-  strategies: StrategiesState;
-  isReadOnly: boolean;
-  t: (key: string) => string;
-  onToggle: (key: keyof StrategiesState, value: boolean) => void;
-}) {
-  return (
-    <Card>
-      <CardContent className="p-5">
-        <div className="flex items-center gap-3 mb-4">
-          <span className="flex size-10 items-center justify-center rounded-full bg-info/10">
-            <Settings2 className="size-5 text-info" />
+      </CardHeader>
+      <CardContent className="pb-4">
+        <div className="flex items-end justify-between mb-2">
+          <span className="text-2xl font-bold text-foreground">
+            {budget.total_points.toLocaleString(locale)}
+            <span className="text-sm font-normal text-muted-foreground ml-1">₽</span>
           </span>
-          <div>
-            <p className="font-semibold text-foreground">{t("strategies_card.title")}</p>
-            <Badge variant="secondary" className="text-xs mt-1">
-              {t("strategies_card.title")}
-            </Badge>
-          </div>
-        </div>
-
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium">{t("strategies_card.manual_label")}</p>
-              <p className="text-xs text-muted-foreground">{t("strategies_card.manual_hint")}</p>
-            </div>
-            <Switch
-              checked={strategies.manual}
-              onCheckedChange={(v) => onToggle("manual", v)}
-              disabled={isReadOnly}
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium">{t("strategies_card.ai_label")}</p>
-              <p className="text-xs text-muted-foreground">{t("strategies_card.ai_hint")}</p>
-            </div>
-            <Switch
-              checked={strategies.ai}
-              onCheckedChange={(v) => onToggle("ai", v)}
-              disabled={isReadOnly}
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium">{t("strategies_card.yesterday_label")}</p>
-              <p className="text-xs text-muted-foreground">{t("strategies_card.yesterday_hint")}</p>
-            </div>
-            <Switch
-              checked={strategies.yesterday}
-              onCheckedChange={(v) => onToggle("yesterday", v)}
-              disabled={isReadOnly}
-            />
-          </div>
-        </div>
-
-        <p className="text-xs text-muted-foreground mt-4 pt-4 border-t">
-          {t("strategies_card.footer_hint")}
-        </p>
-      </CardContent>
-    </Card>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// YESTERDAY POOL CARD
-// ═══════════════════════════════════════════════════════════════════
-
-function YesterdayPoolCard({
-  t,
-  onViewPool,
-}: {
-  t: (key: string, values?: Record<string, string | number>) => string;
-  onViewPool: () => void;
-}) {
-  // Mock data
-  const tasksCount = 12;
-  const hoursStr = "4 ч 30 мин";
-  const used = 600;
-  const total = 1500;
-  const usedPct = Math.round((used / total) * 100);
-
-  return (
-    <Card>
-      <CardContent className="p-5">
-        <div className="flex items-center gap-3 mb-4">
-          <span className="flex size-10 items-center justify-center rounded-full bg-warning/10">
-            <Recycle className="size-5 text-warning" />
+          <span className={`text-xs font-medium ${usedPct > 80 ? "text-warning" : "text-muted-foreground"}`}>
+            {usedPct}% {t("used_label", { value: budget.spent_points.toLocaleString(locale), percent: usedPct })}
           </span>
-          <div>
-            <p className="font-semibold text-foreground">{t("yesterday_pool_card.title")}</p>
-            <Badge variant="secondary" className="text-xs mt-1">
-              {t("yesterday_pool_card.auto_badge")}
-            </Badge>
-          </div>
         </div>
-
-        <div className="space-y-3">
-          <p className="text-2xl font-semibold text-foreground">
-            {t("yesterday_pool_card.tasks_summary", { tasks: tasksCount, hours: hoursStr })}
-          </p>
-          <Progress value={usedPct} className="h-2" />
-          <p className="text-sm text-muted-foreground">
-            {t("yesterday_pool_card.used_label", { used, total })}
-          </p>
-        </div>
-
-        <div className="mt-4 pt-4 border-t">
-          <Button variant="outline" size="sm" className="w-full" onClick={onViewPool}>
-            {t("actions.view_pool")}
-          </Button>
+        {/* Progress bar */}
+        <div className="h-2 rounded-full bg-muted overflow-hidden" aria-hidden="true">
+          <div
+            className={`h-full rounded-full transition-all ${usedPct > 80 ? "bg-warning" : "bg-primary"}`}
+            style={{ width: `${Math.min(usedPct, 100)}%` }}
+          />
         </div>
       </CardContent>
     </Card>
@@ -467,919 +234,949 @@ function YesterdayPoolCard({
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// ACTIVE GOAL CARD
+// SUB-COMPONENT: BonusTaskCard (active / AI-proposal task)
 // ═══════════════════════════════════════════════════════════════════
 
-function ActiveGoalCard({
-  goal,
-  proposalsCount,
-  t,
-}: {
-  goal: Goal | null;
-  proposalsCount: number;
-  t: (key: string, values?: Record<string, string | number>) => string;
-}) {
-  if (!goal) return null;
-
-  return (
-    <Card>
-      <CardContent className="p-5">
-        <div className="flex items-center gap-3 mb-4">
-          <span className="flex size-10 items-center justify-center rounded-full bg-success/10">
-            <Target className="size-5 text-success" />
-          </span>
-          <div>
-            <p className="font-semibold text-foreground">{t("active_goal_card.title")}</p>
-            <Badge variant="secondary" className="text-xs mt-1">
-              {t("active_goal_card.ai_badge")}
-            </Badge>
-          </div>
-        </div>
-
-        <div className="space-y-2">
-          <p className="text-lg font-semibold text-foreground">{goal.title}</p>
-          <p className="text-sm text-muted-foreground">
-            {t("active_goal_card.proposals_count", { count: proposalsCount })}
-          </p>
-        </div>
-
-        <div className="mt-4 pt-4 border-t">
-          <Button variant="outline" size="sm" className="w-full" asChild>
-            <Link href={ADMIN_ROUTES.goals}>
-              {t("actions.open_goal")}
-            </Link>
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
-  );
+interface BonusTaskCardProps {
+  task: BonusTaskWithSource;
+  isProposal?: boolean;
+  onRemove?: (id: string) => void;
+  onPublishProposal?: (id: string) => void;
+  onRejectProposal?: (id: string) => void;
 }
-
-// ═══════════════════════════════════════════════════════════════════
-// BONUS TASK CARD (Active tab)
-// ═══════════════════════════════════════════════════════════════════
 
 function BonusTaskCard({
   task,
-  isReadOnly,
-  t,
+  isProposal,
   onRemove,
-}: {
-  task: BonusTask;
-  isReadOnly: boolean;
-  t: (key: string, values?: Record<string, string | number>) => string;
-  onRemove: (id: string) => void;
-}) {
-  const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
-  const expiresIn = "2 ч"; // mock
+  onPublishProposal,
+  onRejectProposal,
+}: BonusTaskCardProps) {
+  const t = useTranslations("screen.bonusTasks");
+  const [removeOpen, setRemoveOpen] = useState(false);
+  const [removeReason, setRemoveReason] = useState("");
+  const [removing, setRemoving] = useState(false);
+
+  const handleRemove = async () => {
+    if (!onRemove) return;
+    setRemoving(true);
+    const res = await removeBonusTask(task.id, removeReason || "Снято менеджером");
+    setRemoving(false);
+    if (res.success) {
+      toast.success(t("toasts.task_removed"));
+      setRemoveOpen(false);
+      onRemove(task.id);
+    } else {
+      toast.error(t("toasts.error"));
+    }
+  };
+
+  const sourceColors: Record<string, string> = {
+    YESTERDAY_INCOMPLETE: "bg-warning/15 text-warning border-warning/30",
+    SUPERVISOR_BUDGET: "bg-info/15 text-info border-info/30",
+    GOAL_LINKED: "bg-success/15 text-success border-success/30",
+  };
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="rounded-xl group hover:shadow-sm transition-shadow">
       <CardContent className="p-4">
-        <div className="flex items-start justify-between gap-2 mb-3">
-          <Badge className="bg-primary text-primary-foreground text-lg px-3 py-1">
-            +{task.bonus_points} {t("task_card.points_suffix")}
-          </Badge>
-          <BonusTaskStatusBadge state={task.state} />
-        </div>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex flex-col gap-2 min-w-0 flex-1">
+            {/* Header row */}
+            <div className="flex items-center gap-2 flex-wrap">
+              <span
+                className={`inline-flex items-center rounded-full border px-2.5 h-6 text-xs font-medium ${sourceColors[task.bonus_source] ?? "bg-muted text-muted-foreground"}`}
+              >
+                {t(`completed_tab.source.${task.bonus_source}`)}
+              </span>
+              {isProposal && (
+                <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary border border-primary/20 px-2.5 h-6 text-xs font-medium">
+                  <Sparkles className="size-3" aria-hidden="true" />
+                  AI
+                </span>
+              )}
+            </div>
 
-        <h3 className="font-semibold text-foreground mb-2 line-clamp-2">{task.title}</h3>
-
-        <div className="space-y-1.5 text-sm text-muted-foreground mb-3">
-          {task.goal_id && (
-            <p className="flex items-center gap-1.5">
-              <Target className="size-3.5" />
-              <span>OOS Молочка</span>
+            {/* Title */}
+            <p className="text-sm font-semibold text-foreground leading-snug line-clamp-2">
+              {task.title}
             </p>
-          )}
-          <p>{task.work_type_name} • {task.store_name.split(",")[0]}</p>
-          {task.assignee_name ? (
-            <p>{task.assignee_name}</p>
-          ) : (
-            <p className="text-muted-foreground italic">{t("task_card.any_assignee")}</p>
-          )}
-          <p className="flex items-center gap-1.5 text-warning">
-            <Timer className="size-3.5" />
-            {t("task_card.expires_in", { time: expiresIn })}
-          </p>
-        </div>
+            {task.description && (
+              <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
+                {task.description}
+              </p>
+            )}
 
-        {!isReadOnly && task.state !== "COMPLETED" && (
-          <AlertDialog open={removeDialogOpen} onOpenChange={setRemoveDialogOpen}>
-            <AlertDialogTrigger asChild>
-              <Button variant="outline" size="sm" className="w-full">
-                {t("actions.remove")}
+            {/* Meta row */}
+            <div className="flex items-center gap-3 flex-wrap text-xs text-muted-foreground">
+              {task.assignee_name ? (
+                <span className="flex items-center gap-1">
+                  <User className="size-3" aria-hidden="true" />
+                  {task.assignee_name}
+                </span>
+              ) : (
+                <span className="flex items-center gap-1">
+                  <Users className="size-3" aria-hidden="true" />
+                  {t("task_card.any_assignee")}
+                </span>
+              )}
+              <span className="flex items-center gap-1">
+                <Coins className="size-3" aria-hidden="true" />
+                <span className="font-semibold text-foreground">
+                  {task.bonus_points} {t("task_card.points_suffix")}
+                </span>
+              </span>
+            </div>
+          </div>
+
+          {/* Actions */}
+          {isProposal ? (
+            <div className="flex items-center gap-2 shrink-0">
+              <Button
+                size="sm"
+                variant="default"
+                className="h-8 text-xs"
+                onClick={() => onPublishProposal?.(task.id)}
+              >
+                {t("actions.publish")}
               </Button>
-            </AlertDialogTrigger>
-            <ConfirmDialog
-              title={t("remove_dialog.title")}
-              message={t("remove_dialog.description")}
-              confirmLabel={t("remove_dialog.confirm")}
-              variant="destructive"
-              onConfirm={() => {
-                onRemove(task.id);
-                setRemoveDialogOpen(false);
-              }}
-              onOpenChange={setRemoveDialogOpen}
-            />
-          </AlertDialog>
-        )}
+              <Button
+                size="sm"
+                variant="outline"
+                className="h-8 text-xs"
+                onClick={() => onRejectProposal?.(task.id)}
+              >
+                {t("actions.reject")}
+              </Button>
+            </div>
+          ) : (
+            <AlertDialog open={removeOpen} onOpenChange={setRemoveOpen}>
+              <AlertDialogTrigger asChild>
+                <Button
+                  size="sm"
+                  variant="ghost"
+                  className="h-8 w-8 p-0 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity"
+                  aria-label={t("actions.remove")}
+                >
+                  <MoreVertical className="size-4" />
+                </Button>
+              </AlertDialogTrigger>
+              <ConfirmDialog
+                title={t("remove_dialog.title")}
+                message={t("remove_dialog.description")}
+                confirmLabel={t("remove_dialog.confirm")}
+                variant="destructive"
+                onConfirm={handleRemove}
+                onOpenChange={setRemoveOpen}
+              />
+            </AlertDialog>
+          )}
+        </div>
       </CardContent>
     </Card>
   );
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// AI PROPOSAL CARD
+// SUB-COMPONENT: EmployeePreviewSection
 // ═══════════════════════════════════════════════════════════════════
 
-function AIProposalCard({
-  task,
-  isReadOnly,
-  t,
-  onPublish,
-  onReject,
-  onAskAI,
-}: {
-  task: BonusTask;
-  isReadOnly: boolean;
-  t: (key: string) => string;
-  onPublish: (id: string) => void;
-  onReject: (id: string) => void;
-  onAskAI: (id: string) => void;
-}) {
-  const [points, setPoints] = useState(task.bonus_points);
-  const [title, setTitle] = useState(task.title);
+interface EmployeePreviewSectionProps {
+  storeId?: number;
+  locale: string;
+}
+
+function EmployeePreviewSection({ storeId, locale }: EmployeePreviewSectionProps) {
+  const t = useTranslations("screen.bonusTasks.preview");
+  const [open, setOpen] = useState(false);
+  const [comboOpen, setComboOpen] = useState(false);
+  const [employees, setEmployees] = useState<UserModel[]>([]);
+  const [selectedUser, setSelectedUser] = useState<UserModel | null>(null);
+  const [preview, setPreview] = useState<{ visible_now_sum: number; available_tasks: BonusTaskWithSource[] } | null>(null);
+  const [loadingEmployees, setLoadingEmployees] = useState(false);
+  const [loadingPreview, setLoadingPreview] = useState(false);
+
+  useEffect(() => {
+    if (open && employees.length === 0) {
+      setLoadingEmployees(true);
+      getUsers({ employment_type: "STAFF", page_size: 50, store_id: storeId }).then((res) => {
+        setEmployees(res.data.filter((u) => !u.archived));
+        setLoadingEmployees(false);
+      });
+    }
+  }, [open, employees.length, storeId]);
+
+  useEffect(() => {
+    if (!selectedUser) return;
+    setLoadingPreview(true);
+    setPreview(null);
+    getEmployeeBonusPreview(selectedUser.id, storeId).then((res) => {
+      setPreview(res.data);
+      setLoadingPreview(false);
+    });
+  }, [selectedUser, storeId]);
+
+  const fmtRub = (n: number) =>
+    new Intl.NumberFormat(locale, { style: "currency", currency: "RUB", maximumFractionDigits: 0 }).format(n);
 
   return (
-    <Card className="overflow-hidden border-primary/20">
-      <CardContent className="p-4">
-        <div className="flex items-start justify-between gap-2 mb-3">
-          <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 gap-1">
-            <Sparkles className="size-3" />
-            AI
-          </Badge>
-          <Input
-            type="number"
-            value={points}
-            onChange={(e) => setPoints(Number(e.target.value))}
-            className="w-24 h-8 text-right"
-            disabled={isReadOnly}
-          />
-        </div>
+    <Collapsible open={open} onOpenChange={setOpen} className="rounded-xl border bg-card">
+      <CollapsibleTrigger asChild>
+        <button
+          className="flex w-full items-center justify-between p-4 text-left hover:bg-muted/50 transition-colors rounded-xl"
+          aria-expanded={open}
+        >
+          <div className="flex items-center gap-2">
+            <Eye className="size-4 text-muted-foreground" aria-hidden="true" />
+            <span className="text-sm font-semibold">{t("section_title")}</span>
+          </div>
+          {open ? (
+            <ChevronUp className="size-4 text-muted-foreground" aria-hidden="true" />
+          ) : (
+            <ChevronDown className="size-4 text-muted-foreground" aria-hidden="true" />
+          )}
+        </button>
+      </CollapsibleTrigger>
 
-        <Textarea
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="mb-3 resize-none"
-          rows={2}
-          disabled={isReadOnly}
-        />
+      <CollapsibleContent>
+        <div className="px-4 pb-4 flex flex-col gap-4">
+          {/* Employee combobox */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-xs font-medium text-muted-foreground">
+              {t("select_employee_label")}
+            </label>
+            <Popover open={comboOpen} onOpenChange={setComboOpen}>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={comboOpen}
+                  className="w-full max-w-sm justify-between text-sm h-9"
+                >
+                  {selectedUser
+                    ? `${selectedUser.last_name} ${selectedUser.first_name}`
+                    : t("select_employee_placeholder")}
+                  <ChevronDown className="ml-2 size-4 shrink-0 opacity-50" />
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-72 p-0" align="start">
+                <Command>
+                  <CommandInput placeholder={t("select_employee_placeholder")} />
+                  <CommandEmpty>
+                    {loadingEmployees ? (
+                      <div className="py-4 text-center text-xs text-muted-foreground">Загрузка...</div>
+                    ) : (
+                      "Не найдено"
+                    )}
+                  </CommandEmpty>
+                  <CommandGroup className="max-h-56 overflow-y-auto">
+                    {employees.map((emp) => (
+                      <CommandItem
+                        key={emp.id}
+                        value={`${emp.last_name} ${emp.first_name}`}
+                        onSelect={() => {
+                          setSelectedUser(emp);
+                          setComboOpen(false);
+                        }}
+                      >
+                        <span className="truncate">
+                          {emp.last_name} {emp.first_name}
+                        </span>
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </Command>
+              </PopoverContent>
+            </Popover>
+          </div>
 
-        <div className="text-sm text-muted-foreground mb-3">
-          <p>{task.work_type_name} • {task.store_name.split(",")[0]}</p>
-        </div>
+          {/* Preview cards */}
+          {selectedUser && (
+            <div className="grid gap-3 sm:grid-cols-2">
+              {/* Visible now card */}
+              <Card className="rounded-lg bg-muted/40 border-dashed">
+                <CardHeader className="pb-2 pt-3 px-3">
+                  <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                    {t("visible_now_title")}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="px-3 pb-3">
+                  {loadingPreview ? (
+                    <Skeleton className="h-8 w-24" />
+                  ) : (
+                    <div className="flex flex-col gap-1">
+                      <span className="text-xl font-bold text-foreground">
+                        {fmtRub(preview?.visible_now_sum ?? 0)}
+                      </span>
+                      <p className="text-xs text-muted-foreground leading-relaxed">
+                        {t("visible_now_hint")}
+                      </p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
 
-        <div className="bg-muted/50 rounded-md p-3 mb-4">
-          <p className="text-xs font-medium text-muted-foreground mb-1">
-            {t("ai_proposals.rationale_title")}
-          </p>
-          <p className="text-sm text-foreground">{task.description}</p>
+              {/* After planned card */}
+              <Card className="rounded-lg bg-success/5 border-success/20">
+                <CardHeader className="pb-2 pt-3 px-3">
+                  <CardTitle className="text-xs font-semibold text-success/80 uppercase tracking-wide">
+                    {t("after_planned_title")}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="px-3 pb-3">
+                  {loadingPreview ? (
+                    <div className="flex flex-col gap-2">
+                      <Skeleton className="h-5 w-full" />
+                      <Skeleton className="h-5 w-3/4" />
+                    </div>
+                  ) : preview?.available_tasks.length === 0 ? (
+                    <p className="text-xs text-muted-foreground">{t("empty_no_bonuses")}</p>
+                  ) : (
+                    <ul className="flex flex-col gap-1.5">
+                      {(preview?.available_tasks ?? []).slice(0, 4).map((task) => (
+                        <li key={task.id} className="flex items-center justify-between gap-2">
+                          <span className="text-xs text-foreground truncate">{task.title}</span>
+                          <span className="text-xs font-semibold text-success shrink-0">
+                            {task.bonus_points} ₽
+                          </span>
+                        </li>
+                      ))}
+                      {(preview?.available_tasks.length ?? 0) > 4 && (
+                        <li className="text-xs text-muted-foreground">
+                          +{(preview?.available_tasks.length ?? 0) - 4} ещё...
+                        </li>
+                      )}
+                    </ul>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </div>
-
-        <div className="flex gap-2">
-          <Button
-            size="sm"
-            className="flex-1"
-            onClick={() => onPublish(task.id)}
-            disabled={isReadOnly}
-          >
-            {t("actions.publish")}
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => onAskAI(task.id)}
-          >
-            <MessageSquare className="size-4" />
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            className="text-destructive hover:text-destructive"
-            onClick={() => onReject(task.id)}
-            disabled={isReadOnly}
-          >
-            <X className="size-4" />
-          </Button>
-        </div>
-      </CardContent>
-    </Card>
+      </CollapsibleContent>
+    </Collapsible>
   );
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// METRICS TAB
+// SUB-COMPONENT: CreateBonusTaskDialog
 // ═══════════════════════════════════════════════════════════════════
 
-function MetricsTab({
-  metrics,
-  t,
-  locale,
-}: {
-  metrics: BonusMetrics | null;
-  t: (key: string) => string;
-  locale: Locale;
-}) {
-  if (!metrics) {
-    return (
-      <div className="flex items-center justify-center py-12">
-        <Skeleton className="h-64 w-full" />
-      </div>
-    );
-  }
+const createSchema = z.object({
+  title: z.string().min(5),
+  points: z.number().min(1),
+  source: z.enum(["YESTERDAY_INCOMPLETE", "SUPERVISOR_BUDGET", "GOAL_LINKED"]),
+});
 
-  const storeChartData = metrics.by_store.map((s) => {
-    const store = MOCK_STORES.find((st) => st.id === s.store_id);
-    return {
-      name: store?.name?.split(",")[0] || `Store ${s.store_id}`,
-      value: s.avg_points_per_user,
-    };
+type CreateFormValues = z.infer<typeof createSchema>;
+
+interface CreateBonusTaskDialogProps {
+  storeId?: number;
+  onCreated: () => void;
+}
+
+function CreateBonusTaskDialog({ storeId, onCreated }: CreateBonusTaskDialogProps) {
+  const t = useTranslations("screen.bonusTasks");
+  const [open, setOpen] = useState(false);
+  const form = useForm<CreateFormValues>({
+    resolver: zodResolver(createSchema),
+    defaultValues: { title: "", points: 100, source: "SUPERVISOR_BUDGET" },
   });
 
-  return (
-    <div className="space-y-6">
-      {/* 4 KPI Cards */}
-      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-sm text-muted-foreground mb-2">{t("metrics.distribution_title")}</p>
-            <div className="flex items-end gap-1 mb-2">
-              <span className="text-2xl font-semibold">{metrics.distribution.top_pct}</span>
-              <span className="text-muted-foreground">/</span>
-              <span className="text-lg">{metrics.distribution.avg_pct}</span>
-              <span className="text-muted-foreground">/</span>
-              <span className="text-lg">{metrics.distribution.low_pct}%</span>
-            </div>
-            <div className="flex h-3 rounded-full overflow-hidden">
-              <div
-                className="bg-success"
-                style={{ width: `${metrics.distribution.top_pct}%` }}
-              />
-              <div
-                className="bg-info"
-                style={{ width: `${metrics.distribution.avg_pct}%` }}
-              />
-              <div
-                className="bg-muted"
-                style={{ width: `${metrics.distribution.low_pct}%` }}
-              />
-            </div>
-            <div className="flex justify-between text-xs text-muted-foreground mt-1">
-              <span>{t("metrics.distribution_subtitle_top")}</span>
-              <span>{t("metrics.distribution_subtitle_avg")}</span>
-              <span>{t("metrics.distribution_subtitle_low")}</span>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-sm text-muted-foreground mb-2">{t("metrics.best_performers_title")}</p>
-            <p className="text-2xl font-semibold mb-2">
-              {metrics.top_performers.length} чел.
-            </p>
-            <div className="flex -space-x-2">
-              {metrics.top_performers.slice(0, 3).map((u) => (
-                <div
-                  key={u.id}
-                  className="size-8 rounded-full bg-accent flex items-center justify-center text-xs font-medium border-2 border-background"
-                >
-                  {u.last_name[0]}{u.first_name[0]}
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-sm text-muted-foreground mb-2">{t("metrics.avg_claim_title")}</p>
-            <p className="text-2xl font-semibold">
-              {metrics.avg_time_to_claim_min} мин
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-sm text-muted-foreground mb-2">{t("metrics.coverage_title")}</p>
-            <p className="text-2xl font-semibold">{metrics.coverage_pct}%</p>
-            <p className="text-xs text-muted-foreground">{t("metrics.coverage_hint")}</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Bar Chart */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">{t("metrics.by_stores_title")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="h-64 md:h-72">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={storeChartData} layout="vertical">
-                <XAxis type="number" />
-                <YAxis
-                  dataKey="name"
-                  type="category"
-                  width={120}
-                  tick={{ fontSize: 12 }}
-                />
-                <RechartsTooltip />
-                <Bar dataKey="value" fill="hsl(var(--primary))" radius={[0, 4, 4, 0]}>
-                  {storeChartData.map((_, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={`hsl(var(--primary) / ${0.5 + (index * 0.1)})`}
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Honest Curve Alert */}
-      {metrics.honest_curve_alert && (
-        <Alert variant="destructive">
-          <AlertCircle className="size-4" />
-          <AlertTitle>{t("metrics.honest_curve_title")}</AlertTitle>
-          <AlertDescription>{metrics.honest_curve_alert}</AlertDescription>
-        </Alert>
-      )}
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// CREATE BONUS TASK DIALOG
-// ═══════════════════════════════════════════════════════════════════
-
-function CreateBonusTaskDialog({
-  open,
-  onOpenChange,
-  t,
-  tCommon,
-  onSubmit,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  t: (key: string) => string;
-  tCommon: (key: string) => string;
-  onSubmit: (data: {
-    title: string;
-    bonus_source: BonusTaskSource;
-    bonus_points: number;
-    store_id: number;
-    work_type_id: number;
-    zone_id: number;
-  }) => Promise<void>;
-}) {
-  const [step, setStep] = useState(1);
-  const [source, setSource] = useState<BonusTaskSource>("SUPERVISOR_BUDGET");
-  const [title, setTitle] = useState("");
-  const [points, setPoints] = useState(100);
-  const [storeId, setStoreId] = useState<string>("");
-  const [workTypeId, setWorkTypeId] = useState<string>("");
-  const [zoneId, setZoneId] = useState<string>("");
-  const [afterPlanned, setAfterPlanned] = useState(true);
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async () => {
-    if (!title || !storeId || !workTypeId || !zoneId) return;
-    setLoading(true);
-    try {
-      await onSubmit({
-        title,
-        bonus_source: source,
-        bonus_points: points,
-        store_id: Number(storeId),
-        work_type_id: Number(workTypeId),
-        zone_id: Number(zoneId),
-      });
-      onOpenChange(false);
-      // Reset form
-      setStep(1);
-      setSource("SUPERVISOR_BUDGET");
-      setTitle("");
-      setPoints(100);
-      setStoreId("");
-      setWorkTypeId("");
-      setZoneId("");
-    } finally {
-      setLoading(false);
+  const onSubmit = async (values: CreateFormValues) => {
+    const res = await createBonusTask({
+      title: values.title,
+      store_id: storeId ?? 1,
+      bonus_points: values.points,
+      bonus_source: values.source,
+      type: "BONUS",
+    });
+    if (res.success) {
+      toast.success(t("toasts.task_created"));
+      form.reset();
+      setOpen(false);
+      onCreated();
+    } else {
+      toast.error(t("toasts.error"));
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-lg">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button size="sm" className="h-9 gap-2">
+          <Plus className="size-4" aria-hidden="true" />
+          {t("actions.create")}
+        </Button>
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>{t("create_dialog.title")}</DialogTitle>
         </DialogHeader>
-
-        {step === 1 && (
-          <div className="space-y-4">
-            <p className="text-sm font-medium">{t("create_dialog.step1_title")}</p>
-            <RadioGroup value={source} onValueChange={(v) => setSource(v as BonusTaskSource)}>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="YESTERDAY_INCOMPLETE" id="source-yesterday" />
-                <Label htmlFor="source-yesterday">{t("create_dialog.source_yesterday")}</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="SUPERVISOR_BUDGET" id="source-budget" />
-                <Label htmlFor="source-budget">{t("create_dialog.source_budget")}</Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem value="GOAL_LINKED" id="source-goal" />
-                <Label htmlFor="source-goal">{t("create_dialog.source_goal")}</Label>
-              </div>
-            </RadioGroup>
-            <div className="flex justify-end">
-              <Button onClick={() => setStep(2)}>{tCommon("next")}</Button>
-            </div>
-          </div>
-        )}
-
-        {step === 2 && (
-          <div className="space-y-4">
-            <p className="text-sm font-medium">{t("create_dialog.step2_title")}</p>
-
-            <div className="space-y-2">
-              <Label>{t("create_dialog.name_label")}</Label>
-              <Input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Название задачи"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>{t("create_dialog.work_type_label")}</Label>
-                <Select value={workTypeId} onValueChange={setWorkTypeId}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Выберите" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MOCK_WORK_TYPES.filter((wt) => wt.id < 20).map((wt) => (
-                      <SelectItem key={wt.id} value={String(wt.id)}>
-                        {wt.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label>{t("create_dialog.zone_label")}</Label>
-                <Select value={zoneId} onValueChange={setZoneId}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Выберите" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MOCK_ZONES.filter((z) => z.approved).map((z) => (
-                      <SelectItem key={z.id} value={String(z.id)}>
-                        {z.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>{t("create_dialog.points_label")}</Label>
-                <Input
-                  type="number"
-                  value={points}
-                  onChange={(e) => setPoints(Number(e.target.value))}
-                  min={1}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label>Магазин</Label>
-                <Select value={storeId} onValueChange={setStoreId}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Выберите" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {MOCK_STORES.filter((s) => !s.archived && s.object_type === "STORE").map((s) => (
-                      <SelectItem key={s.id} value={String(s.id)}>
-                        {s.name.split(",")[0]}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium">{t("create_dialog.after_planned_label")}</p>
-                {afterPlanned && (
-                  <p className="text-xs text-muted-foreground">{t("create_dialog.after_planned_hint")}</p>
-                )}
-              </div>
-              <Switch checked={afterPlanned} onCheckedChange={setAfterPlanned} />
-            </div>
-
-            <div className="flex justify-between pt-2">
-              <Button variant="outline" onClick={() => setStep(1)}>
-                {tCommon("back")}
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4">
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("create_dialog.name_label")}</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Например: Выкладка молочного отдела" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="points"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("create_dialog.points_label")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      min={1}
+                      {...field}
+                      onChange={(e) => field.onChange(e.target.valueAsNumber)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="source"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>{t("create_dialog.step1_title")}</FormLabel>
+                  <FormControl>
+                    <RadioGroup
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      className="flex flex-col gap-2"
+                    >
+                      {(["SUPERVISOR_BUDGET", "GOAL_LINKED", "YESTERDAY_INCOMPLETE"] as const).map((src) => (
+                        <div key={src} className="flex items-center gap-2">
+                          <RadioGroupItem value={src} id={`src-${src}`} />
+                          <Label htmlFor={`src-${src}`} className="text-sm cursor-pointer">
+                            {t(`create_dialog.source_${src === "SUPERVISOR_BUDGET" ? "budget" : src === "GOAL_LINKED" ? "goal" : "yesterday"}`)}
+                          </Label>
+                        </div>
+                      ))}
+                    </RadioGroup>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex justify-end gap-2 pt-2">
+              <Button type="button" variant="outline" onClick={() => setOpen(false)}>
+                {t("actions.reject")}
               </Button>
-              <Button
-                onClick={handleSubmit}
-                disabled={loading || !title || !storeId || !workTypeId || !zoneId}
-              >
-                {loading ? "..." : t("create_dialog.submit")}
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {t("create_dialog.submit")}
               </Button>
             </div>
-          </div>
-        )}
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// MAIN COMPONENT
+// SUB-COMPONENT: SettingsMenu (⋮ dropdown with visibility toggle)
+// ═══════════════════════════════════════════════════════════════════
+
+interface SettingsMenuProps {
+  visibilityMode: VisibilityMode;
+  onVisibilityChange: (mode: VisibilityMode) => void;
+}
+
+function SettingsMenu({ visibilityMode, onVisibilityChange }: SettingsMenuProps) {
+  const t = useTranslations("screen.bonusTasks.settings_menu");
+
+  const handleToggle = async (mode: VisibilityMode) => {
+    onVisibilityChange(mode);
+    const res = await updateBonusVisibilitySetting(mode);
+    if (!res.success) {
+      onVisibilityChange(visibilityMode); // rollback
+    }
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" size="sm" className="h-9 w-9 p-0" aria-label="Настройки">
+          <MoreVertical className="size-4" aria-hidden="true" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-64">
+        <DropdownMenuLabel className="text-xs font-medium text-muted-foreground">
+          {t("visibility_label")}
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onClick={() => handleToggle("SUMMARY_ONLY")}
+          className="flex items-center justify-between"
+        >
+          <span className="text-sm">{t("visibility_summary_only")}</span>
+          {visibilityMode === "SUMMARY_ONLY" && (
+            <CheckCircle2 className="size-4 text-primary ml-2 shrink-0" aria-hidden="true" />
+          )}
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => handleToggle("ALWAYS_LIST")}
+          className="flex items-center justify-between"
+        >
+          <span className="text-sm">{t("visibility_always")}</span>
+          {visibilityMode === "ALWAYS_LIST" && (
+            <CheckCircle2 className="size-4 text-primary ml-2 shrink-0" aria-hidden="true" />
+          )}
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// MAIN COMPONENT: BonusTasks
 // ═══════════════════════════════════════════════════════════════════
 
 export function BonusTasks() {
   const t = useTranslations("screen.bonusTasks");
   const tCommon = useTranslations("common");
-  const locale = useLocale() as Locale;
+  const { user } = useAuth();
 
-  // State
-  const [loading, setLoading] = useState(true);
-  const [aiLoading, setAiLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const locale = user.preferred_locale ?? "ru";
+  const isDirector = user.role === "STORE_DIRECTOR";
+  const canCreate = ["SUPERVISOR", "REGIONAL", "NETWORK_OPS"].includes(user.role);
+  const storeId = user.stores?.[0]?.id;
+
+  // ── State ────────────────────────────────────────────────────────
   const [period, setPeriod] = useState<PeriodFilter>("today");
-  const [scopeId, setScopeId] = useState("all");
-  const [activeTab, setActiveTab] = useState("active");
+  const [tab, setTab] = useState("active");
+  const [visibilityMode, setVisibilityMode] = useState<VisibilityMode>("SUMMARY_ONLY");
 
-  // Data
+  // Data states
   const [budgets, setBudgets] = useState<BonusBudget[]>([]);
-  const [activeTasks, setActiveTasks] = useState<BonusTask[]>([]);
-  const [proposals, setProposals] = useState<BonusTask[]>([]);
-  const [completedTasks, setCompletedTasks] = useState<BonusTask[]>([]);
-  const [metrics, setMetrics] = useState<BonusMetrics | null>(null);
-  const [activeGoal, setActiveGoal] = useState<Goal | null>(null);
-  const [strategies, setStrategies] = useState<StrategiesState>({
-    manual: true,
-    ai: true,
-    yesterday: false,
-  });
+  const [activeTasks, setActiveTasks] = useState<BonusTaskWithSource[]>([]);
+  const [proposals, setProposals] = useState<BonusTaskWithSource[]>([]);
+  const [completedTasks, setCompletedTasks] = useState<BonusTaskWithSource[]>([]);
+  const [metrics, setMetrics] = useState<Awaited<ReturnType<typeof getBonusMetrics>>["data"] | null>(null);
+  const [replacedKpi, setReplacedKpi] = useState<ReplacedByBonusKpi | null>(null);
+  const [activeGoal] = useState(MOCK_GOALS.find((g) => g.status === "ACTIVE") ?? null);
 
-  // Dialog states
-  const [createDialogOpen, setCreateDialogOpen] = useState(false);
-  const [budgetSheetOpen, setBudgetSheetOpen] = useState(false);
-  const [poolDrawerOpen, setPoolDrawerOpen] = useState(false);
+  // Loading states
+  const [loadingBudgets, setLoadingBudgets] = useState(true);
+  const [loadingActive, setLoadingActive] = useState(true);
+  const [loadingProposals, setLoadingProposals] = useState(true);
+  const [loadingCompleted, setLoadingCompleted] = useState(false);
+  const [loadingMetrics, setLoadingMetrics] = useState(false);
+  const [loadingKpi, setLoadingKpi] = useState(true);
 
-  // Mock role for demo (in real app, comes from context)
-  const currentRole: FunctionalRole = "SUPERVISOR";
-  const isReadOnly = currentRole === "STORE_DIRECTOR";
-  const canEditBudget = ["REGIONAL", "NETWORK_OPS"].includes(currentRole);
-  const canManageTasks = ["SUPERVISOR", "REGIONAL", "NETWORK_OPS"].includes(currentRole);
+  // Error states
+  const [errorActive, setErrorActive] = useState(false);
+  const [errorProposals, setErrorProposals] = useState(false);
 
-  // Fetch data
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
+  // ── Load data ────────────────────────────────────────────────────
+  const loadBudgets = useCallback(async () => {
+    setLoadingBudgets(true);
     try {
-      // Fetch budgets
-      const budgetsRes = await getBonusBudgets(
-        scopeId !== "all" ? { store_id: Number(scopeId) } : {}
-      );
-      setBudgets(budgetsRes.data);
-
-      // Fetch active goal
-      const goal = MOCK_GOALS.find((g) => g.status === "ACTIVE") ?? null;
-      setActiveGoal(goal);
-
-      // Fetch tasks from mock data
-      const active = MOCK_BONUS_TASKS.filter((t) => t.state === "ACTIVE");
-      const proposed = MOCK_BONUS_TASKS.filter((t) => t.state === "PROPOSED");
-      const completed = MOCK_BONUS_TASKS.filter((t) => t.state === "COMPLETED");
-
-      setActiveTasks(active);
-      setProposals(proposed);
-      setCompletedTasks(completed);
-
-      setLoading(false);
-
-      // Fetch metrics (with delay)
-      const metricsRes = await getBonusMetrics({
-        store_id: scopeId !== "all" ? Number(scopeId) : undefined,
-      });
-      setMetrics(metricsRes.data);
-
-      // Fetch AI proposals (with 1.5s delay built in)
-      setAiLoading(true);
-      await getBonusProposals(goal?.id);
-      setAiLoading(false);
-    } catch (err) {
-      setError(t("toasts.error"));
-      setLoading(false);
-      setAiLoading(false);
+      const res = await getBonusBudgets({ store_id: storeId });
+      setBudgets(res.data);
+    } finally {
+      setLoadingBudgets(false);
     }
-  }, [scopeId, t]);
+  }, [storeId]);
+
+  const loadActive = useCallback(async () => {
+    setLoadingActive(true);
+    setErrorActive(false);
+    try {
+      const res = await getBonusTasks({ store_id: storeId, page_size: 20 });
+      setActiveTasks(res.data);
+    } catch {
+      setErrorActive(true);
+    } finally {
+      setLoadingActive(false);
+    }
+  }, [storeId]);
+
+  const loadProposals = useCallback(async () => {
+    setLoadingProposals(true);
+    setErrorProposals(false);
+    try {
+      const res = await getBonusProposals(activeGoal?.id);
+      setProposals(res.data);
+    } catch {
+      setErrorProposals(true);
+    } finally {
+      setLoadingProposals(false);
+    }
+  }, [activeGoal?.id]);
+
+  const loadCompleted = useCallback(async () => {
+    if (completedTasks.length > 0) return;
+    setLoadingCompleted(true);
+    try {
+      const res = await getBonusTasks({ store_id: storeId, status: "COMPLETED", page_size: 20 });
+      setCompletedTasks(res.data);
+    } finally {
+      setLoadingCompleted(false);
+    }
+  }, [storeId, completedTasks.length]);
+
+  const loadMetrics = useCallback(async () => {
+    if (metrics) return;
+    setLoadingMetrics(true);
+    try {
+      const res = await getBonusMetrics({ store_id: storeId });
+      setMetrics(res.data);
+    } finally {
+      setLoadingMetrics(false);
+    }
+  }, [storeId, metrics]);
+
+  const loadKpi = useCallback(async () => {
+    setLoadingKpi(true);
+    try {
+      const res = await getReplacedByBonusKpi({ store_id: storeId });
+      setReplacedKpi(res.data);
+    } finally {
+      setLoadingKpi(false);
+    }
+  }, [storeId]);
 
   useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+    loadBudgets();
+    loadActive();
+    loadProposals();
+    loadKpi();
+  }, [loadBudgets, loadActive, loadProposals, loadKpi]);
 
-  // Handlers
-  async function handleCreateTask(data: {
-    title: string;
-    bonus_source: BonusTaskSource;
-    bonus_points: number;
-    store_id: number;
-    work_type_id: number;
-    zone_id: number;
-  }) {
-    const res = await createBonusTask({
-      title: data.title,
-      bonus_points: data.bonus_points,
-      bonus_source: data.bonus_source,
-      store_id: data.store_id,
-    });
-    if (res.success) {
-      toast.success(t("toasts.task_created"));
-      fetchData();
-    } else {
-      toast.error(t("toasts.error"));
+  useEffect(() => {
+    if (tab === "completed") loadCompleted();
+    if (tab === "metrics") loadMetrics();
+  }, [tab, loadCompleted, loadMetrics]);
+
+  // ── Handlers ─────────────────────────────────────────────────────
+  const handleRemoveTask = useCallback((id: string) => {
+    setActiveTasks((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
+  const handlePublishProposal = useCallback((id: string) => {
+    const task = proposals.find((t) => t.id === id);
+    if (task) {
+      setActiveTasks((prev) => [task, ...prev]);
+      setProposals((prev) => prev.filter((t) => t.id !== id));
+      toast.success(t("toasts.proposal_published"));
     }
-  }
+  }, [proposals, t]);
 
-  async function handleRemoveTask(id: string) {
-    const res = await removeBonusTask(id, "Снято супервайзером");
-    if (res.success) {
-      toast.success(t("toasts.task_removed"));
-      fetchData();
-    } else {
-      toast.error(t("toasts.error"));
-    }
-  }
-
-  function handlePublishProposal(id: string) {
-    toast.success(t("toasts.proposal_published"));
-    setProposals((prev) => prev.filter((p) => p.id !== id));
-  }
-
-  function handleRejectProposal(id: string) {
+  const handleRejectProposal = useCallback((id: string) => {
+    setProposals((prev) => prev.filter((t) => t.id !== id));
     toast.success(t("toasts.proposal_rejected"));
-    setProposals((prev) => prev.filter((p) => p.id !== id));
-  }
+  }, [t]);
 
-  function handleAskAI(id: string) {
-    // Navigate to AI chat with context
-    window.location.href = `${ADMIN_ROUTES.aiChat}?context_type=suggestion&context_id=${id}`;
-  }
+  const fmtRub = (n: number) =>
+    new Intl.NumberFormat(locale, { style: "currency", currency: "RUB", maximumFractionDigits: 0 }).format(n);
 
-  function handleToggleStrategy(key: keyof StrategiesState, value: boolean) {
-    setStrategies((prev) => ({ ...prev, [key]: value }));
-  }
-
-  // Breadcrumbs
+  // ── Breadcrumbs ──────────────────────────────────────────────────
   const breadcrumbs = [
     { label: t("breadcrumbs.home"), href: ADMIN_ROUTES.dashboard },
     { label: t("breadcrumbs.goals_bonus"), href: ADMIN_ROUTES.goals },
     { label: t("breadcrumbs.bonus_tasks") },
   ];
 
-  if (loading) {
-    return (
-      <div className="space-y-6">
-        <PageHeader
-          title={t("page_title")}
-          subtitle={isReadOnly ? t("page_subtitle_director") : t("page_subtitle")}
-          breadcrumbs={breadcrumbs}
-        />
-        <LoadingState />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="space-y-6">
-        <PageHeader
-          title={t("page_title")}
-          subtitle={isReadOnly ? t("page_subtitle_director") : t("page_subtitle")}
-          breadcrumbs={breadcrumbs}
-        />
-        <Alert variant="destructive">
-          <AlertCircle className="size-4" />
-          <AlertTitle>{tCommon("error")}</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-          <Button variant="outline" size="sm" className="mt-2" onClick={fetchData}>
-            {tCommon("retry")}
-          </Button>
-        </Alert>
-      </div>
-    );
-  }
-
-  // Empty state: no budget configured
-  if (budgets.length === 0) {
-    return (
-      <div className="space-y-6">
-        <PageHeader
-          title={t("page_title")}
-          subtitle={isReadOnly ? t("page_subtitle_director") : t("page_subtitle")}
-          breadcrumbs={breadcrumbs}
-        />
-        <EmptyState
-          icon={Wallet}
-          title={t("empty.no_budget_title")}
-          description={t("empty.no_budget_subtitle")}
-          action={
-            canEditBudget
-              ? {
-                  label: t("actions.configure_budget"),
-                  onClick: () => setBudgetSheetOpen(true),
-                }
-              : undefined
-          }
-        />
-      </div>
-    );
-  }
+  // ── KPI row (from replaced freelance) ────────────────────────────
+  const replacedHoursLabel = replacedKpi
+    ? `${replacedKpi.total_hours}ч`
+    : "—";
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
+      {/* Header */}
       <PageHeader
         title={t("page_title")}
-        subtitle={isReadOnly ? t("page_subtitle_director") : t("page_subtitle")}
+        subtitle={isDirector ? t("page_subtitle_director") : t("page_subtitle")}
         breadcrumbs={breadcrumbs}
         actions={
-          !isReadOnly && (
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm">
-                <Clock className="size-4 mr-1.5" />
-                {t("actions.history")}
-              </Button>
-              <Button size="sm" onClick={() => setCreateDialogOpen(true)}>
-                <Plus className="size-4 mr-1.5" />
-                <span className="hidden sm:inline">{t("actions.create")}</span>
-              </Button>
-            </div>
-          )
+          <div className="flex items-center gap-2">
+            {canCreate && (
+              <CreateBonusTaskDialog storeId={storeId} onCreated={loadActive} />
+            )}
+            <SettingsMenu
+              visibilityMode={visibilityMode}
+              onVisibilityChange={setVisibilityMode}
+            />
+          </div>
         }
       />
 
-      {/* Toolbar */}
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-        <Tabs value={period} onValueChange={(v) => setPeriod(v as PeriodFilter)} className="w-full sm:w-auto">
-          <TabsList>
-            <TabsTrigger value="today">{t("filters.period_today")}</TabsTrigger>
-            <TabsTrigger value="week">{t("filters.period_week")}</TabsTrigger>
-            <TabsTrigger value="prev_week">{t("filters.period_prev_week")}</TabsTrigger>
-            <TabsTrigger value="custom">{t("filters.period_custom")}</TabsTrigger>
-          </TabsList>
-        </Tabs>
+      {/* Period filter chips */}
+      <div className="flex items-center gap-2 flex-wrap" role="group" aria-label="Период">
+        {(["today", "week", "prev_week"] as const).map((p) => (
+          <button
+            key={p}
+            onClick={() => setPeriod(p)}
+            className={`inline-flex items-center rounded-full border px-3 h-8 text-xs font-medium transition-colors ${
+              period === p
+                ? "bg-primary text-primary-foreground border-primary"
+                : "bg-background text-muted-foreground border-border hover:border-primary/50 hover:text-foreground"
+            }`}
+          >
+            {t(`filters.period_${p}`)}
+          </button>
+        ))}
+        {period !== "today" && (
+          <button
+            onClick={() => setPeriod("today")}
+            className="text-xs text-muted-foreground hover:text-foreground underline transition-colors"
+          >
+            {tCommon("clear_all")}
+          </button>
+        )}
+      </div>
 
-        <Select value={scopeId} onValueChange={setScopeId} disabled={isReadOnly}>
-          <SelectTrigger className="w-full sm:w-64">
-            <SelectValue placeholder={t("filters.scope_label")} />
-          </SelectTrigger>
-          <SelectContent>
-            {MOCK_SCOPE_OPTIONS.map((opt) => (
-              <SelectItem key={opt.id} value={opt.id}>
-                {opt.name}
-              </SelectItem>
+      {/* KPI Row */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <KpiCard
+          label="Активных задач"
+          value={loadingActive ? "—" : activeTasks.length}
+          icon={Gift}
+        />
+        <KpiCard
+          label="Предложений ИИ"
+          value={loadingProposals ? "—" : proposals.length}
+          icon={Sparkles}
+        />
+        {/* Replaced by bonus KPI */}
+        {loadingKpi ? (
+          <Skeleton className="h-24 rounded-xl" />
+        ) : replacedKpi && replacedKpi.replaced_count > 0 ? (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div>
+                  <KpiCard
+                    label={t("freelance_link.kpi_replaced_title")}
+                    value={t("freelance_link.kpi_replaced_value", {
+                      hours: replacedHoursLabel,
+                      saved: fmtRub(replacedKpi.total_saved),
+                    })}
+                    icon={TrendingUp}
+                  />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-xs">
+                <p className="text-xs">
+                  {replacedKpi.replaced_count} заявок на внештат заменено бонусным пулом
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          <KpiCard
+            label="Бюджет использован"
+            value={
+              budgets.length > 0
+                ? `${Math.round((budgets.reduce((s, b) => s + b.spent_points, 0) / Math.max(budgets.reduce((s, b) => s + b.total_points, 0), 1)) * 100)}%`
+                : "—"
+            }
+            icon={BarChart3}
+          />
+        )}
+        <KpiCard
+          label="Стратегий активно"
+          value="3"
+          icon={Target}
+        />
+      </div>
+
+      {/* Budget pools */}
+      <div className="flex flex-col gap-3">
+        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+          {t("budget_card.title")}
+        </h2>
+        {loadingBudgets ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-32 rounded-xl" />
             ))}
-          </SelectContent>
-        </Select>
-      </div>
-
-      {/* Section 1: Budget, Strategies, Pool, Goal */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <BudgetCard
-          budgets={budgets}
-          isReadOnly={isReadOnly}
-          canEditBudget={canEditBudget}
-          scopeId={scopeId}
-          t={t}
-          tCommon={tCommon}
-          locale={locale}
-          onEditBudget={() => setBudgetSheetOpen(true)}
-        />
-
-        <StrategiesCard
-          strategies={strategies}
-          isReadOnly={isReadOnly}
-          t={t}
-          onToggle={handleToggleStrategy}
-        />
-
-        {strategies.yesterday && (
-          <YesterdayPoolCard t={t} onViewPool={() => setPoolDrawerOpen(true)} />
-        )}
-
-        {activeGoal && (
-          <ActiveGoalCard goal={activeGoal} proposalsCount={proposals.length} t={t} />
+          </div>
+        ) : budgets.length === 0 ? (
+          <EmptyState
+            icon={Gift}
+            title={t("empty.no_budget_title")}
+            description={t("empty.no_budget_subtitle")}
+          />
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {budgets.map((budget) => {
+              const store = user.stores?.find((s) => s.id === budget.store_id);
+              return (
+                <BonusPoolCard
+                  key={budget.id}
+                  budget={budget}
+                  locale={locale}
+                  storeName={store?.name}
+                />
+              );
+            })}
+          </div>
         )}
       </div>
 
-      {/* Section 2: Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="w-full sm:w-auto overflow-x-auto">
-          <TabsTrigger value="active">{t("tabs.active")}</TabsTrigger>
-          <TabsTrigger value="proposals">
-            {t("tabs.ai_proposals")}
-            {proposals.length > 0 && (
-              <Badge variant="secondary" className="ml-1.5">
-                {proposals.length}
-              </Badge>
+      {/* Active goal card */}
+      {activeGoal && (
+        <Card className="rounded-xl bg-primary/5 border-primary/20">
+          <CardContent className="p-4 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3 min-w-0">
+              <span className="flex size-9 items-center justify-center rounded-lg bg-primary/15 shrink-0">
+                <Target className="size-5 text-primary" aria-hidden="true" />
+              </span>
+              <div className="flex flex-col gap-0.5 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+                    {t("active_goal_card.title")}
+                  </span>
+                  <Badge variant="secondary" className="text-xs h-5 bg-primary/10 text-primary border-primary/20">
+                    <Sparkles className="size-3 mr-1" aria-hidden="true" />
+                    {t("active_goal_card.ai_badge")}
+                  </Badge>
+                </div>
+                <span className="text-sm font-semibold text-foreground truncate">
+                  {activeGoal.title}
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  {t("active_goal_card.proposals_count", { count: proposals.length })}
+                </span>
+              </div>
+            </div>
+            <Button asChild variant="outline" size="sm" className="h-8 shrink-0">
+              <Link href={ADMIN_ROUTES.goals}>
+                {t("actions.open_goal")}
+                <ArrowRight className="size-4 ml-1.5" aria-hidden="true" />
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Main tabs */}
+      <Tabs value={tab} onValueChange={setTab}>
+        <TabsList className="h-9">
+          <TabsTrigger value="active" className="text-xs">
+            {t("tabs.active")}
+            {activeTasks.length > 0 && (
+              <span className="ml-1.5 rounded-full bg-primary/15 text-primary px-1.5 py-0.5 text-xs font-semibold">
+                {activeTasks.length}
+              </span>
             )}
           </TabsTrigger>
-          <TabsTrigger value="completed">{t("tabs.completed")}</TabsTrigger>
-          <TabsTrigger value="metrics">{t("tabs.metrics")}</TabsTrigger>
+          <TabsTrigger value="ai_proposals" className="text-xs">
+            {t("tabs.ai_proposals")}
+            {proposals.length > 0 && (
+              <span className="ml-1.5 rounded-full bg-primary/15 text-primary px-1.5 py-0.5 text-xs font-semibold">
+                {proposals.length}
+              </span>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="completed" className="text-xs">
+            {t("tabs.completed")}
+          </TabsTrigger>
+          <TabsTrigger value="metrics" className="text-xs">
+            {t("tabs.metrics")}
+          </TabsTrigger>
         </TabsList>
 
-        {/* Active Tab */}
+        {/* Active tab */}
         <TabsContent value="active" className="mt-4">
-          {activeTasks.length === 0 ? (
+          {errorActive ? (
+            <Alert variant="destructive">
+              <AlertCircle className="size-4" />
+              <AlertTitle>Ошибка загрузки</AlertTitle>
+              <AlertDescription className="flex items-center gap-2">
+                Не удалось загрузить активные задачи.
+                <Button size="sm" variant="outline" className="h-7 text-xs ml-2" onClick={loadActive}>
+                  <RefreshCw className="size-3 mr-1" aria-hidden="true" />
+                  {tCommon("retry")}
+                </Button>
+              </AlertDescription>
+            </Alert>
+          ) : loadingActive ? (
+            <div className="grid gap-3">
+              {[1, 2, 3].map((i) => <Skeleton key={i} className="h-28 rounded-xl" />)}
+            </div>
+          ) : activeTasks.length === 0 ? (
             <EmptyState
-              icon={Target}
+              icon={Gift}
               title={t("empty.no_active_tasks")}
-              description=""
-              action={
-                canManageTasks
-                  ? {
-                      label: t("actions.create"),
-                      onClick: () => setCreateDialogOpen(true),
-                    }
-                  : undefined
-              }
+              description="Создайте первую бонусную задачу или дождитесь предложений ИИ"
+              action={canCreate ? { label: t("actions.create"), onClick: () => {} } : undefined}
             />
           ) : (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-3">
               {activeTasks.map((task) => (
                 <BonusTaskCard
                   key={task.id}
                   task={task}
-                  isReadOnly={isReadOnly}
-                  t={t}
-                  onRemove={handleRemoveTask}
+                  onRemove={canCreate ? handleRemoveTask : undefined}
                 />
               ))}
             </div>
           )}
         </TabsContent>
 
-        {/* AI Proposals Tab */}
-        <TabsContent value="proposals" className="mt-4">
-          {aiLoading ? (
-            <AILoadingState message="ИИ анализирует..." />
+        {/* AI Proposals tab */}
+        <TabsContent value="ai_proposals" className="mt-4">
+          {activeGoal && (
+            <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
+              {t("ai_proposals.section_description", { goal: activeGoal.title })}
+            </p>
+          )}
+          {errorProposals ? (
+            <Alert variant="destructive">
+              <AlertCircle className="size-4" />
+              <AlertTitle>Ошибка загрузки</AlertTitle>
+              <AlertDescription className="flex items-center gap-2">
+                Не удалось загрузить предложения ИИ.
+                <Button size="sm" variant="outline" className="h-7 text-xs ml-2" onClick={loadProposals}>
+                  <RefreshCw className="size-3 mr-1" aria-hidden="true" />
+                  {tCommon("retry")}
+                </Button>
+              </AlertDescription>
+            </Alert>
+          ) : loadingProposals ? (
+            <div className="grid gap-3">
+              {[1, 2, 3].map((i) => <Skeleton key={i} className="h-28 rounded-xl" />)}
+            </div>
           ) : proposals.length === 0 ? (
             <EmptyState
               icon={Sparkles}
               title={t("empty.no_proposals")}
-              description=""
+              description="ИИ анализирует данные и предложит задачи на основе активной цели"
             />
           ) : (
-            <div className="space-y-4">
-              {activeGoal && (
-                <p className="text-sm text-muted-foreground">
-                  {t("ai_proposals.section_description").replace("{goal}", activeGoal.title)}
-                </p>
-              )}
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                {proposals.map((task) => (
-                  <AIProposalCard
-                    key={task.id}
-                    task={task}
-                    isReadOnly={isReadOnly}
-                    t={t}
-                    onPublish={handlePublishProposal}
-                    onReject={handleRejectProposal}
-                    onAskAI={handleAskAI}
-                  />
-                ))}
-              </div>
-              <div className="flex justify-end">
-                <Button variant="link" asChild>
-                  <Link href={`${ADMIN_ROUTES.aiSuggestions}?type=BONUS_TASK_SUGGESTION`}>
-                    {t("ai_proposals.all_link")} →
+            <div className="grid gap-3">
+              {proposals.map((task) => (
+                <BonusTaskCard
+                  key={task.id}
+                  task={task}
+                  isProposal
+                  onPublishProposal={canCreate ? handlePublishProposal : undefined}
+                  onRejectProposal={canCreate ? handleRejectProposal : undefined}
+                />
+              ))}
+              <div className="text-center pt-2">
+                <Button asChild variant="link" size="sm" className="text-xs text-muted-foreground">
+                  <Link href={ADMIN_ROUTES.aiSuggestions}>
+                    {t("ai_proposals.all_link")}
+                    <ArrowRight className="size-3 ml-1" aria-hidden="true" />
                   </Link>
                 </Button>
               </div>
@@ -1387,131 +1184,145 @@ export function BonusTasks() {
           )}
         </TabsContent>
 
-        {/* Completed Tab */}
+        {/* Completed tab */}
         <TabsContent value="completed" className="mt-4">
-          {completedTasks.length === 0 ? (
+          {loadingCompleted ? (
+            <div className="grid gap-3">
+              {[1, 2, 3].map((i) => <Skeleton key={i} className="h-20 rounded-xl" />)}
+            </div>
+          ) : completedTasks.length === 0 ? (
             <EmptyState
-              icon={Check}
+              icon={CheckCircle2}
               title={t("empty.no_completed")}
-              description=""
+              description="Завершённые бонусные задачи появятся здесь"
             />
           ) : (
-            <div className="rounded-lg border overflow-hidden">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t("completed_tab.columns.date")}</TableHead>
-                    <TableHead>{t("completed_tab.columns.task")}</TableHead>
-                    <TableHead>{t("completed_tab.columns.user")}</TableHead>
-                    <TableHead>{t("completed_tab.columns.store")}</TableHead>
-                    <TableHead className="text-right">{t("completed_tab.columns.points")}</TableHead>
-                    <TableHead>{t("completed_tab.columns.source")}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {completedTasks.map((task) => (
-                    <TableRow key={task.id}>
-                      <TableCell className="whitespace-nowrap">
-                        {formatDate(new Date(task.created_at), locale)}
-                      </TableCell>
-                      <TableCell className="max-w-[200px] truncate">{task.title}</TableCell>
-                      <TableCell>
-                        {task.assignee_name ? (
-                          <UserCell
-                            user={{
-                              first_name: task.assignee_name.split(" ")[1] || "",
-                              last_name: task.assignee_name.split(" ")[0] || "",
-                            }}
-                          />
-                        ) : (
-                          "-"
-                        )}
-                      </TableCell>
-                      <TableCell className="max-w-[150px] truncate">
-                        {task.store_name.split(",")[0]}
-                      </TableCell>
-                      <TableCell className="text-right font-medium">
-                        +{task.accepted_points ?? task.bonus_points}
-                      </TableCell>
-                      <TableCell>
-                        <SourceBadge
-                          source={task.proposed_by === "AI" ? "GOAL_LINKED" : "SUPERVISOR_BUDGET"}
-                          t={t}
-                        />
-                      </TableCell>
-                    </TableRow>
+            <div className="overflow-x-auto rounded-xl border bg-card">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b bg-muted/40">
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground">
+                      {t("completed_tab.columns.task")}
+                    </th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground hidden md:table-cell">
+                      {t("completed_tab.columns.user")}
+                    </th>
+                    <th className="text-left px-4 py-3 text-xs font-semibold text-muted-foreground hidden lg:table-cell">
+                      {t("completed_tab.columns.source")}
+                    </th>
+                    <th className="text-right px-4 py-3 text-xs font-semibold text-muted-foreground">
+                      {t("completed_tab.columns.points")}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {completedTasks.map((task, idx) => (
+                    <tr
+                      key={task.id}
+                      className={`border-b last:border-0 hover:bg-muted/30 transition-colors ${idx % 2 === 0 ? "" : "bg-muted/10"}`}
+                    >
+                      <td className="px-4 py-3">
+                        <span className="font-medium text-foreground line-clamp-1">{task.title}</span>
+                      </td>
+                      <td className="px-4 py-3 hidden md:table-cell text-muted-foreground">
+                        {task.assignee_name ?? t("task_card.any_assignee")}
+                      </td>
+                      <td className="px-4 py-3 hidden lg:table-cell">
+                        <span className="inline-flex items-center rounded-full bg-muted px-2 h-5 text-xs text-muted-foreground">
+                          {t(`completed_tab.source.${task.bonus_source}`)}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-right font-semibold text-foreground">
+                        {task.bonus_points} ₽
+                      </td>
+                    </tr>
                   ))}
-                </TableBody>
-              </Table>
+                </tbody>
+              </table>
             </div>
           )}
         </TabsContent>
 
-        {/* Metrics Tab */}
+        {/* Metrics tab */}
         <TabsContent value="metrics" className="mt-4">
-          <MetricsTab metrics={metrics} t={t} locale={locale} />
+          {loadingMetrics ? (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {[1, 2, 3, 4, 5, 6].map((i) => <Skeleton key={i} className="h-28 rounded-xl" />)}
+            </div>
+          ) : !metrics ? (
+            <EmptyState
+              icon={BarChart3}
+              title="Нет данных"
+              description="Метрики появятся после первых выполненных бонусных задач"
+            />
+          ) : (
+            <div className="flex flex-col gap-6">
+              {metrics.honest_curve_alert && (
+                <Alert>
+                  <AlertCircle className="size-4" />
+                  <AlertDescription className="text-sm">
+                    {metrics.honest_curve_alert}
+                  </AlertDescription>
+                </Alert>
+              )}
+              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <KpiCard
+                  label={t("metrics.coverage_title")}
+                  value={`${metrics.coverage_pct}%`}
+                  icon={CircleDot}
+                />
+                <KpiCard
+                  label={t("metrics.avg_claim_title")}
+                  value={`${metrics.avg_time_to_claim_min} мин`}
+                  icon={Clock}
+                />
+                <KpiCard
+                  label={t("metrics.distribution_subtitle_top")}
+                  value={`${metrics.distribution.top_pct}%`}
+                  icon={TrendingUp}
+                  diff={2}
+                />
+                <KpiCard
+                  label="Средний % от ЗП"
+                  value={`+${metrics.distribution.avg_pct}%`}
+                  icon={Coins}
+                />
+              </div>
+
+              {/* Top performers */}
+              <Card className="rounded-xl">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm font-semibold">
+                    {t("metrics.best_performers_title")}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ul className="flex flex-col divide-y">
+                    {metrics.top_performers.map((user, idx) => (
+                      <li key={user.id} className="flex items-center justify-between py-2.5 gap-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          <span className="flex size-7 items-center justify-center rounded-full bg-muted text-xs font-bold text-muted-foreground shrink-0">
+                            {idx + 1}
+                          </span>
+                          <span className="text-sm font-medium truncate">
+                            {user.last_name} {user.first_name}
+                          </span>
+                        </div>
+                        <span className="text-sm font-semibold text-primary shrink-0">
+                          +{idx === 0 ? 15 : idx === 1 ? 12 : 10}%
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </TabsContent>
       </Tabs>
 
-      {/* Create Dialog */}
-      <CreateBonusTaskDialog
-        open={createDialogOpen}
-        onOpenChange={setCreateDialogOpen}
-        t={t}
-        tCommon={tCommon}
-        onSubmit={handleCreateTask}
-      />
-
-      {/* Budget Edit Sheet */}
-      <Sheet open={budgetSheetOpen} onOpenChange={setBudgetSheetOpen}>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>{t("actions.edit_budget")}</SheetTitle>
-          </SheetHeader>
-          <div className="py-6 space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Настройка бюджета часов на бонусные задачи по магазинам.
-            </p>
-            {MOCK_STORES.filter((s) => !s.archived && s.object_type === "STORE")
-              .slice(0, 5)
-              .map((store) => (
-                <div key={store.id} className="flex items-center justify-between gap-4">
-                  <span className="text-sm truncate flex-1">{store.name.split(",")[0]}</span>
-                  <Input type="number" defaultValue={40} className="w-20" />
-                  <span className="text-sm text-muted-foreground">ч</span>
-                </div>
-              ))}
-            <Button
-              className="w-full mt-4"
-              onClick={() => {
-                toast.success(t("toasts.budget_updated"));
-                setBudgetSheetOpen(false);
-              }}
-            >
-              {tCommon("save")}
-            </Button>
-          </div>
-        </SheetContent>
-      </Sheet>
-
-      {/* Yesterday Pool Drawer */}
-      <Drawer open={poolDrawerOpen} onOpenChange={setPoolDrawerOpen}>
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>{t("yesterday_pool_card.title")}</DrawerTitle>
-          </DrawerHeader>
-          <div className="p-4 space-y-3">
-            {MOCK_BONUS_TASKS.slice(0, 4).map((task) => (
-              <Card key={task.id} className="p-3">
-                <p className="font-medium text-sm">{task.title}</p>
-                <p className="text-xs text-muted-foreground">
-                  {task.work_type_name} • +{task.bonus_points} баллов
-                </p>
-              </Card>
-            ))}
-          </div>
-        </DrawerContent>
-      </Drawer>
+      {/* Employee mobile preview section */}
+      <EmployeePreviewSection storeId={storeId} locale={locale} />
     </div>
   );
 }

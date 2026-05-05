@@ -12,11 +12,13 @@ import type {
   Task,
   BonusTaskSource,
   User,
+  FreelanceApplication,
 } from "@/lib/types";
 import { MOCK_BONUS_BUDGETS } from "@/lib/mock-data/future-placeholders";
 import { MOCK_TASKS } from "@/lib/mock-data/tasks";
 import { MOCK_USERS } from "@/lib/mock-data/users";
 import { MOCK_STORES } from "@/lib/mock-data/stores";
+import { MOCK_FREELANCE_APPLICATIONS } from "@/lib/mock-data/freelance-applications";
 
 const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
 
@@ -172,6 +174,158 @@ export async function removeBonusTask(id: string, reason: string): Promise<ApiMu
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// FREELANCE LINKAGE
+// ═══════════════════════════════════════════════════════════════════
+
+export interface FreelanceLinkInfo {
+  application_id: string;
+  short_id: string; // e.g. "011"
+  full_cost: number;       // что стоил бы полный внештат
+  bonus_cost: number;      // ~50% от full_cost
+  saved: number;           // full_cost - bonus_cost
+  hours: number;
+  planned_date: string;
+}
+
+export interface ReplacedByBonusKpi {
+  total_hours: number;      // сумма часов всех заменённых заявок за период
+  total_saved: number;      // суммарная экономия
+  replaced_count: number;   // количество заявок
+}
+
+const HOURLY_RATE_APPROX = 350; // используем среднее для подсчёта
+
+/**
+ * Get freelance-link info for a bonus budget (if it was created from a REPLACED_WITH_BONUS application).
+ * @endpoint GET /bonus/budgets/:id/freelance-link
+ */
+export async function getBonusBudgetFreelanceLink(
+  budgetId: string
+): Promise<ApiResponse<FreelanceLinkInfo | null>> {
+  await delay(200);
+
+  const app = MOCK_FREELANCE_APPLICATIONS.find(
+    (a) =>
+      a.replaced_with_bonus_budget_id === budgetId &&
+      (a.status === "REPLACED_WITH_BONUS" || a.status === "MIXED")
+  );
+
+  if (!app) return { data: null };
+
+  const hours = app.requested_hours;
+  const full_cost = hours * HOURLY_RATE_APPROX;
+  const bonus_cost = Math.round(full_cost * 0.5);
+  const saved = full_cost - bonus_cost;
+
+  return {
+    data: {
+      application_id: app.id,
+      short_id: app.id.replace("app-", ""),
+      full_cost,
+      bonus_cost,
+      saved,
+      hours,
+      planned_date: app.planned_date,
+    },
+  };
+}
+
+/**
+ * Get aggregated KPI of budgets replaced from freelance in a period.
+ * @endpoint GET /bonus/metrics/replaced-by-bonus
+ */
+export async function getReplacedByBonusKpi(
+  params: { period_start?: string; period_end?: string; store_id?: number } = {}
+): Promise<ApiResponse<ReplacedByBonusKpi>> {
+  await delay(250);
+
+  let apps = MOCK_FREELANCE_APPLICATIONS.filter(
+    (a) =>
+      (a.status === "REPLACED_WITH_BONUS" || a.status === "MIXED") &&
+      a.replaced_with_bonus_budget_id != null
+  );
+
+  if (params.store_id) {
+    apps = apps.filter((a) => a.store_id === params.store_id);
+  }
+  if (params.period_start) {
+    apps = apps.filter((a) => a.planned_date >= params.period_start!);
+  }
+  if (params.period_end) {
+    apps = apps.filter((a) => a.planned_date <= params.period_end!);
+  }
+
+  const total_hours = apps.reduce((sum, a) => sum + a.requested_hours, 0);
+  const total_saved = apps.reduce((sum, a) => {
+    const full = a.requested_hours * HOURLY_RATE_APPROX;
+    return sum + Math.round(full * 0.5);
+  }, 0);
+
+  return {
+    data: {
+      total_hours,
+      total_saved,
+      replaced_count: apps.length,
+    },
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// EMPLOYEE BONUS PREVIEW
+// ═══════════════════════════════════════════════════════════════════
+
+export interface EmployeeBonusPreview {
+  visible_now_sum: number;    // суммарная сумма бонусов (до открытия плановых)
+  available_tasks: BonusTaskWithSource[];  // конкретные задачи (после плановых)
+}
+
+/**
+ * Get bonus preview for a specific employee (manager's view — what they see in mobile).
+ * Filters tasks by store membership (mock: same store_id as current context).
+ * @endpoint GET /bonus/preview/:userId
+ */
+export async function getEmployeeBonusPreview(
+  userId: number,
+  storeId?: number
+): Promise<ApiResponse<EmployeeBonusPreview>> {
+  await delay(300);
+
+  const activeTasks = MOCK_TASKS.filter(
+    (t) =>
+      t.type === "BONUS" &&
+      !t.archived &&
+      (storeId == null || t.store_id === storeId)
+  );
+
+  const data: BonusTaskWithSource[] = activeTasks.map((t) => ({
+    ...t,
+    bonus_points: t.bonus_points ?? 100,
+    bonus_source: (t.source === "AI" ? "GOAL_LINKED" : "SUPERVISOR_BUDGET") as BonusTaskSource,
+  }));
+
+  const visible_now_sum = data.reduce((sum, t) => sum + t.bonus_points, 0);
+
+  // Mock: exclude tasks with assignee already set (not available to this user)
+  const available_tasks = data.filter((t) => !t.assignee_id || t.assignee_id === userId);
+
+  console.log(`[v0] Bonus preview for user ${userId}, store ${storeId}: ${available_tasks.length} tasks, ${visible_now_sum} ₽ total`);
+
+  return { data: { visible_now_sum, available_tasks } };
+}
+
+/**
+ * Update bonus visibility setting for mobile workers.
+ * @endpoint PATCH /bonus/settings/visibility
+ */
+export async function updateBonusVisibilitySetting(
+  mode: "SUMMARY_ONLY" | "ALWAYS_LIST"
+): Promise<ApiMutationResponse> {
+  await delay(300);
+  console.log("[v0] Bonus visibility setting updated:", mode);
+  return { success: true };
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // METRICS
 // ═══════════════════════════════════════════════════════════════════
 
@@ -205,7 +359,7 @@ export async function getBonusMetrics(
       by_store: byStore,
       honest_curve_alert:
         scope.store_id === 4
-          ? "Распределение у СПАР-НСК-001 смещено: топ 2 сотрудника получают 60% баллов. Проверить равномерность задач."
+          ? "Распределение у СП��Р-НСК-001 смещено: топ 2 сотрудника получают 60% баллов. Проверить равномерность задач."
           : undefined,
     },
   };
