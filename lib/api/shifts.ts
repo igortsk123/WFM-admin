@@ -20,6 +20,8 @@ import type {
 import { MOCK_SHIFTS } from "@/lib/mock-data/shifts";
 import { MOCK_TASKS } from "@/lib/mock-data/tasks";
 import { MOCK_AUDIT_ENTRIES } from "@/lib/mock-data/audit";
+import { MOCK_USERS } from "@/lib/mock-data/users";
+import { MOCK_ASSIGNMENTS } from "@/lib/mock-data/assignments";
 
 const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
 
@@ -36,11 +38,44 @@ export interface ShiftListParams extends ApiListParams {
 }
 
 export interface ShiftDetail extends Shift {
+  user_avatar_url?: string;
+  position_name?: string;
+  /** Распределение фактически отработанного времени по зонам (mocked). */
+  zone_breakdown?: Array<{ zone_id: number; zone_name: string; minutes: number }>;
+  /** Задачи, которые работник делал в эту смену. */
   tasks: Array<
-    Pick<Task, "id" | "title" | "state" | "review_state" | "work_type_name" | "zone_name">
+    Pick<Task, "id" | "title" | "state" | "review_state" | "work_type_name" | "zone_name"> & {
+      planned_minutes?: number;
+      actual_minutes?: number;
+      completed_at?: string;
+    }
   >;
+  /** Перерывы во время смены (lunch / rest / custom). */
+  breaks?: Array<{ from: string; to: string; type: "lunch" | "rest" | "custom" }>;
+  /** Причина опоздания (если late_minutes > 0 и причина указана). */
+  late_reason?: string;
+  /** Причина переработки (если overtime_minutes > 0 и указана). */
+  overtime_reason?: string;
   events: Array<{ type: string; text: string; occurred_at: string; actor_name: string }>;
   audit: AuditEntry[];
+}
+
+/** Аудит-события для tab «История» на shift-detail screen. */
+export interface ShiftHistoryEvent {
+  id: string;
+  ts: string;
+  type:
+    | "OPENED"
+    | "PAUSED"
+    | "RESUMED"
+    | "CLOSED"
+    | "LATE_MARKED"
+    | "OVERTIME_ADDED"
+    | "FORCE_CLOSED"
+    | "CANCELLED";
+  title: string;
+  by_user_name: string;
+  details?: string;
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -174,19 +209,58 @@ export async function getShiftById(id: string): Promise<ApiResponse<ShiftDetail>
   const shift = MOCK_SHIFTS.find((s) => String(s.id) === id);
   if (!shift) throw new Error(`Shift with ID ${id} not found`);
 
+  // User enrichment — avatar и position_name
+  const user = MOCK_USERS.find((u) => u.id === shift.user_id);
+  const user_avatar_url = user?.avatar_url;
+  const assignment = MOCK_ASSIGNMENTS.find(
+    (a) => a.user_id === shift.user_id && a.active,
+  ) ?? MOCK_ASSIGNMENTS.find((a) => a.user_id === shift.user_id);
+  const position_name = assignment?.position_name;
+
   // Tasks that overlap with this shift's time window
   const tasks: ShiftDetail["tasks"] = MOCK_TASKS.filter(
-    (t) => t.store_id === shift.store_id && !t.archived
+    (t) => t.store_id === shift.store_id && !t.archived,
   )
     .slice(0, 5)
-    .map(({ id, title, state, review_state, work_type_name, zone_name }) => ({
-      id,
-      title,
-      state,
-      review_state,
-      work_type_name,
-      zone_name,
+    .map((t) => ({
+      id: t.id,
+      title: t.title,
+      state: t.state,
+      review_state: t.review_state,
+      work_type_name: t.work_type_name,
+      zone_name: t.zone_name,
+      planned_minutes: t.planned_minutes,
+      actual_minutes:
+        t.history_brief?.opened_at && t.history_brief?.completed_at
+          ? Math.max(
+              1,
+              Math.round(
+                (new Date(t.history_brief.completed_at).getTime() -
+                  new Date(t.history_brief.opened_at).getTime()) /
+                  60000,
+              ),
+            )
+          : undefined,
+      completed_at: t.history_brief?.completed_at,
     }));
+
+  // Mocked breakdown of actual time across zones (если зона смены известна).
+  const zone_breakdown = shift.zone_id && shift.zone_name
+    ? [{ zone_id: shift.zone_id, zone_name: shift.zone_name, minutes: 60 * 6 }]
+    : undefined;
+
+  // Mocked breaks — один lunch посередине смены.
+  const startHour = parseInt(shift.planned_start.slice(0, 2), 10);
+  const breaks: ShiftDetail["breaks"] = [
+    {
+      from: `${String(startHour + 4).padStart(2, "0")}:00`,
+      to: `${String(startHour + 4).padStart(2, "0")}:30`,
+      type: "lunch",
+    },
+  ];
+
+  const late_reason = shift.late_minutes > 0 ? "Пробка на дороге" : undefined;
+  const overtime_reason = shift.overtime_minutes > 0 ? "Дополнительная задача" : undefined;
 
   const events: ShiftDetail["events"] = [
     {
@@ -200,20 +274,29 @@ export async function getShiftById(id: string): Promise<ApiResponse<ShiftDetail>
           {
             type: "CLOSED",
             text: "Смена закрыта",
-            occurred_at:
-              shift.actual_end ??
-              shift.planned_end,
+            occurred_at: shift.actual_end ?? shift.planned_end,
             actor_name: shift.user_name,
           },
         ]
       : []),
   ];
 
-  const audit = MOCK_AUDIT_ENTRIES.filter(
-    (e) => e.entity_type === "shift"
-  ).slice(0, 3);
+  const audit = MOCK_AUDIT_ENTRIES.filter((e) => e.entity_type === "shift").slice(0, 3);
 
-  return { data: { ...shift, tasks, events, audit } };
+  return {
+    data: {
+      ...shift,
+      user_avatar_url,
+      position_name,
+      zone_breakdown,
+      tasks,
+      breaks,
+      late_reason,
+      overtime_reason,
+      events,
+      audit,
+    },
+  };
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -394,5 +477,130 @@ export async function forceCloseShift(
     };
   }
   console.log(`[v0] Force-closed shift ${id}`);
+  return { success: true, id: String(id) };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SHIFT-DETAIL ACTIONS (chat 29)
+// ═══════════════════════════════════════════════════════════════════
+
+/**
+ * Get audit history for a shift (tab «История» на shift-detail screen).
+ * @endpoint GET /shifts/:id/history
+ */
+export async function getShiftHistory(
+  shiftId: number,
+): Promise<ApiResponse<ShiftHistoryEvent[]>> {
+  await delay(220);
+  const shift = MOCK_SHIFTS.find((s) => s.id === shiftId);
+  if (!shift) {
+    throw new Error(`Shift ${shiftId} not found`);
+  }
+
+  const baseDate = `${shift.shift_date}T${shift.planned_start}:00+07:00`;
+  const events: ShiftHistoryEvent[] = [];
+
+  if (shift.actual_start) {
+    events.push({
+      id: `${shiftId}-opened`,
+      ts: `${shift.shift_date}T${shift.actual_start}:00+07:00`,
+      type: "OPENED",
+      title: "Смена открыта",
+      by_user_name: shift.user_name,
+    });
+  } else {
+    events.push({
+      id: `${shiftId}-planned`,
+      ts: baseDate,
+      type: "OPENED",
+      title: "Смена запланирована",
+      by_user_name: "LAMA Sync",
+    });
+  }
+
+  if (shift.late_minutes > 0) {
+    events.push({
+      id: `${shiftId}-late`,
+      ts: `${shift.shift_date}T${shift.actual_start ?? shift.planned_start}:00+07:00`,
+      type: "LATE_MARKED",
+      title: `Опоздание ${shift.late_minutes} мин`,
+      by_user_name: "Система",
+    });
+  }
+
+  if (shift.overtime_minutes > 0) {
+    events.push({
+      id: `${shiftId}-overtime`,
+      ts: `${shift.shift_date}T${shift.actual_end ?? shift.planned_end}:00+07:00`,
+      type: "OVERTIME_ADDED",
+      title: `Переработка ${shift.overtime_minutes} мин`,
+      by_user_name: "Система",
+    });
+  }
+
+  if (shift.actual_end) {
+    events.push({
+      id: `${shiftId}-closed`,
+      ts: `${shift.shift_date}T${shift.actual_end}:00+07:00`,
+      type: shift.status === "CLOSED" ? "CLOSED" : "FORCE_CLOSED",
+      title: shift.status === "CLOSED" ? "Смена закрыта" : "Смена принудительно закрыта",
+      by_user_name: shift.user_name,
+    });
+  }
+
+  return { data: events };
+}
+
+/**
+ * Mark shift as late with reason (action в shift-detail screen).
+ * @endpoint POST /shifts/:id/mark-late
+ */
+export async function markShiftLate(
+  id: number,
+  reason: string,
+): Promise<ApiMutationResponse> {
+  await delay(280);
+  const shift = MOCK_SHIFTS.find((s) => s.id === id);
+  if (!shift) return { success: false, error: { code: "NOT_FOUND", message: `Shift ${id} not found` } };
+  if (!reason.trim()) return { success: false, error: { code: "REASON_REQUIRED", message: "Late reason is required" } };
+  console.log(`[v0] Marked shift ${id} late, reason: ${reason}`);
+  return { success: true, id: String(id) };
+}
+
+/**
+ * Mark shift as overtime with reason (action в shift-detail screen).
+ * @endpoint POST /shifts/:id/mark-overtime
+ */
+export async function markShiftOvertime(
+  id: number,
+  reason: string,
+): Promise<ApiMutationResponse> {
+  await delay(280);
+  const shift = MOCK_SHIFTS.find((s) => s.id === id);
+  if (!shift) return { success: false, error: { code: "NOT_FOUND", message: `Shift ${id} not found` } };
+  if (!reason.trim()) return { success: false, error: { code: "REASON_REQUIRED", message: "Overtime reason is required" } };
+  console.log(`[v0] Marked shift ${id} overtime, reason: ${reason}`);
+  return { success: true, id: String(id) };
+}
+
+/**
+ * Cancel a planned (NEW) shift before it starts.
+ * @endpoint POST /shifts/:id/cancel
+ */
+export async function cancelShift(
+  id: number,
+  reason: string,
+): Promise<ApiMutationResponse> {
+  await delay(300);
+  const shift = MOCK_SHIFTS.find((s) => s.id === id);
+  if (!shift) return { success: false, error: { code: "NOT_FOUND", message: `Shift ${id} not found` } };
+  if (shift.status !== "NEW") {
+    return {
+      success: false,
+      error: { code: "INVALID_STATE", message: `Only NEW shifts can be cancelled (was ${shift.status})` },
+    };
+  }
+  if (!reason.trim()) return { success: false, error: { code: "REASON_REQUIRED", message: "Cancel reason is required" } };
+  console.log(`[v0] Cancelled shift ${id}, reason: ${reason}`);
   return { success: true, id: String(id) };
 }
