@@ -6691,49 +6691,71 @@
     },
     "serviceNorms": {
       "page_title": "Service norms",
-      "page_subtitle": "Standard units and rates for services",
+      "page_subtitle": "Output standards and hourly rates by work type",
       "breadcrumbs": {
         "home": "Home",
         "taxonomy": "Taxonomy",
         "norms": "Norms"
       },
+      "tabs": {
+        "active": "Active",
+        "archive": "Archive"
+      },
       "actions": {
-        "create": "Create norm",
-        "import": "Import",
-        "export": "Export"
+        "create": "+ New norm",
+        "save": "Save"
       },
       "filters": {
-        "search": "Search",
-        "category": "Category"
+        "object_format": "Object format",
+        "work_type": "Work type",
+        "all_formats": "All formats",
+        "all_work_types": "All types"
       },
       "columns": {
-        "code": "Code",
-        "name": "Name",
-        "unit": "Unit",
-        "rate": "Rate, ₽",
-        "norm_per_hour": "Norm/hour",
-        "category": "Category",
-        "actions": "Actions"
+        "object_format": "Object format",
+        "work_type": "Work type",
+        "normative": "Normative",
+        "rate": "Rate",
+        "approved_by": "Approved by",
+        "approved_at": "Approved at",
+        "actions": ""
       },
       "form": {
-        "code_label": "Code",
-        "name_label": "Name",
+        "create_title": "New norm",
+        "edit_title": "Edit norm",
+        "object_format_label": "Object format",
+        "work_type_label": "Work type",
+        "normative_label": "Normative per hour",
         "unit_label": "Unit",
-        "rate_label": "Rate, ₽",
-        "norm_per_hour_label": "Norm/hour",
-        "category_label": "Category",
-        "description_label": "Description",
-        "submit": "Save"
+        "rate_label": "Rate ₽/hour",
+        "rate_placeholder": "Optional",
+        "currency_label": "Currency"
+      },
+      "row_actions": {
+        "edit": "Edit",
+        "archive": "Archive"
+      },
+      "archive_confirm": {
+        "title": "Archive norm?",
+        "message": "The norm will be hidden from active list. Existing calculations will not change.",
+        "confirm": "Archive"
       },
       "empty": {
-        "no_norms": "No norms set yet",
-        "cta": "Create first"
+        "active_title": "No norms configured yet",
+        "active_description": "Add the first norm to calculate service costs.",
+        "active_cta": "+ New norm",
+        "archive_title": "Archive is empty",
+        "archive_description": "Archived norms will appear here."
       },
       "toasts": {
-        "saved": "Norm saved",
-        "deleted": "Deleted",
-        "error": "Failed"
-      }
+        "created": "Norm created",
+        "updated": "Norm updated",
+        "archived": "Norm archived",
+        "error": "Something went wrong",
+        "duplicate": "A norm for this combination already exists"
+      },
+      "rate_empty": "—",
+      "per_hour": "/hr"
     }
   }
 }
