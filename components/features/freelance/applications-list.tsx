@@ -393,7 +393,7 @@ function TableSkeleton() {
 export function ApplicationsList() {
   const t = useTranslations("screen.freelanceApplications")
   const tCommon = useTranslations("common")
-  const tRole = useTranslations("role.functional")
+  const _tRole = useTranslations("role.functional")
   const router = useRouter()
   const locale = useLocale()
   const { user } = useAuth()

@@ -231,7 +231,7 @@ function LimitForm({
 }: LimitFormProps) {
   const t = useTranslations("freelanceBudgetLimits");
   const tCommon = useTranslations("common");
-  const locale = useLocale();
+  // locale unused
 
   const [values, setValues] = useState<LimitFormValues>(
     initial ?? {

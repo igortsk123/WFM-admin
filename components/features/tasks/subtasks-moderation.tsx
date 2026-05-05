@@ -706,7 +706,7 @@ export function SubtasksModeration() {
   )
 
   // ── custom table with inline expand rows ──
-  const tableData = rows
+  const _tableData = rows
   const isEmpty = !isLoading && rows.length === 0
   const isFiltered = !!(search || storeId || workTypeId || zoneId)
 

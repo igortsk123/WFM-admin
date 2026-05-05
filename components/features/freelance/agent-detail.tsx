@@ -1073,7 +1073,7 @@ export function AgentDetail({ id }: { id: string }) {
 
   // ─── Tabs ─────────────────────────────────────────────────────────
 
-  const activePerformers = agent.freelancers.filter(
+  const _activePerformers = agent.freelancers.filter(
     (f) => f.freelancer_status === "ACTIVE"
   ).length;
 

@@ -614,7 +614,7 @@ export function AgentsList() {
 
   const currentRole = user.role
   const canWrite = currentRole === "NETWORK_OPS" || currentRole === "HR_MANAGER"
-  const isReadOnly = currentRole === "REGIONAL" || currentRole === "SUPERVISOR"
+  const _isReadOnly = currentRole === "REGIONAL" || currentRole === "SUPERVISOR"
 
   // Guard: only available in NOMINAL_ACCOUNT mode
   const isClientDirect = user.organization.payment_mode === "CLIENT_DIRECT"

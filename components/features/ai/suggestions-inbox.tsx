@@ -230,7 +230,7 @@ export function AISuggestionsInbox() {
   // ─── Actions ──────────────────────────────────────────────────────
   const handleAccept = async (id: string, edits?: Record<string, unknown>) => {
     try {
-      const result = await acceptAiSuggestion(id, edits);
+      await acceptAiSuggestion(id, edits);
       const suggestionType = suggestions.find((s) => s.id === id)?.type;
 
       // Show appropriate toast based on type
@@ -370,11 +370,6 @@ export function AISuggestionsInbox() {
     });
     return map;
   }, [user.stores]);
-
-  // ─── Pending suggestions for bulk actions ─────────────────────────
-  const pendingSuggestions = suggestions.filter(
-    (s) => s.status === "PENDING" || s.status === "EDITED"
-  );
 
   // ═══════════════════════════════════════════════════════════════════
   // RENDER: Forbidden state
@@ -916,10 +911,10 @@ function SuggestionDetailContent({
   onAskAi,
   canTakeAction,
   isReadOnly,
-  locale,
-  stores,
+  locale: _locale,
+  stores: _stores,
   t,
-  tCommon,
+  tCommon: _tCommon,
 }: SuggestionDetailContentProps) {
   const [localEdits, setLocalEdits] = React.useState<Record<string, unknown>>({});
   const isInsight = suggestion.type === "INSIGHT";

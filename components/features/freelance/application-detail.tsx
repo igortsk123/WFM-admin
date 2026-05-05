@@ -432,7 +432,7 @@ function AssignSheet({
 function DecisionSidebar({
   app,
   simulation,
-  simulatedHours,
+  simulatedHours: _simulatedHours,
   onRefresh,
 }: {
   app: ApplicationDetailData;

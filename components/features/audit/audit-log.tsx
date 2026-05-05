@@ -494,7 +494,7 @@ function DetailPanelContent({
   entityTypeLabel,
 }: DetailPanelContentProps) {
   const t = useTranslations("screen.audit");
-  const tc = useTranslations("common");
+
   const [payloadOpen, setPayloadOpen] = React.useState(true);
   const deviceType = entry.device_type ?? detectDeviceType(entry.user_agent);
 

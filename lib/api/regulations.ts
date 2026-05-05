@@ -174,7 +174,7 @@ export async function getRegulationById(id: string): Promise<ApiResponse<Regulat
   }));
 
   // 90-day usage sparkline (decreasing trend for archived, stable/increasing for active)
-  const usage_chart_90d = Array.from({ length: 90 }, (_, i) => {
+  const usage_chart_90d = Array.from({ length: 90 }, () => {
     const base = reg.ai_usage_count_30d / 30;
     return Math.max(0, Math.round(base + (Math.random() * 1.5 - 0.5)));
   });

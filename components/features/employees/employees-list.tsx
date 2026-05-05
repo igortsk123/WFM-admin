@@ -1421,7 +1421,7 @@ export function EmployeesList() {
   }
 
   // ── Filter panel (reused desktop + mobile sheet) ──────────────────
-  const filterPanel = (
+  const _filterPanel = (
     <div className="flex flex-col gap-3">
       {!hideStore && (
         <div className="space-y-1">

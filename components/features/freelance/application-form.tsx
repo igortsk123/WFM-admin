@@ -73,7 +73,7 @@ function isSupervisorOrAbove(role: string): role is "SUPERVISOR" | "REGIONAL" | 
 // ─── Date helpers ──────────────────────────────────────────────────────────────
 
 const today = () => startOfDay(new Date());
-const minDate = (role: string) =>
+const _minDate = (role: string) =>
   isSupervisorOrAbove(role) ? undefined : addDays(today(), 3);
 
 function deriveFlags(date: Date | undefined) {

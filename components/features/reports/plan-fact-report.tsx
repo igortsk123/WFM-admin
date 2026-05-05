@@ -741,7 +741,7 @@ function UsersTab({
 }) {
   const router = useRouter();
   const [storeFilter, setStoreFilter] = useState<string>("");
-  const [search, setSearch] = useState<string>("");
+  const [search] = useState<string>("");
   const [page, setPage] = useState(1);
   const PAGE_SIZE = 10;
 

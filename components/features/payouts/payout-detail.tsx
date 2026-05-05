@@ -431,7 +431,7 @@ export function PayoutDetail({ id }: { id: string }) {
   const tCommon = useTranslations("common");
 
   // Mock role check
-  const isNetworkOps = true;
+  const _isNetworkOps = true;
 
   const [period, setPeriod] = useState<(PayoutPeriod & { rows: PayoutRow[] }) | null>(null);
   const [loading, setLoading] = useState(true);

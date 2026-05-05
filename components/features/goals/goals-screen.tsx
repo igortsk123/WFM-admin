@@ -360,7 +360,7 @@ function RemoveGoalDialogContent({
   onConfirm: (reason: string) => Promise<void>;
   onOpenChange: (open: boolean) => void;
 }) {
-  const [reason, setReason] = useState("");
+  const [reason] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleConfirm() {

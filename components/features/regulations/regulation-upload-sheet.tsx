@@ -185,7 +185,6 @@ export function RegulationUploadSheet({
   existingRegulations = [],
 }: RegulationUploadSheetProps) {
   const t = useTranslations("screen.regulations");
-  const tc = useTranslations("common");
 
   // form state
   const [file, setFile] = React.useState<File | null>(null);

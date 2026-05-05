@@ -21,9 +21,7 @@ import { cn } from "@/lib/utils";
 import { useRouter } from "@/i18n/navigation";
 
 export function SupervisorsTab() {
-  const t = useTranslations("screen.networkGoals.supervisors_tab");
   const tCommon = useTranslations("common");
-  const router = useRouter();
 
   const [isLoading, setIsLoading] = React.useState(true);
   const [data, setData] = React.useState<SupervisorAiQuality[]>([]);

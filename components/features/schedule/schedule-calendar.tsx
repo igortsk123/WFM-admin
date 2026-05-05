@@ -93,12 +93,6 @@ const ZONE_OPTIONS = [
   { value: "6", label: "Холодильники" },
 ];
 
-const STATUS_OPTIONS = [
-  { value: "NEW", label: "Новая" },
-  { value: "OPENED", label: "Открыта" },
-  { value: "CLOSED", label: "Закрыта" },
-];
-
 const HOURS_RANGE = Array.from({ length: 15 }, (_, i) => i + 7); // 07:00–21:00
 
 // ═══════════════════════════════════════════════════════════════════
@@ -387,7 +381,7 @@ interface DayViewProps {
   onShiftAction: (action: "reopen" | "force_close", slot: ScheduleSlot) => void;
 }
 
-function DayView({ day, slots, onShiftClick, onShiftAction }: DayViewProps) {
+function DayView({ day, slots, onShiftClick }: DayViewProps) {
   const t = useTranslations("screen.schedule");
   const dayStr = format(day, "yyyy-MM-dd");
   const daySlots = slots.filter((s) => s.shift_date === dayStr);
@@ -844,7 +838,7 @@ export function ScheduleCalendar() {
   const [selectedDay, setSelectedDay] = React.useState<Date>(TODAY); // mobile week sub-selection
   const [filterStore, setFilterStore] = React.useState<string>("all");
   const [filterZones, setFilterZones] = React.useState<string[]>([]);
-  const [filterStatus, setFilterStatus] = React.useState<string[]>([]);
+  const [, setFilterStatus] = React.useState<string[]>([]);
 
   const [scheduleData, setScheduleData] = React.useState<ScheduleResponse | null>(null);
   const [loading, setLoading] = React.useState(true);
@@ -855,7 +849,7 @@ export function ScheduleCalendar() {
     type: "reopen" | "force_close";
     slot: ScheduleSlot;
   } | null>(null);
-  const [actionLoading, setActionLoading] = React.useState(false);
+  const [, setActionLoading] = React.useState(false);
 
   // ─── Date range ────────────────────────────────────────────────
   const dateRange = React.useMemo(() => {

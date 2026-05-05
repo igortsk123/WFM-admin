@@ -240,7 +240,7 @@ function BonusTaskCard({
 }: BonusTaskCardProps) {
   const t = useTranslations("screen.bonusTasks");
   const [removeOpen, setRemoveOpen] = useState(false);
-  const [removeReason, setRemoveReason] = useState("");
+  const [removeReason] = useState("");
   const [removing, setRemoving] = useState(false);
 
   const handleRemove = async () => {

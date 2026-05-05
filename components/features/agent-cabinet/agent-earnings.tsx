@@ -85,7 +85,7 @@ function formatShortDate(iso: string, locale: Locale): string {
   return formatDate(new Date(iso), locale);
 }
 
-function downloadCsv(rows: AgentEarning[], locale: Locale) {
+function downloadCsv(rows: AgentEarning[], _locale: Locale) {
   const headers = ["id", "period_date", "freelancer_name", "service_id", "gross_amount_base", "commission_pct", "commission_amount", "status", "payout_id"];
   const lines = [
     headers.join(";"),
@@ -252,7 +252,7 @@ function EarningDetailSheet({
   const statusLabel = earning ? t(`status.${earning.status}`) : "";
 
   const [payout, setPayout] = useState<Payout | null>(null);
-  const [payoutLoading, setPayoutLoading] = useState(false);
+  const [, setPayoutLoading] = useState(false);
 
   useEffect(() => {
     if (!open || !earning?.payout_id) {
@@ -387,13 +387,6 @@ function EarningDetailSheet({
 // ═══════════════════════════════════════════════════════════════════
 // FILTER BAR
 // ═══════════════════════════════════════════════════════════════════
-
-interface FilterState {
-  dateFrom: string;
-  dateTo: string;
-  freelancerId: string;
-  status: string;
-}
 
 function DateRangePicker({
   from,

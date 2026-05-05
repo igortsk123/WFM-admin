@@ -24,7 +24,6 @@ const valueProps = [
 
 export function LoginForm() {
   const t = useTranslations("screen.login")
-  const tCommon = useTranslations("common")
   const router = useRouter()
   const [step, setStep] = useState<Step>("method-select")
 

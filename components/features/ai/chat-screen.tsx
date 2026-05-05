@@ -58,7 +58,7 @@ export function AIChatScreen() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const t = useTranslations("screen.aiChat");
-  const locale = useLocale() as Locale;
+  const _locale = useLocale() as Locale;
 
   // URL params
   const urlThreadId = searchParams.get("thread_id");

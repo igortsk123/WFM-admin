@@ -475,7 +475,7 @@ const MOCK_TASK_POLICIES: TaskPoliciesConfig = {
  * Get task policies.
  * @endpoint GET /organizations/:id/task-policies
  */
-export async function getTaskPolicies(orgId: string): Promise<ApiResponse<TaskPoliciesConfig>> {
+export async function getTaskPolicies(_orgId: string): Promise<ApiResponse<TaskPoliciesConfig>> {
   await delay(250);
   return { data: { ...MOCK_TASK_POLICIES } };
 }
@@ -516,7 +516,7 @@ const MOCK_TIMEZONE_CONFIG: TimezoneConfig = {
  * Get timezone config.
  * @endpoint GET /organizations/:id/timezone
  */
-export async function getTimezoneConfig(orgId: string): Promise<ApiResponse<TimezoneConfig>> {
+export async function getTimezoneConfig(_orgId: string): Promise<ApiResponse<TimezoneConfig>> {
   await delay(200);
   return { data: { ...MOCK_TIMEZONE_CONFIG } };
 }
@@ -554,7 +554,7 @@ const MOCK_BRANDING: BrandingConfig = {
  * Get branding config.
  * @endpoint GET /organizations/:id/branding
  */
-export async function getBrandingConfig(orgId: string): Promise<ApiResponse<BrandingConfig>> {
+export async function getBrandingConfig(_orgId: string): Promise<ApiResponse<BrandingConfig>> {
   await delay(200);
   return { data: { ...MOCK_BRANDING } };
 }
