@@ -2,10 +2,13 @@ import type { Store } from "@/lib/types";
 
 /**
  * @endpoint GET /api/stores
- * 11 objects: 8 FMCG stores (SPAR Томск/НСК/Кемерово + Food City) +
- * 1 fashion store (ALFA-TOM-001, обязателен для AI fashion-кейса и маркетинг-канала) +
- * 1 workshop (WORKSHOP-TOM-001, демо production) +
- * 1 archived store (FC-TOM-003).
+ * 18 objects:
+ *  - 8 FMCG SPAR (Томск/Новосибирск/Кемерово/Северск)
+ *  - 3 Abricos (Томск × 2, Кемерово) — бренд Lama
+ *  - 2 Первоцвет (Томск) — бренд Lama
+ *  - 3 Food City (Томск, 1 архив)
+ *  - 1 Fashion Alfa (Левушка-кейс, AI-fashion демо)
+ *  - 1 Workshop Техпроиздрав (production демо)
  *
  * manager_id / supervisor_id ссылаются на User.id из users.ts.
  * lama_synced_at — дата последней синхронизации с планировщиком.
@@ -232,5 +235,134 @@ export const MOCK_STORES: Store[] = [
     active: true,
     archived: false,
     geo: { lat: 56.4723, lng: 84.9632 },
+  },
+  // ── СПАР Северск ────────────────────────────────────────────────
+  {
+    id: 12,
+    name: "СПАР Северск, ул. Курчатова 5",
+    external_code: "SPAR-SEV-001",
+    address: "ул. Курчатова, 5",
+    city: "Северск",
+    store_type: "Супермаркет",
+    object_type: "STORE",
+    object_format: "SUPERMARKET",
+    organization_id: "org-spar",
+    legal_entity_id: 1,
+    region: "Томская обл.",
+    supervisor_id: 3,
+    lama_synced_at: daysAgo(0),
+    active: true,
+    archived: false,
+    geo: { lat: 56.5996, lng: 84.8819 },
+  },
+  {
+    id: 13,
+    name: "СПАР Северск, пр. Коммунистический 41",
+    external_code: "SPAR-SEV-002",
+    address: "пр. Коммунистический, 41",
+    city: "Северск",
+    store_type: "Магазин у дома",
+    object_type: "STORE",
+    object_format: "CONVENIENCE",
+    organization_id: "org-spar",
+    legal_entity_id: 1,
+    region: "Томская обл.",
+    supervisor_id: 3,
+    lama_synced_at: daysAgo(1),
+    active: true,
+    archived: false,
+    geo: { lat: 56.6024, lng: 84.8758 },
+  },
+  // ── Abricos (бренд Lama) ────────────────────────────────────────
+  {
+    id: 14,
+    name: "Abricos Томск, пр. Кирова 51",
+    external_code: "ABR-TOM-001",
+    address: "пр. Кирова, 51",
+    city: "Томск",
+    store_type: "Супермаркет",
+    object_type: "STORE",
+    object_format: "SUPERMARKET",
+    organization_id: "org-spar",
+    legal_entity_id: 1,
+    region: "Томская обл.",
+    supervisor_id: 3,
+    lama_synced_at: daysAgo(0),
+    active: true,
+    archived: false,
+    geo: { lat: 56.4729, lng: 84.9512 },
+  },
+  {
+    id: 15,
+    name: "Abricos Томск, ул. Сибирская 81",
+    external_code: "ABR-TOM-002",
+    address: "ул. Сибирская, 81",
+    city: "Томск",
+    store_type: "Магазин у дома",
+    object_type: "STORE",
+    object_format: "CONVENIENCE",
+    organization_id: "org-spar",
+    legal_entity_id: 1,
+    region: "Томская обл.",
+    supervisor_id: 3,
+    lama_synced_at: daysAgo(0),
+    active: true,
+    archived: false,
+    geo: { lat: 56.4892, lng: 84.9743 },
+  },
+  {
+    id: 16,
+    name: "Abricos Кемерово, пр. Ленина 80А",
+    external_code: "ABR-KEM-001",
+    address: "пр. Ленина, 80А",
+    city: "Кемерово",
+    store_type: "Супермаркет",
+    object_type: "STORE",
+    object_format: "SUPERMARKET",
+    organization_id: "org-spar",
+    legal_entity_id: 1,
+    region: "Кемеровская обл.",
+    supervisor_id: 3,
+    lama_synced_at: daysAgo(2),
+    active: true,
+    archived: false,
+    geo: { lat: 55.3479, lng: 86.0826 },
+  },
+  // ── Первоцвет (бренд Lama в Томске) ─────────────────────────────
+  {
+    id: 17,
+    name: "Первоцвет Томск, пр. Мира 76",
+    external_code: "PRV-TOM-001",
+    address: "пр. Мира, 76",
+    city: "Томск",
+    store_type: "Магазин у дома",
+    object_type: "STORE",
+    object_format: "CONVENIENCE",
+    organization_id: "org-spar",
+    legal_entity_id: 1,
+    region: "Томская обл.",
+    supervisor_id: 3,
+    lama_synced_at: daysAgo(0),
+    active: true,
+    archived: false,
+    geo: { lat: 56.5078, lng: 85.0142 },
+  },
+  {
+    id: 18,
+    name: "Первоцвет Томск, ул. Учебная 7А",
+    external_code: "PRV-TOM-002",
+    address: "ул. Учебная, 7А",
+    city: "Томск",
+    store_type: "Магазин у дома",
+    object_type: "STORE",
+    object_format: "CONVENIENCE",
+    organization_id: "org-spar",
+    legal_entity_id: 1,
+    region: "Томская обл.",
+    supervisor_id: 3,
+    lama_synced_at: daysAgo(1),
+    active: true,
+    archived: false,
+    geo: { lat: 56.4634, lng: 84.9491 },
   },
 ];
