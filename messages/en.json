@@ -2925,7 +2925,8 @@
         "totp_disabled": "TOTP disabled",
         "session_revoked": "Session ended",
         "logged_out": "Logged out",
-        "error": "Operation failed"
+        "error": "Operation failed",
+        "org_switched": "Organization switched"
       },
       "validation": {
         "name_min": "At least 2 characters",
@@ -2933,6 +2934,20 @@
         "password_min": "At least 8 characters",
         "password_mismatch": "Passwords don't match",
         "avatar_too_large": "File must be smaller than 2 MB"
+      },
+      "agent_specific": {
+        "simplified_hint": "Freelance contractor — simplified profile",
+        "agent_notifications_hint": "Only payout and no-show notifications are configured"
+      },
+      "platform_admin": {
+        "title": "Available organizations",
+        "description": "Cross-tenant access to WFM organizations",
+        "switch_to_org": "Switch to org",
+        "current_org_label": "Current",
+        "payment_mode_nominal": "Nominal account",
+        "payment_mode_client_direct": "Client direct",
+        "freelance_enabled": "Freelance on",
+        "freelance_disabled": "Freelance off"
       }
     }
   }

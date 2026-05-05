@@ -2925,7 +2925,8 @@
         "totp_disabled": "TOTP отключена",
         "session_revoked": "Сессия завершена",
         "logged_out": "Вы вышли",
-        "error": "Не удалось выполнить операцию"
+        "error": "Не удалось выполнить операцию",
+        "org_switched": "Организация переключена"
       },
       "validation": {
         "name_min": "Минимум 2 символа",
@@ -2933,6 +2934,20 @@
         "password_min": "Минимум 8 символов",
         "password_mismatch": "Пароли не совпадают",
         "avatar_too_large": "Файл должен быть не больше 2 МБ"
+      },
+      "agent_specific": {
+        "simplified_hint": "Внештатный исполнитель — упрощённый профиль",
+        "agent_notifications_hint": "Настроены только уведомления о выплатах и невыходах исполнителей"
+      },
+      "platform_admin": {
+        "title": "Доступные организации",
+        "description": "Cross-tenant доступ к организациям WFM",
+        "switch_to_org": "Войти в организацию",
+        "current_org_label": "Текущая",
+        "payment_mode_nominal": "Номинальный счёт",
+        "payment_mode_client_direct": "Прямой расчёт",
+        "freelance_enabled": "Внештат вкл.",
+        "freelance_disabled": "Внештат выкл."
       }
     }
   }
