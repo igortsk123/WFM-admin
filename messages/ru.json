@@ -394,7 +394,7 @@
   "bonus": {
     "title": "Бонусная задача",
     "source": {
-      "YESTERDAY_INCOMPLETE": "Незав���ршённые вчера",
+      "YESTERDAY_INCOMPLETE": "Незав����ршённые вчера",
       "SUPERVISOR_BUDGET": "Бюдж��т супервайзера",
       "GOAL_LINKED": "Связана с целью"
     }
@@ -1024,7 +1024,7 @@
       "archive_submit": "Архивировать",
       "archive_toast": "Задача архивирована",
       "status_override_dialog_title": "Изменить статус задачи",
-      "status_override_dialog_desc": "Принудительное изменение статуса. Только для NETWORK_OPS. Действие будет записано в аудит.",
+      "status_override_dialog_desc": "Принудительное изменение статуса. Только для NETWORK_OPS. Действие б��дет записано в аудит.",
       "status_override_justification_label": "Обоснование",
       "status_override_justification_placeholder": "Укажите причину изменения статуса (минимум 10 символов)...",
       "status_override_submit": "Применить",
@@ -2498,7 +2498,7 @@
       "actions": {
         "create": "Добавить должность",
         "import": "Импорт",
-        "export": "Экспорт",
+        "export": "Экс��орт",
         "more": "Ещё"
       },
       "stats": {
@@ -2827,7 +2827,7 @@
         "filtered_reset": "Сбросить фильтры"
       },
       "preferences_sheet": {
-        "title": "Настройки уведомлений",
+        "title": "Настро��ки уведомлений",
         "push_enabled_label": "Push-уведомления",
         "push_enabled_hint": "Получать уведомления в мобильном приложении и браузере",
         "categories_section": "Категории",
@@ -3631,7 +3631,7 @@
         "freelance.payout.complete": "Выплата внештата выполнена",
         "application.create": "Заявка создана",
         "application.cancel": "Заявка отменена",
-        "application.approve_full": "Заявка полностью принята",
+        "application.approve_full": "��аявка полностью принята",
         "application.approve_partial": "Заявка принята частично",
         "application.reject": "Заявка отклонена",
         "application.replace_with_bonus": "Заменена на бонусную задачу",
@@ -4886,7 +4886,7 @@
         "empty_thread_title": "Спросите что угодно про ваши данные",
         "empty_thread_subtitle": "ИИ читает данные из подключённых источников",
         "suggestion_chips": {
-          "worst_oos": "Какие магазины с худшим OOS?",
+          "worst_oos": "Какие магаз��ны с худшим OOS?",
           "explain_returns": "Объясни, почему вырос возврат задач",
           "today_priorities": "Что важно сделать сегодня?",
           "team_status": "Как дела у моих сотрудников?"
@@ -6131,6 +6131,267 @@
       },
       "table": {
         "object": "Объект",
+        "period": "Период",
+        "limit": "Лимит",
+        "valid_from": "Действует с",
+        "valid_to": "Действует по",
+        "set_by": "Установил",
+        "usage": "Текущий статус",
+        "actions": "Действия"
+      },
+      "indefinite": "Бессрочно",
+      "usage": {
+        "of": "из",
+        "indicative": "справочно по нормативам"
+      },
+      "menu": {
+        "edit": "Изменить",
+        "terminate": "Завершить",
+        "history": "История изменений"
+      },
+      "terminate_dialog": {
+        "title": "Завершить лимит",
+        "message": "Действие лимита будет завершено сегодня. Новые заявки на этот объект и период не будут блокироваться.",
+        "confirm": "Завершить"
+      },
+      "sheet": {
+        "create_title": "Установить лимит",
+        "edit_title": "Изменить лимит",
+        "object_label": "Объект",
+        "object_placeholder": "Выберите объект",
+        "period_label": "Период",
+        "period_placeholder": "Выберите период",
+        "amount_label": "Лимит, ₽",
+        "valid_from_label": "Действует с",
+        "valid_to_label": "Действует по",
+        "valid_to_placeholder": "Без ограничения (необязательно)",
+        "submit_create": "Установить",
+        "submit_edit": "Сохранить"
+      },
+      "history_sheet": {
+        "title": "История изменений"
+      },
+      "empty": {
+        "no_limits_title": "Лимиты не настроены",
+        "no_limits_desc_regional": "Установите лимит, чтобы контролировать расходы на внештат по объектам.",
+        "no_limits_desc_supervisor": "Обратитесь к региональному директору для настройки лимитов."
+      },
+      "mobile_tab_placeholder": "Выберите вкладку",
+      "actions": {
+        "add": "+ Установить лимит"
+      },
+      "validation": {
+        "amount_required": "Укажите лимит",
+        "amount_positive": "Лимит должен быть больше нуля",
+        "valid_from_required": "Укажите дату начала",
+        "valid_to_after_from": "Дата окончания должна быть позже даты начала",
+        "duplicate": "Лимит для этого объекта и периода уже существует"
+      },
+      "toasts": {
+        "created": "Лимит установлен",
+        "updated": "Лимит обновлён",
+        "terminated": "Лимит завершён",
+        "error": "Не удалось выполнить действие"
+      },
+      "module_disabled": "Модуль внештата отключён"
+    },
+    "freelanceAgents": {
+      "page_title": "Справочник агентов",
+      "page_subtitle": "Внешние агенты, обеспечивающие исполнителей",
+      "breadcrumbs": {
+        "home": "Главная",
+        "freelance": "Внештат",
+        "agents": "Агенты"
+      },
+      "actions": {
+        "new_agent": "+ Новый агент",
+        "export": "Экспорт"
+      },
+      "tabs": {
+        "active": "Активные",
+        "blocked": "Заблокированы",
+        "archive": "Архив"
+      },
+      "filters": {
+        "search": "Поиск по имени / ИНН",
+        "type": "Тип",
+        "status": "Статус",
+        "tier": "Уровень"
+      },
+      "type": {
+        "INDIVIDUAL": "ИП",
+        "COMPANY": "Юр. лицо"
+      },
+      "columns": {
+        "agent": "Агент",
+        "inn": "ИНН",
+        "contract": "Договор",
+        "commission": "% комиссии",
+        "performers": "Исполнителей",
+        "earned_30d": "Заработано за 30 дней",
+        "status": "Статус"
+      },
+      "contract_status": {
+        "signed": "Подписан",
+        "not_signed": "Не подписан",
+        "pending": "Ожидает"
+      },
+      "commission_tooltip": "От суммы оказанных услуг до налогов",
+      "menu": {
+        "open": "Открыть",
+        "edit": "Изменить",
+        "block": "Заблокировать",
+        "archive": "Архивировать",
+        "unblock": "Разблокировать"
+      },
+      "block_dialog": {
+        "title": "Заблокировать агента?",
+        "description": "Агент не сможет принимать новые заказы. Укажите причину.",
+        "reason_label": "Причина блокировки",
+        "reason_placeholder": "Укажите причину (минимум 5 символов)...",
+        "confirm": "Заблокировать",
+        "cancel": "Отмена"
+      },
+      "sheet": {
+        "title_create": "Новый агент",
+        "title_edit": "Редактировать агента",
+        "field_name": "Название",
+        "field_name_placeholder": "ИП Иванов И. И. или ООО «Компания»",
+        "field_type": "Тип",
+        "field_inn": "ИНН",
+        "field_inn_placeholder_individual": "12 цифр (ИП / физлицо)",
+        "field_inn_placeholder_company": "10 цифр (юр. лицо)",
+        "field_kpp": "КПП",
+        "field_kpp_placeholder": "9 цифр",
+        "field_ogrn": "ОГРН",
+        "field_ogrn_placeholder": "13 цифр",
+        "field_contact_name": "Контактное лицо",
+        "field_contact_phone": "Телефон",
+        "field_contact_email": "Email",
+        "field_contract_url": "Договор (ссылка или файл)",
+        "field_contract_url_placeholder": "https://...",
+        "field_commission": "% комиссии",
+        "field_status": "Статус",
+        "submit_create": "Сохранить",
+        "submit_edit": "Сохранить изменения"
+      },
+      "status": {
+        "ACTIVE": "Активен",
+        "BLOCKED": "Заблокирован",
+        "ARCHIVED": "Архив"
+      },
+      "empty": {
+        "no_agents": "Агентов пока нет",
+        "description": "Добавьте первого агента, чтобы начать"
+      },
+      "toasts": {
+        "created": "Агент создан",
+        "updated": "Изменения сохранены",
+        "blocked": "Агент заблокирован",
+        "unblocked": "Агент разблокирован",
+        "archived": "Агент архивирован",
+        "error": "Не удалось выполнить действие"
+      }
+    },
+    "freelanceAgentDetail": {
+      "page_title": "Карточка агента",
+      "breadcrumbs": {
+        "home": "Главная",
+        "freelance": "Внештат",
+        "agents": "Агенты",
+        "detail": "Агент"
+      },
+      "tabs": {
+        "summary": "Обзор",
+        "performers": "Исполнители",
+        "services": "Услуги",
+        "payouts": "Выплаты",
+        "documents": "Документы",
+        "history": "История"
+      },
+      "kpi": {
+        "tier": "Уровень",
+        "rating": "Рейтинг",
+        "month_amount": "Оборот за месяц",
+        "no_show_rate": "% невыходов",
+        "total_performers": "Всего исполнителей",
+        "active_performers": "Активных"
+      },
+      "actions": {
+        "pause": "На паузу",
+        "block": "Заблокировать",
+        "edit": "Редактировать"
+      },
+      "block_dialog": {
+        "title": "Заблокировать агента?",
+        "reason_label": "Причина",
+        "confirm": "Заблокировать"
+      },
+      "toasts": {
+        "saved": "Сохранено",
+        "blocked": "Агент заблокирован",
+        "paused": "Агент на паузе",
+        "error": "Не удалось"
+      }
+    },
+    "agentDashboard": {
+      "page_title": "Кабинет агента",
+      "page_subtitle": "Сводка по вашим исполнителям",
+      "kpi": {
+        "active_performers": "Активных исполнителей",
+        "month_earnings": "Доход за месяц",
+        "pending_payouts": "Ожидают выплаты",
+        "no_show_count": "Невыходов за месяц"
+      },
+      "sections": {
+        "recent_services": "Последние услуги",
+        "alerts": "Уведомления",
+        "tier_progress": "Прогресс по уровню"
+      },
+      "tier_progress": {
+        "current_tier": "Текущий уровень",
+        "next_tier": "До {tier}",
+        "progress_label": "Оборот за квартал"
+      },
+      "alerts_empty": "Уведомлений нет"
+    },
+    "agentFreelancers": {
+      "page_title": "Мои исполнители",
+      "page_subtitle": "Список физлиц, работающих через вас",
+      "actions": {
+        "add": "Добавить",
+        "export": "Экспорт"
+      },
+      "filters": {
+        "search": "Поиск",
+        "status": "Статус"
+      },
+      "columns": {
+        "name": "ФИО",
+        "phone": "Телефон",
+        "stores": "Магазины",
+        "month_amount": "Доход за месяц",
+        "no_show_rate": "% невыходов",
+        "status": "Статус"
+      },
+      "status": {
+        "ACTIVE": "Активен",
+        "PAUSED": "На паузе",
+        "BLOCKED": "Заблокирован"
+      },
+      "empty": {
+        "no_freelancers": "Исполнителей пока нет",
+        "cta": "Добавить первого"
+      },
+      "toasts": {
+        "created": "Исполнитель добавлен",
+        "error": "Не удалось"
+      }
+    },
+    "agentEarnings": {
+      "page_title": "Реестр доходов",
+      "page_subtitle": "Доходы по периодам и реестрам",
+      "filters": {
         "period": "Период",
         "limit": "Лимит",
         "valid_from": "Действует с",

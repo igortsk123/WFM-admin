@@ -38,3 +38,4 @@ export { FreelancerStatusBadge, getFreelancerStatusLabel } from "./freelancer-st
 export { ApplicationStatusBadge, getApplicationStatusLabel } from "./application-status-badge"
 export { ServiceStatusBadge, getServiceStatusLabel } from "./service-status-badge"
 export { PayoutStatusBadge } from "./payout-status-badge"
+export { AgentStatusBadge, getAgentStatusLabel } from "./agent-status-badge"

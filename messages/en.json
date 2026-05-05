@@ -6178,40 +6178,93 @@
         "agents": "Agents"
       },
       "actions": {
-        "new_agent": "New agent",
+        "new_agent": "+ New agent",
         "export": "Export"
       },
+      "tabs": {
+        "active": "Active",
+        "blocked": "Blocked",
+        "archive": "Archive"
+      },
       "filters": {
-        "search": "Search",
+        "search": "Search by name / INN",
+        "type": "Type",
         "status": "Status",
         "tier": "Tier"
       },
+      "type": {
+        "INDIVIDUAL": "Individual",
+        "COMPANY": "Company"
+      },
       "columns": {
         "agent": "Agent",
-        "tier": "Tier",
+        "inn": "INN",
+        "contract": "Contract",
+        "commission": "Commission %",
         "performers": "Performers",
-        "month_amount": "Monthly turnover",
-        "rating": "Rating",
-        "no_show_rate": "No-show %",
+        "earned_30d": "Earned (30d)",
         "status": "Status"
       },
-      "tier": {
-        "BRONZE": "Bronze",
-        "SILVER": "Silver",
-        "GOLD": "Gold",
-        "PLATINUM": "Platinum"
+      "contract_status": {
+        "signed": "Signed",
+        "not_signed": "Not signed",
+        "pending": "Pending"
+      },
+      "commission_tooltip": "From service amount before taxes",
+      "menu": {
+        "open": "Open",
+        "edit": "Edit",
+        "block": "Block",
+        "archive": "Archive",
+        "unblock": "Unblock"
+      },
+      "block_dialog": {
+        "title": "Block agent?",
+        "description": "The agent will not be able to receive new orders. Provide a reason.",
+        "reason_label": "Block reason",
+        "reason_placeholder": "Enter reason (min 5 characters)...",
+        "confirm": "Block",
+        "cancel": "Cancel"
+      },
+      "sheet": {
+        "title_create": "New agent",
+        "title_edit": "Edit agent",
+        "field_name": "Name",
+        "field_name_placeholder": "Individual or Company name",
+        "field_type": "Type",
+        "field_inn": "INN",
+        "field_inn_placeholder_individual": "12 digits (individual)",
+        "field_inn_placeholder_company": "10 digits (company)",
+        "field_kpp": "KPP",
+        "field_kpp_placeholder": "9 digits",
+        "field_ogrn": "OGRN",
+        "field_ogrn_placeholder": "13 digits",
+        "field_contact_name": "Contact person",
+        "field_contact_phone": "Phone",
+        "field_contact_email": "Email",
+        "field_contract_url": "Contract (link or file)",
+        "field_contract_url_placeholder": "https://...",
+        "field_commission": "Commission %",
+        "field_status": "Status",
+        "submit_create": "Save",
+        "submit_edit": "Save changes"
       },
       "status": {
         "ACTIVE": "Active",
-        "PAUSED": "Paused",
-        "BLOCKED": "Blocked"
+        "BLOCKED": "Blocked",
+        "ARCHIVED": "Archived"
       },
       "empty": {
-        "no_agents": "No agents yet"
+        "no_agents": "No agents yet",
+        "description": "Add your first agent to get started"
       },
       "toasts": {
         "created": "Agent created",
-        "error": "Failed"
+        "updated": "Changes saved",
+        "blocked": "Agent blocked",
+        "unblocked": "Agent unblocked",
+        "archived": "Agent archived",
+        "error": "Action failed"
       }
     },
     "freelanceAgentDetail": {
