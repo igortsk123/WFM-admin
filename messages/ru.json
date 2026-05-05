@@ -4514,6 +4514,27 @@
         "budget_updated": "Бюджет обновлён",
         "budget_exceeded": "Превышен бюджет",
         "error": "Не удалось выполнить операцию"
+      },
+      "freelance_link": {
+        "from_app_badge": "Из заявки на внештат №{id}",
+        "tooltip": "Этот бонусный пул создан как замена внештата. Полный внештат стоил бы {full} ₽, бонус ≈{bonus} ₽ (∼50%). Экономия: {saved} ₽.",
+        "kpi_replaced_title": "Заменено бонусом",
+        "kpi_replaced_value": "{hours}, экономия ≈{saved} ₽ vs полный внештат"
+      },
+      "preview": {
+        "section_title": "Превью «Как видит сотрудник в мобильном»",
+        "select_employee_label": "Выбрать сотрудника для предпросмотра",
+        "select_employee_placeholder": "Выберите сотрудника",
+        "visible_now_title": "Видит сейчас (до закрытия плановых задач)",
+        "visible_now_summary": "{sum} ₽ доступных бонусов на сегодня",
+        "visible_now_hint": "Конкретные задачи откроются после закрытия планового блока.",
+        "after_planned_title": "Откроется после планового блока",
+        "empty_no_bonuses": "Нет доступных бонусов для этого сотрудника"
+      },
+      "settings_menu": {
+        "visibility_label": "Видимость бонусов в мобильном",
+        "visibility_summary_only": "Только сумма до закрытия плановых",
+        "visibility_always": "Всегда показывать список"
       }
     }
   }

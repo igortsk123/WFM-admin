@@ -4513,6 +4513,27 @@
         "budget_updated": "Budget updated",
         "budget_exceeded": "Budget exceeded",
         "error": "Operation failed"
+      },
+      "freelance_link": {
+        "from_app_badge": "From freelance application №{id}",
+        "tooltip": "This bonus pool replaces a freelance request. Full freelance would cost {full} ₽, bonus ≈{bonus} ₽ (∼50%). Savings: {saved} ₽.",
+        "kpi_replaced_title": "Replaced with bonus",
+        "kpi_replaced_value": "{hours}, savings ≈{saved} ₽ vs full freelance"
+      },
+      "preview": {
+        "section_title": "Preview «What an employee sees in mobile»",
+        "select_employee_label": "Select employee for preview",
+        "select_employee_placeholder": "Select employee",
+        "visible_now_title": "Visible now (before planned tasks close)",
+        "visible_now_summary": "{sum} ₽ available bonuses today",
+        "visible_now_hint": "Specific tasks unlock after the planned block is closed.",
+        "after_planned_title": "Unlocks after planned block",
+        "empty_no_bonuses": "No bonuses available for this employee"
+      },
+      "settings_menu": {
+        "visibility_label": "Bonus visibility in mobile",
+        "visibility_summary_only": "Only total until planned closed",
+        "visibility_always": "Always show the list"
       }
     }
   }
