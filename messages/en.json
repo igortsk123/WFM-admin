@@ -6542,29 +6542,63 @@
       "retry": "Retry"
     },
     "agentEarnings": {
-      "page_title": "Earnings registry",
-      "page_subtitle": "Earnings by periods and registries",
+      "page_title": "My earnings",
+      "page_subtitle": "Agent commission accruals by service",
+      "actions": {
+        "export_csv": "Export CSV"
+      },
       "filters": {
-        "period": "Period",
-        "register": "Registry"
+        "date_range": "Period",
+        "freelancer": "Performer",
+        "freelancer_placeholder": "All performers",
+        "status": "Status",
+        "status_placeholder": "All statuses",
+        "clear_all": "Clear all"
       },
       "kpi": {
-        "total_amount": "Amount",
-        "agent_fee": "Agent fee",
-        "to_freelancers": "To performers",
-        "tax_withheld": "Tax withheld"
+        "accrued": "Accrued",
+        "paid": "Paid",
+        "pending": "Awaiting payout",
+        "avg_per_day": "Daily average"
       },
       "columns": {
         "date": "Date",
-        "service": "Service",
         "freelancer": "Performer",
-        "store": "Object",
-        "amount": "Amount",
-        "register": "Registry"
+        "service": "Service",
+        "gross_base": "Base amount",
+        "commission_pct": "%",
+        "commission_amount": "Commission",
+        "status": "Status",
+        "payout": "Payout"
+      },
+      "status": {
+        "CALCULATED": "Accrued",
+        "PAID": "Paid"
+      },
+      "payout_sheet": {
+        "title": "Payout details",
+        "amount_label": "Payout amount",
+        "date_label": "Payout date",
+        "ref_label": "Document reference",
+        "services_label": "Services in this payout",
+        "no_payout": "No linked payout"
+      },
+      "detail_sheet": {
+        "title": "Accrual details",
+        "section_earning": "Accrual",
+        "section_service": "Service",
+        "section_payout": "Payout status",
+        "payout_timeline_paid": "Paid",
+        "payout_timeline_processing": "Processing",
+        "payout_timeline_pending": "Pending"
       },
       "empty": {
-        "no_earnings": "No earnings for the period"
-      }
+        "title": "No accruals for the selected period.",
+        "description": "Try expanding the date range or adjusting filters."
+      },
+      "error_title": "Failed to load",
+      "error_description": "Could not load earnings registry. Please try again.",
+      "retry": "Retry"
     },
     "agentDocuments": {
       "page_title": "Documents",

@@ -175,7 +175,7 @@
     "ai": "ИИ-аналитика",
     "aiChat": "ИИ-чат",
     "aiSuggestions": "Предложения ИИ",
-    "documents": "Докуме������ты",
+    "documents": "Докуме��������ты",
     "help": "Помощь",
     "users": "Пользователи",
     "reports": "Отчёты",
@@ -743,7 +743,7 @@
       "override_section": "Переопределение настроек",
       "override_label": "Переопределить настройки типа работ",
       "override_hint_disabled": "Override доступен только региональному / директору сети / оператору",
-      "override_justification": "Обоснование изменений",
+      "override_justification": "Обосн��вание изменений",
       "override_justification_placeholder": "Укажите причину переопределения (минимум 10 символов)...",
       "field_manager_comment": "Комментарий менеджера",
       "field_manager_comment_placeholder": "Виден исполнителю...",
@@ -1001,7 +1001,7 @@
       "sidebar_status": "Статус",
       "sidebar_created": "Создано {date}",
       "sidebar_updated": "Обновлено {time}",
-      "sidebar_rejected_comment": "Причина отклонения",
+      "sidebar_rejected_comment": "Причина откл��нения",
       "sidebar_assignee": "Исполнитель",
       "sidebar_any_permission": "Любой {permission}",
       "sidebar_not_assigned": "Не назначен",
@@ -1976,7 +1976,7 @@
     "stores": {
       "page_title": "Магазины",
       "breadcrumbs": {
-        "home": "Главная",
+        "home": "Г��авная",
         "stores": "Магазины"
       },
       "counter": "{count, plural, one {# магазин} few {# магазина} many {# магазинов} other {# магазинов}}",
@@ -2746,7 +2746,7 @@
         "validation_name_required": "Укажите название"
       },
       "detail_sheet": {
-        "info_section": "Сведения",
+        "info_section": "Сведе��ия",
         "tags_section": "��еги",
         "ai_usage_section": "Использования ИИ",
         "history_section": "История",
@@ -2904,7 +2904,7 @@
           "password_sso_hint": "Аккаунт защищён через SMS-код Beyond Violet, пароль не используется",
           "totp_card": "Двухфакторная аутентификация (TOTP)",
           "totp_enabled": "Включена",
-          "totp_disabled": "Не настроена",
+          "totp_disabled": "Не настроен��",
           "totp_hint": "Работает офлайн с любым приложением (Yandex Key, Authy, FreeOTP)",
           "totp_setup": "Настроить",
           "totp_disable": "Отключить",
@@ -3097,7 +3097,7 @@
       "policies": {
         "default_card": "По умолчанию",
         "acceptance_policy": "Acceptance policy default",
-        "acceptance_policy_desc": "Применяется к новым задачам, если не выбрано вручную",
+        "acceptance_policy_desc": "Примен��ется к новым задачам, если не выбрано вручную",
         "acceptance_MANUAL": "Ручная проверка",
         "acceptance_AUTO": "Автоматическое принятие",
         "requires_photo": "Требовать фото при завершении",
@@ -3300,7 +3300,7 @@
         "not_configured": "Не подключено"
       },
       "ai_sources": {
-        "section_title": "Источники данных для ИИ-помощника",
+        "section_title": "Ис��очники данных для ИИ-помощника",
         "section_subtitle": "Эти источники питают аналитический модуль ИИ. Без них предложения будут менее точными",
         "hint_demo_alert": "ИИ-помощник работает в demo-режиме на статичных данных. Для реальных предложений подключите хотя бы Кассы и Остатки.",
         "hint_demo_link": "Что подключать в первую очередь?",
@@ -3345,7 +3345,7 @@
         },
         "supply": {
           "title": "Поставки",
-          "description": "План поставок и факт прихода товара. Позволяет ИИ п��едсказывать риск OOS до того как полка опустеет.",
+          "description": "План поставок и факт прихода т��вара. Позволяет ИИ п��едсказывать риск OOS до того как полка опустеет.",
           "stat_suppliers": "Поставщиков",
           "stat_week": "Поставок за неделю",
           "stat_last": "Последняя поставка",
@@ -3556,7 +3556,7 @@
       },
       "entity_type": {
         "task": "Задача",
-        "subtask": "Подзадача",
+        "subtask": "Подзад��ча",
         "user": "Сотрудник",
         "shift": "Смена",
         "store": "Магазин",
@@ -3639,7 +3639,7 @@
         "api_key.revoke": "API-ключ отозван",
         "webhook.create": "Webhook создан",
         "webhook.update": "Webhook обновлён",
-        "webhook.delete": "Webhook удалён",
+        "webhook.delete": "Webhook уд��лён",
         "regulation.create": "��егламент создан",
         "regulation.publish": "Регламент опубликован",
         "regulation.archive": "Регламент в архив",
@@ -4890,7 +4890,7 @@
         }
       },
       "context_banner": {
-        "general": "Общий чат с помощником",
+        "general": "Общий чат с пом��щником",
         "suggestion": "По пред��ожению: «{title}»",
         "goal": "По цели: «{title}»",
         "task": "По задаче: {id} «{title}»",
@@ -5695,7 +5695,7 @@
         "retroactive_alert_title": "Ретроактивная заявка",
         "retroactive_alert_desc": "Заявка зафиксирована задним числом для отчётности.",
         "external_alert_title": "Заявка из внешней HR-системы",
-        "external_alert_desc": "Заявка получена из HR-системы клиента ({ref}). Согласование пропускается, требуется только назначение исполнителя."
+        "external_alert_desc": "Заявка получена из HR-системы клиента ({ref}). Согласование пропускается, требуется только назначение испо��нителя."
       },
       "params_card": {
         "title": "Параметры заявки",
@@ -5841,7 +5841,7 @@
         "not_found_cta": "К списку заявок",
         "error_title": "Ошибка загрузки",
         "error_desc": "Не удалось загрузить заявку. Попробуйте снова.",
-        "error_retry": "Повторить",
+        "error_retry": "Повт��рить",
         "forbidden_title": "Нет доступа",
         "forbidden_desc": "Эта заявка не входит в ваш рабочий периметр."
       }
@@ -6516,7 +6516,7 @@
         "no_results_description": "Попробуйте изменить условия поиска или фильтр."
       },
       "toasts": {
-        "created": "Исполнитель добавлен",
+        "created": "Исполнитель ��обавлен",
         "error": "Не удалось"
       },
       "menu": {
@@ -6568,72 +6568,63 @@
       "retry": "Повторить"
     },
     "agentEarnings": {
-      "page_title": "Реестр доходов",
-      "page_subtitle": "Доходы по периодам и реестрам",
+      "page_title": "Мои доходы",
+      "page_subtitle": "Начисления агентского вознаграждения по услугам",
+      "actions": {
+        "export_csv": "Экспорт CSV"
+      },
       "filters": {
-        "period": "Период",
-        "limit": "Лимит",
-        "valid_from": "Действует с",
-        "valid_to": "Действует по",
-        "set_by": "Установил",
-        "usage": "Текущий статус",
-        "actions": "Действия"
+        "date_range": "Период",
+        "freelancer": "Исполнитель",
+        "freelancer_placeholder": "Все исполнители",
+        "status": "Статус",
+        "status_placeholder": "Все статусы",
+        "clear_all": "Очистить все"
       },
-      "indefinite": "Бессрочно",
-      "usage": {
-        "of": "из",
-        "indicative": "справочно по нормативам"
+      "kpi": {
+        "accrued": "Начислено",
+        "paid": "Выплачено",
+        "pending": "Ожидает выплаты",
+        "avg_per_day": "Среднее за день"
       },
-      "menu": {
-        "edit": "Изменить",
-        "terminate": "Завершить",
-        "history": "История изменений"
+      "columns": {
+        "date": "Дата",
+        "freelancer": "Исполнитель",
+        "service": "Услуга",
+        "gross_base": "Сумма базы",
+        "commission_pct": "%",
+        "commission_amount": "Агентское",
+        "status": "Статус",
+        "payout": "Выплата"
       },
-      "terminate_dialog": {
-        "title": "Завершить лимит",
-        "message": "Действие лимита будет завершено сегодня. Новые заявки на этот объект и период не будут блокироваться.",
-        "confirm": "Завершить"
+      "status": {
+        "CALCULATED": "Начислено",
+        "PAID": "Выплачено"
       },
-      "sheet": {
-        "create_title": "Установить лимит",
-        "edit_title": "Изменить лимит",
-        "object_label": "Объект",
-        "object_placeholder": "Выберите объект",
-        "period_label": "Период",
-        "period_placeholder": "Выберите период",
-        "amount_label": "Лимит, ₽",
-        "valid_from_label": "Действует с",
-        "valid_to_label": "Действует по",
-        "valid_to_placeholder": "Без ограничения (необязательно)",
-        "submit_create": "Установить",
-        "submit_edit": "Сохранить"
+      "payout_sheet": {
+        "title": "Детали выплаты",
+        "amount_label": "Сумма выплаты",
+        "date_label": "Дата выплаты",
+        "ref_label": "Номер документа",
+        "services_label": "Услуги в этой выплате",
+        "no_payout": "Нет связанной выплаты"
       },
-      "history_sheet": {
-        "title": "История изменений"
+      "detail_sheet": {
+        "title": "Детали начисления",
+        "section_earning": "Начисление",
+        "section_service": "Услуга",
+        "section_payout": "Статус выплаты",
+        "payout_timeline_paid": "Выплачено",
+        "payout_timeline_processing": "Обрабатывается",
+        "payout_timeline_pending": "Ожидает"
       },
       "empty": {
-        "no_limits_title": "Лимиты не настроены",
-        "no_limits_desc_regional": "Установите лимит, чтобы контролировать расходы на внештат по объектам.",
-        "no_limits_desc_supervisor": "Обратитесь к региональному директору для настройки лимитов."
+        "title": "За выбранный период начислений не было.",
+        "description": "Попробуйте расширить диапазон дат или изменить фильтры."
       },
-      "mobile_tab_placeholder": "Выберите вкладку",
-      "actions": {
-        "add": "+ Установить лимит"
-      },
-      "validation": {
-        "amount_required": "Укажите лимит",
-        "amount_positive": "Лимит должен быть больше нуля",
-        "valid_from_required": "Укажите дату начала",
-        "valid_to_after_from": "Дата окончания должна быть позже даты начала",
-        "duplicate": "Лимит для этого объекта и периода уже существует"
-      },
-      "toasts": {
-        "created": "Лимит установлен",
-        "updated": "Лимит обновлён",
-        "terminated": "Лимит завершён",
-        "error": "Не удалось выполнить действие"
-      },
-      "module_disabled": "Модуль внештата отключён"
+      "error_title": "Не удалось загрузить",
+      "error_description": "Не удалось загрузить реестр доходов. Попробуйте снова.",
+      "retry": "Повторить"
     }
   },
   "freelanceBudgetLimits": {
