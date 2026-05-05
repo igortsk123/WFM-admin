@@ -175,7 +175,7 @@
     "ai": "ИИ-аналитика",
     "aiChat": "ИИ-чат",
     "aiSuggestions": "Предложения ИИ",
-    "documents": "Документы",
+    "documents": "Докуме��ты",
     "help": "Помощь",
     "users": "Пользователи",
     "reports": "Отчёты",
@@ -928,7 +928,7 @@
       "btn_reject": "Отклонить",
       "approve_dialog_title": "Принять задачу",
       "approve_dialog_desc": "После принятия задача будет закрыта. Комментарий необязателен.",
-      "approve_comment_label": "Комментарий (необязательно)",
+      "approve_comment_label": "Комментарий (необязател��но)",
       "approve_comment_placeholder": "Всё отлично, задача выполнена верно...",
       "approve_submit": "Принять задачу",
       "approve_toast": "Задача принята",
@@ -1269,7 +1269,7 @@
       "col_subtask": "Подзадача",
       "col_task": "Задача",
       "col_store": "Магазин",
-      "col_proposed_by": "Предл��жил",
+      "col_proposed_by": "Пр��дл��жил",
       "col_duration": "Длительность",
       "col_hints": "Подсказок",
       "col_created": "Создано",
@@ -2145,7 +2145,7 @@
       "filters": {
         "store": "Магазин",
         "store_all": "Вся сеть",
-        "zone": "Зона",
+        "zone": "��она",
         "position": "Должность",
         "user": "Сотрудник",
         "status": "Статус",
@@ -2305,7 +2305,7 @@
         "mark_late_confirm": "Сохранить",
         "mark_overtime_title": "Зафиксировать переработку",
         "mark_overtime_label": "Причина переработки",
-        "mark_overtime_placeholder": "Например: дополнительная задача",
+        "mark_overtime_placeholder": "Напр��мер: дополнительная задача",
         "mark_overtime_confirm": "Сохранить",
         "force_close_title": "Закрыть смену принудительно?",
         "force_close_description": "Смена будет помечена как закрытая системой. Сотрудник получит уведомление.",
@@ -2903,7 +2903,7 @@
           "totp_disable_description": "Введите текущий код из приложения для подтверждения",
           "sessions_card": "Активные сессии",
           "session_current": "Текущая сессия",
-          "session_revoke": "Завершить",
+          "session_revoke": "Завершит��",
           "session_revoke_all": "Завершить все остальные",
           "session_revoke_all_confirm_title": "Завершить все остальные сессии?",
           "session_revoke_all_confirm_message": "Все другие устройства будут выведены из аккаунта"
@@ -3337,7 +3337,7 @@
           "title": "Промо-активности",
           "description": "Календарь промо-акций, цены, планограммы. ИИ предлагает задачи по выкладке к старту промо.",
           "stat_active": "Активных промо",
-          "stat_tomorrow": "Стартует завтра",
+          "stat_tomorrow": "Стартует завт��а",
           "stat_today_end": "Заканчивается сегодня",
           "sheet_title": "Подключить промо"
         },
@@ -4564,7 +4564,7 @@
         "select_employee_placeholder": "Выберите сотрудника",
         "visible_now_title": "Видит сейчас (до закрытия плановых задач)",
         "visible_now_summary": "{sum} ₽ доступных бонусов на сегодня",
-        "visible_now_hint": "Конкретные задачи откроются после закрытия планового блока.",
+        "visible_now_hint": "Конкретные задачи откроютс�� после закрытия планового блока.",
         "after_planned_title": "Откроется после планового блока",
         "empty_no_bonuses": "Нет доступных бонусов для этого сотрудника"
       },
@@ -4770,7 +4770,7 @@
         "bulk_hint": "Массовое одобрение = принять без редактирования. Если нужны правки — открывайте по одному."
       },
       "detail_panel": {
-        "empty_title": "Выберите предложение слева",
+        "empty_title": "Выберите предло��ение слева",
         "empty_subtitle": "Откроется подробная информация и возможность редактирования",
         "what_proposed_section": "Что предлагается",
         "rationale_section": "Почему ИИ это предложил",
@@ -5075,7 +5075,7 @@
         },
         "period_label": "Период когда заметили",
         "details_label": "Подробнее",
-        "auto_attached_hint": "К сообщению автоматически приложатся метрики и последние 10 reject-комментариев",
+        "auto_attached_hint": "К сообщению автоматически приложатся метрики и последние 10 reject-комментари��в",
         "submit": "Отправить"
       },
       "empty": {
@@ -5214,7 +5214,7 @@
       "toasts": {
         "saved_draft": "Версия сохранена как черновик",
         "activated": "Версия активирована",
-        "rolled_back": "Откат выполнен",
+        "rolled_back": "От��ат выполнен",
         "generated": "Сгенерировано {count} вариантов",
         "ab_test_started": "A/B тест запущен",
         "ab_test_finished": "Тест завершён",
@@ -5238,7 +5238,7 @@
         "reviewed_share_title": "Доля проверяемых задач",
         "reviewed_share_value": "{percent}%",
         "reviewed_share_prev": "было {percent}%",
-        "reviewed_share_saved": "Сбережено: {hours} ч/мес",
+        "reviewed_share_saved": "��бережено: {hours} ч/мес",
         "defect_rate_title": "Defect rate",
         "defect_rate_value": "{percent}%",
         "defect_rate_hint": "Доля задач с проблемами, прошедших sampling"
@@ -5743,7 +5743,7 @@
       "filters": {
         "period": "Период",
         "status": "Статус",
-        "store": "Магазин"
+        "store": "Магаз��н"
       },
       "status": {
         "OPEN": "Открыт",
@@ -5776,41 +5776,95 @@
     },
     "freelanceBudgetLimits": {
       "page_title": "Лимиты бюджета на внештат",
-      "page_subtitle": "Настройка месячных лимитов на объекты",
+      "page_subtitle": "Настройка лимитов расходов на внештатных исполнителей по объектам",
       "breadcrumbs": {
         "home": "Главная",
         "freelance": "Внештат",
         "limits": "Лимиты"
       },
-      "actions": {
-        "set_default": "Задать по сети",
-        "save": "Сохранить",
-        "reset": "Сбросить"
+      "info_banner": "Лимиты предотвращают перерасход на внештатных исполнителей. При превышении блокируется согласование внутренних заявок (источник INTERNAL — независимо от того, платим мы или клиент сам). Для заявок из внешней HR-системы (EXTERNAL) лимиты только справочные, без блокировки.",
+      "tabs": {
+        "active": "Активные",
+        "expired": "Истёкшие"
       },
       "filters": {
+        "object": "Объект",
+        "object_placeholder": "Все объекты",
         "period": "Период",
-        "store_type": "Тип объекта"
+        "period_placeholder": "Все периоды",
+        "search_object": "Поиск объекта..."
+      },
+      "period": {
+        "DAY": "День",
+        "WEEK": "Неделя",
+        "MONTH": "Месяц",
+        "all": "Все"
       },
       "table": {
-        "columns": {
-          "object": "Объект",
-          "current_limit": "Текущий лимит",
-          "spent": "Потрачено",
-          "new_limit": "Новый лимит",
-          "diff": "Изменение"
-        }
+        "object": "Объект",
+        "period": "Период",
+        "limit": "Лимит",
+        "valid_from": "Действует с",
+        "valid_to": "Действует по",
+        "set_by": "Установил",
+        "usage": "Текущий статус",
+        "actions": "Действия"
       },
-      "presets": {
-        "by_revenue": "По выручке",
-        "by_size": "По площади",
-        "by_employees": "По штату",
-        "manual": "Вручную"
+      "indefinite": "Бессрочно",
+      "usage": {
+        "of": "из",
+        "indicative": "справочно по нормативам"
       },
-      "warning_overspent": "Объект уже превысил предложенный лимит",
+      "menu": {
+        "edit": "Изменить",
+        "terminate": "Завершить",
+        "history": "История изменений"
+      },
+      "terminate_dialog": {
+        "title": "Завершить лимит",
+        "message": "Действие лимита будет завершено сегодня. Новые заявки на этот объект и период не будут блокироваться.",
+        "confirm": "Завершить"
+      },
+      "sheet": {
+        "create_title": "Установить лимит",
+        "edit_title": "Изменить лимит",
+        "object_label": "Объект",
+        "object_placeholder": "Выберите объект",
+        "period_label": "Период",
+        "period_placeholder": "Выберите период",
+        "amount_label": "Лимит, ₽",
+        "valid_from_label": "Действует с",
+        "valid_to_label": "Действует по",
+        "valid_to_placeholder": "Без ограничения (необязательно)",
+        "submit_create": "Установить",
+        "submit_edit": "Сохранить"
+      },
+      "history_sheet": {
+        "title": "История изменений"
+      },
+      "empty": {
+        "no_limits_title": "Лимиты не настроены",
+        "no_limits_desc_regional": "Установите лимит, чтобы контролировать расходы на внештат по объектам.",
+        "no_limits_desc_supervisor": "Обратитесь к региональному директору для настройки лимитов."
+      },
+      "mobile_tab_placeholder": "Выберите вкладку",
+      "actions": {
+        "add": "+ Установить лимит"
+      },
+      "validation": {
+        "amount_required": "Укажите лимит",
+        "amount_positive": "Лимит должен быть больше нуля",
+        "valid_from_required": "Укажите дату начала",
+        "valid_to_after_from": "Дата окончания должна быть позже даты начала",
+        "duplicate": "Лимит для этого объекта и периода уже существует"
+      },
       "toasts": {
-        "saved": "Лимиты сохранены",
-        "error": "Не удалось"
-      }
+        "created": "Лимит установлен",
+        "updated": "Лимит обновлён",
+        "terminated": "Лимит завершён",
+        "error": "Не удалось выполнить действие"
+      },
+      "module_disabled": "Модуль внештата отключён"
     },
     "freelanceAgents": {
       "page_title": "Справочник агентов",

@@ -5775,41 +5775,95 @@
     },
     "freelanceBudgetLimits": {
       "page_title": "Freelance budget limits",
-      "page_subtitle": "Per-object monthly limits",
+      "page_subtitle": "Control freelance spending limits per object",
       "breadcrumbs": {
         "home": "Home",
         "freelance": "Freelance",
         "limits": "Limits"
       },
-      "actions": {
-        "set_default": "Set network default",
-        "save": "Save",
-        "reset": "Reset"
+      "info_banner": "Limits prevent overspending on freelance workers. Exceeding a limit blocks approval of internal applications (INTERNAL source — regardless of who pays). Applications from external HR systems (EXTERNAL) are advisory-only, without blocking.",
+      "tabs": {
+        "active": "Active",
+        "expired": "Expired"
       },
       "filters": {
+        "object": "Object",
+        "object_placeholder": "All objects",
         "period": "Period",
-        "store_type": "Object type"
+        "period_placeholder": "All periods",
+        "search_object": "Search object..."
+      },
+      "period": {
+        "DAY": "Day",
+        "WEEK": "Week",
+        "MONTH": "Month",
+        "all": "All"
       },
       "table": {
-        "columns": {
-          "object": "Object",
-          "current_limit": "Current limit",
-          "spent": "Spent",
-          "new_limit": "New limit",
-          "diff": "Change"
-        }
+        "object": "Object",
+        "period": "Period",
+        "limit": "Limit",
+        "valid_from": "Valid from",
+        "valid_to": "Valid to",
+        "set_by": "Set by",
+        "usage": "Current usage",
+        "actions": "Actions"
       },
-      "presets": {
-        "by_revenue": "By revenue",
-        "by_size": "By area",
-        "by_employees": "By headcount",
-        "manual": "Manual"
+      "indefinite": "Indefinite",
+      "usage": {
+        "of": "of",
+        "indicative": "advisory by norms"
       },
-      "warning_overspent": "Object already exceeds the proposed limit",
+      "menu": {
+        "edit": "Edit",
+        "terminate": "Terminate",
+        "history": "Change history"
+      },
+      "terminate_dialog": {
+        "title": "Terminate limit",
+        "message": "The limit will be terminated today. New applications for this object and period will no longer be blocked.",
+        "confirm": "Terminate"
+      },
+      "sheet": {
+        "create_title": "Set limit",
+        "edit_title": "Edit limit",
+        "object_label": "Object",
+        "object_placeholder": "Select object",
+        "period_label": "Period",
+        "period_placeholder": "Select period",
+        "amount_label": "Limit, ₽",
+        "valid_from_label": "Valid from",
+        "valid_to_label": "Valid to",
+        "valid_to_placeholder": "No end date (optional)",
+        "submit_create": "Set limit",
+        "submit_edit": "Save"
+      },
+      "history_sheet": {
+        "title": "Change history"
+      },
+      "empty": {
+        "no_limits_title": "No limits configured",
+        "no_limits_desc_regional": "Set a limit to control freelance spending per object.",
+        "no_limits_desc_supervisor": "Contact your regional director to configure limits."
+      },
+      "mobile_tab_placeholder": "Select tab",
+      "actions": {
+        "add": "+ Set limit"
+      },
+      "validation": {
+        "amount_required": "Specify a limit amount",
+        "amount_positive": "Limit must be greater than zero",
+        "valid_from_required": "Specify a start date",
+        "valid_to_after_from": "End date must be after start date",
+        "duplicate": "A limit for this object and period already exists"
+      },
       "toasts": {
-        "saved": "Limits saved",
-        "error": "Failed"
-      }
+        "created": "Limit set",
+        "updated": "Limit updated",
+        "terminated": "Limit terminated",
+        "error": "Action failed"
+      },
+      "module_disabled": "Freelance module is disabled"
     },
     "freelanceAgents": {
       "page_title": "Agents directory",
