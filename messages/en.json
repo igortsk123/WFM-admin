@@ -4668,6 +4668,143 @@
         "exported": "File exported",
         "error": "Operation failed"
       }
+    },
+    "aiSuggestions": {
+      "page_title": "AI Suggestions",
+      "page_subtitle": "Analytics → concrete actions. Accept, edit or clarify with AI",
+      "breadcrumbs": {
+        "home": "Home",
+        "ai_suggestions": "AI Suggestions"
+      },
+      "actions": {
+        "history": "History",
+        "ai_settings": "AI Settings",
+        "accept": "Accept",
+        "edit": "Edit",
+        "reject": "Reject",
+        "ask_ai": "Ask AI",
+        "accept_with_changes": "Accept with changes & create",
+        "accept_and_create": "Accept & create",
+        "ask_ai_more": "Ask AI for more",
+        "reset_to_proposal": "Reset to AI proposal",
+        "bulk_accept_all": "Accept all as is",
+        "bulk_reject_all": "Reject all",
+        "bulk_clear_selection": "Clear selection"
+      },
+      "stats": {
+        "new_today": "New today",
+        "in_progress": "In progress",
+        "accepted_week": "Accepted this week",
+        "rejected_week": "Rejected this week",
+        "rejected_review_link": "review reasons"
+      },
+      "tabs": {
+        "all": "All",
+        "pending": "New",
+        "in_progress": "In progress",
+        "accepted": "Accepted",
+        "rejected": "Rejected"
+      },
+      "filters": {
+        "type_label": "Type",
+        "scope_label": "Object",
+        "priority_label": "AI priority",
+        "period_label": "Period",
+        "clear": "Clear"
+      },
+      "type": {
+        "TASK_SUGGESTION": "Task",
+        "GOAL_SUGGESTION": "Goal",
+        "BONUS_TASK_SUGGESTION": "Bonus task",
+        "INSIGHT": "Insight"
+      },
+      "priority": {
+        "high": "High",
+        "medium": "Medium",
+        "low": "Low"
+      },
+      "card": {
+        "rationale_title": "Why AI proposed",
+        "data_sources_label": "Data sources",
+        "edited_chip": "Edited",
+        "select_for_bulk": "Select for bulk action",
+        "selected_count": "Selected {count} suggestions",
+        "bulk_hint": "Bulk approve = accept without editing. For changes — open one by one."
+      },
+      "detail_panel": {
+        "empty_title": "Select a suggestion",
+        "empty_subtitle": "Detailed info and editing will open here",
+        "what_proposed_section": "What's proposed",
+        "rationale_section": "Why AI proposed",
+        "related_data_section": "Related data",
+        "actions_section": "Actions",
+        "edit_hint": "You can adjust any field before accepting. Each edit is saved — the system learns from your decisions.",
+        "discount_locked_hint": "Discount size is set by AI based on past performance. To change — reject and ask AI.",
+        "ai_remembered_hint": "Last time for similar tasks you changed {field} from {before} to {after}. Remember and propose by default?",
+        "remember_yes": "Yes, remember",
+        "remember_no": "No, don't apply"
+      },
+      "task_form_fields": {
+        "title": "Task title",
+        "description": "Description",
+        "type": "Task type",
+        "store": "Store",
+        "zone": "Zone",
+        "work_type": "Work type",
+        "planned_minutes": "Planned minutes",
+        "scheduled_start": "Scheduled start",
+        "deadline": "Deadline",
+        "assignee": "Assignee",
+        "by_permission": "By permission",
+        "requires_photo": "Require photo",
+        "manager_comment": "Manager comment",
+        "marketing_channel": "Marketing channel",
+        "discount_pct": "Discount %"
+      },
+      "edit_reason_chips": {
+        "promo_parallel": "There is a parallel promo",
+        "size_problematic": "This size is usually problematic",
+        "free_employee_better": "A free employee is more suitable",
+        "other": "Other reason"
+      },
+      "reject_dialog": {
+        "title": "Reject the suggestion?",
+        "reason_label": "Reason (required)",
+        "reason_placeholder": "Describe in more detail...",
+        "reason_options": {
+          "not_relevant": "Not relevant now",
+          "already_in_progress": "Already in progress",
+          "disagree": "Disagree with analysis",
+          "too_general": "Too general",
+          "other": "Other"
+        },
+        "confirm": "Reject"
+      },
+      "bulk_reject_dialog": {
+        "title": "Reject {count} suggestions?",
+        "reason_label": "Common reason for all (required)",
+        "confirm": "Reject all"
+      },
+      "empty": {
+        "no_pending_title": "No new suggestions yet",
+        "no_pending_subtitle": "AI is analysing data. New suggestions will appear within an hour",
+        "no_filtered_title": "Nothing found",
+        "no_filtered_subtitle": "Reset filters or pick another period"
+      },
+      "forbidden": {
+        "title": "Access restricted",
+        "subtitle": "Available only for supervisors and management"
+      },
+      "read_only_banner": "View-only mode. Decisions on AI suggestions are made by supervisors or network management.",
+      "read_only_tooltip": "Decision is made by supervisor or network management",
+      "toasts": {
+        "accepted": "Created: {entity}",
+        "rejected": "Suggestion rejected",
+        "bulk_accepted": "Accepted {count} suggestions",
+        "bulk_rejected": "Rejected {count} suggestions",
+        "remembered": "AI will remember for similar cases",
+        "error": "Operation failed"
+      }
     }
   }
 }
