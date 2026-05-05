@@ -106,6 +106,7 @@ const NAV_GROUPS: NavGroup[] = [
       { labelKey: "audit", href: ADMIN_ROUTES.audit, icon: History, status: "ready" },
       { labelKey: "ai_coach", href: ADMIN_ROUTES.aiCoach, icon: Sparkles, status: "ready" },
       { labelKey: "risk_rules", href: ADMIN_ROUTES.riskRules, icon: Layers, status: "ready" },
+      { labelKey: "leaderboards", href: ADMIN_ROUTES.leaderboards, icon: Award, status: "ready" },
     ],
   },
 ]

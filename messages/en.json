@@ -5319,6 +5319,131 @@
         "simulation_done": "Simulation done",
         "error": "Operation failed"
       }
+    },
+    "leaderboards": {
+      "page_title": "Leaderboards",
+      "page_subtitle": "Team, growth, challenges",
+      "beta_badge": "Beta",
+      "breadcrumbs": {
+        "home": "Home",
+        "future": "Future",
+        "leaderboards": "Leaderboards"
+      },
+      "filters": {
+        "period_week": "Week",
+        "period_month": "Month",
+        "period_quarter": "Quarter",
+        "store_label": "Store"
+      },
+      "actions": {
+        "create_challenge": "Create challenge",
+        "details": "Details",
+        "edit": "Edit",
+        "cancel": "Cancel"
+      },
+      "tabs": {
+        "users": "Employees",
+        "stores": "Stores",
+        "teams": "Teams",
+        "challenges": "Challenges"
+      },
+      "podium": {
+        "first": "1st",
+        "second": "2nd",
+        "third": "3rd"
+      },
+      "users_tab": {
+        "table_title": "Full ranking",
+        "columns": {
+          "rank": "#",
+          "user": "Employee",
+          "store": "Store",
+          "score": "Score",
+          "streak": "Streak",
+          "trend": "Δ rank"
+        }
+      },
+      "stores_tab": {
+        "columns": {
+          "rank": "#",
+          "store": "Store",
+          "city": "City",
+          "score": "Score",
+          "employees": "Employees",
+          "streak_weeks": "Streak weeks",
+          "trend": "Δ rank"
+        }
+      },
+      "teams_tab": {
+        "section_subtitle": "Groups of employees by shift or position",
+        "members_count": "{count} members",
+        "score_label": "Score",
+        "activity_label": "Activity",
+        "drawer_title": "Team: {name}",
+        "drawer_members": "Members"
+      },
+      "challenges_tab": {
+        "filter_active": "Active",
+        "filter_completed": "Completed",
+        "filter_upcoming": "Upcoming",
+        "status": {
+          "ACTIVE": "Active",
+          "COMPLETED": "Completed",
+          "UPCOMING": "Upcoming"
+        },
+        "goal_label": "Goal: {value}",
+        "progress_label": "{current} / {target} ({percent}%)",
+        "participants_label": "Participants: {count}",
+        "reward_label": "Reward",
+        "drawer_title": "Challenge: {title}",
+        "drawer_participants": "Participants",
+        "drawer_leaderboard": "Challenge leaderboard"
+      },
+      "create_dialog": {
+        "title": "Create challenge",
+        "title_label": "Title",
+        "description_label": "Description",
+        "period_label": "Period",
+        "goal_type_label": "Goal type",
+        "goal_type_options": {
+          "TASKS_COUNT": "Task count",
+          "HOURS": "Hours",
+          "COMPLETION_RATE": "Completion rate",
+          "NO_REJECTS": "No rejects"
+        },
+        "goal_value_label": "Value",
+        "work_type_label": "Work type",
+        "zone_label": "Zone",
+        "participants_label": "Participants",
+        "participants_options": {
+          "ALL_STORE_EMPLOYEES": "All store employees",
+          "BY_POSITION": "By position",
+          "SPECIFIC_USERS": "Specific people"
+        },
+        "reward_label": "Reward",
+        "submit": "Create"
+      },
+      "cancel_dialog": {
+        "title": "Cancel challenge?",
+        "description": "All participants will be notified",
+        "confirm": "Cancel"
+      },
+      "empty": {
+        "no_users_title": "Leaderboard unavailable",
+        "no_users_subtitle": "Minimum 3 employees needed",
+        "no_challenges_title": "No challenges yet",
+        "no_challenges_cta": "Create first"
+      },
+      "states": {
+        "forbidden_title": "Access restricted",
+        "forbidden_subtitle": "No permission to view"
+      },
+      "toasts": {
+        "challenge_created": "Challenge created",
+        "challenge_updated": "Challenge updated",
+        "challenge_cancelled": "Challenge cancelled",
+        "error": "Operation failed"
+      }
     }
   }
 }
