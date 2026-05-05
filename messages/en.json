@@ -5627,6 +5627,166 @@
         "applications": "Applications",
         "detail": "Application"
       },
+      "header": {
+        "title": "Application #{shortId} • {storeName}",
+        "created_by": "Created by {name} ({role}) {time}",
+        "source_internal": "Internal",
+        "source_external": "External HR",
+        "urgent_alert_title": "Urgent application",
+        "urgent_alert_desc": "Standard 3-day buffer not observed.",
+        "retroactive_alert_title": "Retroactive application",
+        "retroactive_alert_desc": "Application recorded retroactively for reporting.",
+        "external_alert_title": "Application from external HR system",
+        "external_alert_desc": "Application received from client HR system ({ref}). Approval skipped — only assignee assignment is needed."
+      },
+      "params_card": {
+        "title": "Application parameters",
+        "planned_date": "Shift date",
+        "hours_requested": "Requested hours",
+        "hours_approved": "Approved",
+        "hours_unit": "h",
+        "work_type": "Work type",
+        "location": "Location",
+        "comment": "Requester comment",
+        "no_comment": "—"
+      },
+      "finance_card": {
+        "title": "Financial picture",
+        "client_direct_banner": "Costs are indicative per norms. Payment handled by client.",
+        "external_banner": "Application from external HR system. Budget limits shown for reference only — no blocking.",
+        "cost_label": "Estimated cost",
+        "cost_breakdown": "{hours} h × {rate} ₽/h",
+        "budget_usage_title": "Budget usage ({period})",
+        "budget_limit": "Limit",
+        "budget_actual": "Spent",
+        "budget_planned": "Planned today",
+        "budget_overspend": "Overspend",
+        "period_DAY": "day",
+        "period_WEEK": "week",
+        "period_MONTH": "month",
+        "simulator_title": "If I approve…",
+        "simulator_hours_label": "Hours to approve",
+        "simulator_new_cost": "New cost",
+        "simulator_new_budget": "Budget after approval",
+        "simulator_overspend_after": "Overspend after approval",
+        "simulator_blocked_alert": "Approval blocked: {period} limit exceeded by {pct}%",
+        "simulator_blocked_details": "After approval spend will be {actual} ₽ vs limit {limit} ₽."
+      },
+      "history_card": {
+        "title": "Change history",
+        "collapse_hint": "Collapse",
+        "expand_hint": "Expand",
+        "action_CREATED": "Application created",
+        "action_APPROVED_FULL": "Approved in full",
+        "action_APPROVED_PARTIAL": "Partially approved",
+        "action_REJECTED": "Rejected",
+        "action_REPLACED_WITH_BONUS": "Replaced with bonus pool",
+        "action_APPROVED_MIXED": "Mixed approval",
+        "action_CANCELLED": "Cancelled",
+        "action_DRAFT": "Draft",
+        "action_PENDING": "Pending review"
+      },
+      "decision_card": {
+        "title": "Make a decision",
+        "option_full": "Approve in full",
+        "option_partial": "Approve partially",
+        "option_reject": "Reject",
+        "option_bonus": "Replace with bonus pool",
+        "option_mixed": "Mixed (part freelance, part bonus)",
+        "partial_hours_label": "Hours to approve",
+        "reject_reason_label": "Rejection reason",
+        "reject_reason_hint": "At least 10 characters",
+        "bonus_info": "Creating a bonus pool for {hours} h for store staff. Bonus cost ≈ 2x cheaper than freelance.",
+        "bonus_savings": "Savings: {savings} ₽",
+        "mixed_freelance_label": "Freelance hours",
+        "mixed_bonus_label": "Bonus hours",
+        "mixed_sum_hint": "Sum must equal {total} h",
+        "mixed_savings": "Savings vs full freelance: {savings} ₽",
+        "comment_label": "Decision comment",
+        "comment_optional": "Optional",
+        "comment_required": "Required for rejection",
+        "submit_label": "Submit decision",
+        "submit_blocked_tooltip": "Approval blocked: budget exceeded",
+        "confirm_dialog_title": "Confirm decision on application?",
+        "confirm_dialog_desc": "Selected: {decision}",
+        "confirm_dialog_ok": "Confirm"
+      },
+      "assignment_card": {
+        "title": "Assignee",
+        "approved_summary": "Approved {hours} h on {date}",
+        "no_assignee_warning": "No assignee assigned",
+        "assign_cta": "Assign performer",
+        "create_tasks_cta": "Create shift tasks",
+        "assignment_status_SCHEDULED": "Scheduled",
+        "assignment_status_CHECKED_IN": "Checked in",
+        "assignment_status_WORKING": "Working",
+        "assignment_status_DONE": "Done",
+        "assignment_status_NO_SHOW": "No show",
+        "remove_assignment": "Remove",
+        "sheet_title": "Assign performer",
+        "sheet_phone_label": "Performer phone",
+        "sheet_phone_placeholder": "+7 (XXX) XXX-XX-XX",
+        "sheet_phone_not_found": "Performer not found — a new one will be created",
+        "sheet_new_freelancer_label": "Create new performer",
+        "sheet_agent_label": "Agent",
+        "sheet_agent_placeholder": "Select agent",
+        "sheet_agent_optional": "Optional",
+        "sheet_start_label": "Shift start",
+        "sheet_end_label": "Shift end",
+        "sheet_submit": "Assign",
+        "sheet_cancel": "Cancel"
+      },
+      "external_block": {
+        "title": "Application from external HR system",
+        "desc": "Approval completed on client side. Only assignee assignment and task creation is needed.",
+        "ref_label": "External reference for tracing"
+      },
+      "terminal_block": {
+        "rejected_title": "Application rejected",
+        "bonus_title": "Replaced with bonus pool",
+        "cancelled_title": "Application cancelled",
+        "reason_label": "Reason",
+        "decided_by": "Decision by",
+        "decided_at": "Decision date",
+        "go_bonus_pool": "Go to bonus pool"
+      },
+      "related_card": {
+        "title": "Related entities",
+        "bonus_pool": "Bonus pool",
+        "services": "Services for application",
+        "payout": "Payout"
+      },
+      "status": {
+        "DRAFT": "Draft",
+        "PENDING": "Pending",
+        "APPROVED_FULL": "Approved",
+        "APPROVED_PARTIAL": "Partially approved",
+        "REJECTED": "Rejected",
+        "REPLACED_WITH_BONUS": "Replaced with bonus",
+        "MIXED": "Mixed",
+        "CANCELLED": "Cancelled"
+      },
+      "toasts": {
+        "decision_saved": "Decision saved",
+        "bonus_pool_created": "Bonus pool created",
+        "bonus_pool_link": "Go?",
+        "assignment_created": "Performer assigned",
+        "assignment_removed": "Assignment removed",
+        "error": "Failed to perform action",
+        "conflict": "Data has changed. Please refresh.",
+        "budget_blocked": "Approval blocked: budget exceeded"
+      },
+      "states": {
+        "loading": "Loading application...",
+        "not_found_title": "Application not found",
+        "not_found_desc": "An application with this ID does not exist or has been deleted.",
+        "not_found_cta": "Back to applications",
+        "error_title": "Loading error",
+        "error_desc": "Failed to load application. Please try again.",
+        "error_retry": "Retry",
+        "forbidden_title": "Access denied",
+        "forbidden_desc": "This application is outside your working scope."
+      },
       "actions": {
         "approve": "Approve",
         "reject": "Reject",
@@ -5635,48 +5795,7 @@
         "edit": "Edit",
         "cancel": "Cancel application"
       },
-      "sections": {
-        "summary": "Summary",
-        "service_details": "Service details",
-        "budget": "Budget",
-        "history": "Approval history",
-        "linked_bonus": "Linked bonus pool",
-        "documents": "Documents"
-      },
-      "summary": {
-        "store": "Object",
-        "service": "Service",
-        "amount": "Amount",
-        "agent": "Agent",
-        "no_agent": "Without agent",
-        "created_by": "Author",
-        "created_at": "Created"
-      },
-      "history_event": {
-        "submitted": "Submitted for approval",
-        "approved": "Approved",
-        "rejected": "Rejected",
-        "revision_requested": "Revisions requested",
-        "replaced_with_bonus": "Replaced with bonus",
-        "fulfilled": "Fulfilled"
-      },
-      "approve_dialog": {
-        "title": "Approve application?",
-        "description": "{amount} ₽ will be charged to {store} budget",
-        "confirm": "Approve"
-      },
-      "reject_dialog": {
-        "title": "Reject application?",
-        "reason_label": "Reason (required)",
-        "confirm": "Reject"
-      },
-      "replace_bonus_dialog": {
-        "title": "Replace application with a bonus pool?",
-        "description": "Bonus ≈50% of full cost. Savings: {saved} ₽",
-        "amount_label": "Bonus pool amount, ₽",
-        "confirm": "Create bonus"
-      },
-      "toasts": {
+      "toasts_legacy": {
         "approved": "Application approved",
         "rejected": "Application rejected",
         "replaced": "Application replaced with bonus",

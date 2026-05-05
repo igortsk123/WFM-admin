@@ -304,7 +304,7 @@
     "production_line": "Производственная линия"
   },
   "role": {
-    "title": "Роль",
+    "title": "Р��ль",
     "titlePlural": "Роли",
     "STORE_DIRECTOR": "Директор магазина",
     "SUPERVISOR": "Супервайзер",
@@ -587,7 +587,7 @@
     "today": "Сегодня",
     "yesterday": "Вчера",
     "tomorrow": "Завтра",
-    "days_ago": "{n, plural, one {# день назад} few {# дня назад} other {# дней назад}}"
+    "days_ago": "{n, plural, one {# день ��азад} few {# дня назад} other {# дней назад}}"
   },
   "store": {
     "title": "Магазин",
@@ -1128,7 +1128,7 @@
         "details_link": "Подробнее",
         "stat_staff_label": "Закрыто штатными",
         "stat_staff_subtext": "Основной ресурс",
-        "stat_bonus_label": "Закрыто бонусами",
+        "stat_bonus_label": "Закрыто бонуса��и",
         "stat_bonus_subtext": "Дешевле внештата примерно в 2 раза",
         "stat_freelance_label": "Требует внештат",
         "stat_freelance_subtext": "Когда своих ресурсов недостаточно",
@@ -1269,7 +1269,7 @@
       "col_subtask": "Подзадача",
       "col_task": "Задача",
       "col_store": "Магазин",
-      "col_proposed_by": "Предл��жил",
+      "col_proposed_by": "Пр��дл��жил",
       "col_duration": "Длительность",
       "col_hints": "Подсказок",
       "col_created": "Создано",
@@ -2145,7 +2145,7 @@
       "filters": {
         "store": "Магазин",
         "store_all": "Вся сеть",
-        "zone": "Зона",
+        "zone": "��она",
         "position": "Должность",
         "user": "Сотрудник",
         "status": "Статус",
@@ -2305,7 +2305,7 @@
         "mark_late_confirm": "Сохранить",
         "mark_overtime_title": "Зафиксировать переработку",
         "mark_overtime_label": "Причина переработки",
-        "mark_overtime_placeholder": "Например: дополнительная задача",
+        "mark_overtime_placeholder": "Напр��мер: дополнительная задача",
         "mark_overtime_confirm": "Сохранить",
         "force_close_title": "Закрыть смену принудительно?",
         "force_close_description": "Смена будет помечена как закрытая системой. Сотрудник получит уведомление.",
@@ -2895,7 +2895,7 @@
           "totp_setup_secret_hint": "Секрет для ручного ввода в приложение",
           "totp_setup_scan_hint": "Отсканируйте QR-код в Yandex Key, Authy или FreeOTP",
           "totp_setup_next": "Далее",
-          "totp_setup_enter_code": "Введите 6-значный код из приложения",
+          "totp_setup_enter_code": "Введите 6-зн��чный код из приложения",
           "totp_setup_confirm": "Подтвердить",
           "totp_backup_warning": "Сохраните резервные коды — они показываются только один раз",
           "totp_backup_done": "Готово",
@@ -2903,7 +2903,7 @@
           "totp_disable_description": "Введите текущий код из приложения для подтверждения",
           "sessions_card": "Активные сессии",
           "session_current": "Текущая сессия",
-          "session_revoke": "Завершить",
+          "session_revoke": "Завершит��",
           "session_revoke_all": "Завершить все остальные",
           "session_revoke_all_confirm_title": "Завершить все остальные сессии?",
           "session_revoke_all_confirm_message": "Все другие устройства будут выведены из аккаунта"
@@ -3337,7 +3337,7 @@
           "title": "Промо-активности",
           "description": "Календарь промо-акций, цены, планограммы. ИИ предлагает задачи по выкладке к старту промо.",
           "stat_active": "Активных промо",
-          "stat_tomorrow": "Стартует завтра",
+          "stat_tomorrow": "Стартует завт��а",
           "stat_today_end": "Заканчивается сегодня",
           "sheet_title": "Подключить промо"
         },
@@ -4445,7 +4445,7 @@
         "ai_hint": "ИИ предлагает, нужно одобрение",
         "yesterday_label": "Невыполненные вчера",
         "yesterday_hint": "Авто-перенос в бонусный пул",
-        "footer_hint": "Можно комбинировать. ИИ работает поверх активной цели."
+        "footer_hint": "Мож��о комбинировать. ИИ работает поверх активной цели."
       },
       "yesterday_pool_card": {
         "title": "Пул незавершённых вчера",
@@ -4564,7 +4564,7 @@
         "select_employee_placeholder": "Выберите сотрудника",
         "visible_now_title": "Видит сейчас (до закрытия плановых задач)",
         "visible_now_summary": "{sum} ₽ доступных бонусов на сегодня",
-        "visible_now_hint": "Конкретные задачи откроются после закрытия планового блока.",
+        "visible_now_hint": "Конкретные задачи откроютс�� после закрытия планового блока.",
         "after_planned_title": "Откроется после планового блока",
         "empty_no_bonuses": "Нет доступных бонусов для этого сотрудника"
       },
@@ -4590,7 +4590,7 @@
         "paid": "Выплачены"
       },
       "filters": {
-        "store_label": "Магазин",
+        "store_label": "Магази��",
         "all_stores": "Все"
       },
       "actions": {
@@ -4770,7 +4770,7 @@
         "bulk_hint": "Массовое одобрение = принять без редактирования. Если нужны правки — открывайте по одному."
       },
       "detail_panel": {
-        "empty_title": "Выберите предложение слева",
+        "empty_title": "Выберите пр��дложение слева",
         "empty_subtitle": "Откроется подробная информация и возможность редактирования",
         "what_proposed_section": "Что предлагается",
         "rationale_section": "Почему ИИ это предложил",
@@ -5075,7 +5075,7 @@
         },
         "period_label": "Период когда заметили",
         "details_label": "Подробнее",
-        "auto_attached_hint": "К сообщению автоматически приложатся метрики и последние 10 reject-комментариев",
+        "auto_attached_hint": "К сообщению автоматически приложатся метрики и последние 10 reject-комментари��в",
         "submit": "Отправить"
       },
       "empty": {
@@ -5214,7 +5214,7 @@
       "toasts": {
         "saved_draft": "Версия сохранена как черновик",
         "activated": "Версия активирована",
-        "rolled_back": "Откат выполнен",
+        "rolled_back": "От��ат выполнен",
         "generated": "Сгенерировано {count} вариантов",
         "ab_test_started": "A/B тест запущен",
         "ab_test_finished": "Тест завершён",
@@ -5238,7 +5238,7 @@
         "reviewed_share_title": "Доля проверяемых задач",
         "reviewed_share_value": "{percent}%",
         "reviewed_share_prev": "было {percent}%",
-        "reviewed_share_saved": "Сбережено: {hours} ч/мес",
+        "reviewed_share_saved": "��бережено: {hours} ч/мес",
         "defect_rate_title": "Defect rate",
         "defect_rate_value": "{percent}%",
         "defect_rate_hint": "Доля задач с проблемами, прошедших sampling"
@@ -5628,60 +5628,165 @@
         "applications": "Заявки",
         "detail": "Заявка"
       },
-      "actions": {
-        "approve": "Утвердить",
-        "reject": "Отклонить",
-        "request_revision": "Запросить правки",
-        "replace_with_bonus": "Заменить бонусом",
-        "edit": "Редактировать",
-        "cancel": "Отменить заявку"
+      "header": {
+        "title": "Заявка №{shortId} • {storeName}",
+        "created_by": "Создал {name} ({role}) {time}",
+        "source_internal": "Внутренняя",
+        "source_external": "Внешняя HR",
+        "urgent_alert_title": "Срочная заявка",
+        "urgent_alert_desc": "Стандартный 3-дневный буфер не соблюдён.",
+        "retroactive_alert_title": "Ретроактивная заявка",
+        "retroactive_alert_desc": "Заявка зафиксирована задним числом для отчётности.",
+        "external_alert_title": "Заявка из внешней HR-системы",
+        "external_alert_desc": "Заявка получена из HR-системы клиента ({ref}). Согласование пропускается, требуется только назначение исполнителя."
       },
-      "sections": {
-        "summary": "Резюме",
-        "service_details": "Детали услуги",
-        "budget": "Бюджет",
-        "history": "История согласования",
-        "linked_bonus": "Связанный бонусный пул",
-        "documents": "Документы"
+      "params_card": {
+        "title": "Параметры заявки",
+        "planned_date": "Дата выхода",
+        "hours_requested": "Часов запрошено",
+        "hours_approved": "Согласовано",
+        "hours_unit": "ч",
+        "work_type": "Тип работ",
+        "location": "Объект",
+        "comment": "Комментарий заявителя",
+        "no_comment": "—"
       },
-      "summary": {
-        "store": "Объект",
-        "service": "Услуга",
-        "amount": "Сумма",
-        "agent": "Агент",
-        "no_agent": "Без агента",
-        "created_by": "Автор",
-        "created_at": "Создана"
+      "finance_card": {
+        "title": "Финансовая картина",
+        "client_direct_banner": "Стоимость справочная по нормативам. Оплата на стороне клиента.",
+        "external_banner": "Заявка из внешней HR-системы. Бюджетные лимиты показаны справочно, без блокировки.",
+        "cost_label": "Расчётная стоимость",
+        "cost_breakdown": "{hours} ч × {rate} ₽/ч",
+        "budget_usage_title": "Использование бюджета ({period})",
+        "budget_limit": "Лимит",
+        "budget_actual": "Потрачено",
+        "budget_planned": "По плану",
+        "budget_overspend": "Перерасход",
+        "period_DAY": "день",
+        "period_WEEK": "неделя",
+        "period_MONTH": "месяц",
+        "simulator_title": "Если согласую…",
+        "simulator_hours_label": "Часов к согласованию",
+        "simulator_new_cost": "Новая стоимость",
+        "simulator_new_budget": "Бюджет после согласования",
+        "simulator_overspend_after": "Перерасход после согласования",
+        "simulator_blocked_alert": "Согласование заблокировано: превышение лимита ({period}) на {pct}%",
+        "simulator_blocked_details": "После согласования расход составит {actual} ₽ при лимите {limit} ₽."
       },
-      "history_event": {
-        "submitted": "Отправлено на согласование",
-        "approved": "Утверждено",
-        "rejected": "Отклонено",
-        "revision_requested": "Запрошены правки",
-        "replaced_with_bonus": "Заменено бонусом",
-        "fulfilled": "Закрыта"
+      "history_card": {
+        "title": "История изменений",
+        "collapse_hint": "Свернуть",
+        "expand_hint": "Развернуть",
+        "action_CREATED": "Заявка создана",
+        "action_APPROVED_FULL": "Согласовано полностью",
+        "action_APPROVED_PARTIAL": "Согласовано частично",
+        "action_REJECTED": "Отклонено",
+        "action_REPLACED_WITH_BONUS": "Заменено бонусным пулом",
+        "action_APPROVED_MIXED": "Смешанное согласование",
+        "action_CANCELLED": "Отменено",
+        "action_DRAFT": "Черновик",
+        "action_PENDING": "На рассмотрении"
       },
-      "approve_dialog": {
-        "title": "Утвердить заявку?",
-        "description": "Сумма {amount} ₽ будет списана из бюджета {store}",
-        "confirm": "Утвердить"
+      "decision_card": {
+        "title": "Принять решение",
+        "option_full": "Согласовать полностью",
+        "option_partial": "Согласовать частично",
+        "option_reject": "Отклонить",
+        "option_bonus": "Заменить бонусным пулом",
+        "option_mixed": "Смешанное (часть внештатом, часть бонусом)",
+        "partial_hours_label": "Часов согласовать",
+        "reject_reason_label": "Причина отказа",
+        "reject_reason_hint": "Не менее 10 символов",
+        "bonus_info": "Создаём бонусный пул на {hours} ч для штатных сотрудников магазина. Стоимость бонуса ≈ в 2 раза ниже внештата.",
+        "bonus_savings": "Экономия: {savings} ₽",
+        "mixed_freelance_label": "Часов внештатом",
+        "mixed_bonus_label": "Часов бонусом",
+        "mixed_sum_hint": "Сумма должна быть равна {total} ч",
+        "mixed_savings": "Экономия vs полный внештат: {savings} ₽",
+        "comment_label": "Комментарий к решению",
+        "comment_optional": "Необязательно",
+        "comment_required": "Обязательно для отказа",
+        "submit_label": "Согласовать",
+        "submit_blocked_tooltip": "Согласование заблокировано: бюджет превышен",
+        "confirm_dialog_title": "Подтвердить решение по заявке?",
+        "confirm_dialog_desc": "Выбрано: {decision}",
+        "confirm_dialog_ok": "Подтвердить"
       },
-      "reject_dialog": {
-        "title": "Отклонить заявку?",
-        "reason_label": "Причина (обязательно)",
-        "confirm": "Отклонить"
+      "assignment_card": {
+        "title": "Назначение исполнителя",
+        "approved_summary": "Согласовано {hours} ч на {date}",
+        "no_assignee_warning": "Исполнитель не назначен",
+        "assign_cta": "Назначить исполнителя",
+        "create_tasks_cta": "Задачи на смену",
+        "assignment_status_SCHEDULED": "Запланирован",
+        "assignment_status_CHECKED_IN": "Отметился",
+        "assignment_status_WORKING": "Работает",
+        "assignment_status_DONE": "Выполнено",
+        "assignment_status_NO_SHOW": "Не вышел",
+        "remove_assignment": "Удалить",
+        "sheet_title": "Назначить исполнителя",
+        "sheet_phone_label": "Телефон исполнителя",
+        "sheet_phone_placeholder": "+7 (XXX) XXX-XX-XX",
+        "sheet_phone_not_found": "Исполнитель не найден — будет создан новый",
+        "sheet_new_freelancer_label": "Создать нового исполнителя",
+        "sheet_agent_label": "Агент",
+        "sheet_agent_placeholder": "Выберите агента",
+        "sheet_agent_optional": "Необязательно",
+        "sheet_start_label": "Начало смены",
+        "sheet_end_label": "Конец смены",
+        "sheet_submit": "Назначить",
+        "sheet_cancel": "Отмена"
       },
-      "replace_bonus_dialog": {
-        "title": "Заменить заявку бонусным пулом?",
-        "description": "Бонус ≈50% от полной стоимости. Экономия: {saved} ₽",
-        "amount_label": "Размер бонусного пула, ₽",
-        "confirm": "Создать бонус"
+      "external_block": {
+        "title": "Заявка из внешней HR-системы",
+        "desc": "Согласование пройдено на стороне клиента. Требуется только назначить исполнителя (если нет) и задачи.",
+        "ref_label": "Внешний номер для трассировки"
+      },
+      "terminal_block": {
+        "rejected_title": "Заявка отклонена",
+        "bonus_title": "Заменена бонусным пулом",
+        "cancelled_title": "Заявка отменена",
+        "reason_label": "Причина",
+        "decided_by": "Решение принял",
+        "decided_at": "Дата решения",
+        "go_bonus_pool": "Перейти к бонусному пулу"
+      },
+      "related_card": {
+        "title": "Связанные сущности",
+        "bonus_pool": "Бонусный пул",
+        "services": "Услуги по заявке",
+        "payout": "Выплата"
+      },
+      "status": {
+        "DRAFT": "Черновик",
+        "PENDING": "На рассмотрении",
+        "APPROVED_FULL": "Согласована",
+        "APPROVED_PARTIAL": "Частично согласована",
+        "REJECTED": "Отклонена",
+        "REPLACED_WITH_BONUS": "Заменена бонусом",
+        "MIXED": "Смешанная",
+        "CANCELLED": "Отменена"
       },
       "toasts": {
-        "approved": "Заявка утверждена",
-        "rejected": "Заявка отклонена",
-        "replaced": "Заявка заменена бонусом",
-        "error": "Не удалось выполнить действие"
+        "decision_saved": "Решение сохранено",
+        "bonus_pool_created": "Бонусный пул создан",
+        "bonus_pool_link": "Перейти?",
+        "assignment_created": "Исполнитель назначен",
+        "assignment_removed": "Назначение удалено",
+        "error": "Не удалось выполнить действие",
+        "conflict": "Данные изменились. Обновите страницу.",
+        "budget_blocked": "Согласование заблокировано: превышение бюджета"
+      },
+      "states": {
+        "loading": "Загрузка заявки...",
+        "not_found_title": "Заявка не найдена",
+        "not_found_desc": "Заявка с таким ID не существует или была удалена.",
+        "not_found_cta": "К списку заявок",
+        "error_title": "Ошибка загрузки",
+        "error_desc": "Не удалось загрузить заявку. Попробуйте снова.",
+        "error_retry": "Повторить",
+        "forbidden_title": "Нет доступа",
+        "forbidden_desc": "Эта заявка не входит в ваш рабочий периметр."
       }
     },
     "freelanceServicesList": {
