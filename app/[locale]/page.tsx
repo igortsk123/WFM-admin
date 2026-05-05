@@ -2,10 +2,9 @@ import { redirect } from "next/navigation";
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
 
 /**
- * Root page redirects to dashboard.
+ * Root page redirects to notifications center (chat 34).
  * Quick-links for demo navigation are in /navigation.
- * Должности → /taxonomy/positions
  */
 export default function RootPage() {
-  redirect(ADMIN_ROUTES.taxonomyPositions);
+  redirect(ADMIN_ROUTES.notifications);
 }
