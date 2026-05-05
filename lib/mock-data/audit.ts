@@ -32,7 +32,7 @@ export const MOCK_AUDIT_ENTRIES: AuditEntry[] = [
     entity_id: "task-005",
     entity_name: "Проверка сроков годности молочки",
     entity_url: "/tasks/task-005",
-    payload: { store_id: 4, assignee_id: 23, type: "ADDITIONAL", source: "MANAGER" },
+    payload: { store_id: 4, assignee_id: 23, type: "PLANNED", source: "MANAGER" },
     ip_address: "78.37.211.52",
     user_agent: UAS.mac_chrome,
     device_type: "desktop",

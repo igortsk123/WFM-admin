@@ -97,7 +97,7 @@ function buildStep1Schema(tV: (key: string) => string) {
     phone: z
       .string()
       .min(1, tV("phone_required"))
-      .regex(/^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/, tV("phone_invalid")),
+      .regex(/^\+\d{1,4}[\s()\d-]{6,20}$/, tV("phone_invalid")),
     email: z
       .string()
       .optional()
@@ -134,7 +134,7 @@ function buildStep3Schema() {
 
 function buildStep4Schema(tV: (key: string) => string) {
   return z.object({
-    invite_method: z.enum(["SMS", "EMAIL", "NONE"], {
+    invite_method: z.enum(["EMAIL", "NONE"], {
       message: tV("invite_method_required"),
     }),
     invite_message: z.string().optional(),
@@ -181,16 +181,49 @@ const PERM_ICONS: Record<Permission, React.ReactNode> = {
   PRODUCTION_LINE: <span className="text-base">⚙️</span>,
 };
 
-// Phone mask helper
-function applyPhoneMask(raw: string): string {
-  const digits = raw.replace(/\D/g, "");
-  const trimmed = digits.startsWith("7") ? digits.slice(1) : digits;
-  const d = trimmed.slice(0, 10);
-  let result = "+7";
-  if (d.length > 0) result += ` (${d.slice(0, 3)}`;
-  if (d.length >= 3) result += `) ${d.slice(3, 6)}`;
-  if (d.length >= 6) result += `-${d.slice(6, 8)}`;
-  if (d.length >= 8) result += `-${d.slice(8, 10)}`;
+// ─── Phone country codes ────────────────────────────────────────────────────
+type PhoneCountry = {
+  code: string; // ISO-2 used as key
+  flag: string;
+  dial: string; // dial prefix incl '+', e.g. '+7'
+  name: string;
+  /** Number of national digits expected after the dial prefix. */
+  length: number;
+};
+
+const PHONE_COUNTRIES: PhoneCountry[] = [
+  { code: "RU", flag: "🇷🇺", dial: "+7", name: "Россия", length: 10 },
+  { code: "KZ", flag: "🇰🇿", dial: "+7", name: "Казахстан", length: 10 },
+  { code: "BY", flag: "🇧🇾", dial: "+375", name: "Беларусь", length: 9 },
+  { code: "UA", flag: "🇺🇦", dial: "+380", name: "Украина", length: 9 },
+  { code: "TJ", flag: "🇹🇯", dial: "+992", name: "Таджикистан", length: 9 },
+  { code: "KG", flag: "🇰🇬", dial: "+996", name: "Кыргызстан", length: 9 },
+  { code: "UZ", flag: "🇺🇿", dial: "+998", name: "Узбекистан", length: 9 },
+];
+
+const DEFAULT_COUNTRY: PhoneCountry = PHONE_COUNTRIES[0];
+
+// Phone mask helper — формат подстраивается под страну
+function applyPhoneMask(raw: string, country: PhoneCountry = DEFAULT_COUNTRY): string {
+  const dialDigits = country.dial.replace(/\D/g, "");
+  const allDigits = raw.replace(/\D/g, "");
+  const national = allDigits.startsWith(dialDigits)
+    ? allDigits.slice(dialDigits.length)
+    : allDigits;
+  const d = national.slice(0, country.length);
+  let result = country.dial;
+  // RU/KZ — формат +7 (XXX) XXX-XX-XX, остальные — +XXX XX XXX XX XX
+  if (country.dial === "+7") {
+    if (d.length > 0) result += ` (${d.slice(0, 3)}`;
+    if (d.length >= 3) result += `) ${d.slice(3, 6)}`;
+    if (d.length >= 6) result += `-${d.slice(6, 8)}`;
+    if (d.length >= 8) result += `-${d.slice(8, 10)}`;
+  } else {
+    if (d.length > 0) result += ` ${d.slice(0, 2)}`;
+    if (d.length >= 2) result += ` ${d.slice(2, 5)}`;
+    if (d.length >= 5) result += ` ${d.slice(5, 7)}`;
+    if (d.length >= 7) result += ` ${d.slice(7, 9)}`;
+  }
   return result;
 }
 
@@ -211,6 +244,8 @@ export function EmployeeCreateWizard() {
   const [agents, setAgents] = useState<Agent[]>([]);
   const [storeOpen, setStoreOpen] = useState(false);
   const [positionOpen, setPositionOpen] = useState(false);
+  const [phoneCountry, setPhoneCountry] = useState<PhoneCountry>(DEFAULT_COUNTRY);
+  const [phoneCountryOpen, setPhoneCountryOpen] = useState(false);
   const [agentOpen, setAgentOpen] = useState(false);
   const [, setLoadingData] = useState(true);
   const [summarySheetOpen, setSummarySheetOpen] = useState(false);
@@ -226,7 +261,7 @@ export function EmployeeCreateWizard() {
     agent_id: null,
     oferta_channel: "SMS",
     permissions: [],
-    invite_method: "SMS",
+    invite_method: "EMAIL",
     notify_manager: false,
   });
 
@@ -299,7 +334,7 @@ export function EmployeeCreateWizard() {
   const form4 = useForm<z.input<typeof step4Schema>>({
     resolver: zodResolver(step4Schema),
     defaultValues: {
-      invite_method: masterValues.invite_method ?? "SMS",
+      invite_method: masterValues.invite_method ?? "EMAIL",
       invite_message: masterValues.invite_message ?? buildInviteTemplate(masterValues),
       notify_manager: masterValues.notify_manager ?? false,
     },
@@ -590,9 +625,7 @@ export function EmployeeCreateWizard() {
           <SummaryRow
             label={t("summary.invite_method")}
             value={
-              s4Watch.invite_method === "SMS"
-                ? t("step4.method_sms")
-                : s4Watch.invite_method === "EMAIL"
+              s4Watch.invite_method === "EMAIL"
                 ? t("step4.method_email")
                 : t("step4.method_none")
             }
@@ -840,17 +873,67 @@ export function EmployeeCreateWizard() {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>{t("step1.phone")} *</FormLabel>
-                          <FormControl>
-                            <Input
-                              {...field}
-                              placeholder={t("step1.phone_placeholder")}
-                              inputMode="tel"
-                              onChange={(e) => {
-                                const masked = applyPhoneMask(e.target.value);
-                                field.onChange(masked);
-                              }}
-                            />
-                          </FormControl>
+                          <div className="flex gap-2">
+                            <Popover open={phoneCountryOpen} onOpenChange={setPhoneCountryOpen}>
+                              <PopoverTrigger asChild>
+                                <Button
+                                  type="button"
+                                  variant="outline"
+                                  role="combobox"
+                                  aria-expanded={phoneCountryOpen}
+                                  className="w-[110px] justify-between px-3"
+                                >
+                                  <span className="flex items-center gap-1.5">
+                                    <span className="text-base leading-none">{phoneCountry.flag}</span>
+                                    <span className="text-sm">{phoneCountry.dial}</span>
+                                  </span>
+                                  <ChevronsUpDown className="size-3.5 opacity-50" />
+                                </Button>
+                              </PopoverTrigger>
+                              <PopoverContent className="w-[260px] p-0" align="start">
+                                <Command>
+                                  <CommandInput placeholder={t("step1.phone_country_search")} />
+                                  <CommandList>
+                                    <CommandEmpty>{t("step1.phone_country_empty")}</CommandEmpty>
+                                    <CommandGroup>
+                                      {PHONE_COUNTRIES.map((c) => (
+                                        <CommandItem
+                                          key={c.code}
+                                          value={`${c.name} ${c.dial}`}
+                                          onSelect={() => {
+                                            setPhoneCountry(c);
+                                            setPhoneCountryOpen(false);
+                                            field.onChange(applyPhoneMask("", c));
+                                          }}
+                                        >
+                                          <span className="mr-2 text-base">{c.flag}</span>
+                                          <span className="flex-1">{c.name}</span>
+                                          <span className="text-xs text-muted-foreground">{c.dial}</span>
+                                          <Check
+                                            className={cn(
+                                              "ml-2 size-4",
+                                              phoneCountry.code === c.code ? "opacity-100" : "opacity-0"
+                                            )}
+                                          />
+                                        </CommandItem>
+                                      ))}
+                                    </CommandGroup>
+                                  </CommandList>
+                                </Command>
+                              </PopoverContent>
+                            </Popover>
+                            <FormControl>
+                              <Input
+                                {...field}
+                                placeholder={t("step1.phone_placeholder")}
+                                inputMode="tel"
+                                onChange={(e) => {
+                                  const masked = applyPhoneMask(e.target.value, phoneCountry);
+                                  field.onChange(masked);
+                                }}
+                              />
+                            </FormControl>
+                          </div>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -1409,10 +1492,6 @@ export function EmployeeCreateWizard() {
                                 onValueChange={field.onChange}
                                 className="space-y-2"
                               >
-                                <div className="flex items-center gap-2">
-                                  <RadioGroupItem value="SMS" id="invite-sms" />
-                                  <Label htmlFor="invite-sms">{t("step4.method_sms")}</Label>
-                                </div>
                                 <div className="flex flex-col gap-1">
                                   <div className="flex items-center gap-2">
                                     <RadioGroupItem

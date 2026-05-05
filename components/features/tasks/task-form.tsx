@@ -86,7 +86,7 @@ const TaskFormSchema = z
   .object({
     title: z.string().min(3, "Минимум 3 символа").max(120),
     description: z.string().max(1000).optional(),
-    type: z.enum(["PLANNED", "ADDITIONAL", "BONUS"]),
+    type: z.enum(["PLANNED", "BONUS"]),
     store_id: z.string().min(1, "Обязательное поле"),
     zone_id: z.string().min(1, "Обязательное поле"),
     work_type_id: z.string().min(1, "Обязательное поле"),
@@ -849,7 +849,6 @@ export function TaskForm({ mode, taskId, initialTask }: TaskFormProps) {
                           </FormControl>
                           <SelectContent>
                             <SelectItem value="PLANNED">{t("type_planned")}</SelectItem>
-                            <SelectItem value="ADDITIONAL">{t("type_additional")}</SelectItem>
                             <SelectItem
                               value="BONUS"
                               disabled={!hasActiveGoal}

@@ -24,7 +24,7 @@ export const MOCK_AI_SUGGESTIONS: AISuggestion[] = [
     rationale: "Списания молочки за неделю составили 4.8% при норме 2% (заданной в Стандартах для ИИ). Превышение в 2.4 раза. Контроль скоропорта вечером снизит риск дальнейших списаний.",
     proposed_payload: {
       title: "Контроль скоропорта молочки",
-      type: "ADDITIONAL",
+      type: "PLANNED",
       work_type_id: 11,
       work_type_name: "Контроль качества",
       store_id: 1,
@@ -59,7 +59,7 @@ export const MOCK_AI_SUGGESTIONS: AISuggestion[] = [
     rationale: "За последний час смены остаётся 47% дневной выпечки vs ожидаемых 15% (стандарт). Уценка к закрытию минимизирует списания и увеличивает выручку от реализации.",
     proposed_payload: {
       title: "Уценка хлеба и выпечки к закрытию",
-      type: "ADDITIONAL",
+      type: "PLANNED",
       work_type_id: 5,
       work_type_name: "Переоценка",
       store_id: 1,
@@ -95,7 +95,7 @@ export const MOCK_AI_SUGGESTIONS: AISuggestion[] = [
     rationale: "OOS алкоголя 6.2% при норме 4% (стандарт). На складе остаток 30+ позиций — нужна доукладка для восстановления полного ассортимента.",
     proposed_payload: {
       title: "Доукладка алкоголя из подсобки",
-      type: "ADDITIONAL",
+      type: "PLANNED",
       work_type_id: 4,
       work_type_name: "Выкладка",
       store_id: 4,
@@ -125,7 +125,7 @@ export const MOCK_AI_SUGGESTIONS: AISuggestion[] = [
     rationale: "По выгрузке от 27 апр изменены цены на 23 SKU. Ценники в зале не обновлены — риск жалоб на кассе и нарушение законодательства о ценообразовании (стандарт: обновить в течение 4 ч после выгрузки).",
     proposed_payload: {
       title: "Замена ценников после переоценки 27 апр",
-      type: "ADDITIONAL",
+      type: "PLANNED",
       work_type_id: 5,
       work_type_name: "Переоценка",
       store_id: 4,
@@ -154,7 +154,7 @@ export const MOCK_AI_SUGGESTIONS: AISuggestion[] = [
     rationale: "Не было задачи проверки температуры за последние 24ч (стандарт = ежедневно). Нарушение регламента + риск порчи скоропорта. Создать задачу немедленно.",
     proposed_payload: {
       title: "Проверка температурного режима холодильников 5–8",
-      type: "ADDITIONAL",
+      type: "PLANNED",
       work_type_id: 11,
       work_type_name: "Контроль качества",
       store_id: 1,
@@ -189,7 +189,7 @@ export const MOCK_AI_SUGGESTIONS: AISuggestion[] = [
     rationale: "Карточка «Сарафан летний синий» заведена 5 месяцев назад. По данным POS — продажи 0 за весь период. Предлагаю скидку 10% (можно скорректировать: 5%, 15%, 20% — на усмотрение супервайзера) + наклеить стикер «Специальная цена» + сделать фото для отправки в маркетинг-канал.",
     proposed_payload: {
       title: "Уценить сарафан летний синий + стикер + фото",
-      type: "ADDITIONAL",
+      type: "PLANNED",
       work_type_id: 5,
       work_type_name: "Переоценка",
       store_id: 10,
