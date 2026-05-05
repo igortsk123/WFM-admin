@@ -6278,35 +6278,115 @@
       "tabs": {
         "summary": "Summary",
         "performers": "Performers",
-        "services": "Services",
-        "payouts": "Payouts",
-        "documents": "Documents",
+        "accruals": "Accruals",
         "history": "History"
       },
+      "hero": {
+        "type_individual": "Sole trader",
+        "type_company": "Legal entity",
+        "inn": "TIN",
+        "kpp": "KPP",
+        "ogrn": "OGRN",
+        "contact_person": "Contact person",
+        "phone": "Phone",
+        "email": "Email",
+        "contract": "Contract",
+        "contract_signed": "Signed",
+        "contract_unsigned": "Not signed",
+        "contract_download": "Download contract",
+        "commission": "Commission",
+        "commission_label": "{pct}% of service amount",
+        "signed_at": "Signing date",
+        "status": "Status"
+      },
       "kpi": {
-        "tier": "Tier",
-        "rating": "Rating",
-        "month_amount": "Monthly turnover",
-        "no_show_rate": "No-show %",
-        "total_performers": "Total performers",
-        "active_performers": "Active"
+        "active_performers": "Active performers",
+        "earned_30d": "Earned in 30 days",
+        "earned_all_time": "Earned all time",
+        "avg_per_performer": "Avg per performer"
+      },
+      "performers_tab": {
+        "empty_title": "No performers yet",
+        "empty_description": "Add performers via the employee profile",
+        "col_name": "Performer",
+        "col_phone": "Phone",
+        "col_status": "Status",
+        "col_added_at": "Added",
+        "col_services_30d": "Services 30d",
+        "col_earned_30d": "Earned 30d",
+        "col_open": "Open",
+        "filter_status": "Status"
+      },
+      "accruals_tab": {
+        "col_date": "Date",
+        "col_performer": "Performer",
+        "col_service": "Service",
+        "col_base": "Base",
+        "col_pct": "%",
+        "col_commission": "Commission",
+        "col_status": "Status",
+        "col_payout": "Payout",
+        "status_calculated": "Accrued",
+        "status_paid": "Paid",
+        "filter_status": "Status",
+        "filter_date_range": "Date range",
+        "kpi_accrued": "Accrued",
+        "kpi_paid": "Paid",
+        "kpi_pending": "Pending"
+      },
+      "history_tab": {
+        "created": "created the agent",
+        "updated": "updated agent details",
+        "blocked": "blocked the agent",
+        "unblocked": "unblocked the agent",
+        "archived": "archived the agent",
+        "commission_changed": "changed commission"
       },
       "actions": {
-        "pause": "Pause",
+        "edit": "Edit",
         "block": "Block",
-        "edit": "Edit"
+        "unblock": "Unblock",
+        "archive": "Archive"
       },
       "block_dialog": {
         "title": "Block agent?",
-        "reason_label": "Reason",
+        "description": "The agent will no longer accept new assignments.",
+        "reason_label": "Block reason",
+        "reason_placeholder": "Describe the reason (minimum 10 characters)",
         "confirm": "Block"
+      },
+      "unblock_dialog": {
+        "title": "Unblock agent?",
+        "description": "The agent will be able to accept new assignments again.",
+        "confirm": "Unblock"
+      },
+      "archive_dialog": {
+        "title": "Archive agent?",
+        "description": "The agent will be hidden from the list. This cannot be undone.",
+        "confirm": "Archive"
+      },
+      "edit_sheet": {
+        "title": "Edit agent",
+        "field_name": "Name",
+        "field_inn": "TIN",
+        "field_kpp": "KPP",
+        "field_ogrn": "OGRN",
+        "field_contact_person": "Contact person",
+        "field_phone": "Phone",
+        "field_email": "Email",
+        "field_commission": "Commission (%)",
+        "field_contract_url": "Contract URL",
+        "field_contract_signed_at": "Signing date"
       },
       "toasts": {
         "saved": "Saved",
         "blocked": "Agent blocked",
-        "paused": "Agent paused",
+        "unblocked": "Agent unblocked",
+        "archived": "Agent archived",
+        "archive_error_active_freelancers": "Detach all active performers first",
         "error": "Failed"
-      }
+      },
+      "not_available": "Agent module is not available in direct payment mode"
     },
     "agentDashboard": {
       "page_title": "Agent cabinet",

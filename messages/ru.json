@@ -175,7 +175,7 @@
     "ai": "ИИ-аналитика",
     "aiChat": "ИИ-чат",
     "aiSuggestions": "Предложения ИИ",
-    "documents": "Докуме��ты",
+    "documents": "Докуме����ты",
     "help": "Помощь",
     "users": "Пользователи",
     "reports": "Отчёты",
@@ -1726,7 +1726,7 @@
         "archive_reason_other": "Другое",
         "transfer_manager_title": "Сменить управляющего",
         "transfer_manager_select": "Выберите кандидата",
-        "transfer_manager_hint": "Текущий управляющий получит уведомление",
+        "transfer_manager_hint": "Теку��ий управляющий получит уведомление",
         "sync_lama_title": "Принудительная синхронизация LAMA",
         "sync_lama_description": "Запросить актуальное расписание из LAMA для этого магазина. Может занять до минуты."
       },
@@ -1826,7 +1826,7 @@
         "summary_title": "Сводка"
       },
       "summary": {
-        "fio": "ФИО",
+        "fio": "��ИО",
         "phone": "Телефон",
         "email": "Email",
         "store": "Магазин",
@@ -3029,7 +3029,7 @@
         "col_expiration_alert": "Скоропорт (часов)",
         "ops_cashier_avg": "Среднее время на кассе (мин)",
         "ops_shift_variance": "Отклонение план/факт смены (%)",
-        "ops_max_consecutive_rejections": "Максимум возвратов задач подряд",
+        "ops_max_consecutive_rejections": "Максимум возвратов задач ��одряд",
         "fashion_description": "Задайте сезонные периоды по типам товаров — это всё что нужно. Размеры скидок ИИ определяет сам.",
         "fashion_seasons_section": "Сезонные периоды по типам товаров",
         "fashion_baseline_hint": "Размеры скидок ИИ определяет автоматически — стартует со стандартной лесенки и адаптируется на основе результатов прошлых скидок в магазине.",
@@ -3688,7 +3688,7 @@
         "last_name": "Фамилия",
         "middle_name": "Отчество",
         "position_id": "Должность",
-        "preferred_locale": "Язык интерфейса",
+        "preferred_locale": "Язык интерфе��са",
         "default_duration_min": "Длительность по умолчанию, мин",
         "dairy_writeoff_norm_pct": "Норма списаний (молочка), %",
         "oos_norm_pct": "Норма OOS, %",
@@ -4286,7 +4286,7 @@
         "create_task_from_recommendation": "Создать задачу"
       },
       "catalog": {
-        "section_title": "Каталог целей по типу бизнеса",
+        "section_title": "Каталог ц��лей по типу бизнеса",
         "tab_fmcg": "FMCG ритейл",
         "tab_fashion": "Fashion ритейл",
         "tab_production": "Производство",
@@ -6304,35 +6304,115 @@
       "tabs": {
         "summary": "Обзор",
         "performers": "Исполнители",
-        "services": "Услуги",
-        "payouts": "Выплаты",
-        "documents": "Документы",
+        "accruals": "Начисления",
         "history": "История"
       },
+      "hero": {
+        "type_individual": "ИП",
+        "type_company": "Юридическое лицо",
+        "inn": "ИНН",
+        "kpp": "КПП",
+        "ogrn": "ОГРН",
+        "contact_person": "Контактное лицо",
+        "phone": "Телефон",
+        "email": "Email",
+        "contract": "Договор",
+        "contract_signed": "Подписан",
+        "contract_unsigned": "Не подписан",
+        "contract_download": "Скачать договор",
+        "commission": "Комиссия",
+        "commission_label": "{pct}% от суммы услуг",
+        "signed_at": "Дата подписания",
+        "status": "Статус"
+      },
       "kpi": {
-        "tier": "Уровень",
-        "rating": "Рейтинг",
-        "month_amount": "Оборот за месяц",
-        "no_show_rate": "% невыходов",
-        "total_performers": "Всего исполнителей",
-        "active_performers": "Активных"
+        "active_performers": "Активных исполнителей",
+        "earned_30d": "Заработано за 30 дней",
+        "earned_all_time": "Заработано за всё время",
+        "avg_per_performer": "Среднее на исполнителя"
+      },
+      "performers_tab": {
+        "empty_title": "Исполнители ещё не добавлены",
+        "empty_description": "Добавьте исполнителей через карточку сотрудника",
+        "col_name": "Исполнитель",
+        "col_phone": "Телефон",
+        "col_status": "Статус",
+        "col_added_at": "Добавлен",
+        "col_services_30d": "Услуг за 30д",
+        "col_earned_30d": "Заработано за 30д",
+        "col_open": "Открыть",
+        "filter_status": "Статус"
+      },
+      "accruals_tab": {
+        "col_date": "Дата",
+        "col_performer": "Исполнитель",
+        "col_service": "Услуга",
+        "col_base": "База",
+        "col_pct": "%",
+        "col_commission": "Комиссия",
+        "col_status": "Статус",
+        "col_payout": "Выплата",
+        "status_calculated": "Начислено",
+        "status_paid": "Выплачено",
+        "filter_status": "Статус",
+        "filter_date_range": "Период",
+        "kpi_accrued": "Начислено",
+        "kpi_paid": "Выплачено",
+        "kpi_pending": "В обработке"
+      },
+      "history_tab": {
+        "created": "создал агента",
+        "updated": "обновил данные агента",
+        "blocked": "заблокировал агента",
+        "unblocked": "разблокировал агента",
+        "archived": "архивировал агента",
+        "commission_changed": "изменил комиссию"
       },
       "actions": {
-        "pause": "На паузу",
+        "edit": "Изменить",
         "block": "Заблокировать",
-        "edit": "Редактировать"
+        "unblock": "Разблокировать",
+        "archive": "Архивировать"
       },
       "block_dialog": {
         "title": "Заблокировать агента?",
-        "reason_label": "Причина",
+        "description": "Агент не сможет принимать новые назначения.",
+        "reason_label": "Причина блокировки",
+        "reason_placeholder": "Опишите причину (минимум 10 символов)",
         "confirm": "Заблокировать"
+      },
+      "unblock_dialog": {
+        "title": "Разблокировать агента?",
+        "description": "Агент снова сможет принимать новые назначения.",
+        "confirm": "Разблокировать"
+      },
+      "archive_dialog": {
+        "title": "Архивировать агента?",
+        "description": "Агент будет скрыт из списка. Отменить нельзя.",
+        "confirm": "Архивировать"
+      },
+      "edit_sheet": {
+        "title": "Редактировать агента",
+        "field_name": "Название",
+        "field_inn": "ИНН",
+        "field_kpp": "КПП",
+        "field_ogrn": "ОГРН",
+        "field_contact_person": "Контактное лицо",
+        "field_phone": "Телефон",
+        "field_email": "Email",
+        "field_commission": "Комиссия (%)",
+        "field_contract_url": "Ссылка на договор",
+        "field_contract_signed_at": "Дата подписания"
       },
       "toasts": {
         "saved": "Сохранено",
         "blocked": "Агент заблокирован",
-        "paused": "Агент на паузе",
+        "unblocked": "Агент разблокирован",
+        "archived": "Агент архивирован",
+        "archive_error_active_freelancers": "Сначала отвяжите всех активных исполнителей",
         "error": "Не удалось"
-      }
+      },
+      "not_available": "Раздел агентов недоступен в режиме прямого расчёта"
     },
     "agentDashboard": {
       "page_title": "Кабинет агента",
