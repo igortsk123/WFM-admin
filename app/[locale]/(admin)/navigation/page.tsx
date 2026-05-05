@@ -19,7 +19,7 @@ import {
   History,
 } from "lucide-react"
 import { Link } from "@/i18n/navigation"
-import { ADMIN_ROUTES } from "@/lib/constants/routes"
+import { ADMIN_ROUTES, AGENT_ROUTES } from "@/lib/constants/routes"
 import { PageHeader } from "@/components/shared/page-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
@@ -83,11 +83,19 @@ const NAV_GROUPS: NavGroup[] = [
   {
     titleKey: "hub.freelance",
     items: [
-      { labelKey: "freelance_dashboard", href: ADMIN_ROUTES.freelanceDashboard, icon: Users, status: "planned" },
-      { labelKey: "freelance_applications", href: ADMIN_ROUTES.freelanceApplications, icon: FileSignature, status: "planned" },
-      { labelKey: "freelance_services", href: ADMIN_ROUTES.freelanceServices, icon: CheckSquare, status: "planned" },
-      { labelKey: "freelance_payouts", href: ADMIN_ROUTES.freelancePayouts, icon: CreditCard, status: "planned" },
-      { labelKey: "freelance_agents", href: ADMIN_ROUTES.freelanceAgents, icon: Users, status: "planned" },
+      { labelKey: "freelance_dashboard", href: ADMIN_ROUTES.freelanceDashboard, icon: Users, status: "ready" },
+      { labelKey: "freelance_applications", href: ADMIN_ROUTES.freelanceApplications, icon: FileSignature, status: "ready" },
+      { labelKey: "freelance_applications_new", href: ADMIN_ROUTES.freelanceApplicationNew, icon: FileSignature, status: "ready" },
+      { labelKey: "freelance_application_detail_demo", href: ADMIN_ROUTES.freelanceApplicationDetail("app-1"), icon: FileSignature, status: "ready", badge: "Demo" },
+      { labelKey: "freelance_services", href: ADMIN_ROUTES.freelanceServices, icon: CheckSquare, status: "ready" },
+      { labelKey: "freelance_payouts_list", href: ADMIN_ROUTES.freelancePayouts, icon: CreditCard, status: "ready" },
+      { labelKey: "freelance_budget_limits", href: ADMIN_ROUTES.freelanceBudgetLimits, icon: CreditCard, status: "ready" },
+      { labelKey: "freelance_agents", href: ADMIN_ROUTES.freelanceAgents, icon: Users, status: "ready" },
+      { labelKey: "freelance_agent_detail_demo", href: ADMIN_ROUTES.freelanceAgentDetail("ag-1"), icon: Users, status: "ready", badge: "Demo" },
+      { labelKey: "agent_dashboard", href: AGENT_ROUTES.dashboard, icon: Users, status: "ready" },
+      { labelKey: "agent_freelancers", href: AGENT_ROUTES.freelancers, icon: Users, status: "ready" },
+      { labelKey: "agent_earnings", href: AGENT_ROUTES.earnings, icon: CreditCard, status: "ready" },
+      { labelKey: "agent_documents", href: AGENT_ROUTES.documents, icon: FileSignature, status: "ready" },
     ],
   },
   {
@@ -107,6 +115,7 @@ const NAV_GROUPS: NavGroup[] = [
       { labelKey: "ai_coach", href: ADMIN_ROUTES.aiCoach, icon: Sparkles, status: "ready", badge: "Beta" },
       { labelKey: "risk_rules", href: ADMIN_ROUTES.riskRules, icon: Layers, status: "ready" },
       { labelKey: "leaderboards", href: ADMIN_ROUTES.leaderboards, icon: Award, status: "ready" },
+      { labelKey: "service_norms", href: ADMIN_ROUTES.taxonomyServiceNorms, icon: Layers, status: "ready" },
     ],
   },
 ]
