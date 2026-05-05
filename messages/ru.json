@@ -315,7 +315,7 @@
       "regional": "Региональный менеджер",
       "network_ops": "Операционный директор",
       "hr_manager": "HR-менеджер",
-      "operator": "Оператор",
+      "operator": "Опера��ор",
       "worker": "Работник",
       "agent": "Агент",
       "platform_admin": "Администратор платформы"
@@ -741,7 +741,7 @@
       "summary_plan": "План:",
       "summary_scheduled": "Запланировано:",
       "summary_due": "Дедлайн:",
-      "summary_policy": "Поли��ика:",
+      "summary_policy": "По��и��ика:",
       "summary_photo": "Фото:",
       "summary_not_set": "—",
       "summary_minutes": "{min} мин",
@@ -2182,7 +2182,7 @@
       "empty": {
         "no_shifts_title": "В выбранный период смен нет",
         "no_shifts_subtitle": "LAMA не передала ни одной смены — обратитесь в HR-отдел",
-        "no_results_title": "Никого не найд��но",
+        "no_results_title": "Ник��го не найд��но",
         "no_results_subtitle": "Попробуйте изменить фильтры",
         "no_results_reset": "Сбросить фильтры"
       },
@@ -2467,7 +2467,7 @@
         "no_zones_global_title": "Глобальных зон пока нет",
         "no_zones_global_subtitle": "Создайте первую глобальную зону",
         "no_zones_store_title": "В этом магазине нет локальных зон",
-        "no_zones_store_subtitle": "Локальные зоны переопределяют глобальные",
+        "no_zones_store_subtitle": "Локальные зоны пере��пределяют глобальные",
         "no_store_selected_title": "Выберите магазин",
         "no_store_selected_subtitle": "Чтобы посмотреть его локальные зоны",
         "filtered_title": "Никого не найдено",
@@ -2628,7 +2628,7 @@
       },
       "dialogs": {
         "create_title": "Новая подсказка",
-        "edit_title": "Редактирование подсказки",
+        "edit_title": "Редактирование подс��азки",
         "fields": {
           "text": "Текст подсказки",
           "text_placeholder": "Например: «Проверьте срок годности перед выкладкой»",
@@ -2877,15 +2877,30 @@
           "current_password": "Текущий пароль",
           "new_password": "Новый пароль",
           "confirm_password": "Подтверждение",
+          "password_sso_hint": "Аккаунт защищён через SMS-код Beyond Violet, пароль не используется",
           "totp_card": "Двухфакторная аутентификация (TOTP)",
           "totp_enabled": "Включена",
           "totp_disabled": "Не настроена",
+          "totp_hint": "Работает офлайн с любым приложением (Yandex Key, Authy, FreeOTP)",
           "totp_setup": "Настроить",
           "totp_disable": "Отключить",
+          "totp_setup_title": "Настройка TOTP",
+          "totp_setup_description": "Двухфакторная аутентификация через authenticator-приложение",
+          "totp_setup_secret_hint": "Секрет для ручного ввода в приложение",
+          "totp_setup_scan_hint": "Отсканируйте QR-код в Yandex Key, Authy или FreeOTP",
+          "totp_setup_next": "Далее",
+          "totp_setup_enter_code": "Введите 6-значный код из приложения",
+          "totp_setup_confirm": "Подтвердить",
+          "totp_backup_warning": "Сохраните резервные коды — они показываются только один раз",
+          "totp_backup_done": "Готово",
+          "totp_disable_title": "Отключить двухфакторную аутентификацию?",
+          "totp_disable_description": "Введите текущий код из приложения для подтверждения",
           "sessions_card": "Активные сессии",
           "session_current": "Текущая сессия",
           "session_revoke": "Завершить",
-          "session_revoke_all": "Завершить все остальные"
+          "session_revoke_all": "Завершить все остальные",
+          "session_revoke_all_confirm_title": "Завершить все остальные сессии?",
+          "session_revoke_all_confirm_message": "Все другие устройства будут выведены из аккаунта"
         },
         "notifications": {
           "title": "Уведомления",
@@ -2907,8 +2922,17 @@
           "timezone": "Часовой пояс",
           "theme": "Тема",
           "theme_light": "Светлая",
+          "theme_light_hint": "Базовая для дневной работы",
           "theme_dark": "Тёмная",
-          "theme_system": "Системная"
+          "theme_system": "Системная",
+          "theme_system_hint": "Совпадает с настройками устройства",
+          "timezone_search": "Поиск часового пояса...",
+          "timezone_not_found": "Не найдено",
+          "regional_title": "Региональные настройки",
+          "regional_date": "Формат даты",
+          "regional_time": "Формат времени",
+          "regional_number": "Формат чисел",
+          "regional_currency": "Валюта"
         }
       },
       "save_bar": {
@@ -2948,6 +2972,10 @@
         "payment_mode_client_direct": "Прямой расчёт",
         "freelance_enabled": "Внештат вкл.",
         "freelance_disabled": "Внештат выкл."
+      },
+      "logout_confirm": {
+        "title": "Выйти из аккаунта?",
+        "message": "Вы будете перенаправлены на страницу входа"
       }
     },
     "organizationSettings": {
@@ -3045,7 +3073,7 @@
         "billing_history": "История платежей"
       },
       "legal": {
-        "title": "Юридические лица",
+        "title": "Юридические лиц��",
         "add_entity": "Добавить юр.лицо",
         "name": "Название",
         "inn": "ИНН",

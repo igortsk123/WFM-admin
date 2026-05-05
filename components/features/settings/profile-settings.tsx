@@ -690,7 +690,7 @@ function SecuritySection({ user, onUserUpdate }: SecuritySectionProps) {
           <Alert>
             <ShieldCheck className="size-4" />
             <AlertDescription>
-              Аккаунт защищён через SMS-код Beyond Violet, пароль не используется.
+              {t("sections.security.password_sso_hint")}
             </AlertDescription>
           </Alert>
         </CardContent>
@@ -716,7 +716,7 @@ function SecuritySection({ user, onUserUpdate }: SecuritySectionProps) {
                 )}
               </div>
               <p className="text-xs text-muted-foreground">
-                Работает офлайн с любым приложением (Yandex Key, Authy, FreeOTP)
+                {t("sections.security.totp_hint")}
               </p>
             </div>
             {totpEnabled ? (
@@ -791,19 +791,21 @@ function SecuritySection({ user, onUserUpdate }: SecuritySectionProps) {
 
               {nonCurrentSessions.length > 0 && (
                 <div className="pt-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="text-destructive border-destructive/30 hover:bg-destructive/10"
+                    onClick={() => setRevokeAllOpen(true)}
+                    disabled={revokingAll}
+                  >
+                    {revokingAll && <Spinner className="mr-2 size-4" />}
+                    {t("sections.security.session_revoke_all")}
+                  </Button>
                   <AlertDialog open={revokeAllOpen} onOpenChange={setRevokeAllOpen}>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="text-destructive border-destructive/30 hover:bg-destructive/10"
-                      onClick={() => setRevokeAllOpen(true)}
-                    >
-                      {t("sections.security.session_revoke_all")}
-                    </Button>
                     <ConfirmDialog
-                      title="Завершить все остальные сессии?"
-                      message="Все другие устройства будут выведены из аккаунта."
-                      confirmLabel="Завершить"
+                      title={t("sections.security.session_revoke_all_confirm_title")}
+                      message={t("sections.security.session_revoke_all_confirm_message")}
+                      confirmLabel={t("sections.security.session_revoke")}
                       variant="destructive"
                       onConfirm={handleRevokeAll}
                       onOpenChange={setRevokeAllOpen}
@@ -820,9 +822,9 @@ function SecuritySection({ user, onUserUpdate }: SecuritySectionProps) {
       <Dialog open={totpSetupOpen} onOpenChange={setTotpSetupOpen}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
-            <DialogTitle>Настройка TOTP</DialogTitle>
+            <DialogTitle>{t("sections.security.totp_setup_title")}</DialogTitle>
             <DialogDescription>
-              Двухфакторная аутентификация через authenticator-приложение
+              {t("sections.security.totp_setup_description")}
             </DialogDescription>
           </DialogHeader>
 
@@ -836,7 +838,7 @@ function SecuritySection({ user, onUserUpdate }: SecuritySectionProps) {
                       {totpSetupData.secret}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      Секрет для ручного ввода в приложение
+                      {t("sections.security.totp_setup_secret_hint")}
                     </p>
                   </div>
                 ) : (
@@ -844,14 +846,14 @@ function SecuritySection({ user, onUserUpdate }: SecuritySectionProps) {
                 )}
               </div>
               <p className="text-sm text-muted-foreground text-center">
-                Отсканируйте QR-код в Yandex Key, Authy или FreeOTP
+                {t("sections.security.totp_setup_scan_hint")}
               </p>
               <Button
                 className="w-full"
                 onClick={() => setTotpSetupStep("verify")}
                 disabled={!totpSetupData}
               >
-                Далее
+                {t("sections.security.totp_setup_next")}
               </Button>
             </div>
           )}
@@ -859,7 +861,7 @@ function SecuritySection({ user, onUserUpdate }: SecuritySectionProps) {
           {totpSetupStep === "verify" && (
             <div className="space-y-4">
               <p className="text-sm text-muted-foreground text-center">
-                Введите 6-значный код из приложения
+                {t("sections.security.totp_setup_enter_code")}
               </p>
               <div className="flex justify-center">
                 <InputOTP
@@ -883,7 +885,7 @@ function SecuritySection({ user, onUserUpdate }: SecuritySectionProps) {
                 disabled={totpSetupCode.length !== 6 || totpSetupLoading}
               >
                 {totpSetupLoading && <Spinner className="mr-2 size-4" />}
-                Подтвердить
+                {t("sections.security.totp_setup_confirm")}
               </Button>
             </div>
           )}
@@ -893,7 +895,7 @@ function SecuritySection({ user, onUserUpdate }: SecuritySectionProps) {
               <Alert>
                 <AlertCircle className="size-4" />
                 <AlertDescription>
-                  Сохраните резервные коды — они показываются только один раз.
+                  {t("sections.security.totp_backup_warning")}
                 </AlertDescription>
               </Alert>
               <div className="grid grid-cols-2 gap-2">
@@ -914,7 +916,7 @@ function SecuritySection({ user, onUserUpdate }: SecuritySectionProps) {
                   toast.success(t("toasts.totp_enabled"));
                 }}
               >
-                Готово
+                {t("sections.security.totp_backup_done")}
               </Button>
             </div>
           )}
@@ -925,9 +927,9 @@ function SecuritySection({ user, onUserUpdate }: SecuritySectionProps) {
       <AlertDialog open={totpDisableOpen} onOpenChange={setTotpDisableOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Отключить двухфакторную аутентификацию?</AlertDialogTitle>
+            <AlertDialogTitle>{t("sections.security.totp_disable_title")}</AlertDialogTitle>
             <AlertDialogDescription>
-              Введите текущий код из приложения для подтверждения.
+              {t("sections.security.totp_disable_description")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <div className="flex justify-center py-2">
@@ -948,7 +950,7 @@ function SecuritySection({ user, onUserUpdate }: SecuritySectionProps) {
           </div>
           <AlertDialogFooter>
             <Button variant="outline" onClick={() => { setTotpDisableOpen(false); setTotpDisableCode(""); }}>
-              Отмена
+              {t("save_bar.cancel")}
             </Button>
             <Button
               variant="destructive"
@@ -956,7 +958,7 @@ function SecuritySection({ user, onUserUpdate }: SecuritySectionProps) {
               disabled={totpDisableCode.length !== 6 || totpDisableLoading}
             >
               {totpDisableLoading && <Spinner className="mr-2 size-4" />}
-              Отключить
+              {t("sections.security.totp_disable")}
             </Button>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -1179,7 +1181,7 @@ function AppearanceSection({ user, locale, onUserUpdate }: AppearanceSectionProp
               <Sun className="size-4 text-muted-foreground" />
               <div>
                 <p className="text-sm font-medium">{t("sections.appearance.theme_light")}</p>
-                <p className="text-xs text-muted-foreground">Базовая для дневной работы</p>
+                <p className="text-xs text-muted-foreground">{t("sections.appearance.theme_light_hint")}</p>
               </div>
             </label>
             <label className="flex items-center gap-3 rounded-lg border p-3 cursor-pointer has-[:checked]:border-primary has-[:checked]:bg-primary/5 transition-colors">
@@ -1187,7 +1189,7 @@ function AppearanceSection({ user, locale, onUserUpdate }: AppearanceSectionProp
               <Monitor className="size-4 text-muted-foreground" />
               <div>
                 <p className="text-sm font-medium">{t("sections.appearance.theme_system")}</p>
-                <p className="text-xs text-muted-foreground">Совпадает с настройками устройства</p>
+                <p className="text-xs text-muted-foreground">{t("sections.appearance.theme_system_hint")}</p>
               </div>
             </label>
           </RadioGroup>
@@ -1244,12 +1246,12 @@ function AppearanceSection({ user, locale, onUserUpdate }: AppearanceSectionProp
             <PopoverContent className="w-[280px] p-0" align="start">
               <Command>
                 <CommandInput
-                  placeholder="Поиск часового пояса..."
+                  placeholder={t("sections.appearance.timezone_search")}
                   value={tzSearch}
                   onValueChange={setTzSearch}
                 />
                 <CommandList>
-                  <CommandEmpty>Не найдено</CommandEmpty>
+                  <CommandEmpty>{t("sections.appearance.timezone_not_found")}</CommandEmpty>
                   <CommandGroup>
                     {filteredTimezones.map((tz) => (
                       <CommandItem
@@ -1272,24 +1274,24 @@ function AppearanceSection({ user, locale, onUserUpdate }: AppearanceSectionProp
       {/* Regional formats — read-only */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Региональные настройки</CardTitle>
+          <CardTitle className="text-base">{t("sections.appearance.regional_title")}</CardTitle>
         </CardHeader>
         <CardContent>
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
             <div>
-              <dt className="text-xs text-muted-foreground mb-0.5">Формат даты</dt>
+              <dt className="text-xs text-muted-foreground mb-0.5">{t("sections.appearance.regional_date")}</dt>
               <dd className="font-medium">{regionalFormats.date}</dd>
             </div>
             <div>
-              <dt className="text-xs text-muted-foreground mb-0.5">Формат времени</dt>
+              <dt className="text-xs text-muted-foreground mb-0.5">{t("sections.appearance.regional_time")}</dt>
               <dd className="font-medium">{regionalFormats.time}</dd>
             </div>
             <div>
-              <dt className="text-xs text-muted-foreground mb-0.5">Формат чисел</dt>
+              <dt className="text-xs text-muted-foreground mb-0.5">{t("sections.appearance.regional_number")}</dt>
               <dd className="font-medium">{regionalFormats.number}</dd>
             </div>
             <div>
-              <dt className="text-xs text-muted-foreground mb-0.5">Валюта</dt>
+              <dt className="text-xs text-muted-foreground mb-0.5">{t("sections.appearance.regional_currency")}</dt>
               <dd className="font-medium">{regionalFormats.currency}</dd>
             </div>
           </dl>
@@ -1468,8 +1470,8 @@ export function ProfileSettings() {
       {/* Logout confirm dialog */}
       <AlertDialog open={logoutOpen} onOpenChange={setLogoutOpen}>
         <ConfirmDialog
-          title="Выйти из аккаунта?"
-          message="Вы будете перенаправлены на страницу входа."
+          title={t("logout_confirm.title")}
+          message={t("logout_confirm.message")}
           confirmLabel={t("sidebar.logout")}
           variant="destructive"
           onConfirm={async () => {
