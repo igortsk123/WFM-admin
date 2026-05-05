@@ -17,27 +17,42 @@ const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
 // LIST & GET
 // ═══════════════════════════════════════════════════════════════════
 
+/** Filter params для audit list (chat 38). */
+export interface AuditListParams extends ApiListParams {
+  search?: string;
+  actor_id?: number;
+  /** Multi-фильтр по entity_type ('task', 'user', 'shift', 'goal', 'webhook', 'organization', ...). */
+  entity_types?: string[];
+  /** Single entity_type (legacy). */
+  entity_type?: string;
+  /** Multi-фильтр по action кодам. */
+  actions?: string[];
+  /** Single action (legacy). */
+  action?: string;
+  date_from?: string;
+  date_to?: string;
+  /** Только cross-tenant действия (для PLATFORM_ADMIN). */
+  platform_action_only?: boolean;
+}
+
 /**
  * Get paginated audit log with optional filters.
  * @endpoint GET /audit/list
  */
 export async function getAuditEntries(
-  params: ApiListParams & {
-    actor_id?: number;
-    entity_type?: string;
-    action?: string;
-    date_from?: string;
-    date_to?: string;
-  } = {}
+  params: AuditListParams = {}
 ): Promise<ApiListResponse<AuditEntry>> {
   await delay(350);
 
   const {
     actor_id,
     entity_type,
+    entity_types,
     action,
+    actions,
     date_from,
     date_to,
+    platform_action_only,
     search,
     page = 1,
     page_size = 20,
@@ -48,10 +63,29 @@ export async function getAuditEntries(
   let filtered = [...MOCK_AUDIT_ENTRIES];
 
   if (actor_id) filtered = filtered.filter((e) => e.actor.id === actor_id);
-  if (entity_type) filtered = filtered.filter((e) => e.entity_type === entity_type);
-  if (action) filtered = filtered.filter((e) => e.action === action);
+
+  // Multi entity_types (предпочтение над single).
+  const effectiveEntityTypes = entity_types && entity_types.length > 0
+    ? entity_types
+    : (entity_type ? [entity_type] : null);
+  if (effectiveEntityTypes) {
+    filtered = filtered.filter((e) => effectiveEntityTypes.includes(e.entity_type));
+  }
+
+  // Multi actions.
+  const effectiveActions = actions && actions.length > 0
+    ? actions
+    : (action ? [action] : null);
+  if (effectiveActions) {
+    filtered = filtered.filter((e) => effectiveActions.includes(e.action));
+  }
+
   if (date_from) filtered = filtered.filter((e) => e.occurred_at >= date_from);
   if (date_to) filtered = filtered.filter((e) => e.occurred_at <= date_to);
+
+  if (platform_action_only) {
+    filtered = filtered.filter((e) => e.platform_action === true);
+  }
 
   if (search) {
     const q = search.toLowerCase();
