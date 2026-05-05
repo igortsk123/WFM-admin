@@ -15,7 +15,7 @@ import type {
 } from "@/lib/types";
 import { MOCK_WORK_TYPES } from "@/lib/mock-data/work-types";
 import { MOCK_ZONES } from "@/lib/mock-data/zones";
-import { MOCK_POSITIONS } from "@/lib/mock-data/positions";
+import { MOCK_POSITIONS, type PositionWithFunctionalRole } from "@/lib/mock-data/positions";
 import { MOCK_PRODUCT_CATEGORIES } from "@/lib/mock-data/product-categories";
 import { MOCK_TASKS } from "@/lib/mock-data/tasks";
 import { MOCK_STORES } from "@/lib/mock-data/stores";
@@ -65,7 +65,7 @@ export interface ZoneListParams extends ApiListParams {
   approved?: boolean;
 }
 
-export interface PositionWithCounts extends Position {
+export interface PositionWithCounts extends PositionWithFunctionalRole {
   employees_count: number;
   stores_count: number;
   /** Лейбл роли (для табличной колонки): WORKER / MANAGER (по role_id 1/2). */

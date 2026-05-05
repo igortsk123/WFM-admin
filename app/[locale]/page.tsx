@@ -3,8 +3,9 @@ import { ADMIN_ROUTES } from "@/lib/constants/routes";
 
 /**
  * Root page redirects to dashboard.
- * In production, this would check auth and redirect to login if needed.
+ * Quick-links for demo navigation are in /navigation.
+ * Должности → /taxonomy/positions
  */
 export default function RootPage() {
-  redirect(ADMIN_ROUTES.dashboard);
+  redirect(ADMIN_ROUTES.taxonomyPositions);
 }

@@ -389,7 +389,7 @@
     "title": "Бонусная задача",
     "source": {
       "YESTERDAY_INCOMPLETE": "Незавершённые вчера",
-      "SUPERVISOR_BUDGET": "Бюджет супервайзера",
+      "SUPERVISOR_BUDGET": "Бюдж��т супервайзера",
       "GOAL_LINKED": "Связана с целью"
     }
   },
@@ -741,7 +741,7 @@
       "summary_plan": "План:",
       "summary_scheduled": "Запланировано:",
       "summary_due": "Дедлайн:",
-      "summary_policy": "Политика:",
+      "summary_policy": "Поли��ика:",
       "summary_photo": "Фото:",
       "summary_not_set": "—",
       "summary_minutes": "{min} мин",
@@ -871,7 +871,7 @@
       "source": {
         "manager": "Менеджер",
         "planned": "Плановая",
-        "ai": "ИИ"
+        "ai": "��И"
       },
       "any_permission": "Любой {permission}",
       "empty_no_tasks_title": "Задач пока нет",
@@ -1548,7 +1548,7 @@
         "criteria_task_quality": "Качество работы",
         "criteria_rework": "Возвраты на доработку",
         "criteria_relative_speed": "Скорость относительно других",
-        "criteria_total_tasks": "Всего выполнено задач",
+        "criteria_total_tasks": "В��его выполнено задач",
         "criteria_experience": "Общий опыт работы",
         "no_data": "Рейтинг ещё не сформирован"
       },
@@ -1981,7 +1981,7 @@
       "stats": {
         "total": "Всего магазинов",
         "active": "Активных",
-        "archived": "В архиве",
+        "archived": "В арх��ве",
         "no_director": "Без управляющего",
         "open_link": "Открыть"
       },
@@ -2182,7 +2182,7 @@
       "empty": {
         "no_shifts_title": "В выбранный период смен нет",
         "no_shifts_subtitle": "LAMA не передала ни одной смены — обратитесь в HR-отдел",
-        "no_results_title": "Никого не найдено",
+        "no_results_title": "Никого не найд��но",
         "no_results_subtitle": "Попробуйте изменить фильтры",
         "no_results_reset": "Сбросить фильтры"
       },
@@ -2305,7 +2305,7 @@
         "force_close_description": "Смена будет помечена как закрытая системой. Сотрудник получит уведомление.",
         "force_close_confirm": "Закрыть смену",
         "cancel_shift_title": "Отменить смену?",
-        "cancel_shift_label": "Причина отмены",
+        "cancel_shift_label": "Причина ��тмены",
         "cancel_shift_warning": "Действие необратимо. Смена не появится в расписании.",
         "cancel_shift_confirm": "Отменить смену"
       },
@@ -2509,7 +2509,7 @@
         "clear_all": "Очистить все"
       },
       "columns": {
-        "code": "Код",
+        "code": "��од",
         "name": "Название",
         "role": "Роль",
         "description": "Описание",
@@ -2528,13 +2528,23 @@
         "edit_title": "Редактирование: {name}",
         "fields": {
           "code": "Код",
+          "code_placeholder": "POS-EXAMPLE",
           "name": "Название",
+          "name_placeholder": "Например: Кассир",
           "description": "Описание",
-          "role_id": "Роль",
-          "role_id_worker": "Работник",
-          "role_id_manager": "Управляющий",
-          "default_rank": "Грейд по умолчанию"
+          "description_placeholder": "Краткое описание обязанностей...",
+          "role_id": "Роль (БД)",
+          "role_id_worker": "Работник (WORKER)",
+          "role_id_manager": "Управляющий (MANAGER)",
+          "functional_role_default": "Функциональная роль по умолчанию",
+          "functional_role_default_placeholder": "Не задана (наследуется)",
+          "functional_role_default_hint": "Можно переопределить вручную в карточке сотрудника",
+          "default_rank": "Грейд по умолчанию",
+          "default_rank_placeholder": "1–6",
+          "is_active": "Активна"
         },
+        "role_change_warning": "Изменение роли затронет {count, plural, one {# сотрудника} few {# сотрудников} other {# сотрудников}}. Они получат новые права доступа.",
+        "role_change_ack": "Я понимаю последствия",
         "save": "Сохранить",
         "cancel": "Отмена",
         "delete_confirm_title": "Удалить должность «{name}»?",
