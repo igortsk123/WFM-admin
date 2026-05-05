@@ -2480,6 +2480,82 @@
         "in_use_warning": "Zone in use — deletion blocked",
         "error": "Operation failed"
       }
+    },
+    "positions": {
+      "page_title": "Positions",
+      "breadcrumbs": {
+        "home": "Home",
+        "taxonomy": "Taxonomy",
+        "positions": "Positions"
+      },
+      "counter": "{count, plural, one {# position} other {# positions}}",
+      "actions": {
+        "create": "Add position",
+        "import": "Import",
+        "export": "Export",
+        "more": "More"
+      },
+      "stats": {
+        "total": "Total",
+        "workers": "Workers",
+        "managers": "Managers"
+      },
+      "filters": {
+        "search_placeholder": "Search by name, code",
+        "role": "Role",
+        "role_all": "All",
+        "role_worker": "Worker",
+        "role_manager": "Manager",
+        "clear_all": "Clear all"
+      },
+      "columns": {
+        "code": "Code",
+        "name": "Name",
+        "role": "Role",
+        "description": "Description",
+        "employees_count": "Employees",
+        "stores_count": "Stores",
+        "actions": "Actions"
+      },
+      "row_actions": {
+        "edit": "Edit",
+        "duplicate": "Duplicate",
+        "view_employees": "Employees",
+        "delete": "Delete"
+      },
+      "dialogs": {
+        "create_title": "New position",
+        "edit_title": "Edit: {name}",
+        "fields": {
+          "code": "Code",
+          "name": "Name",
+          "description": "Description",
+          "role_id": "Role",
+          "role_id_worker": "Worker",
+          "role_id_manager": "Manager",
+          "default_rank": "Default rank"
+        },
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete_confirm_title": "Delete position '{name}'?",
+        "delete_confirm_warning": "Irreversible.",
+        "delete_in_use_error": "Used by {count} employees — deletion blocked",
+        "delete_action": "Delete"
+      },
+      "empty": {
+        "no_positions_title": "No positions yet",
+        "no_positions_subtitle": "Create the first position",
+        "no_positions_cta": "Add position",
+        "filtered_title": "Nothing found",
+        "filtered_reset": "Reset filters"
+      },
+      "toasts": {
+        "created": "Position created",
+        "updated": "Position updated",
+        "deleted": "Position deleted",
+        "in_use_warning": "In use — deletion blocked",
+        "error": "Operation failed"
+      }
     }
   }
 }

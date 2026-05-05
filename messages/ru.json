@@ -2480,6 +2480,82 @@
         "in_use_warning": "Зона используется — удаление заблокировано",
         "error": "Не удалось выполнить операцию"
       }
+    },
+    "positions": {
+      "page_title": "Должности",
+      "breadcrumbs": {
+        "home": "Главная",
+        "taxonomy": "Таксономия",
+        "positions": "Должности"
+      },
+      "counter": "{count, plural, one {# должность} few {# должности} many {# должностей} other {# должностей}}",
+      "actions": {
+        "create": "Добавить должность",
+        "import": "Импорт",
+        "export": "Экспорт",
+        "more": "Ещё"
+      },
+      "stats": {
+        "total": "Всего",
+        "workers": "Работники",
+        "managers": "Управляющие"
+      },
+      "filters": {
+        "search_placeholder": "Поиск по названию, коду",
+        "role": "Роль",
+        "role_all": "Все",
+        "role_worker": "Работник",
+        "role_manager": "Управляющий",
+        "clear_all": "Очистить все"
+      },
+      "columns": {
+        "code": "Код",
+        "name": "Название",
+        "role": "Роль",
+        "description": "Описание",
+        "employees_count": "Сотрудников",
+        "stores_count": "Магазинов",
+        "actions": "Действия"
+      },
+      "row_actions": {
+        "edit": "Редактировать",
+        "duplicate": "Дублировать",
+        "view_employees": "Сотрудники",
+        "delete": "Удалить"
+      },
+      "dialogs": {
+        "create_title": "Новая должность",
+        "edit_title": "Редактирование: {name}",
+        "fields": {
+          "code": "Код",
+          "name": "Название",
+          "description": "Описание",
+          "role_id": "Роль",
+          "role_id_worker": "Работник",
+          "role_id_manager": "Управляющий",
+          "default_rank": "Грейд по умолчанию"
+        },
+        "save": "Сохранить",
+        "cancel": "Отмена",
+        "delete_confirm_title": "Удалить должность «{name}»?",
+        "delete_confirm_warning": "Действие необратимо.",
+        "delete_in_use_error": "Используется у {count} сотрудников — удаление заблокировано",
+        "delete_action": "Удалить"
+      },
+      "empty": {
+        "no_positions_title": "Должностей пока нет",
+        "no_positions_subtitle": "Создайте первую должность",
+        "no_positions_cta": "Добавить должность",
+        "filtered_title": "Никого не найдено",
+        "filtered_reset": "Сбросить фильтры"
+      },
+      "toasts": {
+        "created": "Должность создана",
+        "updated": "Должность обновлена",
+        "deleted": "Должность удалена",
+        "in_use_warning": "Используется — удаление заблокировано",
+        "error": "Не удалось выполнить операцию"
+      }
     }
   }
 }
