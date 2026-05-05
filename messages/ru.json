@@ -3486,7 +3486,11 @@
         "connection_ok": "Соединение успешно",
         "connector_saved": "Коннектор сохранён",
         "error": "Не удалось выполнить операцию",
-        "nominal_connected": "Номинальный счёт подключён"
+        "nominal_connected": "Номинальный счёт подключён",
+        "external_hr_saved": "Конфигурация HR-системы сохранена",
+        "external_hr_test_ok": "Соединение успешно установлено",
+        "external_hr_test_error": "Не удалось установить соединение",
+        "external_hr_sync_triggered": "Синхронизация запущена"
       },
       "nominal_sheet": {
         "title": "Подключение «Номинальный счёт»",
@@ -3499,35 +3503,59 @@
         "disconnect": "Отключить"
       },
       "external_hr_section": {
-        "title": "Внешняя HR-система",
-        "description": "Подключите ваш кадровый сервис для автоматического импорта внештатных исполнителей",
-        "status_connected": "Подключена",
-        "status_disconnected": "Не подключена",
-        "actions": {
-          "connect": "Подключить",
-          "test_connection": "Проверить",
-          "disconnect": "Отключить",
-          "sync_now": "Синхронизировать сейчас"
+        "card": {
+          "title": "Внешняя HR-система заявок",
+          "description": "Получайте заявки на внештат из вашей системы управления персоналом. Подходит для крупных компаний с собственным HR-контуром.",
+          "status_not_configured": "Не подключено",
+          "status_active": "Подключено",
+          "status_error": "Ошибка синхронизации",
+          "stat_last_sync": "Последняя синхронизация",
+          "stat_applications_7d": "Заявок за 7 дней",
+          "stat_freelancers_7d": "Исполнителей создано за 7 дней",
+          "btn_connect": "Подключить",
+          "btn_settings": "Настройки",
+          "btn_fix": "Исправить"
         },
-        "form": {
+        "sheet": {
+          "title": "Настройки внешней HR-системы",
+          "tab_config": "Конфигурация",
+          "tab_history": "История синхронизаций",
+          "toggle_label": "Синхронизация включена",
           "endpoint_label": "Endpoint URL",
+          "endpoint_placeholder": "https://hr-api.example.com/freelance/export",
           "api_key_label": "API ключ",
-          "tenant_id_label": "Tenant ID",
-          "sync_schedule_label": "Расписание синхронизации"
-        },
-        "stats": {
-          "synced_freelancers": "Синхронизировано исполнителей",
-          "last_sync_at": "Последняя синхронизация",
-          "next_sync_at": "Следующая",
-          "errors_24h": "Ошибок за 24ч"
-        },
-        "logs_drawer_title": "Лог синхронизаций",
-        "toasts": {
-          "connected": "HR-система подключена",
-          "test_ok": "Соединение установлено",
-          "test_failed": "Не удалось подключиться",
-          "synced": "Синхронизация завершена",
-          "disconnected": "HR-система отключена"
+          "api_key_show": "Показать",
+          "api_key_change": "Изменить",
+          "schedule_label": "Расписание",
+          "schedule_15m": "Каждые 15 минут",
+          "schedule_1h": "Каждый час",
+          "schedule_6h": "Каждые 6 часов",
+          "schedule_daily": "Раз в день",
+          "schedule_manual": "Только вручную",
+          "mapping_title": "Маппинг полей",
+          "mapping_store_label": "Объект клиента → наш магазин",
+          "mapping_work_type_label": "Тип работ клиента → наш тип работ",
+          "mapping_key_placeholder": "код из HR-системы",
+          "mapping_value_placeholder": "Выбрать...",
+          "mapping_add": "+ Добавить маппинг",
+          "save": "Сохранить настройки",
+          "test": "Тест подключения",
+          "test_success": "Соединение установлено",
+          "test_error": "Не удалось подключиться",
+          "trigger_sync": "Запустить синхронизацию вручную",
+          "log_col_datetime": "Дата/время",
+          "log_col_trigger": "Триггер",
+          "log_col_received": "Заявок получено",
+          "log_col_created": "Исполнителей создано",
+          "log_col_errors": "Ошибки",
+          "log_col_status": "Статус",
+          "log_status_ok": "Успех",
+          "log_status_errors": "С ошибками",
+          "log_trigger_schedule": "Расписание",
+          "log_trigger_manual": "Вручную",
+          "log_no_data": "Нет записей синхронизаций",
+          "log_show_details": "Подробнее",
+          "log_hide_details": "Свернуть"
         }
       }
     },

@@ -3485,7 +3485,11 @@
         "connection_ok": "Connection successful",
         "connector_saved": "Connector saved",
         "error": "Operation failed",
-        "nominal_connected": "Nominal account connected"
+        "nominal_connected": "Nominal account connected",
+        "external_hr_saved": "HR system configuration saved",
+        "external_hr_test_ok": "Connection established successfully",
+        "external_hr_test_error": "Failed to establish connection",
+        "external_hr_sync_triggered": "Sync started"
       },
       "nominal_sheet": {
         "title": "Nominal account setup",
@@ -3498,35 +3502,59 @@
         "disconnect": "Disconnect"
       },
       "external_hr_section": {
-        "title": "External HR system",
-        "description": "Connect your HR service to auto-import freelance performers",
-        "status_connected": "Connected",
-        "status_disconnected": "Not connected",
-        "actions": {
-          "connect": "Connect",
-          "test_connection": "Test",
-          "disconnect": "Disconnect",
-          "sync_now": "Sync now"
+        "card": {
+          "title": "External HR system",
+          "description": "Receive freelance requests from your HR management system. Ideal for large companies with an in-house HR platform.",
+          "status_not_configured": "Not connected",
+          "status_active": "Connected",
+          "status_error": "Sync error",
+          "stat_last_sync": "Last sync",
+          "stat_applications_7d": "Requests in 7 days",
+          "stat_freelancers_7d": "Performers created in 7 days",
+          "btn_connect": "Connect",
+          "btn_settings": "Settings",
+          "btn_fix": "Fix"
         },
-        "form": {
+        "sheet": {
+          "title": "External HR system settings",
+          "tab_config": "Configuration",
+          "tab_history": "Sync history",
+          "toggle_label": "Sync enabled",
           "endpoint_label": "Endpoint URL",
+          "endpoint_placeholder": "https://hr-api.example.com/freelance/export",
           "api_key_label": "API key",
-          "tenant_id_label": "Tenant ID",
-          "sync_schedule_label": "Sync schedule"
-        },
-        "stats": {
-          "synced_freelancers": "Synced performers",
-          "last_sync_at": "Last sync",
-          "next_sync_at": "Next sync",
-          "errors_24h": "Errors in 24h"
-        },
-        "logs_drawer_title": "Sync log",
-        "toasts": {
-          "connected": "HR system connected",
-          "test_ok": "Connection established",
-          "test_failed": "Failed to connect",
-          "synced": "Sync complete",
-          "disconnected": "HR system disconnected"
+          "api_key_show": "Show",
+          "api_key_change": "Change",
+          "schedule_label": "Schedule",
+          "schedule_15m": "Every 15 minutes",
+          "schedule_1h": "Every hour",
+          "schedule_6h": "Every 6 hours",
+          "schedule_daily": "Once a day",
+          "schedule_manual": "Manual only",
+          "mapping_title": "Field mapping",
+          "mapping_store_label": "Client object → our store",
+          "mapping_work_type_label": "Client work type → our work type",
+          "mapping_key_placeholder": "code from HR system",
+          "mapping_value_placeholder": "Select...",
+          "mapping_add": "+ Add mapping",
+          "save": "Save settings",
+          "test": "Test connection",
+          "test_success": "Connection established",
+          "test_error": "Failed to connect",
+          "trigger_sync": "Run sync manually",
+          "log_col_datetime": "Date/time",
+          "log_col_trigger": "Trigger",
+          "log_col_received": "Requests received",
+          "log_col_created": "Performers created",
+          "log_col_errors": "Errors",
+          "log_col_status": "Status",
+          "log_status_ok": "Success",
+          "log_status_errors": "With errors",
+          "log_trigger_schedule": "Schedule",
+          "log_trigger_manual": "Manual",
+          "log_no_data": "No sync records",
+          "log_show_details": "Show details",
+          "log_hide_details": "Collapse"
         }
       }
     },
