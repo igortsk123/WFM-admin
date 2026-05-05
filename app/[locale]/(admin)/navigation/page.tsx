@@ -75,7 +75,7 @@ const NAV_GROUPS: NavGroup[] = [
       { labelKey: "network_goals", href: ADMIN_ROUTES.networkGoals, icon: Target, status: "planned" },
       { labelKey: "bonus_tasks", href: ADMIN_ROUTES.bonusTasks, icon: Award, status: "planned" },
       { labelKey: "payouts", href: ADMIN_ROUTES.payouts, icon: CreditCard, status: "planned" },
-      { labelKey: "reports_kpi", href: ADMIN_ROUTES.reportsKpi, icon: BarChart2, status: "planned" },
+      { labelKey: "reports_kpi", href: ADMIN_ROUTES.reportsKpi, icon: BarChart2, status: "ready" },
     ],
   },
   {
