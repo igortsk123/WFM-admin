@@ -3437,7 +3437,8 @@
         "schedule_saved": "Schedule saved",
         "connection_ok": "Connection successful",
         "connector_saved": "Connector saved",
-        "error": "Operation failed"
+        "error": "Operation failed",
+        "nominal_connected": "Nominal account connected"
       },
       "nominal_sheet": {
         "title": "Nominal account setup",
