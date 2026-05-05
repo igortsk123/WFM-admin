@@ -29,6 +29,7 @@ import {
   type TaskFiltersResponse,
 } from "@/lib/api/tasks"
 import { getStores } from "@/lib/api/stores"
+import Link from "next/link"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
 
 import { Button } from "@/components/ui/button"
@@ -213,19 +214,28 @@ function DateRangePicker({ from, to, onFromChange, onToChange, placeholder }: Da
   const [open, setOpen] = React.useState(false)
 
   const label = from && to
-    ? `${format(from, "dd.MM.yy")} – ${format(to, "dd.MM.yy")}`
+    ? `${format(from, "dd.MM")} – ${format(to, "dd.MM")}`
     : from
-    ? `с ${format(from, "dd.MM.yy")}`
+    ? `с ${format(from, "dd.MM")}`
     : to
-    ? `по ${format(to, "dd.MM.yy")}`
+    ? `по ${format(to, "dd.MM")}`
     : null
+
+  const hasValue = from || to
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="h-9 w-full justify-start font-normal">
-          <CalendarIcon className="mr-2 size-4 shrink-0 opacity-60" />
-          {label ?? <span className="text-muted-foreground">{placeholder}</span>}
+        <Button
+          variant="outline"
+          className={cn(
+            "h-9 justify-start font-normal",
+            hasValue ? "px-3" : "px-2.5",
+          )}
+          aria-label={placeholder}
+        >
+          <CalendarIcon className={cn("size-4 shrink-0 opacity-60", label && "mr-2")} />
+          {label && <span className="text-xs whitespace-nowrap">{label}</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-auto p-3" align="start">
@@ -849,7 +859,7 @@ export function TasksList() {
   const filterContent = (
     <div className="flex flex-col gap-3 md:flex-row md:flex-wrap md:items-end">
       {/* Search */}
-      <div className="relative flex-1 min-w-[200px]">
+      <div className="relative flex-1 min-w-[260px] md:basis-[280px]">
         <Input
           placeholder={t("filters.search_placeholder")}
           value={search}
@@ -924,9 +934,11 @@ export function TasksList() {
                 <Download className="size-4 mr-1.5" />
                 {t("export_xlsx")}
               </Button>
-              <Button size="sm">
-                <Plus className="size-4 mr-1.5" />
-                {t("create_task")}
+              <Button size="sm" asChild>
+                <Link href={ADMIN_ROUTES.taskNew}>
+                  <Plus className="size-4 mr-1.5" />
+                  {t("create_task")}
+                </Link>
               </Button>
             </div>
             {/* Mobile: ⋮ menu for export, primary for create */}
@@ -951,9 +963,11 @@ export function TasksList() {
 
       {/* Mobile create button */}
       <div className="md:hidden">
-        <Button className="w-full h-11" size="default">
-          <Plus className="size-4 mr-2" />
-          {t("create_task")}
+        <Button className="w-full h-11" size="default" asChild>
+          <Link href={ADMIN_ROUTES.taskNew}>
+            <Plus className="size-4 mr-2" />
+            {t("create_task")}
+          </Link>
         </Button>
       </div>
 
