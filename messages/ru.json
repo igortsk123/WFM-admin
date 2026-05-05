@@ -2324,6 +2324,89 @@
         "saved": "Сохранено",
         "error": "Не удалось выполнить операцию"
       }
+    },
+    "workTypes": {
+      "page_title": "Типы работ",
+      "breadcrumbs": {
+        "home": "Главная",
+        "taxonomy": "Таксономия",
+        "work_types": "Типы работ"
+      },
+      "actions": {
+        "create": "Создать тип работы",
+        "import": "Импорт",
+        "export": "Экспорт",
+        "more": "Ещё"
+      },
+      "filters": {
+        "search_placeholder": "Поиск по названию, коду",
+        "group": "Группа",
+        "group_all": "Все группы",
+        "requires_photo": "Требует фото",
+        "requires_photo_yes": "Да",
+        "requires_photo_no": "Нет",
+        "hints_filter": "Минимум подсказок",
+        "clear_all": "Очистить все",
+        "open_filters": "Фильтры"
+      },
+      "columns": {
+        "name": "Название",
+        "code": "Код",
+        "group": "Группа",
+        "default_duration": "Длительность (мин)",
+        "requires_photo": "Фото",
+        "requires_report": "Отчёт",
+        "acceptance_policy": "Приёмка",
+        "hints_count": "Подсказки",
+        "usage_count": "Использований 30д",
+        "actions": "Действия"
+      },
+      "policy": {
+        "AUTO": "Авто",
+        "MANUAL": "Ручная"
+      },
+      "row_actions": {
+        "edit": "Редактировать",
+        "hints": "Подсказки",
+        "duplicate": "Дублировать",
+        "archive": "Архивировать",
+        "delete": "Удалить"
+      },
+      "dialogs": {
+        "create_title": "Новый тип работы",
+        "edit_title": "Редактирование: {name}",
+        "fields": {
+          "name": "Название",
+          "code": "Код",
+          "description": "Описание",
+          "group": "Группа",
+          "default_duration_min": "Длительность по умолчанию (мин)",
+          "requires_photo_default": "Требует фото при завершении",
+          "requires_report_default": "Требует текстовый отчёт",
+          "acceptance_policy_default": "Политика приёмки",
+          "allow_new_subtasks": "Разрешить добавлять подзадачи"
+        },
+        "save": "Сохранить",
+        "cancel": "Отмена",
+        "delete_confirm_title": "Удалить тип работы «{name}»?",
+        "delete_confirm_warning": "Действие необратимо. Если тип используется в задачах — удаление будет заблокировано.",
+        "delete_confirm_action": "Удалить"
+      },
+      "empty": {
+        "no_work_types_title": "Типов работ пока нет",
+        "no_work_types_subtitle": "Создайте первый тип работы для генерации задач",
+        "no_work_types_cta": "Создать тип работы",
+        "filtered_title": "Никого не найдено",
+        "filtered_subtitle": "Попробуйте изменить фильтры",
+        "filtered_reset": "Сбросить фильтры"
+      },
+      "toasts": {
+        "created": "Тип работы создан",
+        "updated": "Тип работы обновлён",
+        "deleted": "Тип работы удалён",
+        "in_use_warning": "Тип используется в {count} задачах — удаление заблокировано",
+        "error": "Не удалось выполнить операцию"
+      }
     }
   }
 }

@@ -91,7 +91,7 @@ const NAV_GROUPS: NavGroup[] = [
   {
     titleKey: "hub.configuration",
     items: [
-      { labelKey: "taxonomy_work_types", href: ADMIN_ROUTES.taxonomyWorkTypes, icon: Layers, status: "planned" },
+      { labelKey: "taxonomy_work_types", href: ADMIN_ROUTES.taxonomyWorkTypes, icon: Layers, status: "ready" },
       { labelKey: "taxonomy_zones", href: ADMIN_ROUTES.taxonomyZones, icon: Layers, status: "planned" },
       { labelKey: "notifications", href: ADMIN_ROUTES.notifications, icon: Bell, status: "planned" },
       { labelKey: "integrations", href: ADMIN_ROUTES.integrations, icon: Plug, status: "planned" },
