@@ -199,6 +199,70 @@ export const MOCK_NOTIFICATIONS: Notification[] = [
     created_at: daysAgo(5),
   },
 
+  // ── AI_SUGGESTION_NEW (3) ───────────────────────────────────────
+  {
+    id: "notif-ai-001",
+    user_id: 4, // Романов (SUPERVISOR)
+    category: "AI_SUGGESTION_NEW",
+    title: "ИИ предложил задачу: Переоценка молочки после промо",
+    body: "Зафиксировано отклонение sell-through на 18% ниже нормы в категории «Молочная». Предлагается задача по переоценке 23 SKU в холодильнике 2.",
+    data: { suggestion_id: "sugg-001", store_id: 1, suggestion_type: "TASK_SUGGESTION" },
+    link: "/ai/suggestions?id=sugg-001",
+    is_read: false,
+    is_archived: false,
+    created_at: hoursAgo(2),
+  },
+  {
+    id: "notif-ai-002",
+    user_id: 4,
+    category: "AI_SUGGESTION_NEW",
+    title: "ИИ предложил цель: Снижение OOS в бакалее",
+    body: "Выявлено OOS 11,4% против нормы 6% в группе «Бакалея». ИИ предлагает цель — снизить до 7% за 3 недели через ежедневный мониторинг и задачи по приёмке.",
+    data: { suggestion_id: "sugg-002", store_id: 1, suggestion_type: "GOAL_SUGGESTION" },
+    link: "/ai/suggestions?id=sugg-002",
+    is_read: false,
+    is_archived: false,
+    created_at: hoursAgo(14),
+  },
+  {
+    id: "notif-ai-003",
+    user_id: 3, // Соколова (NETWORK_OPS)
+    category: "AI_SUGGESTION_NEW",
+    title: "ИИ предложил бонусную задачу: Выкладка нового промо-острова",
+    body: "Промо-остров «Пиво + снеки» не выставлен в SPAR Новосибирск (Гоголя) — акция стартует завтра. ИИ предлагает бонусную задачу для работника зала.",
+    data: { suggestion_id: "sugg-003", store_id: 4, suggestion_type: "BONUS_TASK_SUGGESTION" },
+    link: "/ai/suggestions?id=sugg-003",
+    is_read: true,
+    is_archived: false,
+    created_at: daysAgo(1),
+  },
+
+  // ── AI_ANOMALY (2) ──────────────────────────────────────────────
+  {
+    id: "notif-ai-004",
+    user_id: 3, // Соколова (NETWORK_OPS)
+    category: "AI_ANOMALY",
+    title: "Аномалия: низкий accept rate у супервайзера Романова",
+    body: "За последние 14 дней Романов И. А. принял только 12% предложений ИИ (норма 55–70%). Возможно, модель неадекватна для scope SPAR Томск — рекомендуется обратная связь.",
+    data: { supervisor_id: 4, accept_rate_pct: 12, period_days: 14 },
+    link: "/ai/suggestions",
+    is_read: false,
+    is_archived: false,
+    created_at: daysAgo(2),
+  },
+  {
+    id: "notif-ai-005",
+    user_id: 3,
+    category: "AI_ANOMALY",
+    title: "Аномалия: источник данных POS не обновлялся 48 часов",
+    body: "Коннектор POS для SPAR Томск (ул. Учебная) не синхронизировался 48 ч. Предложения ИИ для этого магазина могут быть устаревшими.",
+    data: { connector_id: "conn-pos-001", store_id: 1, gap_hours: 48 },
+    link: "/integrations",
+    is_read: true,
+    is_archived: false,
+    created_at: daysAgo(3),
+  },
+
   // ── GENERIC (3) ─────────────────────────────────────────────────
   {
     id: "notif-016",
