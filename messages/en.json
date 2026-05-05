@@ -3223,6 +3223,80 @@
         "test": "Test connection",
         "disconnect": "Disconnect"
       }
+    },
+    "audit": {
+      "page_title": "Audit log",
+      "page_subtitle": "All system actions journal",
+      "breadcrumbs": {
+        "home": "Home",
+        "audit": "Audit"
+      },
+      "actions": {
+        "export": "Export CSV",
+        "more": "More"
+      },
+      "filters": {
+        "search_placeholder": "Search by action / object / actor",
+        "actor": "Actor",
+        "entity_type": "Entity type",
+        "action": "Action",
+        "date_range": "Date range",
+        "date_from": "From",
+        "date_to": "To",
+        "platform_action_only": "Cross-tenant actions only",
+        "clear_all": "Clear all",
+        "open_filters": "Filters"
+      },
+      "entity_type": {
+        "task": "Task",
+        "subtask": "Subtask",
+        "user": "Employee",
+        "shift": "Shift",
+        "store": "Store",
+        "goal": "Goal",
+        "permission": "Permission",
+        "webhook": "Webhook",
+        "organization": "Organization",
+        "regulation": "Regulation",
+        "freelance_application": "Freelance application",
+        "freelance_service": "Freelance service",
+        "freelance_payout": "Freelance payout",
+        "all": "All types"
+      },
+      "columns": {
+        "occurred_at": "When",
+        "actor": "Actor",
+        "action": "Action",
+        "entity_type": "Type",
+        "entity_name": "Object",
+        "details": "Details",
+        "actions_col": "Actions"
+      },
+      "row_actions": {
+        "view_diff": "Show diff",
+        "open_entity": "Open object",
+        "copy_id": "Copy ID"
+      },
+      "detail_sheet": {
+        "title": "Audit entry",
+        "actor_section": "Who",
+        "what_section": "What",
+        "when_section": "When",
+        "diff_section": "Changes",
+        "ip_label": "IP",
+        "user_agent_label": "User-Agent"
+      },
+      "empty": {
+        "no_entries_title": "Audit log is empty",
+        "no_entries_subtitle": "Actions will appear here as the system runs",
+        "filtered_title": "Nothing found",
+        "filtered_reset": "Reset filters"
+      },
+      "toasts": {
+        "exported": "Log exported",
+        "id_copied": "ID copied",
+        "error": "Operation failed"
+      }
     }
   }
 }

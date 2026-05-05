@@ -100,7 +100,7 @@ const NAV_GROUPS: NavGroup[] = [
       { labelKey: "integrations", href: ADMIN_ROUTES.integrations, icon: Plug, status: "ready" },
       { labelKey: "settings_profile", href: ADMIN_ROUTES.settingsProfile, icon: Settings, status: "ready" },
       { labelKey: "settings_organization", href: ADMIN_ROUTES.settingsOrganization, icon: Settings, status: "ready" },
-      { labelKey: "audit", href: ADMIN_ROUTES.audit, icon: History, status: "planned" },
+      { labelKey: "audit", href: ADMIN_ROUTES.audit, icon: History, status: "ready" },
     ],
   },
 ]

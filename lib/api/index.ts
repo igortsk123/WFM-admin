@@ -254,6 +254,7 @@ export {
 // ═══════════════════════════════════════════════════════════════════
 
 export {
+  type AuditListParams,
   getAuditEntries,
   getAuditEntryById,
 } from "./audit";
