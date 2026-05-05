@@ -322,6 +322,42 @@ export async function archiveAgent(id: string): Promise<ApiMutationResponse> {
 }
 
 // ═══════════════════════════════════════════════════════════════════
+// UNBLOCK
+// ═══════════════════════════════════════════════════════════════════
+
+/**
+ * Unblock a previously blocked agent.
+ * @param id Agent ID
+ * @returns Success or error
+ * @endpoint POST /freelance/agents/:id/unblock
+ * @roles NETWORK_OPS, HR_MANAGER
+ */
+export async function unblockAgent(id: string): Promise<ApiMutationResponse> {
+  await delay(rand(250, 400));
+
+  if (isClientDirect()) {
+    return MODULE_DISABLED;
+  }
+
+  const agent = _agents.find((a) => a.id === id);
+  if (!agent) {
+    return { success: false, error: { code: "NOT_FOUND", message: `Agent ${id} not found` } };
+  }
+  if (agent.status !== "BLOCKED") {
+    return {
+      success: false,
+      error: { code: "INVALID_STATUS", message: "Agent is not blocked" },
+    };
+  }
+
+  _agents = _agents.map((a) =>
+    a.id === id ? { ...a, status: "ACTIVE" as AgentStatus } : a
+  );
+
+  return { success: true };
+}
+
+// ═══════════════════════════════════════════════════════════════════
 // EARNINGS
 // ═══════════════════════════════════════════════════════════════════
 

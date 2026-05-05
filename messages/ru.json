@@ -394,7 +394,7 @@
   "bonus": {
     "title": "Бонусная задача",
     "source": {
-      "YESTERDAY_INCOMPLETE": "Незав���ршённые вчера",
+      "YESTERDAY_INCOMPLETE": "Незав����ршённые вчера",
       "SUPERVISOR_BUDGET": "Бюдж��т супервайзера",
       "GOAL_LINKED": "Связана с целью"
     }
@@ -1024,7 +1024,7 @@
       "archive_submit": "Архивировать",
       "archive_toast": "Задача архивирована",
       "status_override_dialog_title": "Изменить статус задачи",
-      "status_override_dialog_desc": "Принудительное изменение статуса. Только для NETWORK_OPS. Действие будет записано в аудит.",
+      "status_override_dialog_desc": "Принудительное изменение статуса. Только для NETWORK_OPS. Действие б��дет записано в аудит.",
       "status_override_justification_label": "Обоснование",
       "status_override_justification_placeholder": "Укажите причину изменения статуса (минимум 10 символов)...",
       "status_override_submit": "Применить",
@@ -2498,7 +2498,7 @@
       "actions": {
         "create": "Добавить должность",
         "import": "Импорт",
-        "export": "Экспорт",
+        "export": "Экс��орт",
         "more": "Ещё"
       },
       "stats": {
@@ -2827,7 +2827,7 @@
         "filtered_reset": "Сбросить фильтры"
       },
       "preferences_sheet": {
-        "title": "Настройки уведомлений",
+        "title": "Настро��ки уведомлений",
         "push_enabled_label": "Push-уведомления",
         "push_enabled_hint": "Получать уведомления в мобильном приложении и браузере",
         "categories_section": "Категории",
@@ -3045,7 +3045,7 @@
         "col_op_time": "Нормативное время операции (мин)"
       },
       "legal": {
-        "title": "Юридические лица",
+        "title": "��ридические лица",
         "description": "Несколько юридических лиц внутри одной организации (для retail-сетей с несколькими ИП)",
         "add_entity": "Добавить юр.лицо",
         "col_name": "Название",
@@ -3631,7 +3631,7 @@
         "freelance.payout.complete": "Выплата внештата выполнена",
         "application.create": "Заявка создана",
         "application.cancel": "Заявка отменена",
-        "application.approve_full": "Заявка полностью принята",
+        "application.approve_full": "��аявка полностью принята",
         "application.approve_partial": "Заявка принята частично",
         "application.reject": "Заявка отклонена",
         "application.replace_with_bonus": "Заменена на бонусную задачу",
@@ -4886,7 +4886,7 @@
         "empty_thread_title": "Спросите что угодно про ваши данные",
         "empty_thread_subtitle": "ИИ читает данные из подключённых источников",
         "suggestion_chips": {
-          "worst_oos": "Какие магазины с худшим OOS?",
+          "worst_oos": "Какие магаз��ны с худшим OOS?",
           "explain_returns": "Объясни, почему вырос возврат задач",
           "today_priorities": "Что важно сделать сегодня?",
           "team_status": "Как дела у моих сотрудников?"
@@ -5860,40 +5860,93 @@
         "agents": "Агенты"
       },
       "actions": {
-        "new_agent": "Новый агент",
+        "new_agent": "+ Новый агент",
         "export": "Экспорт"
       },
+      "tabs": {
+        "active": "Активные",
+        "blocked": "Заблокированы",
+        "archive": "Архив"
+      },
       "filters": {
-        "search": "Поиск",
+        "search": "Поиск по имени / ИНН",
+        "type": "Тип",
         "status": "Статус",
         "tier": "Уровень"
       },
+      "type": {
+        "INDIVIDUAL": "ИП",
+        "COMPANY": "Юр. лицо"
+      },
       "columns": {
         "agent": "Агент",
-        "tier": "Уровень",
+        "inn": "ИНН",
+        "contract": "Договор",
+        "commission": "% комиссии",
         "performers": "Исполнителей",
-        "month_amount": "Оборот за месяц",
-        "rating": "Рейтинг",
-        "no_show_rate": "% невыходов",
+        "earned_30d": "Заработано за 30 дней",
         "status": "Статус"
       },
-      "tier": {
-        "BRONZE": "Бронза",
-        "SILVER": "Серебро",
-        "GOLD": "Золото",
-        "PLATINUM": "Платина"
+      "contract_status": {
+        "signed": "Подписан",
+        "not_signed": "Не подписан",
+        "pending": "Ожидает"
+      },
+      "commission_tooltip": "От суммы оказанных услуг до налогов",
+      "menu": {
+        "open": "Открыть",
+        "edit": "Изменить",
+        "block": "Заблокировать",
+        "archive": "Архивировать",
+        "unblock": "Разблокировать"
+      },
+      "block_dialog": {
+        "title": "Заблокировать агента?",
+        "description": "Агент не сможет принимать новые заказы. Укажите причину.",
+        "reason_label": "Причина блокировки",
+        "reason_placeholder": "Укажите причину (минимум 5 символов)...",
+        "confirm": "Заблокировать",
+        "cancel": "Отмена"
+      },
+      "sheet": {
+        "title_create": "Новый агент",
+        "title_edit": "Редактировать агента",
+        "field_name": "Название",
+        "field_name_placeholder": "ИП Иванов И. И. или ООО «Компания»",
+        "field_type": "Тип",
+        "field_inn": "ИНН",
+        "field_inn_placeholder_individual": "12 цифр (ИП / физлицо)",
+        "field_inn_placeholder_company": "10 цифр (юр. лицо)",
+        "field_kpp": "КПП",
+        "field_kpp_placeholder": "9 цифр",
+        "field_ogrn": "ОГРН",
+        "field_ogrn_placeholder": "13 цифр",
+        "field_contact_name": "Контактное лицо",
+        "field_contact_phone": "Телефон",
+        "field_contact_email": "Email",
+        "field_contract_url": "Договор (ссылка или файл)",
+        "field_contract_url_placeholder": "https://...",
+        "field_commission": "% комиссии",
+        "field_status": "Статус",
+        "submit_create": "Сохранить",
+        "submit_edit": "Сохранить изменения"
       },
       "status": {
         "ACTIVE": "Активен",
-        "PAUSED": "На паузе",
-        "BLOCKED": "Заблокирован"
+        "BLOCKED": "Заблокирован",
+        "ARCHIVED": "Архив"
       },
       "empty": {
-        "no_agents": "Агентов пока нет"
+        "no_agents": "Агентов пока нет",
+        "description": "Добавьте первого агента, чтобы начать"
       },
       "toasts": {
         "created": "Агент создан",
-        "error": "Не удалось"
+        "updated": "Изменения сохранены",
+        "blocked": "Агент заблокирован",
+        "unblocked": "Агент разблокирован",
+        "archived": "Агент архивирован",
+        "error": "Не удалось выполнить действие"
       }
     },
     "freelanceAgentDetail": {
