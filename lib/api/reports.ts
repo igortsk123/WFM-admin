@@ -14,7 +14,14 @@ import {
   type KpiPerformer,
   type KpiByDimension,
 } from "@/lib/mock-data/reports-kpi";
-import { MOCK_PLAN_FACT, type PlanFactSummary } from "@/lib/mock-data/reports-plan-fact";
+import {
+  MOCK_PLAN_FACT,
+  type PlanFactSummary,
+  type PlanFactDay,
+  type PlanFactByStore,
+  type PlanFactByUser,
+  type PlanFactByWorkType,
+} from "@/lib/mock-data/reports-plan-fact";
 import { MOCK_STORE_COMPARE, type StoreCompareReport } from "@/lib/mock-data/reports-compare";
 
 const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
@@ -38,6 +45,10 @@ export type {
   KpiPerformer,
   KpiByDimension,
   PlanFactSummary as PlanFactReportData,
+  PlanFactDay,
+  PlanFactByStore,
+  PlanFactByUser,
+  PlanFactByWorkType,
   StoreCompareReport as StoreCompareReportData,
 };
 
@@ -80,16 +91,41 @@ export async function getKpiReport(params: ReportParams): Promise<ApiResponse<Kp
 // PLAN-FACT REPORT
 // ═══════════════════════════════════════════════════════════════════
 
+/** Granularity of the plan/fact breakdown shown to the user. */
+export type PlanFactBreakdown = "days" | "stores" | "users" | "work_types";
+
+export interface PlanFactParams extends ReportParams {
+  /** Какую группировку показывает экран (для будущего серверного фильтра). */
+  breakdown?: PlanFactBreakdown;
+  /** Что сравниваем — часы или задачи. */
+  metric?: "hours" | "tasks";
+}
+
 /**
  * Get plan vs actual breakdown for a period.
  * @endpoint GET /reports/plan-fact
  */
 export async function getPlanFactReport(
-  params: ReportParams
+  params: PlanFactParams
 ): Promise<ApiResponse<PlanFactSummary>> {
   await delay(450);
-  console.log("[v0] Plan-fact report params:", params);
-  return { data: MOCK_PLAN_FACT };
+
+  if (!params.store_id) {
+    return { data: MOCK_PLAN_FACT };
+  }
+
+  // Single-store view: фильтруем by_store по store_id, by_user по store_name.
+  const store = MOCK_PLAN_FACT.by_store.find((s) => s.store_id === params.store_id);
+  if (!store) return { data: MOCK_PLAN_FACT };
+
+  return {
+    data: {
+      ...MOCK_PLAN_FACT,
+      days: store.days,
+      by_store: [store],
+      by_user: MOCK_PLAN_FACT.by_user.filter((u) => u.store_name === store.store_name),
+    },
+  };
 }
 
 // ═══════════════════════════════════════════════════════════════════
