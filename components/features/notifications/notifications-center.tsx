@@ -271,13 +271,13 @@ function NotificationRow({
         </p>
 
         {/* Meta */}
-        {(notification.data?.store_id || notification.data?.task_id) && (
+        {Boolean(notification.data?.store_id || notification.data?.task_id) && (
           <p className="mt-1 text-xs text-muted-foreground/70">
-            {notification.data.task_id
+            {notification.data?.task_id
               ? `Задача: ${String(notification.data.task_id)}`
               : ""}
-            {notification.data.store_id && notification.data.task_id ? " · " : ""}
-            {notification.data.store_id
+            {notification.data?.store_id && notification.data?.task_id ? " · " : ""}
+            {notification.data?.store_id
               ? `Магазин ID: ${String(notification.data.store_id)}`
               : ""}
           </p>
