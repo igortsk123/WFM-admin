@@ -45,6 +45,12 @@ export {
   disableTotp,
   // Locale
   updateUserLocale,
+  // Profile (chat 35)
+  type ProfileUpdateData,
+  updateProfile,
+  uploadAvatar,
+  removeAvatar,
+  changePassword,
 } from "./auth";
 
 // ═══════════════════════════════════════════════════════════════════

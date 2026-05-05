@@ -2836,6 +2836,104 @@
         "preferences_saved": "Preferences saved",
         "error": "Operation failed"
       }
+    },
+    "profile": {
+      "page_title": "Settings",
+      "page_subtitle": "Profile, security & preferences",
+      "breadcrumbs": {
+        "home": "Home",
+        "settings": "Settings"
+      },
+      "sidebar": {
+        "profile": "Profile",
+        "security": "Security",
+        "notifications": "Notifications",
+        "assignments": "Assignments",
+        "appearance": "Theme & language",
+        "logout": "Log out"
+      },
+      "sections": {
+        "profile": {
+          "title": "Profile",
+          "avatar_card": "Avatar",
+          "avatar_upload": "Upload new photo",
+          "avatar_remove": "Remove",
+          "avatar_helper": "JPG / PNG up to 2 MB, recommended 256×256",
+          "personal_card": "Personal info",
+          "first_name": "First name",
+          "last_name": "Last name",
+          "middle_name": "Middle name",
+          "phone": "Phone",
+          "phone_placeholder": "+7 (999) 999-99-99",
+          "email": "Email",
+          "email_locked_hint": "Email is managed by Beyond Violet SSO",
+          "date_of_birth": "Date of birth",
+          "employee_type": "Employment type"
+        },
+        "security": {
+          "title": "Security",
+          "password_card": "Password",
+          "password_change": "Change password",
+          "current_password": "Current password",
+          "new_password": "New password",
+          "confirm_password": "Confirm password",
+          "totp_card": "Two-factor authentication (TOTP)",
+          "totp_enabled": "Enabled",
+          "totp_disabled": "Not configured",
+          "totp_setup": "Set up",
+          "totp_disable": "Disable",
+          "sessions_card": "Active sessions",
+          "session_current": "Current session",
+          "session_revoke": "Sign out",
+          "session_revoke_all": "Sign out all others"
+        },
+        "notifications": {
+          "title": "Notifications",
+          "description": "Manage notifications in the notifications section",
+          "go_to_notifications": "Go to notifications"
+        },
+        "assignments": {
+          "title": "Assignments",
+          "description": "Positions and stores where you work",
+          "active_label": "Current",
+          "archived_label": "Archived",
+          "no_assignments": "No assignments"
+        },
+        "appearance": {
+          "title": "Theme & language",
+          "language": "Interface language",
+          "language_ru": "Русский",
+          "language_en": "English",
+          "timezone": "Time zone",
+          "theme": "Theme",
+          "theme_light": "Light",
+          "theme_dark": "Dark",
+          "theme_system": "System"
+        }
+      },
+      "save_bar": {
+        "dirty_message": "You have unsaved changes",
+        "save": "Save",
+        "cancel": "Cancel"
+      },
+      "toasts": {
+        "saved": "Saved",
+        "avatar_uploaded": "Avatar updated",
+        "avatar_removed": "Avatar removed",
+        "password_changed": "Password changed",
+        "totp_enabled": "TOTP enabled",
+        "totp_disabled": "TOTP disabled",
+        "session_revoked": "Session ended",
+        "logged_out": "Logged out",
+        "error": "Operation failed"
+      },
+      "validation": {
+        "name_min": "At least 2 characters",
+        "phone_invalid": "Phone must match +7 (XXX) XXX-XX-XX",
+        "password_min": "At least 8 characters",
+        "password_mismatch": "Passwords don't match",
+        "avatar_too_large": "File must be smaller than 2 MB"
+      }
     }
   }
 }
