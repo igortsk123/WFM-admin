@@ -4,6 +4,7 @@
  */
 
 export * from "./organizations";
+export * from "./partners";
 export * from "./legal-entities";
 export * from "./positions";
 export * from "./stores";
