@@ -337,10 +337,10 @@ function DaysTab({
                   borderRadius: 8,
                   fontSize: 12,
                 }}
-                formatter={(value: number, name: string) => {
+                formatter={((value: number, name: string) => {
                   if (name === t("chart.deviation_pct")) return [`${value}%`, name];
                   return [`${value} ч`, name];
-                }}
+                }) as never}
               />
               <Legend
                 wrapperStyle={{ fontSize: 12, paddingTop: 12 }}
@@ -606,7 +606,7 @@ function StoresTab({
                   borderRadius: 8,
                   fontSize: 12,
                 }}
-                formatter={(value: number, name: string) => [`${value} ч`, name]}
+                formatter={((value: number, name: string) => [`${value} ч`, name]) as never}
               />
               <Legend
                 wrapperStyle={{ fontSize: 12, paddingTop: 16 }}
@@ -972,7 +972,7 @@ function WorkTypesTab({
                   borderRadius: 8,
                   fontSize: 12,
                 }}
-                formatter={(value: number, name: string) => [`${value} ч`, name]}
+                formatter={((value: number, name: string) => [`${value} ч`, name]) as never}
               />
               <Legend
                 wrapperStyle={{ fontSize: 12, paddingTop: 8 }}
