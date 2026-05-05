@@ -28,7 +28,7 @@ import type { Service } from "@/lib/types";
 
 const schema = z.object({
   newAmount: z
-    .number({ invalid_type_error: "Введите число" })
+    .number({ message: "Введите число" })
     .positive("Сумма должна быть больше 0"),
   reason: z.string().min(10, "Минимум 10 символов"),
 });
