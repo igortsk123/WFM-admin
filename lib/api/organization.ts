@@ -266,3 +266,308 @@ export async function removeLegalEntity(
   console.log(`[v0] Removed legal ${legalId} from org ${orgId}`);
   return { success: true };
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// API KEYS
+// ═══════════════════════════════════════════════════════════════════
+
+export type ApiKeyScope =
+  | "tasks:read"
+  | "tasks:write"
+  | "users:read"
+  | "shifts:read"
+  | "reports:read";
+
+export interface ApiKey {
+  id: string;
+  name: string;
+  prefix: string;
+  scopes: ApiKeyScope[];
+  created_at: string;
+  last_used_at?: string;
+  expires_at?: string;
+  created_by_user_id: number;
+}
+
+export interface CreateApiKeyPayload {
+  name: string;
+  scopes: ApiKeyScope[];
+  expires_at?: string;
+}
+
+const MOCK_API_KEYS: ApiKey[] = [
+  {
+    id: "key-1",
+    name: "Интеграция LAMA prod",
+    prefix: "wfm_live_a1b2",
+    scopes: ["tasks:read", "tasks:write", "shifts:read"],
+    created_at: "2026-02-10T10:00:00Z",
+    last_used_at: "2026-05-04T14:22:00Z",
+    created_by_user_id: 3,
+  },
+  {
+    id: "key-2",
+    name: "BI Dashboard (Power BI)",
+    prefix: "wfm_live_c3d4",
+    scopes: ["reports:read", "shifts:read"],
+    created_at: "2026-01-15T09:00:00Z",
+    last_used_at: "2026-05-03T08:11:00Z",
+    created_by_user_id: 3,
+  },
+  {
+    id: "key-3",
+    name: "Тест / staging",
+    prefix: "wfm_test_e5f6",
+    scopes: ["tasks:read", "users:read"],
+    created_at: "2026-03-20T11:30:00Z",
+    expires_at: "2026-06-30T23:59:59Z",
+    created_by_user_id: 5,
+  },
+];
+
+/**
+ * Get API keys for organization.
+ * @endpoint GET /organizations/:id/api-keys
+ */
+export async function getApiKeys(orgId: string): Promise<ApiResponse<ApiKey[]>> {
+  await delay(250);
+  console.log(`[v0] getApiKeys org=${orgId}`);
+  return { data: MOCK_API_KEYS };
+}
+
+/**
+ * Create a new API key.
+ * @endpoint POST /organizations/:id/api-keys
+ */
+export async function createApiKey(
+  orgId: string,
+  payload: CreateApiKeyPayload,
+): Promise<ApiMutationResponse & { key?: string; apiKey?: ApiKey }> {
+  await delay(350);
+  const rawKey = `wfm_live_${Math.random().toString(36).slice(2, 10)}${Math.random().toString(36).slice(2, 10)}`;
+  const newKey: ApiKey = {
+    id: `key-${Date.now()}`,
+    name: payload.name,
+    prefix: rawKey.slice(0, 14),
+    scopes: payload.scopes,
+    created_at: new Date().toISOString(),
+    expires_at: payload.expires_at,
+    created_by_user_id: 3,
+  };
+  MOCK_API_KEYS.unshift(newKey);
+  console.log(`[v0] Created API key for org=${orgId}:`, newKey.name);
+  return { success: true, key: rawKey, apiKey: newKey };
+}
+
+/**
+ * Revoke an API key.
+ * @endpoint DELETE /organizations/:id/api-keys/:keyId
+ */
+export async function revokeApiKey(
+  orgId: string,
+  keyId: string,
+): Promise<ApiMutationResponse> {
+  await delay(280);
+  const idx = MOCK_API_KEYS.findIndex((k) => k.id === keyId);
+  if (idx !== -1) MOCK_API_KEYS.splice(idx, 1);
+  console.log(`[v0] Revoked key ${keyId} in org ${orgId}`);
+  return { success: true };
+}
+
+/**
+ * Rename an API key.
+ * @endpoint PATCH /organizations/:id/api-keys/:keyId
+ */
+export async function renameApiKey(
+  orgId: string,
+  keyId: string,
+  name: string,
+): Promise<ApiMutationResponse> {
+  await delay(220);
+  const key = MOCK_API_KEYS.find((k) => k.id === keyId);
+  if (key) key.name = name;
+  console.log(`[v0] Renamed key ${keyId} → "${name}" in org ${orgId}`);
+  return { success: true };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// BILLING
+// ═══════════════════════════════════════════════════════════════════
+
+export interface BillingPaymentMethod {
+  type: "VISA" | "MASTERCARD" | "MIR";
+  last4: string;
+}
+
+export interface BillingHistoryEntry {
+  id: string;
+  date: string;
+  amount_rub: number;
+  status: "PAID" | "PENDING" | "FAILED";
+}
+
+export interface BillingConfig {
+  plan: "STARTER" | "PRO" | "ENTERPRISE";
+  price_rub: number;
+  next_charge_date: string;
+  stores_used: number;
+  stores_limit: number;
+  active_users_used: number;
+  active_users_limit: number;
+  tasks_this_month: number;
+  payment_method?: BillingPaymentMethod;
+  history: BillingHistoryEntry[];
+}
+
+const MOCK_BILLING: BillingConfig = {
+  plan: "PRO",
+  price_rub: 9990,
+  next_charge_date: "2026-05-28",
+  stores_used: 12,
+  stores_limit: 50,
+  active_users_used: 47,
+  active_users_limit: 500,
+  tasks_this_month: 3482,
+  payment_method: { type: "VISA", last4: "4242" },
+  history: [
+    { id: "inv-1", date: "2026-04-28", amount_rub: 9990, status: "PAID" },
+    { id: "inv-2", date: "2026-03-28", amount_rub: 9990, status: "PAID" },
+    { id: "inv-3", date: "2026-02-28", amount_rub: 9990, status: "PAID" },
+    { id: "inv-4", date: "2026-01-28", amount_rub: 9990, status: "PAID" },
+    { id: "inv-5", date: "2025-12-28", amount_rub: 4990, status: "PAID" },
+  ],
+};
+
+/**
+ * Get billing config.
+ * @endpoint GET /organizations/:id/billing
+ */
+export async function getBillingConfig(orgId: string): Promise<ApiResponse<BillingConfig>> {
+  await delay(280);
+  console.log(`[v0] getBillingConfig org=${orgId}`);
+  return { data: MOCK_BILLING };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// TASK POLICIES
+// ═══════════════════════════════════════════════════════════════════
+
+export interface TaskPoliciesConfig {
+  acceptance_policy: "AUTO" | "MANUAL";
+  requires_photo_default: boolean;
+  deviation_pct: number;
+  auto_accept_hours: number;
+  min_reject_reason_length: number;
+  require_reject_category: boolean;
+}
+
+const MOCK_TASK_POLICIES: TaskPoliciesConfig = {
+  acceptance_policy: "MANUAL",
+  requires_photo_default: false,
+  deviation_pct: 20,
+  auto_accept_hours: 24,
+  min_reject_reason_length: 20,
+  require_reject_category: false,
+};
+
+/**
+ * Get task policies.
+ * @endpoint GET /organizations/:id/task-policies
+ */
+export async function getTaskPolicies(orgId: string): Promise<ApiResponse<TaskPoliciesConfig>> {
+  await delay(250);
+  return { data: { ...MOCK_TASK_POLICIES } };
+}
+
+/**
+ * Update task policies.
+ * @endpoint PATCH /organizations/:id/task-policies
+ */
+export async function updateTaskPolicies(
+  orgId: string,
+  data: Partial<TaskPoliciesConfig>,
+): Promise<ApiMutationResponse> {
+  await delay(300);
+  Object.assign(MOCK_TASK_POLICIES, data);
+  console.log(`[v0] Updated task policies org=${orgId}:`, data);
+  return { success: true };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// TIMEZONE / DISPLAY FORMAT
+// ═══════════════════════════════════════════════════════════════════
+
+export interface TimezoneConfig {
+  timezone: string;
+  date_format: "VERBOSE" | "DOT" | "ISO";
+  time_format: "24H" | "12H";
+  week_start: "MON" | "SUN";
+}
+
+const MOCK_TIMEZONE_CONFIG: TimezoneConfig = {
+  timezone: "Asia/Tomsk",
+  date_format: "DOT",
+  time_format: "24H",
+  week_start: "MON",
+};
+
+/**
+ * Get timezone config.
+ * @endpoint GET /organizations/:id/timezone
+ */
+export async function getTimezoneConfig(orgId: string): Promise<ApiResponse<TimezoneConfig>> {
+  await delay(200);
+  return { data: { ...MOCK_TIMEZONE_CONFIG } };
+}
+
+/**
+ * Update timezone config.
+ * @endpoint PATCH /organizations/:id/timezone
+ */
+export async function updateTimezoneConfig(
+  orgId: string,
+  data: Partial<TimezoneConfig>,
+): Promise<ApiMutationResponse> {
+  await delay(280);
+  Object.assign(MOCK_TIMEZONE_CONFIG, data);
+  console.log(`[v0] Updated timezone config org=${orgId}:`, data);
+  return { success: true };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// BRANDING
+// ═══════════════════════════════════════════════════════════════════
+
+export interface BrandingConfig {
+  logo_url?: string;
+  primary_color: string;
+  theme: "LIGHT" | "SYSTEM";
+}
+
+const MOCK_BRANDING: BrandingConfig = {
+  primary_color: "#7C3AED",
+  theme: "LIGHT",
+};
+
+/**
+ * Get branding config.
+ * @endpoint GET /organizations/:id/branding
+ */
+export async function getBrandingConfig(orgId: string): Promise<ApiResponse<BrandingConfig>> {
+  await delay(200);
+  return { data: { ...MOCK_BRANDING } };
+}
+
+/**
+ * Update branding config.
+ * @endpoint PATCH /organizations/:id/branding
+ */
+export async function updateBrandingConfig(
+  orgId: string,
+  data: Partial<BrandingConfig>,
+): Promise<ApiMutationResponse> {
+  await delay(280);
+  Object.assign(MOCK_BRANDING, data);
+  console.log(`[v0] Updated branding org=${orgId}:`, data);
+  return { success: true };
+}

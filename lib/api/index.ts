@@ -231,6 +231,31 @@ export {
   addLegalEntity,
   updateLegalEntity,
   removeLegalEntity,
+  // API Keys (chat 36)
+  type ApiKey,
+  type ApiKeyScope,
+  type CreateApiKeyPayload,
+  getApiKeys,
+  createApiKey,
+  revokeApiKey,
+  renameApiKey,
+  // Billing (chat 36)
+  type BillingConfig,
+  type BillingPaymentMethod,
+  type BillingHistoryEntry,
+  getBillingConfig,
+  // Task Policies (chat 36)
+  type TaskPoliciesConfig,
+  getTaskPolicies,
+  updateTaskPolicies,
+  // Timezone (chat 36)
+  type TimezoneConfig,
+  getTimezoneConfig,
+  updateTimezoneConfig,
+  // Branding (chat 36)
+  type BrandingConfig,
+  getBrandingConfig,
+  updateBrandingConfig,
 } from "./organization";
 
 // ═══════════════════════════════════════════════════════════════════
