@@ -3598,6 +3598,98 @@
         "share_link_copied": "Link copied",
         "export_failed": "Failed to export report"
       }
+    },
+    "reportsCompare": {
+      "page_title": "Store comparison",
+      "page_subtitle": "Network benchmarking — leaders, laggards and trends",
+      "breadcrumbs": {
+        "home": "Home",
+        "reports": "Reports",
+        "compare": "Comparison"
+      },
+      "actions": {
+        "export_xlsx": "Export XLSX",
+        "export_csv": "Export CSV",
+        "share": "Share"
+      },
+      "filters": {
+        "period_label": "Period",
+        "from": "From",
+        "to": "To",
+        "sort_by_label": "Sort by",
+        "quadrant_filter_label": "Quadrant",
+        "all_quadrants": "All quadrants",
+        "apply": "Apply",
+        "reset": "Reset"
+      },
+      "quadrant": {
+        "LEADERS": "Leaders",
+        "GROWING": "Growing",
+        "STABLE": "Stable",
+        "DECLINING": "Declining",
+        "leaders_subtitle": "High completion and positive trend",
+        "growing_subtitle": "Below median but improving",
+        "stable_subtitle": "Near median with no significant changes",
+        "declining_subtitle": "Below median and trending worse"
+      },
+      "metric": {
+        "completion_rate": "Completion, %",
+        "return_rate": "Returns, %",
+        "on_time_rate": "On-time, %",
+        "hours_diff_pct": "Hours actual vs plan, %",
+        "fot_diff_pct": "Payroll actual vs plan, %"
+      },
+      "median_card": {
+        "title": "Network medians",
+        "completion_rate": "Completion",
+        "return_rate": "Returned for rework",
+        "on_time_rate": "On-time completion",
+        "hours_diff_pct": "Hours variance",
+        "fot_diff_pct": "Payroll variance"
+      },
+      "table": {
+        "columns": {
+          "rank": "#",
+          "store": "Store",
+          "external_code": "Code",
+          "completion_rate": "Completion",
+          "return_rate": "Returns",
+          "on_time_rate": "On-time",
+          "hours_diff_pct": "Hours Δ",
+          "fot_diff_pct": "Payroll Δ",
+          "trend_completion": "Completion trend",
+          "trend_return": "Returns trend",
+          "quadrant": "Quadrant"
+        }
+      },
+      "row_actions": {
+        "open_store": "Open store",
+        "open_kpi_report": "KPI report",
+        "open_plan_fact": "Plan/Actual"
+      },
+      "scatter": {
+        "title": "Performance map",
+        "subtitle": "Each store is a point on two axes",
+        "x_axis_label": "Completion, %",
+        "y_axis_label": "Trend, p.p. over the period",
+        "median_line_label": "Network median"
+      },
+      "vs_median": {
+        "above": "Above median",
+        "below": "Below median",
+        "equal": "At median"
+      },
+      "empty": {
+        "no_data_title": "No data for the selected period",
+        "no_data_subtitle": "Widen the period or wait for store data to come in",
+        "loading": "Calculating comparison…"
+      },
+      "toasts": {
+        "exported_xlsx": "Report saved as XLSX",
+        "exported_csv": "Report saved as CSV",
+        "share_link_copied": "Link copied",
+        "export_failed": "Failed to export report"
+      }
     }
   }
 }

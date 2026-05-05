@@ -3598,6 +3598,98 @@
         "share_link_copied": "Ссылка скопирована",
         "export_failed": "Не удалось экспортировать отчёт"
       }
+    },
+    "reportsCompare": {
+      "page_title": "Сравнение магазинов",
+      "page_subtitle": "Бенчмаркинг по сети — лидеры, отстающие и тренды",
+      "breadcrumbs": {
+        "home": "Главная",
+        "reports": "Отчёты",
+        "compare": "Сравнение"
+      },
+      "actions": {
+        "export_xlsx": "Экспорт XLSX",
+        "export_csv": "Экспорт CSV",
+        "share": "Поделиться"
+      },
+      "filters": {
+        "period_label": "Период",
+        "from": "С",
+        "to": "По",
+        "sort_by_label": "Сортировка",
+        "quadrant_filter_label": "Квадрант",
+        "all_quadrants": "Все квадранты",
+        "apply": "Применить",
+        "reset": "Сбросить"
+      },
+      "quadrant": {
+        "LEADERS": "Лидеры",
+        "GROWING": "Растущие",
+        "STABLE": "Стабильные",
+        "DECLINING": "Падающие",
+        "leaders_subtitle": "Высокое выполнение и положительный тренд",
+        "growing_subtitle": "Ниже медианы, но улучшаются",
+        "stable_subtitle": "Около медианы, без существенных изменений",
+        "declining_subtitle": "Ниже медианы и тренд ухудшается"
+      },
+      "metric": {
+        "completion_rate": "Выполнение, %",
+        "return_rate": "Возврат, %",
+        "on_time_rate": "Вовремя, %",
+        "hours_diff_pct": "Часы факт vs план, %",
+        "fot_diff_pct": "ФОТ факт vs план, %"
+      },
+      "median_card": {
+        "title": "Медианы по сети",
+        "completion_rate": "Выполнение",
+        "return_rate": "Возврат на доработку",
+        "on_time_rate": "Выполнено вовремя",
+        "hours_diff_pct": "Отклонение часов",
+        "fot_diff_pct": "Отклонение ФОТ"
+      },
+      "table": {
+        "columns": {
+          "rank": "#",
+          "store": "Магазин",
+          "external_code": "Код",
+          "completion_rate": "Выполнение",
+          "return_rate": "Возврат",
+          "on_time_rate": "Вовремя",
+          "hours_diff_pct": "Часы Δ",
+          "fot_diff_pct": "ФОТ Δ",
+          "trend_completion": "Тренд выполнения",
+          "trend_return": "Тренд возврата",
+          "quadrant": "Квадрант"
+        }
+      },
+      "row_actions": {
+        "open_store": "Открыть магазин",
+        "open_kpi_report": "KPI отчёт магазина",
+        "open_plan_fact": "План/факт магазина"
+      },
+      "scatter": {
+        "title": "Карта эффективности",
+        "subtitle": "Каждый магазин — точка по двум осям",
+        "x_axis_label": "Выполнение, %",
+        "y_axis_label": "Тренд, п.п. за период",
+        "median_line_label": "Медиана сети"
+      },
+      "vs_median": {
+        "above": "Выше медианы",
+        "below": "Ниже медианы",
+        "equal": "На медиане"
+      },
+      "empty": {
+        "no_data_title": "Нет данных за выбранный период",
+        "no_data_subtitle": "Расширьте период или дождитесь данных от магазинов",
+        "loading": "Считаем сравнение…"
+      },
+      "toasts": {
+        "exported_xlsx": "Отчёт сохранён в XLSX",
+        "exported_csv": "Отчёт сохранён в CSV",
+        "share_link_copied": "Ссылка скопирована",
+        "export_failed": "Не удалось экспортировать отчёт"
+      }
     }
   }
 }
