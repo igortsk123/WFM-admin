@@ -623,6 +623,14 @@ export {
   getAgentEarnings,
 } from "./freelance-agents";
 
+export {
+  type FreelancerWithStats,
+  type GetFreelancersParams,
+  getFreelancers,
+  getFreelancerById,
+  sendTaskOffer,
+} from "./freelance-freelancers";
+
 // ═══════════════════════════════════════════════════════════════════
 // Agent Cabinet API (AGENT role, NOMINAL_ACCOUNT mode only)
 // ═══════════════════════════════════════════════════════════════════

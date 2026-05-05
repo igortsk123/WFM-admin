@@ -168,6 +168,7 @@
     "freelance_no_shows": "No-shows",
     "freelance_budget_limits": "Freelance budget limits",
     "freelance_agents": "Agents",
+    "freelance_freelancers": "Performers",
     "agent_dashboard": "Agent cabinet",
     "agent_freelancers": "My performers",
     "agent_earnings": "Agent earnings",
@@ -6253,6 +6254,65 @@
         "error": "Action failed"
       },
       "module_disabled": "Freelance module is disabled"
+    },
+    "freelancers": {
+      "page_title": "Performers",
+      "page_subtitle": "Independent freelancer pool. Networks browse availability and send task offers.",
+      "breadcrumb_home": "Home",
+      "breadcrumb_freelance": "Freelance",
+      "breadcrumb_freelancers": "Performers",
+      "tabs": {
+        "active": "Active",
+        "archived": "Archive"
+      },
+      "filters": {
+        "search_placeholder": "Search by name or phone",
+        "agent": "Agent",
+        "agent_any": "Any agent",
+        "available_only": "Available only"
+      },
+      "columns": {
+        "name": "Performer",
+        "status": "Status",
+        "agent": "Agent",
+        "rating": "Rating",
+        "completed_30d": "Completed (30d)",
+        "joined_at": "Joined"
+      },
+      "no_agent": "No agent",
+      "badge_available": "Available",
+      "row_actions": {
+        "menu": "Actions",
+        "offer_task": "Offer task",
+        "open_agent": "Open agent card"
+      },
+      "card": {
+        "completed_30d": "in 30 days",
+        "active_now": "active now"
+      },
+      "empty_title": "No performers found",
+      "empty_desc": "No matches for current filters. Clear some filters or wait until new performers join.",
+      "error_title": "Failed to load",
+      "error_load": "Load error",
+      "retry": "Retry",
+      "pagination_info": "{from}–{to} of {total}",
+      "offer": {
+        "title": "Offer task: {name}",
+        "description": "Push goes to performer's mobile app. They have 60 minutes to respond.",
+        "field_service": "Work type",
+        "field_service_placeholder": "Select work type",
+        "field_store": "Store",
+        "field_store_placeholder": "Select store",
+        "field_date": "Date",
+        "field_date_placeholder": "Pick a date",
+        "field_start_time": "Start",
+        "field_duration": "Hours",
+        "field_price": "Price, ₽",
+        "field_note": "Note (optional)",
+        "field_note_placeholder": "Special conditions, instructions...",
+        "submit": "Send offer",
+        "toast_sent": "Offer sent: {name}"
+      }
     },
     "freelanceAgents": {
       "page_title": "Agents directory",

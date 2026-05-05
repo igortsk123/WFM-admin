@@ -168,6 +168,7 @@
     "freelance_no_shows": "Невыходы",
     "freelance_budget_limits": "Лимиты бюджета внештата",
     "freelance_agents": "Агенты",
+    "freelance_freelancers": "Исполнители",
     "agent_dashboard": "Кабинет агента",
     "agent_freelancers": "Мои исполнители",
     "agent_earnings": "Доходы агента",
@@ -6279,6 +6280,65 @@
         "error": "Не удалось выполнить действие"
       },
       "module_disabled": "Модуль внештата отключён"
+    },
+    "freelancers": {
+      "page_title": "Исполнители",
+      "page_subtitle": "Независимый пул фрилансеров. Сеть видит свободных и предлагает задания.",
+      "breadcrumb_home": "Главная",
+      "breadcrumb_freelance": "Внештат",
+      "breadcrumb_freelancers": "Исполнители",
+      "tabs": {
+        "active": "Активные",
+        "archived": "Архив"
+      },
+      "filters": {
+        "search_placeholder": "Поиск по ФИО или телефону",
+        "agent": "Агент",
+        "agent_any": "Любой агент",
+        "available_only": "Только свободные сейчас"
+      },
+      "columns": {
+        "name": "Исполнитель",
+        "status": "Статус",
+        "agent": "Агент-ИП",
+        "rating": "Рейтинг",
+        "completed_30d": "Завершено за 30 дней",
+        "joined_at": "В системе с"
+      },
+      "no_agent": "Без агента",
+      "badge_available": "Свободен",
+      "row_actions": {
+        "menu": "Действия",
+        "offer_task": "Предложить задание",
+        "open_agent": "Открыть карточку агента"
+      },
+      "card": {
+        "completed_30d": "за 30 дней",
+        "active_now": "сейчас в работе"
+      },
+      "empty_title": "Исполнители не найдены",
+      "empty_desc": "По текущим фильтрам никого. Снимите часть фильтров или дождитесь когда подключится новый исполнитель.",
+      "error_title": "Не удалось загрузить",
+      "error_load": "Ошибка загрузки",
+      "retry": "Повторить",
+      "pagination_info": "{from}–{to} из {total}",
+      "offer": {
+        "title": "Предложить задание: {name}",
+        "description": "Push уйдёт в мобильное приложение фрилансера. У него есть 60 минут на ответ.",
+        "field_service": "Тип работы",
+        "field_service_placeholder": "Выберите тип работы",
+        "field_store": "Магазин",
+        "field_store_placeholder": "Выберите магазин",
+        "field_date": "Дата",
+        "field_date_placeholder": "Выберите дату",
+        "field_start_time": "Начало",
+        "field_duration": "Часов",
+        "field_price": "Цена, ₽",
+        "field_note": "Примечание (необязательно)",
+        "field_note_placeholder": "Особые условия, инструкции...",
+        "submit": "Отправить предложение",
+        "toast_sent": "Предложение отправлено: {name}"
+      }
     },
     "freelanceAgents": {
       "page_title": "Справочник агентов",
