@@ -97,7 +97,7 @@ function buildSchema(t: ReturnType<typeof useTranslations>) {
       .max(80, t("validation.maxLength", { max: 80 })),
     group: z.string().min(1, t("validation.required")),
     default_duration_min: z
-      .number({ invalid_type_error: t("validation.number") })
+      .number({ message: t("validation.number") })
       .int(t("validation.integer"))
       .min(1, t("validation.min", { min: 1 }))
       .max(480, t("validation.max", { max: 480 })),
