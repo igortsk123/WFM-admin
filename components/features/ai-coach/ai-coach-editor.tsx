@@ -944,7 +944,7 @@ function EditorTabs({
                         borderRadius: 8,
                         fontSize: 12,
                       }}
-                      formatter={(value: number) => [`${value}%`, "Helpful rate"]}
+                      formatter={((value: number) => [`${value}%`, "Helpful rate"]) as never}
                     />
                     <Line
                       type="monotone"
