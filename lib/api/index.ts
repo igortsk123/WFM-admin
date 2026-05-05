@@ -460,6 +460,27 @@ export {
 } from "./ai-coach";
 
 // ═══════════════════════════════════════════════════════════════════
+// Risk Scoring API (stretch — chat 50)
+// ═══════════════════════════════════════════════════════════════════
+
+export {
+  type RiskRule,
+  type RiskRuleConfig,
+  type RiskMode,
+  type RiskTriggerKey,
+  type RiskTriggerConfig,
+  type RiskMetrics,
+  type RiskSimulationParams,
+  type RiskSimulationResult,
+  getRiskRules,
+  updateRiskRule,
+  createRiskRule,
+  deleteRiskRule,
+  getRiskMetrics,
+  simulateRisk,
+} from "./risk";
+
+// ═══════════════════════════════════════════════════════════════════
 // Regulations API
 // ═══════════════════════════════════════════════════════════════════
 
