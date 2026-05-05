@@ -4360,6 +4360,161 @@
         "error": "Не удалось обработать файл",
         "too_large": "Файл превышает 5 МБ"
       }
+    },
+    "bonusTasks": {
+      "page_title": "Бонусные задачи",
+      "page_subtitle": "Бюджет часов → стратегия распределения → задачи для сотрудников после плана. 1 балл ≈ 1 рубль.",
+      "page_subtitle_director": "Просмотр бюджета и активных бонусных задач для вашего магазина",
+      "breadcrumbs": {
+        "home": "Главная",
+        "goals_bonus": "Цели и бонусы",
+        "bonus_tasks": "Бонусные задачи"
+      },
+      "actions": {
+        "create": "Создать бонусную задачу",
+        "history": "История",
+        "remove": "Снять",
+        "publish": "Опубликовать",
+        "reject": "Отклонить",
+        "ask_ai": "Спросить у ИИ",
+        "edit_budget": "Изменить бюджет",
+        "view_pool": "Посмотреть пул",
+        "open_goal": "К целям",
+        "configure_budget": "Настроить бюджет"
+      },
+      "filters": {
+        "period_today": "Сегодня",
+        "period_week": "Эта неделя",
+        "period_prev_week": "Прошлая неделя",
+        "period_custom": "Кастом",
+        "scope_label": "Магазин/Цех"
+      },
+      "budget_card": {
+        "title": "Бюджет на объекты",
+        "regional_badge": "Установлен региональным",
+        "toggle_hours": "В часах",
+        "toggle_money": "В деньгах",
+        "hours_unit": "ч в неделю",
+        "money_unit": "₽ в неделю",
+        "used_label": "Использовано {value} ({percent}%)",
+        "summary_collapse_title": "Сводка по объектам",
+        "set_by_regional_hint": "Установлен региональным директором"
+      },
+      "strategies_card": {
+        "title": "Активные стратегии",
+        "manual_label": "Ручная",
+        "manual_hint": "Супервайзер сам создаёт задачи",
+        "ai_label": "ИИ",
+        "ai_hint": "ИИ предлагает, нужно одобрение",
+        "yesterday_label": "Невыполненные вчера",
+        "yesterday_hint": "Авто-перенос в бонусный пул",
+        "footer_hint": "Можно комбинировать. ИИ работает поверх активной цели."
+      },
+      "yesterday_pool_card": {
+        "title": "Пул незавершённых вчера",
+        "auto_badge": "Авто",
+        "tasks_summary": "{tasks} задач = {hours}",
+        "used_label": "использовано {used} / {total}"
+      },
+      "active_goal_card": {
+        "title": "Активная цель",
+        "ai_badge": "AI",
+        "proposals_count": "{count} предложенных бонусных"
+      },
+      "tabs": {
+        "active": "Активные",
+        "ai_proposals": "Предложения ИИ",
+        "completed": "Завершённые",
+        "metrics": "Метрики"
+      },
+      "task_card": {
+        "points_suffix": "баллов",
+        "rubles_suffix": "₽",
+        "any_assignee": "Любой подходящий",
+        "expires_in": "Истекает через {time}",
+        "status": {
+          "NEW": "Новая",
+          "IN_PROGRESS": "Взята",
+          "COMPLETED": "На проверке"
+        }
+      },
+      "ai_proposals": {
+        "section_description": "ИИ предлагает бонусные задачи на основе активной цели «{goal}». Можно скорректировать перед публикацией.",
+        "rationale_title": "Почему это предложено",
+        "all_link": "Все предложения ИИ"
+      },
+      "completed_tab": {
+        "columns": {
+          "date": "Дата",
+          "task": "Задача",
+          "user": "Сотрудник",
+          "store": "Магазин",
+          "goal": "Цель",
+          "points": "Очков",
+          "source": "Источник",
+          "status": "Статус"
+        },
+        "source": {
+          "YESTERDAY_INCOMPLETE": "Невыполненные вчера",
+          "SUPERVISOR_BUDGET": "Бюджет супервайзера",
+          "GOAL_LINKED": "Из цели"
+        }
+      },
+      "metrics": {
+        "distribution_title": "Распределение очков",
+        "distribution_subtitle_top": "+15% к ЗП",
+        "distribution_subtitle_avg": "+10%",
+        "distribution_subtitle_low": "0-5%",
+        "best_performers_title": "Лучшие исполнители",
+        "avg_claim_title": "Avg time to claim",
+        "coverage_title": "Coverage",
+        "coverage_hint": "Доля задач, которые забрали",
+        "by_stores_title": "Распределение по магазинам",
+        "honest_curve_title": "Кривая распределения",
+        "honest_curve_warning": "Распределение слишком ровное — пересмотрите бюджет"
+      },
+      "create_dialog": {
+        "title": "Создать бонусную задачу",
+        "step1_title": "Источник баллов",
+        "step2_title": "Параметры задачи",
+        "source_yesterday": "Невыполненные вчера",
+        "source_budget": "Бюджет супервайзера",
+        "source_goal": "Из активной цели",
+        "name_label": "Название",
+        "work_type_label": "Тип работы",
+        "zone_label": "Зона",
+        "points_label": "Очки (₽)",
+        "window_label": "Окно публикации",
+        "visibility_label": "Кому видна",
+        "visibility_any": "Любой подходящий со смены",
+        "visibility_specific": "Конкретный исполнитель",
+        "goal_link_label": "Цель (опц.)",
+        "after_planned_label": "Видна работнику только после закрытия плановых",
+        "after_planned_hint": "Работники не увидят, пока не закроют все плановые задачи смены",
+        "submit": "Опубликовать"
+      },
+      "remove_dialog": {
+        "title": "Снять бонусную задачу?",
+        "description": "Если кто-то взял — баллы вернутся в бюджет",
+        "reason_label": "Причина (опционально)",
+        "confirm": "Снять"
+      },
+      "empty": {
+        "no_budget_title": "Бюджет не настроен",
+        "no_budget_subtitle": "Установите бюджет часов на этот объект, чтобы создавать бонусные задачи",
+        "no_active_tasks": "Нет активных бонусных задач",
+        "no_proposals": "ИИ не предложил новых задач",
+        "no_completed": "В этом периоде нет завершённых бонусных задач"
+      },
+      "toasts": {
+        "task_created": "Бонусная задача опубликована",
+        "task_removed": "Задача снята",
+        "proposal_published": "Предложение опубликовано",
+        "proposal_rejected": "Предложение отклонено",
+        "budget_updated": "Бюджет обновлён",
+        "budget_exceeded": "Превышен бюджет",
+        "error": "Не удалось выполнить операцию"
+      }
     }
   }
 }
