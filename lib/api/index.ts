@@ -144,13 +144,20 @@ export {
   type StoreWithStats,
   type StoreDetail,
   type StoreListParams,
+  type StoreZoneWithCounts,
+  type StoreKpiToday,
+  type StoreHistoryEvent,
+  type StoreHistoryParams,
   getStores,
   getStoreById,
+  getStoreHistory,
   createStore,
   updateStore,
   archiveStore,
   bulkArchiveStores,
+  restoreStore,
   syncLama,
+  syncLamaForStore,
 } from "./stores";
 
 // ═══════════════════════════════════════════════════════════════════

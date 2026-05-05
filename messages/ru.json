@@ -138,6 +138,7 @@
     "employees": "Сотрудники",
     "permissions": "Права доступа",
     "stores": "Магазины",
+    "store_detail_demo": "Магазин (демо)",
     "taxonomy": "Таксономия",
     "settings": "Настройки",
     "taxonomy_work_types": "Типы работ",
@@ -1595,6 +1596,148 @@
         "position_changed": "Должность изменена",
         "store_transferred": "Сотрудник переведён",
         "archived": "Сотрудник архивирован",
+        "error": "Не удалось выполнить операцию"
+      }
+    },
+    "storeDetail": {
+      "page_title": "Магазин",
+      "breadcrumbs": {
+        "home": "Главная",
+        "stores": "Магазины"
+      },
+      "hero": {
+        "address_label": "Адрес",
+        "manager_label": "Управляющий",
+        "manager_unassigned": "Не назначен",
+        "manager_assign": "Назначить",
+        "supervisor_label": "Супервайзер",
+        "supervisor_unassigned": "Не закреплён",
+        "external_code": "Код",
+        "store_type": "Тип",
+        "active_badge": "Активен",
+        "archived_badge": "Архив",
+        "lama_synced": "Синхронизация LAMA: {ago}",
+        "lama_never": "LAMA не синхронизировалась",
+        "kpi": {
+          "team": "Сотрудников",
+          "team_active": "Сейчас на смене",
+          "tasks_today": "Задач сегодня",
+          "completed_today": "Завершено",
+          "on_review": "На проверке",
+          "zones": "Зон",
+          "fot": "ФОТ",
+          "lama_sync": "LAMA"
+        }
+      },
+      "actions": {
+        "create_task": "Создать задачу",
+        "schedule": "Расписание",
+        "edit": "Редактировать",
+        "more": "Ещё",
+        "archive": "Архивировать",
+        "restore": "Восстановить",
+        "transfer_manager": "Сменить управляющего",
+        "sync_lama": "Принудительная LAMA-синхронизация"
+      },
+      "tabs": {
+        "overview": "Обзор",
+        "team": "Сотрудники",
+        "zones": "Зоны",
+        "schedule": "Расписание",
+        "history": "История",
+        "settings": "Настройки"
+      },
+      "overview": {
+        "activity_title": "Активность за неделю",
+        "feed_title": "Лента событий",
+        "manager_card": "Управляющий",
+        "manager_contact": "Связаться",
+        "contacts_card": "Контакты и часы",
+        "contacts_phone": "Телефон",
+        "contacts_email": "Email",
+        "contacts_hours": "Часы работы",
+        "address_card": "Адрес и геолокация",
+        "address_copy": "Скопировать адрес",
+        "address_copied": "Адрес скопирован",
+        "coords": "Координаты"
+      },
+      "team": {
+        "search_placeholder": "Поиск по ФИО или телефону",
+        "filter_position": "Должность",
+        "all_positions": "Все должности",
+        "view_all": "Все сотрудники магазина",
+        "empty": "В магазине пока нет сотрудников"
+      },
+      "zones": {
+        "title": "Зоны магазина ({count})",
+        "add": "Добавить зону",
+        "global_badge": "Глобальная",
+        "store_badge": "Магазин {code}",
+        "stat_employees": "Сотрудников",
+        "stat_tasks": "Задач сегодня",
+        "stat_shifts": "Активных смен",
+        "delete_disabled": "Нельзя удалить зону с активными задачами",
+        "edit": "Изменить",
+        "delete": "Удалить"
+      },
+      "schedule": {
+        "view_full": "Открыть расписание магазина",
+        "today_label": "Сегодня",
+        "empty": "На ближайшие дни смен нет"
+      },
+      "history": {
+        "col_time": "Время",
+        "col_who": "Кто",
+        "col_action": "Действие",
+        "col_object": "Объект",
+        "col_ip": "IP",
+        "empty": "История пуста"
+      },
+      "settings": {
+        "lama_card": "Интеграция с LAMA",
+        "lama_synced_at": "Последняя синхронизация: {date}",
+        "danger_card": "Опасная зона",
+        "archive_hint": "Архивирование скрывает магазин из списков задач, смен и отчётов. Действие обратимо."
+      },
+      "dialogs": {
+        "edit_title": "Редактировать магазин",
+        "edit_name": "Название",
+        "edit_external_code": "Код",
+        "edit_address": "Адрес",
+        "edit_city": "Город",
+        "edit_store_type": "Тип объекта",
+        "edit_manager": "Управляющий",
+        "edit_geo_lat": "Широта",
+        "edit_geo_lng": "Долгота",
+        "archive_title": "Архивировать магазин?",
+        "archive_description": "Магазин будет скрыт из списков и отчётов. Активные смены и задачи останутся в истории.",
+        "archive_reason_label": "Причина",
+        "archive_reason_closed": "Закрыт",
+        "archive_reason_duplicate": "Дубликат",
+        "archive_reason_wrong_data": "Ошибочные данные",
+        "archive_reason_obsolete": "Устарел",
+        "archive_reason_other": "Другое",
+        "transfer_manager_title": "Сменить управляющего",
+        "transfer_manager_select": "Выберите кандидата",
+        "transfer_manager_hint": "Текущий управляющий получит уведомление",
+        "sync_lama_title": "Принудительная синхронизация LAMA",
+        "sync_lama_description": "Запросить актуальное расписание из LAMA для этого магазина. Может занять до минуты."
+      },
+      "states": {
+        "not_found_title": "Магазин не найден",
+        "not_found_description": "Объект с таким ID не существует или был удалён",
+        "forbidden_title": "Недостаточно прав",
+        "forbidden_description": "У вас нет доступа к этому магазину",
+        "error_title": "Не удалось загрузить магазин",
+        "error_retry": "Попробовать снова"
+      },
+      "toast": {
+        "store_updated": "Магазин обновлён",
+        "archived": "Магазин архивирован",
+        "restored": "Магазин восстановлен",
+        "manager_transferred": "Управляющий назначен",
+        "lama_sync_started": "Запущена синхронизация LAMA",
+        "lama_sync_done": "LAMA-синхронизация завершена",
         "error": "Не удалось выполнить операцию"
       }
     },
