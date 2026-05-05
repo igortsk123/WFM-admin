@@ -20,6 +20,17 @@ import {
   X,
   ChevronDown,
   ChevronRight,
+  FileText,
+  Users,
+  UserCheck,
+  Banknote,
+  ClipboardList,
+  Building2,
+  Settings2,
+  RefreshCcw,
+  CreditCard,
+  Link2,
+  Shield,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -142,6 +153,17 @@ const ENTITY_TYPE_OPTIONS = [
   "permission",
   "session",
   "work_type",
+  "freelance_application",
+  "freelance_assignment",
+  "freelance_service",
+  "freelance_payout",
+  "freelance_oferta",
+  "freelancer",
+  "budget_limit",
+  "service_norm",
+  "agent",
+  "payment_mode",
+  "external_hr",
 ];
 
 const ACTION_OPTIONS = [
@@ -164,6 +186,43 @@ const ACTION_OPTIONS = [
   "api_key.create",
   "login",
   "logout",
+  "application.create",
+  "application.cancel",
+  "application.approve_full",
+  "application.approve_partial",
+  "application.reject",
+  "application.replace_with_bonus",
+  "application.approve_mixed",
+  "assignment.create",
+  "assignment.remove",
+  "service.confirm",
+  "service.dispute",
+  "service.no_show",
+  "service.amount_adjust",
+  "payout.batch_created",
+  "payout.sent_to_nominal",
+  "payout.status_received",
+  "payout.retry",
+  "payout.failed",
+  "oferta.sent",
+  "oferta.accepted",
+  "freelancer.activate",
+  "freelancer.block",
+  "freelancer.archive",
+  "budget_limit.create",
+  "budget_limit.update",
+  "budget_limit.archive",
+  "service_norm.create",
+  "service_norm.update",
+  "service_norm.archive",
+  "agent.create",
+  "agent.update",
+  "agent.block",
+  "agent.archive",
+  "external_hr.config_update",
+  "external_hr.sync_manual",
+  "external_hr.sync_auto",
+  "payment_mode.update",
 ];
 
 // ═══════════════════════════════════════════════════════════════════
@@ -180,6 +239,41 @@ const ENTITY_TYPE_STYLES: Record<string, string> = {
   permission: "bg-primary/10 text-primary border-primary/20",
   session: "bg-muted text-muted-foreground border-border",
   work_type: "bg-accent text-accent-foreground border-border",
+  freelance_application: "bg-info/10 text-info border-info/20",
+  freelance_assignment: "bg-info/10 text-info border-info/20",
+  freelance_service: "bg-success/10 text-success border-success/20",
+  freelance_payout: "bg-warning/10 text-warning border-warning/20",
+  freelance_oferta: "bg-primary/10 text-primary border-primary/20",
+  freelancer: "bg-primary/10 text-primary border-primary/20",
+  budget_limit: "bg-warning/10 text-warning border-warning/20",
+  service_norm: "bg-accent text-accent-foreground border-border",
+  agent: "bg-primary/10 text-primary border-primary/20",
+  payment_mode: "bg-destructive/10 text-destructive border-destructive/20",
+  external_hr: "bg-muted text-muted-foreground border-border",
+};
+
+/** Maps entity_type → Lucide icon component for event rows. */
+const ENTITY_TYPE_ICONS: Record<string, React.ElementType> = {
+  task: ClipboardList,
+  user: Users,
+  shift: Monitor,
+  store: Building2,
+  organization: Building2,
+  api_key: Shield,
+  permission: Shield,
+  session: Monitor,
+  work_type: Settings2,
+  freelance_application: FileText,
+  freelance_assignment: UserCheck,
+  freelance_service: ClipboardList,
+  freelance_payout: Banknote,
+  freelance_oferta: Link2,
+  freelancer: UserCheck,
+  budget_limit: Banknote,
+  service_norm: Settings2,
+  agent: Users,
+  payment_mode: CreditCard,
+  external_hr: RefreshCcw,
 };
 
 function EntityBadge({ type, label }: { type: string; label?: string }) {
@@ -345,9 +439,9 @@ function DiffTable({ diff }: DiffTableProps) {
       <table className="w-full text-xs">
         <thead>
           <tr className="bg-muted/50">
-            <th className="px-3 py-2 text-left font-medium text-muted-foreground">Поле</th>
-            <th className="px-3 py-2 text-left font-medium text-muted-foreground">Было</th>
-            <th className="px-3 py-2 text-left font-medium text-muted-foreground">Стало</th>
+            <th className="px-3 py-2 text-left font-medium text-muted-foreground">{t("columns.entity_name")}</th>
+            <th className="px-3 py-2 text-left font-medium text-muted-foreground">{t("diff.before")}</th>
+            <th className="px-3 py-2 text-left font-medium text-muted-foreground">{t("diff.after")}</th>
           </tr>
         </thead>
         <tbody>
@@ -415,11 +509,29 @@ function DetailPanelContent({
     <div className="flex flex-col gap-0">
       {/* Header */}
       <div className="flex items-start justify-between gap-3 p-4 border-b">
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1.5">
           <p className="text-sm font-medium text-foreground">
             {formatDateFull(entry.occurred_at, locale)}
           </p>
-          <EntityBadge type={entry.entity_type} label={entityTypeLabel(entry.entity_type)} />
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <EntityBadge type={entry.entity_type} label={entityTypeLabel(entry.entity_type)} />
+            {entry.platform_action && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Badge
+                      variant="outline"
+                      className="text-xs font-medium bg-info/10 text-info border-info/30 cursor-default"
+                    >
+                      <Shield className="size-3 mr-1" aria-hidden />
+                      {t("platform_action.badge")}
+                    </Badge>
+                  </TooltipTrigger>
+                  <TooltipContent>{t("platform_action.tooltip")}</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
+          </div>
         </div>
       </div>
 
@@ -446,7 +558,18 @@ function DetailPanelContent({
                 {entry.actor.email && (
                   <p className="text-xs text-muted-foreground truncate">{entry.actor.email}</p>
                 )}
-                <RoleBadge role={entry.actor.role as FunctionalRole} size="sm" />
+                <div className="flex items-center gap-1.5 flex-wrap">
+                  <RoleBadge role={entry.actor.role as FunctionalRole} size="sm" />
+                  {entry.platform_action && (
+                    <Badge
+                      variant="outline"
+                      className="text-xs font-medium bg-info/20 text-info border-info/30"
+                    >
+                      <Shield className="size-3 mr-1" aria-hidden />
+                      Beyond Violet
+                    </Badge>
+                  )}
+                </div>
               </div>
             </div>
           </section>
@@ -470,12 +593,43 @@ function DetailPanelContent({
             )}
           </section>
 
-          {/* DIFF */}
-          {entry.diff && entry.diff.length > 0 && (
+          {/* AMOUNT ADJUST — special inline display */}
+          {entry.action === "service.amount_adjust" && (
             <section className="p-4 flex flex-col gap-3">
               <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                 {t("detail_sheet.diff_section")}
               </p>
+              <div className="flex items-center gap-2 rounded-md border bg-muted/30 px-3 py-2">
+                <span className="text-sm font-mono font-semibold text-destructive line-through">
+                  {String(entry.payload.from_amount ?? "—")} ₽
+                </span>
+                <ArrowUpRight className="size-3.5 text-muted-foreground rotate-90 shrink-0" aria-hidden />
+                <span className="text-sm font-mono font-semibold text-success">
+                  {String(entry.payload.to_amount ?? "—")} ₽
+                </span>
+              </div>
+              {entry.payload.reason && (
+                <p className="text-xs text-muted-foreground">
+                  <span className="font-medium">{t("diff_fields.reason")}:</span>{" "}
+                  {String(entry.payload.reason)}
+                </p>
+              )}
+            </section>
+          )}
+
+          {/* DIFF */}
+          {entry.diff && entry.diff.length > 0 && entry.action !== "service.amount_adjust" && (
+            <section className="p-4 flex flex-col gap-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {t("detail_sheet.diff_section")}
+              </p>
+              <DiffTable diff={entry.diff} />
+            </section>
+          )}
+
+          {/* DIFF for amount_adjust — also show generic diff if present */}
+          {entry.diff && entry.diff.length > 0 && entry.action === "service.amount_adjust" && (
+            <section className="p-4 flex flex-col gap-3">
               <DiffTable diff={entry.diff} />
             </section>
           )}
@@ -599,12 +753,23 @@ function EventRow({
         {formatTime(entry.occurred_at, locale)}
       </span>
 
-      {/* Avatar */}
-      <Avatar className="size-8 shrink-0">
-        <AvatarFallback className="text-xs font-medium bg-accent text-accent-foreground">
-          {getInitials(entry.actor.name)}
-        </AvatarFallback>
-      </Avatar>
+      {/* Avatar + entity icon */}
+      <div className="relative shrink-0">
+        <Avatar className="size-8">
+          <AvatarFallback className="text-xs font-medium bg-accent text-accent-foreground">
+            {getInitials(entry.actor.name)}
+          </AvatarFallback>
+        </Avatar>
+        {(() => {
+          const Icon = ENTITY_TYPE_ICONS[entry.entity_type];
+          if (!Icon) return null;
+          return (
+            <span className="absolute -bottom-1 -right-1 flex size-4 items-center justify-center rounded-full bg-background border border-border shadow-sm">
+              <Icon className="size-2.5 text-muted-foreground" aria-hidden />
+            </span>
+          );
+        })()}
+      </div>
 
       {/* Content */}
       <div className="flex-1 min-w-0 flex flex-col gap-0.5">
@@ -613,10 +778,24 @@ function EventRow({
           <span className="text-muted-foreground">{entry.action_label.toLowerCase()}</span>{" "}
           <span className="font-medium text-foreground">{entry.entity_name}</span>
         </p>
+        {entry.platform_action && (
+          <span className="inline-flex items-center gap-1 text-xs text-info font-medium">
+            <Shield className="size-3" aria-hidden />
+            Beyond Violet
+          </span>
+        )}
       </div>
 
-      {/* Entity badge + eye */}
-      <div className="flex items-center gap-2 shrink-0">
+      {/* Entity badge + platform badge + eye */}
+      <div className="flex items-center gap-1.5 shrink-0">
+        {entry.platform_action && (
+          <Badge
+            variant="outline"
+            className="text-xs font-medium bg-info/10 text-info border-info/30 shrink-0"
+          >
+            Платформа
+          </Badge>
+        )}
         <EntityBadge type={entry.entity_type} label={entityTypeLabel(entry.entity_type)} />
         <button
           type="button"
@@ -666,6 +845,7 @@ interface FilterState {
   actions: string[];
   dateFrom: Date | undefined;
   dateTo: Date | undefined;
+  platformActionOnly: boolean;
 }
 
 const DEFAULT_DATE_FROM = (() => {
@@ -681,6 +861,7 @@ const initialFilters: FilterState = {
   actions: [],
   dateFrom: DEFAULT_DATE_FROM,
   dateTo: new Date(),
+  platformActionOnly: false,
 };
 
 // ═══════════════════════════════════════════════════════════════════
@@ -699,6 +880,7 @@ export function AuditLog() {
     ...initialFilters,
     dateFrom: undefined,
     dateTo: undefined,
+    platformActionOnly: false,
   }));
   const [searchInput, setSearchInput] = React.useState("");
   const [entries, setEntries] = React.useState<AuditEntry[]>([]);
@@ -738,6 +920,7 @@ export function AuditLog() {
       actions: filters.actions.length > 0 ? filters.actions : undefined,
       date_from: filters.dateFrom?.toISOString(),
       date_to: filters.dateTo?.toISOString(),
+      platform_action_only: filters.platformActionOnly || undefined,
       page,
       page_size: PAGE_SIZE,
       sort_by: "occurred_at",
@@ -836,7 +1019,7 @@ export function AuditLog() {
   }
 
   function clearAllFilters() {
-    setFilters({ ...initialFilters, dateFrom: undefined, dateTo: undefined });
+    setFilters({ ...initialFilters, dateFrom: undefined, dateTo: undefined, platformActionOnly: false });
     setSearchInput("");
     setPage(1);
   }
@@ -918,6 +1101,15 @@ export function AuditLog() {
     });
   }
 
+  if (filters.platformActionOnly) {
+    activeFilters.push({
+      key: "platform",
+      label: t("platform_action.filter_toggle"),
+      value: t("platform_action.badge"),
+      onRemove: () => setFilters((p) => ({ ...p, platformActionOnly: false })),
+    });
+  }
+
   const entityTypeOptions = ENTITY_TYPE_OPTIONS.map((v) => ({
     value: v,
     label: entityTypeLabel(v),
@@ -956,6 +1148,32 @@ export function AuditLog() {
           }}
           placeholder={t("filters.date_range")}
         />
+      </div>
+      {/* Platform action toggle */}
+      <div className="flex items-center gap-2 pt-1">
+        <button
+          type="button"
+          role="switch"
+          aria-checked={filters.platformActionOnly}
+          onClick={() => {
+            setFilters((p) => ({ ...p, platformActionOnly: !p.platformActionOnly }));
+            setPage(1);
+          }}
+          className={cn(
+            "relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            filters.platformActionOnly ? "bg-info" : "bg-muted-foreground/30"
+          )}
+        >
+          <span
+            className={cn(
+              "inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform",
+              filters.platformActionOnly ? "translate-x-4.5" : "translate-x-0.5"
+            )}
+          />
+        </button>
+        <span className="text-xs text-muted-foreground select-none">
+          {t("platform_action.filter_toggle")}
+        </span>
       </div>
     </>
   );
@@ -1015,6 +1233,32 @@ export function AuditLog() {
               }}
               placeholder={t("filters.date_range")}
             />
+            {/* Platform action toggle */}
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={filters.platformActionOnly}
+                    onClick={() => {
+                      setFilters((p) => ({ ...p, platformActionOnly: !p.platformActionOnly }));
+                      setPage(1);
+                    }}
+                    className={cn(
+                      "inline-flex h-9 items-center gap-2 rounded-md border px-3 text-xs font-medium transition-colors",
+                      filters.platformActionOnly
+                        ? "border-info/50 bg-info/10 text-info"
+                        : "border-border bg-background text-muted-foreground hover:bg-muted"
+                    )}
+                  >
+                    <Shield className="size-3.5" />
+                    {t("platform_action.badge")}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">{t("platform_action.filter_toggle")}</TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
             {activeFilters.length > 0 && (
               <Button
                 variant="ghost"
