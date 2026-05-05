@@ -389,7 +389,7 @@
   "bonus": {
     "title": "Бонусная задача",
     "source": {
-      "YESTERDAY_INCOMPLETE": "Незавершённые вчера",
+      "YESTERDAY_INCOMPLETE": "Незав��ршённые вчера",
       "SUPERVISOR_BUDGET": "Бюдж��т супервайзера",
       "GOAL_LINKED": "Связана с целью"
     }
@@ -733,7 +733,7 @@
       "template_revaluation": "Переоценка",
       "template_cashier_clean": "Уборка кассы",
       "template_receiving": "Приёмка товара",
-      "template_inventory": "Инвентаризация бакалеи",
+      "template_inventory": "��нвентаризация бакалеи",
       "sidebar_summary": "Сводка",
       "summary_store": "Магазин:",
       "summary_zone": "Зона:",
@@ -1264,7 +1264,7 @@
       "col_subtask": "Подзадача",
       "col_task": "Задача",
       "col_store": "Магазин",
-      "col_proposed_by": "Предложил",
+      "col_proposed_by": "Предл��жил",
       "col_duration": "Длительность",
       "col_hints": "Подсказок",
       "col_created": "Создано",
@@ -1272,7 +1272,7 @@
       "btn_approve": "Принять",
       "btn_reject": "Отклонить",
       "reject_dialog_title": "Отклонить подзадачу",
-      "reject_reason_label": "Причина отклонения",
+      "reject_reason_label": "П��ичина отклонения",
       "reject_reason_placeholder": "Опишите причину (минимум 10 символов)...",
       "reject_reason_hint": "Минимум 10 символов",
       "bulk_selected": "{count, plural, one {��ыбрана # подзадача} few {Выбрано # подзадачи} other {Выбрано # подзадач}}",
@@ -1386,7 +1386,7 @@
         },
         "archived": {
           "title": "В архиве пусто",
-          "subtitle": "Архивированные сотрудники появятся зде��ь"
+          "subtitle": "Архи��ированные сотрудники появятся зде��ь"
         },
         "filtered": {
           "title": "Никого не найдено",
@@ -2182,7 +2182,7 @@
       },
       "empty": {
         "no_shifts_title": "В выбранный период смен нет",
-        "no_shifts_subtitle": "LAMA не передала ни одной смены — обратитесь в HR-отдел",
+        "no_shifts_subtitle": "LAMA не передала ни од��ой смены — обратитесь в HR-отдел",
         "no_results_title": "Ник��го не найд��но",
         "no_results_subtitle": "Попробуйте изменить фильтры",
         "no_results_reset": "Сбросить фильтры"
@@ -2331,7 +2331,7 @@
       "breadcrumbs": {
         "home": "Главная",
         "taxonomy": "Таксономия",
-        "work_types": "Типы работ"
+        "work_types": "Типы р��бот"
       },
       "actions": {
         "create": "Создать тип работы",
@@ -3566,7 +3566,7 @@
         "task.start": "Задача начата",
         "task.pause": "Задача приостановлена",
         "task.resume": "Задача возобновлена",
-        "task.complete": "Задача завершена",
+        "task.complete": "��адача завершена",
         "task.approve": "Задача принята",
         "task.reject": "Задача отклонена",
         "task.delete": "Задача удалена",
@@ -3699,7 +3699,7 @@
     },
     "reportsKpi": {
       "page_title": "KPI отчёт",
-      "page_subtitle": "Эффективность сети и магазинов",
+      "page_subtitle": "Эффективность сети и магаз��нов",
       "breadcrumbs": {
         "home": "Главная",
         "reports": "Отчёты",
@@ -3858,6 +3858,100 @@
         "reports": "Отчёты",
         "plan_fact": "План / Факт"
       },
+      "period": {
+        "week": "Неделя",
+        "month": "Месяц",
+        "quarter": "Квартал",
+        "year": "Год",
+        "custom": "Кастом"
+      },
+      "toolbar": {
+        "all_stores": "Вся сеть",
+        "export_btn": "Экспорт XLSX",
+        "kpi_btn": "KPI",
+        "store_placeholder": "Магазин",
+        "custom_from": "С",
+        "custom_to": "По"
+      },
+      "period_banner": {
+        "period_label": "Период",
+        "store_label": "Магазин",
+        "all_stores": "все магазины",
+        "updated": "Обновлено"
+      },
+      "ai_banner": {
+        "text": "ИИ-помощник заметил: расход часов вырос на 2.6% относительно плана. Главные причины — магазины СПАР Томск пр. Ленина 80 (+12%) и СПАР Новосибирск Красный пр. (+9%). У СПАР Томск пр. Ленина — много задач «Контроль скоропорта» (возможно проблема с поставками). Хотите подробнее?",
+        "suggestions_btn": "Открыть предложения ИИ",
+        "ask_btn": "Спросить ИИ почему",
+        "ai_chart_comment": "Топ-3 магазина с перерасходом расходовали часы на работу со скоропортом — возможна задержка поставок",
+        "ask_detail_btn": "Подробнее"
+      },
+      "summary_cards": {
+        "planned_hours": "План часов",
+        "planned_hours_sub": "{days} рабочих дней",
+        "actual_hours": "Факт часов",
+        "avg_deviation": "Среднее отклонение в день",
+        "avg_deviation_sub": "По модулю",
+        "worst_day": "Худший день",
+        "worst_day_sub": "Превышение плана"
+      },
+      "overspend_alert": "{count, plural, one {# магазин превысил план более чем на 10%} few {# магазина превысили план более чем на 10%} other {# магазинов превысили план более чем на 10%}}",
+      "stores_tab": {
+        "only_overspend": "Только перерасход",
+        "sort_by": "Сортировать",
+        "sort_overspend": "По перерасходу",
+        "sort_name": "По названию",
+        "col_store": "Магазин",
+        "col_city": "Город",
+        "col_planned": "План, ч",
+        "col_actual": "Факт, ч",
+        "col_delta": "Δ ч",
+        "col_delta_pct": "Δ %",
+        "col_employees": "Сотруд.",
+        "col_completion": "Выполнение",
+        "col_ai": "ИИ",
+        "ask_ai_for_store": "Предложения ИИ по магазину"
+      },
+      "users_tab": {
+        "col_user": "Сотрудник",
+        "col_store": "Магазин",
+        "col_position": "Должность",
+        "col_planned": "План, ч",
+        "col_actual": "Факт, ч",
+        "col_delta": "Δ ч",
+        "col_delta_pct": "Δ %",
+        "col_tasks_plan": "Задач (пл.)",
+        "col_tasks_fact": "Задач (фк.)",
+        "col_on_time": "В срок, %"
+      },
+      "work_types_tab": {
+        "col_work_type": "Тип работы",
+        "col_planned": "План, ч",
+        "col_actual": "Факт, ч",
+        "col_delta": "Δ ч",
+        "col_delta_pct": "Δ %",
+        "col_tasks_done": "Задач завершено",
+        "col_avg_duration": "Ср. длит., мин"
+      },
+      "days_tab": {
+        "chart_title": "Динамика план vs факт",
+        "table_title": "Детализация по дням",
+        "col_date": "Дата",
+        "col_weekday": "День",
+        "col_planned": "План, ч",
+        "col_actual": "Факт, ч",
+        "col_delta": "Δ ч",
+        "col_delta_pct": "Δ %",
+        "col_tasks_plan": "Задач (пл.)",
+        "col_tasks_fact": "Задач (фк.)",
+        "col_completion": "Выполнение"
+      },
+      "forbidden_title": "Недостаточно прав",
+      "forbidden_desc": "Раздел доступен для Supervisor, Regional и Network Ops",
+      "error_title": "Не удалось загрузить отчёт",
+      "ai_chart_tooltip": "Спросить ИИ об этом графике",
+      "ask_in_chat": "Открыть в ИИ-чате",
+      "scope_network": "Вся сеть",
       "actions": {
         "export_xlsx": "Экспорт XLSX",
         "export_csv": "Экспорт CSV",
@@ -3897,7 +3991,9 @@
       "chart": {
         "planned": "План",
         "actual": "Факт",
+        "deviation_pct": "Откл., %",
         "completion_rate_axis": "Выполнение, %",
+        "hours_axis": "Часы",
         "weekday_short": {
           "Mon": "Пн",
           "Tue": "Вт",
