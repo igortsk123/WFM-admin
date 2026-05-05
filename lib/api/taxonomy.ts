@@ -27,7 +27,22 @@ const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
 // ═══════════════════════════════════════════════════════════════════
 
 export interface WorkTypeWithCount extends WorkType {
+  /** Кол-во задач этого типа за все время (legacy alias). */
   tasks_count: number;
+  /** Кол-во задач этого типа за последние 30 дней. */
+  usage_count?: number;
+}
+
+/** Filter params для work-types list (chat 30). */
+export interface WorkTypeListParams extends ApiListParams {
+  /** Search по name / code / description. */
+  search?: string;
+  /** Группа (string из MOCK_WORK_TYPES.group). */
+  group?: string;
+  /** Фильтр по флагу requires_photo_default. */
+  requires_photo?: boolean;
+  /** Минимальное кол-во hints. */
+  hints_min?: number;
 }
 
 export interface ZoneWithCounts extends Zone {
@@ -45,23 +60,47 @@ export interface PositionWithCounts extends Position {
 // ═══════════════════════════════════════════════════════════════════
 
 /**
- * Get paginated list of work types with task counts.
+ * Get paginated list of work types with task counts + usage_count за 30 дней.
  * @endpoint GET /taxonomy/work-types
  */
 export async function getWorkTypes(
-  params: ApiListParams = {}
+  params: WorkTypeListParams = {}
 ): Promise<ApiListResponse<WorkTypeWithCount>> {
   await delay(300);
 
-  const { search, page = 1, page_size = 50, sort_by = "name", sort_dir = "asc" } = params;
+  const {
+    search,
+    group,
+    requires_photo,
+    hints_min,
+    page = 1,
+    page_size = 50,
+    sort_by = "name",
+    sort_dir = "asc",
+  } = params;
 
   let filtered = [...MOCK_WORK_TYPES];
 
   if (search) {
     const q = search.toLowerCase();
     filtered = filtered.filter(
-      (w) => w.name.toLowerCase().includes(q) || w.code.toLowerCase().includes(q)
+      (w) =>
+        w.name.toLowerCase().includes(q) ||
+        w.code.toLowerCase().includes(q) ||
+        (w.description?.toLowerCase().includes(q) ?? false),
     );
+  }
+
+  if (group) {
+    filtered = filtered.filter((w) => w.group === group);
+  }
+
+  if (requires_photo !== undefined) {
+    filtered = filtered.filter((w) => w.requires_photo_default === requires_photo);
+  }
+
+  if (hints_min !== undefined && hints_min > 0) {
+    filtered = filtered.filter((w) => w.hints_count >= hints_min);
   }
 
   filtered.sort((a, b) => {
@@ -74,9 +113,19 @@ export async function getWorkTypes(
   const total = filtered.length;
   const paginated = filtered.slice((page - 1) * page_size, page * page_size);
 
+  // Date threshold for usage_count (30 days back from TODAY=2026-05-01)
+  const TODAY = new Date("2026-05-01T00:00:00+07:00");
+  const cutoff = new Date(TODAY.getTime() - 30 * 24 * 60 * 60 * 1000);
+
   const data: WorkTypeWithCount[] = paginated.map((wt) => ({
     ...wt,
     tasks_count: MOCK_TASKS.filter((t) => t.work_type_id === wt.id && !t.archived).length,
+    usage_count: MOCK_TASKS.filter(
+      (t) =>
+        t.work_type_id === wt.id &&
+        !t.archived &&
+        new Date(t.created_at) >= cutoff,
+    ).length,
   }));
 
   return { data, total, page, page_size };

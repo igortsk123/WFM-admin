@@ -179,6 +179,7 @@ export {
 
 export {
   type WorkTypeWithCount,
+  type WorkTypeListParams,
   type ZoneWithCounts,
   type PositionWithCounts,
   getWorkTypes,

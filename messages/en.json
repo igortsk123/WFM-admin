@@ -2324,6 +2324,89 @@
         "saved": "Saved",
         "error": "Operation failed"
       }
+    },
+    "workTypes": {
+      "page_title": "Work types",
+      "breadcrumbs": {
+        "home": "Home",
+        "taxonomy": "Taxonomy",
+        "work_types": "Work types"
+      },
+      "actions": {
+        "create": "Create work type",
+        "import": "Import",
+        "export": "Export",
+        "more": "More"
+      },
+      "filters": {
+        "search_placeholder": "Search by name, code",
+        "group": "Group",
+        "group_all": "All groups",
+        "requires_photo": "Photo required",
+        "requires_photo_yes": "Yes",
+        "requires_photo_no": "No",
+        "hints_filter": "Min hints",
+        "clear_all": "Clear all",
+        "open_filters": "Filters"
+      },
+      "columns": {
+        "name": "Name",
+        "code": "Code",
+        "group": "Group",
+        "default_duration": "Duration (min)",
+        "requires_photo": "Photo",
+        "requires_report": "Report",
+        "acceptance_policy": "Acceptance",
+        "hints_count": "Hints",
+        "usage_count": "Usage 30d",
+        "actions": "Actions"
+      },
+      "policy": {
+        "AUTO": "Auto",
+        "MANUAL": "Manual"
+      },
+      "row_actions": {
+        "edit": "Edit",
+        "hints": "Hints",
+        "duplicate": "Duplicate",
+        "archive": "Archive",
+        "delete": "Delete"
+      },
+      "dialogs": {
+        "create_title": "New work type",
+        "edit_title": "Edit: {name}",
+        "fields": {
+          "name": "Name",
+          "code": "Code",
+          "description": "Description",
+          "group": "Group",
+          "default_duration_min": "Default duration (min)",
+          "requires_photo_default": "Photo required on completion",
+          "requires_report_default": "Text report required",
+          "acceptance_policy_default": "Acceptance policy",
+          "allow_new_subtasks": "Allow adding subtasks"
+        },
+        "save": "Save",
+        "cancel": "Cancel",
+        "delete_confirm_title": "Delete work type '{name}'?",
+        "delete_confirm_warning": "Irreversible. If the type is used in tasks, deletion will be blocked.",
+        "delete_confirm_action": "Delete"
+      },
+      "empty": {
+        "no_work_types_title": "No work types yet",
+        "no_work_types_subtitle": "Create the first work type to generate tasks",
+        "no_work_types_cta": "Create work type",
+        "filtered_title": "Nothing found",
+        "filtered_subtitle": "Try adjusting filters",
+        "filtered_reset": "Reset filters"
+      },
+      "toasts": {
+        "created": "Work type created",
+        "updated": "Work type updated",
+        "deleted": "Work type deleted",
+        "in_use_warning": "Type is used in {count} tasks — deletion blocked",
+        "error": "Operation failed"
+      }
     }
   }
 }
