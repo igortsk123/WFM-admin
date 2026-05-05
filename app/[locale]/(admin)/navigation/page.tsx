@@ -99,6 +99,7 @@ const NAV_GROUPS: NavGroup[] = [
       { labelKey: "notifications", href: ADMIN_ROUTES.notifications, icon: Bell, status: "ready" },
       { labelKey: "integrations", href: ADMIN_ROUTES.integrations, icon: Plug, status: "planned" },
       { labelKey: "settings_profile", href: ADMIN_ROUTES.settingsProfile, icon: Settings, status: "ready" },
+      { labelKey: "settings_organization", href: ADMIN_ROUTES.settingsOrganization, icon: Settings, status: "ready" },
       { labelKey: "audit", href: ADMIN_ROUTES.audit, icon: History, status: "planned" },
     ],
   },

@@ -2949,6 +2949,138 @@
         "freelance_enabled": "Внештат вкл.",
         "freelance_disabled": "Внештат выкл."
       }
+    },
+    "organizationSettings": {
+      "page_title": "Настройки организации",
+      "page_subtitle": "Бренд, политики, часовой пояс, API, биллинг, юр.лица",
+      "breadcrumbs": {
+        "home": "Главная",
+        "settings": "Настройки",
+        "organization": "Организация"
+      },
+      "tabs": {
+        "general": "Общее",
+        "ai_standards": "Стандарты для ИИ",
+        "policies": "Политики",
+        "branding": "Бренд",
+        "api": "API",
+        "billing": "Биллинг",
+        "legal": "Юр.лица"
+      },
+      "general": {
+        "type_card": "Тип организации",
+        "type_RETAIL": "Сеть розничных магазинов",
+        "type_PRODUCTION": "Производство",
+        "type_SMALL_BUSINESS": "Малый бизнес",
+        "contact_card": "Контактная информация",
+        "name": "Публичное название",
+        "contact_email": "Email уведомлений",
+        "support_phone": "Телефон поддержки",
+        "website": "Сайт",
+        "description_card": "Описание",
+        "description_placeholder": "Краткое описание организации",
+        "description_counter": "{count}/500"
+      },
+      "ai_standards": {
+        "fmcg_description": "Задайте нормы по которым ИИ-помощник будет искать аномалии. Если факт превышает порог — формируется предложение задачи.",
+        "fmcg_baseline_hint": "Если порог не задан — ИИ использует среднее по сети как baseline.",
+        "thresholds_section": "Пороги по группам товаров",
+        "ops_section": "Пороги по операциям",
+        "col_group": "Группа",
+        "col_writeoff_norm": "Норма списаний %",
+        "col_oos_norm": "Норма OOS %",
+        "col_expiration_alert": "Контроль скоропорта (часов)",
+        "ops_cashier_avg": "Среднее время на кассе (мин)",
+        "ops_shift_variance": "Допустимое отклонение план/факт смены (%)",
+        "ops_max_consecutive_rejections": "Максимум возвратов задач подряд",
+        "fashion_description": "Задайте сезонные периоды по типам товаров — это всё что нужно. Размеры скидок ИИ определяет сам.",
+        "fashion_seasons_section": "Сезонные периоды по типам товаров",
+        "fashion_baseline_hint": "Размеры скидок ИИ определяет автоматически — стартует со стандартной лесенки и адаптируется на основе результатов прошлых скидок в магазине.",
+        "col_product_type": "Тип товара",
+        "col_season_start": "Начало сезона",
+        "col_season_peak": "Пик сезона",
+        "col_season_end": "Конец сезона",
+        "col_typical_sell_days": "Срок продажи (дней)",
+        "ai_disabled_alert": "ИИ-модуль не подключён. Стандарты можно задать только при активной подписке."
+      },
+      "policies": {
+        "title": "Политики",
+        "default_locale": "Локаль по умолчанию",
+        "default_timezone": "Часовой пояс по умолчанию",
+        "default_currency": "Валюта",
+        "freelance_module": "Модуль внештата",
+        "freelance_module_hint": "Управляется PLATFORM_ADMIN. Если выключен — раздел внештата скрыт.",
+        "external_hr_enabled": "Синхронизация с внешней HR-системой"
+      },
+      "branding": {
+        "title": "Бренд",
+        "logo": "Логотип",
+        "logo_helper": "PNG / SVG до 1 МБ",
+        "logo_upload": "Загрузить логотип",
+        "logo_remove": "Удалить",
+        "primary_color": "Основной цвет (hex)",
+        "preview": "Предпросмотр"
+      },
+      "api": {
+        "title": "API-ключи",
+        "create_key": "Создать ключ",
+        "key_name": "Название ключа",
+        "key_scopes": "Scopes (доступ)",
+        "key_created_at": "Создан",
+        "key_last_used_at": "Последнее использование",
+        "key_revoke": "Отозвать",
+        "key_value_warning": "Сохраните ключ — он показывается один раз",
+        "no_keys": "API-ключей пока нет"
+      },
+      "billing": {
+        "title": "Биллинг",
+        "plan_label": "Тариф",
+        "plan_STARTER": "Starter",
+        "plan_PRO": "Pro",
+        "plan_ENTERPRISE": "Enterprise",
+        "active_users": "Активных пользователей",
+        "next_invoice_date": "Следующий счёт",
+        "next_invoice_amount": "Сумма",
+        "change_plan": "Сменить тариф",
+        "billing_history": "История платежей"
+      },
+      "legal": {
+        "title": "Юридические лица",
+        "add_entity": "Добавить юр.лицо",
+        "name": "Название",
+        "inn": "ИНН",
+        "kpp": "КПП",
+        "ogrn": "ОГРН",
+        "tax_jurisdiction": "Юрисдикция",
+        "jurisdiction_RU": "Россия",
+        "jurisdiction_UK": "Великобритания",
+        "jurisdiction_OTHER": "Другая",
+        "companies_house": "Companies House (UK)",
+        "vat_number": "VAT Number",
+        "edit": "Редактировать",
+        "remove": "Удалить",
+        "no_entities": "Юр.лица не добавлены"
+      },
+      "save_bar": {
+        "dirty_message": "Есть несохранённые изменения",
+        "save": "Сохранить",
+        "cancel": "Отмена"
+      },
+      "toasts": {
+        "saved": "Сохранено",
+        "threshold_updated": "Порог сохранён",
+        "season_updated": "Сезон сохранён",
+        "key_created": "Ключ создан",
+        "key_revoked": "Ключ отозван",
+        "legal_added": "Юр.лицо добавлено",
+        "legal_updated": "Юр.лицо обновлено",
+        "legal_removed": "Юр.лицо удалено",
+        "error": "Не удалось выполнить операцию"
+      },
+      "states": {
+        "forbidden_title": "Нет доступа",
+        "forbidden_subtitle": "Только NETWORK_OPS может настраивать организацию"
+      }
     }
   }
 }

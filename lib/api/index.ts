@@ -212,6 +212,28 @@ export {
 } from "./taxonomy";
 
 // ═══════════════════════════════════════════════════════════════════
+// Organization Settings API (chat 36)
+// ═══════════════════════════════════════════════════════════════════
+
+export {
+  type OrganizationConfig,
+  type OrganizationConfigUpdateData,
+  type FmcgGroupThreshold,
+  type FmcgOpsThresholds,
+  type FashionSeasonRow,
+  type BillingInfo,
+  type LegalEntity,
+  getOrganizationConfig,
+  updateOrganizationConfig,
+  updateFmcgGroupThreshold,
+  updateFmcgOpsThresholds,
+  updateFashionSeason,
+  addLegalEntity,
+  updateLegalEntity,
+  removeLegalEntity,
+} from "./organization";
+
+// ═══════════════════════════════════════════════════════════════════
 // Notifications API
 // ═══════════════════════════════════════════════════════════════════
 
