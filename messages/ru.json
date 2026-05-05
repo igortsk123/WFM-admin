@@ -1718,7 +1718,18 @@
         "stat_shifts": "Активных смен",
         "delete_disabled": "Нельзя удалить зону с активными задачами",
         "edit": "Изменить",
-        "delete": "Удалить"
+        "delete": "Удалить",
+        "dialog_add_title": "Новая зона",
+        "dialog_edit_title": "Изменить зону",
+        "field_name": "Название",
+        "field_name_placeholder": "Например: Молочный отдел",
+        "field_code": "Код",
+        "field_code_placeholder": "DAIRY",
+        "delete_dialog_title": "Удалить зону?",
+        "delete_dialog_desc": "Зона будет удалена. Связанные задачи останутся, но потеряют привязку.",
+        "toast_added": "Зона добавлена",
+        "toast_updated": "Зона обновлена",
+        "toast_deleted": "Зона удалена"
       },
       "schedule": {
         "view_full": "Открыть расписание магазина",

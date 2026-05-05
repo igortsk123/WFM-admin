@@ -673,3 +673,37 @@ export async function syncLamaForStore(id: number): Promise<ApiMutationResponse>
 export async function syncLama(id: number): Promise<ApiMutationResponse> {
   return syncLamaForStore(id);
 }
+
+/** @endpoint POST /stores/:store_id/zones */
+export async function createStoreZone(
+  storeId: number,
+  data: { name: string; code?: string },
+): Promise<ApiMutationResponse> {
+  await delay(300);
+  if (!data.name?.trim()) {
+    return { success: false, error: { code: "VALIDATION_ERROR", message: "Name is required" } };
+  }
+  console.log("[v0] Created zone for store", storeId, data);
+  return { success: true, id: String(Date.now()) };
+}
+
+/** @endpoint PATCH /stores/:store_id/zones/:zone_id */
+export async function updateStoreZone(
+  storeId: number,
+  zoneId: number,
+  patch: { name?: string; code?: string },
+): Promise<ApiMutationResponse> {
+  await delay(300);
+  console.log("[v0] Updated zone", zoneId, "for store", storeId, patch);
+  return { success: true };
+}
+
+/** @endpoint DELETE /stores/:store_id/zones/:zone_id */
+export async function deleteStoreZone(
+  storeId: number,
+  zoneId: number,
+): Promise<ApiMutationResponse> {
+  await delay(300);
+  console.log("[v0] Deleted zone", zoneId, "from store", storeId);
+  return { success: true };
+}

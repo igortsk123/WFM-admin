@@ -887,22 +887,6 @@ export function StoresList() {
       ),
     },
     {
-      id: "active_shifts",
-      header: t("columns.active_shifts"),
-      cell: ({ row }) => {
-        const open = row.original.current_shifts_open_count
-        const total = row.original.current_shifts_total
-        return (
-          <div className="flex items-center gap-1.5">
-            {open > 0 && <span className="size-1.5 rounded-full bg-success inline-block" />}
-            <span className="text-sm tabular-nums">
-              {t("columns.shifts_ratio", { open, total })}
-            </span>
-          </div>
-        )
-      },
-    },
-    {
       id: "tasks_today",
       header: t("columns.tasks_today"),
       cell: ({ row }) => (
