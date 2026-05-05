@@ -2994,7 +2994,8 @@
         "policies": "Task Policies",
         "timezone": "Timezone",
         "api": "API Keys",
-        "billing": "Billing"
+        "billing": "Billing",
+        "freelance": "Freelance"
       },
       "general": {
         "type_card": "Organization type",

@@ -2994,7 +2994,8 @@
         "policies": "Политики задач",
         "timezone": "Часовой пояс",
         "api": "API ключи",
-        "billing": "Биллинг"
+        "billing": "Биллинг",
+        "freelance": "Внештат"
       },
       "general": {
         "type_card": "Тип организации",

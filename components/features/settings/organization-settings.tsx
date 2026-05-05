@@ -42,6 +42,7 @@ import { OrgTabPolicies, type PoliciesFormValues } from "./tabs/org-tab-policies
 import { OrgTabTimezone, type TimezoneFormValues } from "./tabs/org-tab-timezone";
 import { OrgTabApi } from "./tabs/org-tab-api";
 import { OrgTabBilling } from "./tabs/org-tab-billing";
+import { OrgTabFreelance } from "./tabs/org-tab-freelance";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -53,7 +54,8 @@ type TabId =
   | "policies"
   | "timezone"
   | "api"
-  | "billing";
+  | "billing"
+  | "freelance";
 
 // ─── Sticky save bar ──────────────────────────────────────────────────────────
 
@@ -314,9 +316,14 @@ export function OrganizationSettings() {
     { id: "branding",     label: t("tabs.branding") },
     { id: "policies",     label: t("tabs.policies") },
     { id: "timezone",     label: t("tabs.timezone") },
+    ...(user.organization.freelance_module_enabled
+      ? [{ id: "freelance" as TabId, label: t("tabs.freelance") }]
+      : []),
     { id: "api",          label: t("tabs.api") },
     { id: "billing",      label: t("tabs.billing") },
   ];
+
+  const isPlatformAdmin = user.role === "PLATFORM_ADMIN";
 
   return (
     <div className="space-y-6 pb-20">
@@ -401,6 +408,12 @@ export function OrganizationSettings() {
               />
             )}
           </TabsContent>
+
+          {user.organization.freelance_module_enabled && (
+            <TabsContent value="freelance" forceMount className={activeTab !== "freelance" ? "hidden" : ""}>
+              <OrgTabFreelance isPlatformAdmin={isPlatformAdmin} />
+            </TabsContent>
+          )}
 
           <TabsContent value="api" forceMount className={activeTab !== "api" ? "hidden" : ""}>
             <OrgTabApi orgId={orgId} />
