@@ -4535,6 +4535,139 @@
         "visibility_summary_only": "Only total until planned closed",
         "visibility_always": "Always show the list"
       }
+    },
+    "payouts": {
+      "page_title": "Payouts",
+      "page_subtitle": "Register of periods and amounts by points",
+      "beta_badge": "Beta",
+      "breadcrumbs": {
+        "home": "Home",
+        "future": "Future",
+        "payouts": "Payouts"
+      },
+      "tabs": {
+        "open": "Open",
+        "calculating": "Calculating",
+        "ready": "Ready",
+        "paid": "Paid"
+      },
+      "filters": {
+        "store_label": "Store",
+        "all_stores": "All"
+      },
+      "actions": {
+        "create_period": "Create period",
+        "open": "Open",
+        "export": "Export",
+        "recalculate": "Recalculate",
+        "cancel_period": "Cancel period"
+      },
+      "card": {
+        "stats_employees": "Employees",
+        "stats_points": "Points",
+        "stats_amount": "Amount",
+        "stats_bonus_tasks": "Bonus tasks"
+      },
+      "stages": {
+        "created": "Created",
+        "calculating": "Calculating",
+        "ready": "Ready",
+        "paid": "Paid"
+      },
+      "create_dialog": {
+        "title": "Create period",
+        "name_label": "Period name",
+        "dates_label": "Period dates",
+        "rate_label": "Cost per point, ₽",
+        "stores_label": "Stores",
+        "stores_all": "All",
+        "include_bonus_label": "Include bonus tasks",
+        "submit": "Create"
+      },
+      "status": {
+        "OPEN": "Open",
+        "CALCULATING": "Calculating",
+        "READY": "Ready",
+        "PAID": "Paid"
+      },
+      "empty": {
+        "no_periods_title": "Create first period",
+        "no_periods_subtitle": "A period defines the interval for which point-based payouts are calculated"
+      },
+      "toasts": {
+        "created": "Period created",
+        "exported": "Register exported",
+        "error": "Operation failed"
+      }
+    },
+    "payoutDetail": {
+      "page_title": "Payout period",
+      "breadcrumbs": {
+        "home": "Home",
+        "payouts": "Payouts",
+        "detail": "{name}"
+      },
+      "actions": {
+        "start_calculation": "Run calculation",
+        "calculating_hint": "Calculating…",
+        "finalize": "Finalize & pay",
+        "recalculate": "Recalculate",
+        "export_xlsx": "Export XLSX"
+      },
+      "stages": {
+        "created": "Created",
+        "calculating": "Calculating",
+        "ready": "Ready",
+        "paid": "Paid"
+      },
+      "summary": {
+        "employees": "Employees",
+        "points_total": "Total points",
+        "amount_total": "Amount",
+        "anomalies": "Anomalies"
+      },
+      "filters": {
+        "all": "All",
+        "anomalies": "With anomalies",
+        "stores": "By stores",
+        "positions": "By positions",
+        "search": "Search"
+      },
+      "table": {
+        "columns": {
+          "user": "Employee",
+          "store": "Store",
+          "position": "Position",
+          "bonus_tasks": "Bonus tasks",
+          "points": "Points",
+          "rate": "Cost per point (₽)",
+          "amount": "Amount (₽)",
+          "anomalies": "Anomalies"
+        },
+        "drawer_title": "Employee details",
+        "bonus_tasks_section": "Bonus tasks and points",
+        "history_section": "Accrual history",
+        "calculation_section": "Amount calculation",
+        "anomaly_section": "Anomalies"
+      },
+      "calculate_dialog": {
+        "title": "Start calculation for the period?",
+        "description": "May take up to 5 minutes",
+        "confirm": "Start"
+      },
+      "finalize_dialog": {
+        "title": "Finalize payouts?",
+        "description": "After finalizing the period cannot be changed. Register will be sent to the payroll system",
+        "confirm_label": "Type FINALIZE to confirm",
+        "confirm_button": "Finalize"
+      },
+      "toasts": {
+        "calculation_started": "Calculation started",
+        "calculation_done": "Calculation done, found {anomalies} anomalies",
+        "finalized": "Period finalized",
+        "exported": "File exported",
+        "error": "Operation failed"
+      }
     }
   }
 }

@@ -4536,6 +4536,139 @@
         "visibility_summary_only": "Только сумма до закрытия плановых",
         "visibility_always": "Всегда показывать список"
       }
+    },
+    "payouts": {
+      "page_title": "Выплаты",
+      "page_subtitle": "Реестр периодов и сумм по очкам",
+      "beta_badge": "Beta",
+      "breadcrumbs": {
+        "home": "Главная",
+        "future": "Будущее",
+        "payouts": "Выплаты"
+      },
+      "tabs": {
+        "open": "Открытые",
+        "calculating": "В расчёте",
+        "ready": "Готовы",
+        "paid": "Выплачены"
+      },
+      "filters": {
+        "store_label": "Магазин",
+        "all_stores": "Все"
+      },
+      "actions": {
+        "create_period": "Создать период",
+        "open": "Открыть",
+        "export": "Экспорт",
+        "recalculate": "Пересчитать",
+        "cancel_period": "Отменить период"
+      },
+      "card": {
+        "stats_employees": "Сотрудников",
+        "stats_points": "Очков",
+        "stats_amount": "Сумма",
+        "stats_bonus_tasks": "Bonus tasks"
+      },
+      "stages": {
+        "created": "Создан",
+        "calculating": "Расчёт",
+        "ready": "Готов",
+        "paid": "Выплачен"
+      },
+      "create_dialog": {
+        "title": "Создать период",
+        "name_label": "Название периода",
+        "dates_label": "Даты периода",
+        "rate_label": "Стоимость 1 очка, ₽",
+        "stores_label": "Магазины",
+        "stores_all": "Все",
+        "include_bonus_label": "Включить bonus tasks",
+        "submit": "Создать"
+      },
+      "status": {
+        "OPEN": "Открыт",
+        "CALCULATING": "В расчёте",
+        "READY": "Готов",
+        "PAID": "Выплачен"
+      },
+      "empty": {
+        "no_periods_title": "Создать первый период",
+        "no_periods_subtitle": "Период определяет, за какой интервал считаются выплаты по очкам"
+      },
+      "toasts": {
+        "created": "Период создан",
+        "exported": "Реестр экспортирован",
+        "error": "Не удалось выполнить операцию"
+      }
+    },
+    "payoutDetail": {
+      "page_title": "Период выплат",
+      "breadcrumbs": {
+        "home": "Главная",
+        "payouts": "Выплаты",
+        "detail": "{name}"
+      },
+      "actions": {
+        "start_calculation": "Запустить расчёт",
+        "calculating_hint": "Идёт расчёт…",
+        "finalize": "Финализировать и оплатить",
+        "recalculate": "Пересчитать",
+        "export_xlsx": "Экспорт XLSX"
+      },
+      "stages": {
+        "created": "Создан",
+        "calculating": "Расчёт",
+        "ready": "Готов",
+        "paid": "Выплачен"
+      },
+      "summary": {
+        "employees": "Сотрудников",
+        "points_total": "Очков всего",
+        "amount_total": "Сумма",
+        "anomalies": "Аномалий"
+      },
+      "filters": {
+        "all": "Все",
+        "anomalies": "С аномалиями",
+        "stores": "По магазинам",
+        "positions": "По должностям",
+        "search": "Поиск"
+      },
+      "table": {
+        "columns": {
+          "user": "Сотрудник",
+          "store": "Магазин",
+          "position": "Должность",
+          "bonus_tasks": "Bonus tasks",
+          "points": "Очков",
+          "rate": "Стоимость очка (₽)",
+          "amount": "Сумма (₽)",
+          "anomalies": "Аномалии"
+        },
+        "drawer_title": "Детализация по сотруднику",
+        "bonus_tasks_section": "Бонусные задачи и очки",
+        "history_section": "История начисления",
+        "calculation_section": "Расчёт суммы",
+        "anomaly_section": "Аномалии"
+      },
+      "calculate_dialog": {
+        "title": "Запустить расчёт за период?",
+        "description": "Это может занять до 5 минут",
+        "confirm": "Запустить"
+      },
+      "finalize_dialog": {
+        "title": "Финализировать выплаты?",
+        "description": "После финализации период нельзя изменить. Реестр будет отправлен в зарплатную систему",
+        "confirm_label": "Введите FINALIZE для подтверждения",
+        "confirm_button": "Финализировать"
+      },
+      "toasts": {
+        "calculation_started": "Расчёт начат",
+        "calculation_done": "Расчёт завершён, найдено {anomalies} аномалий",
+        "finalized": "Период финализирован",
+        "exported": "Файл экспортирован",
+        "error": "Не удалось выполнить операцию"
+      }
     }
   }
 }
