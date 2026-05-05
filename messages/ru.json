@@ -315,7 +315,7 @@
       "regional": "Региональный менеджер",
       "network_ops": "Операционный директор",
       "hr_manager": "HR-менеджер",
-      "operator": "Опера��ор",
+      "operator": "Опера����ор",
       "worker": "Работник",
       "agent": "Агент",
       "platform_admin": "Администратор платформы"
@@ -741,7 +741,7 @@
       "summary_plan": "План:",
       "summary_scheduled": "Запланировано:",
       "summary_due": "Дедлайн:",
-      "summary_policy": "По��и��ика:",
+      "summary_policy": "��о��и��ика:",
       "summary_photo": "Фото:",
       "summary_not_set": "—",
       "summary_minutes": "{min} мин",
@@ -1385,7 +1385,7 @@
         },
         "archived": {
           "title": "В архиве пусто",
-          "subtitle": "Архивированные сотрудники появятся здесь"
+          "subtitle": "Архивированные сотрудники появятся зде��ь"
         },
         "filtered": {
           "title": "Никого не найдено",
@@ -1579,7 +1579,7 @@
         "change_position_title": "Сменить должность",
         "change_position_select": "Выберите должность",
         "change_position_warning": "При смене должности может измениться функциональная роль",
-        "transfer_store_title": "Перевести в магазин",
+        "transfer_store_title": "Перевести в магаз��н",
         "transfer_store_select": "Выберите магазин",
         "archive_title": "Архивировать сотрудника?",
         "archive_description": "Сотрудник будет скрыт из списков задач и смен. Это действие обратимо."
@@ -1592,7 +1592,7 @@
         "error_retry": "Попробовать снова"
       },
       "toast": {
-        "profile_updated": "Профиль обновлён",
+        "profile_updated": "��рофиль обновлён",
         "permissions_updated": "Привилегии обновлены",
         "position_changed": "Должность изменена",
         "store_transferred": "Сотрудник переведён",
@@ -1864,7 +1864,7 @@
         "created_no_invite": "Сотрудник создан",
         "duplicate_phone": "Сотрудник с таким телефоном уже существует",
         "duplicate_open_existing": "Открыть существующего",
-        "error": "Не удалось создать сотрудника",
+        "error": "Не удалось создат�� сотрудника",
         "freelance_created": "Сотрудник добавлен. Ссылка на оферту отправлена."
       }
     },
@@ -2746,7 +2746,7 @@
         "uploaded": "Документ загружен",
         "updated": "Документ обновлён",
         "archived": "Документ архивирован",
-        "restored": "Документ восстановлен",
+        "restored": "Документ восстано��лен",
         "downloaded": "Документ скачан",
         "error": "Не удалось выполнить операцию"
       }
@@ -2960,7 +2960,7 @@
         "avatar_too_large": "Файл должен быть не больше 2 МБ"
       },
       "agent_specific": {
-        "simplified_hint": "Внештатный исполнитель — упрощённый профиль",
+        "simplified_hint": "Внештатный исполнитель — ��прощённый профиль",
         "agent_notifications_hint": "Настроены только уведомления о выплатах и невыходах исполнителей"
       },
       "platform_admin": {
@@ -3487,8 +3487,19 @@
         "organization": "Организация",
         "regulation": "Регламент",
         "freelance_application": "Заявка на внештат",
+        "freelance_assignment": "Назначение",
         "freelance_service": "Услуга внештата",
         "freelance_payout": "Выплата внештата",
+        "freelance_oferta": "Оферта",
+        "freelancer": "Внештатный исполнитель",
+        "budget_limit": "Бюджетный лимит",
+        "service_norm": "Норматив",
+        "agent": "Агент",
+        "payment_mode": "Режим выплат",
+        "external_hr": "Внешняя HR-система",
+        "api_key": "API-ключ",
+        "session": "Сессия",
+        "work_type": "Тип работ",
         "all": "Все типы"
       },
       "columns": {
@@ -3557,6 +3568,43 @@
         "freelance.application.reject": "Заявка внештата отклонена",
         "freelance.payout.create": "Выплата внештата создана",
         "freelance.payout.complete": "Выплата внештата выполнена",
+        "application.create": "Заявка создана",
+        "application.cancel": "Заявка отменена",
+        "application.approve_full": "Заявка полностью принята",
+        "application.approve_partial": "Заявка принята частично",
+        "application.reject": "Заявка отклонена",
+        "application.replace_with_bonus": "Заменена на бонусную задачу",
+        "application.approve_mixed": "Заявка принята (смешанный формат)",
+        "assignment.create": "Назначение создано",
+        "assignment.remove": "Назначение удалено",
+        "service.confirm": "Услуга подтверждена",
+        "service.dispute": "По услуге открыт спор",
+        "service.no_show": "Невыход исполнителя",
+        "service.amount_adjust": "Сумма услуги скорректирована",
+        "payout.batch_created": "Реестр выплат сформирован",
+        "payout.sent_to_nominal": "Выплата отправлена на номинальный счёт",
+        "payout.status_received": "Статус выплаты получен",
+        "payout.retry": "Повтор выплаты",
+        "payout.failed": "Выплата не прошла",
+        "oferta.sent": "Оферта отправлена исполнителю",
+        "oferta.accepted": "Оферта принята",
+        "freelancer.activate": "Исполнитель активирован",
+        "freelancer.block": "Исполнитель заблокирован",
+        "freelancer.archive": "Исполнитель переведён в архив",
+        "budget_limit.create": "Бюджетный лимит создан",
+        "budget_limit.update": "Бюджетный лимит обновлён",
+        "budget_limit.archive": "Бюджетный лимит в архив",
+        "service_norm.create": "Норматив создан",
+        "service_norm.update": "Норматив обновлён",
+        "service_norm.archive": "Норматив в архив",
+        "agent.create": "Агент зарегистрирован",
+        "agent.update": "Данные агента обновлены",
+        "agent.block": "Агент заблокирован",
+        "agent.archive": "Агент переведён в архив",
+        "external_hr.config_update": "Конфигурация внешней HR-системы обновлена",
+        "external_hr.sync_manual": "Ручная синхронизация HR-системы",
+        "external_hr.sync_auto": "Автоматическая синхронизация HR-системы",
+        "payment_mode.update": "Режим выплат изменён",
         "login": "Вход в систему",
         "logout": "Выход",
         "login.failed": "Неудачная попытка входа"
@@ -3583,7 +3631,13 @@
         "default_duration_min": "Длительность по умолчанию, мин",
         "dairy_writeoff_norm_pct": "Норма списаний (молочка), %",
         "oos_norm_pct": "Норма OOS, %",
-        "writeoff_norm_pct": "Норма списаний, %"
+        "writeoff_norm_pct": "Норма списаний, %",
+        "from_amount": "Сумма (было)",
+        "to_amount": "Сумма (стало)",
+        "reason": "Причина",
+        "status": "Статус",
+        "payment_mode": "Режим выплат",
+        "hours": "Часы"
       },
       "login_method": {
         "phone_otp.telegram": "Phone OTP · Telegram",
@@ -3600,8 +3654,10 @@
         "tablet": "Планшет"
       },
       "platform_action": {
-        "badge": "Cross-tenant",
-        "tooltip": "Действие администратора платформы, повлиявшее на несколько тенантов"
+        "badge": "Платформа",
+        "badge_cross_tenant": "Cross-tenant",
+        "tooltip": "Действие администратора платформы Beyond Violet",
+        "filter_toggle": "Только платформенные действия"
       },
       "diff": {
         "before": "Было",
