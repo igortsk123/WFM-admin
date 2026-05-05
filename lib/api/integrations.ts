@@ -1,5 +1,5 @@
 /**
- * Integrations API — LAMA planner sync, Excel uploads, webhooks, and API keys.
+ * Integrations API — LAMA planner sync, Excel uploads, webhooks, API keys, and Nominal Account.
  */
 
 import type { ApiResponse, ApiListResponse, ApiMutationResponse } from "@/lib/types";
@@ -32,6 +32,29 @@ export interface Webhook {
   created_at: string;
 }
 
+// ═══════════════════════════════════════════════════════════════════
+// NOMINAL ACCOUNT TYPES
+// ═══════════════════════════════════════════════════════════════════
+
+export type NominalAccountStatus = "NOT_CONNECTED" | "CONNECTED" | "ERROR";
+
+export interface NominalAccountConfig {
+  endpoint_url: string;
+  api_key: string;
+  client_id: string;
+}
+
+export interface NominalAccountInfo {
+  status: NominalAccountStatus;
+  last_transaction_status?: string;
+  stats?: {
+    paid_last_30d_rub: number;
+    error_count: number;
+    documents_generated: number;
+  };
+  config?: Omit<NominalAccountConfig, "api_key"> & { api_key_masked: string };
+}
+
 export interface IntegrationsStatus {
   lama: {
     connected: boolean;
@@ -60,6 +83,7 @@ export interface IntegrationsStatus {
     failing: number;
   };
   api_keys_count: number;
+  nominal_account?: NominalAccountInfo;
 }
 
 /** Запись истории синхронизаций LAMA для tab «История» в /integrations/lama. */
@@ -116,8 +140,75 @@ export async function getIntegrationsStatus(): Promise<ApiResponse<IntegrationsS
         failing: 1,
       },
       api_keys_count: 4,
+      nominal_account: {
+        status: "CONNECTED",
+        last_transaction_status: "Успешно · 04.05.2026 в 16:42",
+        stats: {
+          paid_last_30d_rub: 184_200,
+          error_count: 1,
+          documents_generated: 37,
+        },
+        config: {
+          endpoint_url: "https://api.nominalaccount.ru/v2",
+          api_key_masked: "••••••••••••5f3a",
+          client_id: "spar-sibir-wfm",
+        },
+      },
     },
   };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// NOMINAL ACCOUNT
+// ═══════════════════════════════════════════════════════════════════
+
+/**
+ * Get Nominal Account integration info.
+ * @endpoint GET /integrations/nominal-account
+ */
+export async function getNominalAccountInfo(): Promise<ApiResponse<NominalAccountInfo>> {
+  await delay(250);
+  return {
+    data: {
+      status: "CONNECTED",
+      last_transaction_status: "Успешно · 04.05.2026 в 16:42",
+      stats: {
+        paid_last_30d_rub: 184_200,
+        error_count: 1,
+        documents_generated: 37,
+      },
+      config: {
+        endpoint_url: "https://api.nominalaccount.ru/v2",
+        api_key_masked: "••••••••••••5f3a",
+        client_id: "spar-sibir-wfm",
+      },
+    },
+  };
+}
+
+/**
+ * Connect / update Nominal Account integration.
+ * @endpoint POST /integrations/nominal-account
+ */
+export async function connectNominalAccount(
+  config: NominalAccountConfig
+): Promise<ApiMutationResponse> {
+  await delay(600);
+  if (!config.endpoint_url || !config.api_key || !config.client_id) {
+    return { success: false, error: { code: "VALIDATION_ERROR", message: "Все поля обязательны" } };
+  }
+  console.log("[v0] Connected NominalAccount:", config.endpoint_url, config.client_id);
+  return { success: true };
+}
+
+/**
+ * Disconnect Nominal Account integration.
+ * @endpoint DELETE /integrations/nominal-account
+ */
+export async function disconnectNominalAccount(): Promise<ApiMutationResponse> {
+  await delay(400);
+  console.log("[v0] Disconnected NominalAccount");
+  return { success: true };
 }
 
 /**

@@ -283,6 +283,9 @@ export {
   type IntegrationsStatus,
   type LamaSyncEvent,
   type ExcelImportEvent,
+  type NominalAccountStatus,
+  type NominalAccountConfig,
+  type NominalAccountInfo,
   getIntegrationsStatus,
   syncLamaForce,
   uploadExcel,
@@ -292,6 +295,9 @@ export {
   deleteWebhook,
   getLamaSyncHistory,
   getExcelImportHistory,
+  getNominalAccountInfo,
+  connectNominalAccount,
+  disconnectNominalAccount,
 } from "./integrations";
 
 // ═══════════════════════════════════════════════════════════════════
