@@ -96,7 +96,7 @@ const NAV_GROUPS: NavGroup[] = [
       { labelKey: "taxonomy_positions", href: ADMIN_ROUTES.taxonomyPositions, icon: Layers, status: "ready" },
       { labelKey: "taxonomy_hints", href: ADMIN_ROUTES.hints, icon: Layers, status: "ready" },
       { labelKey: "regulations", href: ADMIN_ROUTES.regulations, icon: Layers, status: "ready" },
-      { labelKey: "notifications", href: ADMIN_ROUTES.notifications, icon: Bell, status: "planned" },
+      { labelKey: "notifications", href: ADMIN_ROUTES.notifications, icon: Bell, status: "ready" },
       { labelKey: "integrations", href: ADMIN_ROUTES.integrations, icon: Plug, status: "planned" },
       { labelKey: "settings_profile", href: ADMIN_ROUTES.settingsProfile, icon: Settings, status: "planned" },
       { labelKey: "audit", href: ADMIN_ROUTES.audit, icon: History, status: "planned" },
