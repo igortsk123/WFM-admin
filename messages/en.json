@@ -2478,7 +2478,7 @@
         "created": "Zone created",
         "updated": "Zone updated",
         "deleted": "Zone deleted",
-        "in_use_warning": "Zone in use — deletion blocked",
+        "in_use_warning": "Zone in use �� deletion blocked",
         "error": "Operation failed"
       }
     },
@@ -3857,6 +3857,100 @@
         "reports": "Reports",
         "plan_fact": "Plan / Actual"
       },
+      "period": {
+        "week": "Week",
+        "month": "Month",
+        "quarter": "Quarter",
+        "year": "Year",
+        "custom": "Custom"
+      },
+      "toolbar": {
+        "all_stores": "All stores",
+        "export_btn": "Export XLSX",
+        "kpi_btn": "KPI",
+        "store_placeholder": "Store",
+        "custom_from": "From",
+        "custom_to": "To"
+      },
+      "period_banner": {
+        "period_label": "Period",
+        "store_label": "Store",
+        "all_stores": "all stores",
+        "updated": "Updated"
+      },
+      "ai_banner": {
+        "text": "AI assistant noticed: hour spend increased by 2.6% above plan. Main contributors — SPAR Tomsk Lenin Ave 80 (+12%) and SPAR Novosibirsk Krasny Ave (+9%). SPAR Tomsk Lenin has many 'Perishables Control' tasks (possible supply issue). Want details?",
+        "suggestions_btn": "Open AI suggestions",
+        "ask_btn": "Ask AI why",
+        "ai_chart_comment": "Top-3 overspending stores spent hours on perishables work — possible supply delays",
+        "ask_detail_btn": "Details"
+      },
+      "summary_cards": {
+        "planned_hours": "Planned hours",
+        "planned_hours_sub": "{days} working days",
+        "actual_hours": "Actual hours",
+        "avg_deviation": "Avg daily deviation",
+        "avg_deviation_sub": "Absolute value",
+        "worst_day": "Worst day",
+        "worst_day_sub": "Plan overrun"
+      },
+      "overspend_alert": "{count, plural, one {# store exceeded plan by more than 10%} other {# stores exceeded plan by more than 10%}}",
+      "stores_tab": {
+        "only_overspend": "Overspend only",
+        "sort_by": "Sort by",
+        "sort_overspend": "By overrun",
+        "sort_name": "By name",
+        "col_store": "Store",
+        "col_city": "City",
+        "col_planned": "Plan, h",
+        "col_actual": "Actual, h",
+        "col_delta": "Δ h",
+        "col_delta_pct": "Δ %",
+        "col_employees": "Empl.",
+        "col_completion": "Completion",
+        "col_ai": "AI",
+        "ask_ai_for_store": "AI suggestions for store"
+      },
+      "users_tab": {
+        "col_user": "Employee",
+        "col_store": "Store",
+        "col_position": "Position",
+        "col_planned": "Plan, h",
+        "col_actual": "Actual, h",
+        "col_delta": "Δ h",
+        "col_delta_pct": "Δ %",
+        "col_tasks_plan": "Tasks (pl.)",
+        "col_tasks_fact": "Tasks (ac.)",
+        "col_on_time": "On-time, %"
+      },
+      "work_types_tab": {
+        "col_work_type": "Work type",
+        "col_planned": "Plan, h",
+        "col_actual": "Actual, h",
+        "col_delta": "Δ h",
+        "col_delta_pct": "Δ %",
+        "col_tasks_done": "Tasks done",
+        "col_avg_duration": "Avg dur., min"
+      },
+      "days_tab": {
+        "chart_title": "Plan vs actual trend",
+        "table_title": "Daily breakdown",
+        "col_date": "Date",
+        "col_weekday": "Day",
+        "col_planned": "Plan, h",
+        "col_actual": "Actual, h",
+        "col_delta": "Δ h",
+        "col_delta_pct": "Δ %",
+        "col_tasks_plan": "Tasks (pl.)",
+        "col_tasks_fact": "Tasks (ac.)",
+        "col_completion": "Completion"
+      },
+      "forbidden_title": "Access denied",
+      "forbidden_desc": "This report is available for Supervisor, Regional and Network Ops roles",
+      "error_title": "Failed to load report",
+      "ai_chart_tooltip": "Ask AI about this chart",
+      "ask_in_chat": "Open in AI chat",
+      "scope_network": "Whole network",
       "actions": {
         "export_xlsx": "Export XLSX",
         "export_csv": "Export CSV",
@@ -3896,7 +3990,9 @@
       "chart": {
         "planned": "Plan",
         "actual": "Actual",
+        "deviation_pct": "Dev., %",
         "completion_rate_axis": "Completion, %",
+        "hours_axis": "Hours",
         "weekday_short": {
           "Mon": "Mon",
           "Tue": "Tue",
