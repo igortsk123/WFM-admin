@@ -3075,11 +3075,34 @@
         "legal_added": "Legal entity added",
         "legal_updated": "Legal entity updated",
         "legal_removed": "Legal entity removed",
-        "error": "Operation failed"
+        "error": "Operation failed",
+        "payment_mode_changed": "Payment mode changed",
+        "module_toggled": "Module state changed"
       },
       "states": {
         "forbidden_title": "Access denied",
         "forbidden_subtitle": "Only NETWORK_OPS can configure the organization"
+      },
+      "freelance_section": {
+        "title": "Freelance & billing",
+        "payment_mode_label": "Payment mode",
+        "payment_mode_NOMINAL_ACCOUNT": "Via 'Nominal account' service",
+        "payment_mode_CLIENT_DIRECT": "Client pays freelancers directly",
+        "payment_mode_locked_hint": "This parameter is fixed by the contract with Beyond Violet. Contact support to change.",
+        "external_hr_label": "External HR system",
+        "external_hr_connected": "Connected",
+        "external_hr_disconnected": "Not connected",
+        "external_hr_manage_link": "Manage in Integrations",
+        "freelance_module_label": "Freelance module",
+        "freelance_module_on": "Active",
+        "freelance_module_off": "Disabled"
+      },
+      "platform_admin": {
+        "edit_payment_mode": "Change payment mode",
+        "edit_payment_mode_warning_title": "Change payment mode?",
+        "edit_payment_mode_warning_description": "Changing the mode affects financial operations. Open applications may lose connection to active payouts.",
+        "edit_payment_mode_confirm": "Change",
+        "module_toggle": "Toggle freelance module"
       }
     }
   }
