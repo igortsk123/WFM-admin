@@ -587,7 +587,7 @@
     "today": "Сегодня",
     "yesterday": "Вчера",
     "tomorrow": "Завтра",
-    "days_ago": "{n, plural, one {# день назад} few {# дня назад} other {# дней назад}}"
+    "days_ago": "{n, plural, one {# день наза��} few {# дня назад} other {# дней назад}}"
   },
   "store": {
     "title": "Магазин",
@@ -1759,7 +1759,7 @@
         "position": "Должность и магазин",
         "position_sub": "Где и кем работает",
         "permissions": "Привилегии",
-        "permissions_sub": "Компетенции работника",
+        "permissions_sub": "Компетенции работ��ика",
         "invite": "Приглашение",
         "invite_sub": "Способ отправки"
       },
@@ -2562,7 +2562,7 @@
         "no_positions_title": "Должностей пока нет",
         "no_positions_subtitle": "Создайте первую должность",
         "no_positions_cta": "Добавить должность",
-        "filtered_title": "Никого не найдено",
+        "filtered_title": "Никого не ��айдено",
         "filtered_reset": "Сбросить фильтры"
       },
       "toasts": {
@@ -5838,37 +5838,132 @@
       },
       "tabs": {
         "all": "Все",
-        "delivered": "Оказанные",
-        "no_show": "Невыходы"
+        "pending": "На подтверждении",
+        "ready": "Готовы к оплате",
+        "paid": "Выплачено",
+        "confirmed": "Подтверждены",
+        "no_show": "Невыходы",
+        "disputed": "Спорные"
       },
       "filters": {
         "search": "Поиск",
         "status": "Статус",
-        "store": "Магазин",
+        "store": "Объект",
+        "store_placeholder": "Все объекты",
+        "freelancer": "Исполнитель",
+        "freelancer_placeholder": "ФИО или телефон",
         "agent": "Агент",
-        "date_range": "Период"
+        "agent_placeholder": "Все агенты",
+        "work_type": "Тип работ",
+        "work_type_placeholder": "Все типы",
+        "date_range": "Период",
+        "date_from": "Дата с",
+        "date_to": "Дата по"
       },
       "columns": {
         "date": "Дата",
         "store": "Объект",
-        "service": "Услуга",
         "performer": "Исполнитель",
-        "agent": "Агент",
+        "work_type": "Тип работ",
+        "hours": "Часы",
+        "hours_tooltip": "обещано / фактически / к оплате",
+        "volume": "Объём",
         "amount": "Сумма",
-        "status": "Статус"
+        "amount_indicative": "(справочно)",
+        "agent": "Агент",
+        "source": "Источник",
+        "legal_status": "Юр. статус",
+        "status": "Статус",
+        "actions": "Действия"
       },
       "status": {
-        "DELIVERED": "Оказана",
+        "PLANNED": "Запланирована",
+        "IN_PROGRESS": "Выполняется",
+        "COMPLETED": "Ждёт подтверждения",
+        "CONFIRMED": "Подтверждена",
+        "READY_TO_PAY": "Готова к оплате",
+        "PAID": "Выплачена",
         "NO_SHOW": "Невыход",
-        "CANCELLED": "Отменена"
+        "DISPUTED": "Спор"
       },
-      "no_show_alert": "Невыход — приоритетная коммуникация с агентом",
+      "no_show_legal_status": {
+        "OPEN": "Открыт",
+        "IN_LEGAL": "У юристов",
+        "RESOLVED": "Решён",
+        "WRITTEN_OFF": "Списан"
+      },
+      "source": {
+        "INTERNAL": "Внутренняя",
+        "EXTERNAL": "Внешняя"
+      },
+      "hours_badge": {
+        "underload": "Недозагрузка не по вине"
+      },
+      "adjusted_tooltip": "Скорректировано вручную, см. детали",
+      "actions": {
+        "confirm": "Подтвердить услугу",
+        "dispute": "Отклонить",
+        "download_act": "Скачать акт",
+        "open_no_show": "Открыть отчёт о невыходе",
+        "adjust_amount": "Корректировать сумму",
+        "to_legal": "Передать юристам"
+      },
       "empty": {
-        "no_services": "Нет оказанных услуг за период"
+        "all_title": "Услуги пока не оказывались",
+        "all_description": "Оказанные услуги будут отображаться здесь",
+        "no_show_title": "Невыходов нет",
+        "no_show_description": "Невыходов нет за выбранный период",
+        "pending_title": "Все услуги подтверждены",
+        "pending_description": "Нет услуг, ожидающих подтверждения",
+        "generic_title": "Нет данных",
+        "generic_description": "По выбранным фильтрам ничего не найдено"
+      },
+      "sheet": {
+        "title": "Детали услуги",
+        "freelancer_section": "Исполнитель",
+        "hours_section": "Часы",
+        "scheduled": "Обещано",
+        "actual": "Фактически",
+        "payable": "К оплате",
+        "geo_checkin": "Геолокация",
+        "geo_match": "Совпадает",
+        "geo_no_match": "Не совпадает",
+        "assignment": "Назначение",
+        "related_payout": "Выплата",
+        "adjustment_history": "История корректировок",
+        "adjusted_by": "Кем скорректировано",
+        "adjusted_at": "Когда",
+        "from_amount": "Было",
+        "to_amount": "Стало",
+        "reason": "Причина",
+        "no_show_report": "Отчёт о невыходе",
+        "legal_comment": "Комментарий юриста"
+      },
+      "adjust_dialog": {
+        "title": "Корректировать сумму",
+        "description": "Изменение суммы будет сохранено в аудит-логе",
+        "new_amount_label": "Новая сумма",
+        "reason_label": "Причина корректировки",
+        "reason_placeholder": "Минимум 10 символов",
+        "submit": "Применить"
+      },
+      "dispute_dialog": {
+        "title": "Отклонить услугу",
+        "description": "Укажите причину отклонения. Статус изменится на «Спор».",
+        "reason_label": "Причина",
+        "reason_placeholder": "Минимум 10 символов",
+        "submit": "Отклонить"
       },
       "toasts": {
-        "error": "Не удалось загрузить"
-      }
+        "confirmed": "Услуга подтверждена",
+        "disputed": "Услуга отклонена",
+        "adjusted": "Сумма скорректирована",
+        "legal_sent": "Передано юристам",
+        "error": "Не удалось выполнить действие",
+        "load_error": "Не удалось загрузить",
+        "data_changed": "Данные изменились — обновите страницу"
+      },
+      "export": "Экспорт"
     },
     "freelancePayoutsList": {
       "page_title": "Реестр выплат внештата",
