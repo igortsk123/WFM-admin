@@ -346,6 +346,35 @@ export async function getMyEarnings(
   return { data: filtered.slice(start, start + page_size), total, page, page_size };
 }
 
+/**
+ * Get a single payout by ID, scoped to this agent's payouts.
+ * Returns the payout with earnings linked to it for this agent.
+ * @param payoutId Payout ID
+ * @returns Payout details + agent_earning for this agent
+ * @endpoint GET /agent/me/payouts/:id
+ * @roles AGENT
+ */
+export async function getMyPayoutById(
+  payoutId: string
+): Promise<ApiResponse<Payout & { agent_earnings_in_payout: AgentEarning[] }>> {
+  await delay(rand(200, 400));
+
+  if (isClientDirect()) {
+    throw new Error("Кабинет агента недоступен в режиме CLIENT_DIRECT.");
+  }
+
+  const payout = MOCK_FREELANCE_PAYOUTS.find(
+    (p) => p.id === payoutId && p.agent_id === MOCK_AGENT_ID
+  );
+  if (!payout) throw new Error(`Payout ${payoutId} not found for this agent`);
+
+  const agent_earnings_in_payout = MOCK_AGENT_EARNINGS.filter(
+    (ae) => ae.payout_id === payoutId && ae.agent_id === MOCK_AGENT_ID
+  );
+
+  return { data: { ...payout, agent_earnings_in_payout } };
+}
+
 // ═══════════════════════════════════════════════════════════════════
 // DOCUMENTS
 // ═══════════════════════════════════════════════════════════════════
