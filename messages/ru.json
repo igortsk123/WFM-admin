@@ -3513,6 +3513,91 @@
         "share_link_copied": "Ссылка скопирована",
         "export_failed": "Не удалось экспортировать отчёт"
       }
+    },
+    "reportsPlanFact": {
+      "page_title": "План / Факт",
+      "page_subtitle": "Сравнение планируемых и фактических показателей",
+      "breadcrumbs": {
+        "home": "Главная",
+        "reports": "Отчёты",
+        "plan_fact": "План / Факт"
+      },
+      "actions": {
+        "export_xlsx": "Экспорт XLSX",
+        "export_csv": "Экспорт CSV",
+        "share": "Поделиться"
+      },
+      "filters": {
+        "period_label": "Период",
+        "store_label": "Магазин",
+        "all_stores": "Вся сеть",
+        "breakdown_label": "Разрез",
+        "metric_label": "Что сравнивать",
+        "from": "С",
+        "to": "По",
+        "apply": "Применить",
+        "reset": "Сбросить"
+      },
+      "metric": {
+        "hours": "Часы",
+        "tasks": "Задачи"
+      },
+      "breakdown": {
+        "days": "По дням",
+        "stores": "По магазинам",
+        "users": "По сотрудникам",
+        "work_types": "По типам работ"
+      },
+      "summary": {
+        "total_planned_hours": "Плановые часы",
+        "total_actual_hours": "Фактические часы",
+        "total_planned_tasks": "Плановые задачи",
+        "total_completed_tasks": "Выполнено задач",
+        "avg_completion_rate": "Среднее выполнение",
+        "best_day_title": "Лучший день",
+        "worst_day_title": "Худший день",
+        "worst_day_reason": "Причина"
+      },
+      "chart": {
+        "planned": "План",
+        "actual": "Факт",
+        "completion_rate_axis": "Выполнение, %",
+        "weekday_short": {
+          "Mon": "Пн",
+          "Tue": "Вт",
+          "Wed": "Ср",
+          "Thu": "Чт",
+          "Fri": "Пт",
+          "Sat": "Сб",
+          "Sun": "Вс"
+        }
+      },
+      "table": {
+        "columns": {
+          "date": "Дата",
+          "weekday": "День",
+          "planned_hours": "План, ч",
+          "actual_hours": "Факт, ч",
+          "planned_tasks": "План задач",
+          "completed_tasks": "Выполнено",
+          "completion_rate": "Выполнение, %",
+          "store": "Магазин",
+          "user": "Сотрудник",
+          "work_type": "Тип работ",
+          "delta": "Отклонение"
+        }
+      },
+      "empty": {
+        "no_data_title": "Нет данных за выбранный период",
+        "no_data_subtitle": "Расширьте период или выберите другой магазин",
+        "loading": "Считаем план/факт…"
+      },
+      "toasts": {
+        "exported_xlsx": "Отчёт сохранён в XLSX",
+        "exported_csv": "Отчёт сохранён в CSV",
+        "share_link_copied": "Ссылка скопирована",
+        "export_failed": "Не удалось экспортировать отчёт"
+      }
     }
   }
 }

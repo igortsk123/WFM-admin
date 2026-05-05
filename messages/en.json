@@ -3513,6 +3513,91 @@
         "share_link_copied": "Link copied",
         "export_failed": "Failed to export report"
       }
+    },
+    "reportsPlanFact": {
+      "page_title": "Plan / Actual",
+      "page_subtitle": "Planned vs actual performance comparison",
+      "breadcrumbs": {
+        "home": "Home",
+        "reports": "Reports",
+        "plan_fact": "Plan / Actual"
+      },
+      "actions": {
+        "export_xlsx": "Export XLSX",
+        "export_csv": "Export CSV",
+        "share": "Share"
+      },
+      "filters": {
+        "period_label": "Period",
+        "store_label": "Store",
+        "all_stores": "Whole network",
+        "breakdown_label": "Breakdown",
+        "metric_label": "Compare by",
+        "from": "From",
+        "to": "To",
+        "apply": "Apply",
+        "reset": "Reset"
+      },
+      "metric": {
+        "hours": "Hours",
+        "tasks": "Tasks"
+      },
+      "breakdown": {
+        "days": "By day",
+        "stores": "By store",
+        "users": "By employee",
+        "work_types": "By work type"
+      },
+      "summary": {
+        "total_planned_hours": "Planned hours",
+        "total_actual_hours": "Actual hours",
+        "total_planned_tasks": "Planned tasks",
+        "total_completed_tasks": "Completed tasks",
+        "avg_completion_rate": "Avg completion",
+        "best_day_title": "Best day",
+        "worst_day_title": "Worst day",
+        "worst_day_reason": "Reason"
+      },
+      "chart": {
+        "planned": "Plan",
+        "actual": "Actual",
+        "completion_rate_axis": "Completion, %",
+        "weekday_short": {
+          "Mon": "Mon",
+          "Tue": "Tue",
+          "Wed": "Wed",
+          "Thu": "Thu",
+          "Fri": "Fri",
+          "Sat": "Sat",
+          "Sun": "Sun"
+        }
+      },
+      "table": {
+        "columns": {
+          "date": "Date",
+          "weekday": "Day",
+          "planned_hours": "Plan, h",
+          "actual_hours": "Actual, h",
+          "planned_tasks": "Plan tasks",
+          "completed_tasks": "Completed",
+          "completion_rate": "Completion, %",
+          "store": "Store",
+          "user": "Employee",
+          "work_type": "Work type",
+          "delta": "Delta"
+        }
+      },
+      "empty": {
+        "no_data_title": "No data for the selected period",
+        "no_data_subtitle": "Widen the period or pick a different store",
+        "loading": "Calculating plan/actual…"
+      },
+      "toasts": {
+        "exported_xlsx": "Report saved as XLSX",
+        "exported_csv": "Report saved as CSV",
+        "share_link_copied": "Link copied",
+        "export_failed": "Failed to export report"
+      }
     }
   }
 }
