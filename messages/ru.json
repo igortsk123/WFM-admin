@@ -6656,71 +6656,65 @@
     },
     "serviceNorms": {
       "page_title": "Нормативы работ",
-      "page_subtitle": "Нормы выработки и ставки по типам работ",
+      "page_subtitle": "Стандартные единицы и ставки для услуг",
       "breadcrumbs": {
         "home": "Главная",
         "taxonomy": "Таксономия",
         "norms": "Нормативы"
       },
-      "tabs": {
-        "active": "Активные",
-        "archive": "Архив"
-      },
       "actions": {
-        "create": "+ Новый норматив",
-        "save": "Сохранить"
+        "create": "Создать норматив",
+        "import": "Импорт",
+        "export": "Экспорт"
       },
       "filters": {
-        "object_format": "Формат объекта",
-        "work_type": "Тип работ",
-        "all_formats": "Все форматы",
-        "all_work_types": "Все типы"
+        "search": "Поиск",
+        "category": "Категория"
       },
       "columns": {
-        "object_format": "Формат объекта",
-        "work_type": "Тип работ",
-        "normative": "Норматив",
-        "rate": "Ставка",
-        "approved_by": "Кем утверждено",
-        "approved_at": "Когда утверждено",
-        "actions": ""
+        "code": "Код",
+        "name": "Название",
+        "unit": "Ед.",
+        "rate": "Ставка, ₽",
+        "norm_per_hour": "Норма/час",
+        "category": "Категория",
+        "actions": "Действия"
       },
       "form": {
-        "create_title": "Новый норматив",
-        "edit_title": "Изменить норматив",
-        "object_format_label": "Формат объекта",
-        "work_type_label": "Тип работ",
-        "normative_label": "Норматив за час",
-        "unit_label": "Единица измерения",
-        "rate_label": "Ставка ₽/час",
-        "rate_placeholder": "Необязательно",
-        "currency_label": "Валюта"
+        "code_label": "Код",
+        "name_label": "Название",
+        "unit_label": "Единица",
+        "rate_label": "Ставка, ₽",
+        "norm_per_hour_label": "Норма/час",
+        "category_label": "Категория",
+        "description_label": "Описание",
+        "submit": "Сохранить"
       },
-      "row_actions": {
-        "edit": "Изменить",
-        "archive": "Архивировать"
+      "empty": {
+        "no_norms": "Нормативы пока не заданы",
+        "cta": "Создать первый"
+      },
+      "toasts": {
+        "saved": "Норматив сохранён",
+        "deleted": "Удалён",
+        "error": "Не удалось"
+      },
+      "tabs": {
+        "active": "Активные",
+        "archived": "Архив"
       },
       "archive_confirm": {
         "title": "Архивировать норматив?",
-        "message": "Норматив будет скрыт из активных. Существующие расчёты не изменятся.",
+        "description": "Норматив будет помечен как неактивный. Существующие услуги сохранят расчёт.",
         "confirm": "Архивировать"
       },
-      "empty": {
-        "active_title": "Нормативы пока не настроены",
-        "active_description": "Добавьте первый норматив для расчёта стоимости услуг.",
-        "active_cta": "+ Новый норматив",
-        "archive_title": "Архив пуст",
-        "archive_description": "Архивированные нормативы будут отображаться здесь."
-      },
-      "toasts": {
-        "created": "Норматив создан",
-        "updated": "Норматив обновлён",
-        "archived": "Норматив архивирован",
-        "error": "Произошла ошибка",
-        "duplicate": "Норматив для этой комбинации уже существует"
-      },
+      "per_hour": "/час",
       "rate_empty": "—",
-      "per_hour": "/час"
+      "row_actions": {
+        "edit": "Редактировать",
+        "duplicate": "Дублировать",
+        "archive": "Архивировать"
+      }
     }
   },
   "freelanceBudgetLimits": {
@@ -6987,81 +6981,34 @@
       "retry": "Повторить"
     }
   },
-    "filters": {
-      "type": "��ип",
-      "year": "Год"
-    },
-    "columns": {
-      "title": "Название",
-      "type": "Тип",
-      "date": "Дата",
-      "size": "Размер",
-      "status": "Статус"
-    },
-    "type": {
-      "CONTRACT": "Договор",
-      "ACT": "Акт",
-      "INVOICE": "Счёт",
-      "REPORT": "Отчёт",
-      "OTHER": "Другое"
-    },
-    "status": {
-      "SIGNED": "Подписан",
-      "PENDING_SIGNATURE": "Ожидает подписи",
-      "DRAFT": "Черн��вик"
-    },
-    "empty": {
-      "no_documents": "Документов пока нет"
-    },
-    "toasts": {
-      "uploaded": "Документ загружен",
-      "error": "Не удалось"
-    }
+  "filters": {
+    "type": "��ип",
+    "year": "Год"
   },
-  "serviceNorms": {
-    "page_title": "Нормативы работ",
-    "page_subtitle": "Стандартные единицы и ставки для услуг",
-    "breadcrumbs": {
-      "home": "Главная",
-      "taxonomy": "Таксономия",
-      "norms": "Нормативы"
-    },
-    "actions": {
-      "create": "Создать норматив",
-      "import": "Импорт",
-      "export": "Экспорт"
-    },
-    "filters": {
-      "search": "Поиск",
-      "category": "Категория"
-    },
-    "columns": {
-      "code": "Код",
-      "name": "Название",
-      "unit": "Ед.",
-      "rate": "Ставка, ₽",
-      "norm_per_hour": "Норма/час",
-      "category": "Категория",
-      "actions": "Действия"
-    },
-    "form": {
-      "code_label": "Код",
-      "name_label": "Название",
-      "unit_label": "Единица",
-      "rate_label": "Ставка, ₽",
-      "norm_per_hour_label": "Норма/час",
-      "category_label": "Категория",
-      "description_label": "Описание",
-      "submit": "Сохранить"
-    },
-    "empty": {
-      "no_norms": "Нормативы пока не заданы",
-      "cta": "Создать первый"
-    },
-    "toasts": {
-      "saved": "Норматив сохранён",
-      "deleted": "Удалён",
-      "error": "Не удалось"
-    }
+  "columns": {
+    "title": "Название",
+    "type": "Тип",
+    "date": "Дата",
+    "size": "Размер",
+    "status": "Статус"
+  },
+  "type": {
+    "CONTRACT": "Договор",
+    "ACT": "Акт",
+    "INVOICE": "Счёт",
+    "REPORT": "Отчёт",
+    "OTHER": "Другое"
+  },
+  "status": {
+    "SIGNED": "Подписан",
+    "PENDING_SIGNATURE": "Ожидает подписи",
+    "DRAFT": "Черн��вик"
+  },
+  "empty": {
+    "no_documents": "Документов пока нет"
+  },
+  "toasts": {
+    "uploaded": "Документ загружен",
+    "error": "Не удалось"
   }
 }
