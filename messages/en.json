@@ -160,18 +160,18 @@
     "ai_coach": "AI Coach",
     "risk_rules": "Risk scoring",
     "leaderboards": "Leaderboards",
-    "freelance_dashboard": "Freelance",
+    "freelance_dashboard": "Freelance dashboard",
     "freelance_applications": "Freelance applications",
     "freelance_application_new": "New application",
     "freelance_services": "Services",
     "freelance_payouts": "Freelance payouts",
     "freelance_no_shows": "No-shows",
-    "freelance_budget_limits": "Budget limits",
+    "freelance_budget_limits": "Freelance budget limits",
     "freelance_agents": "Agents",
-    "agent_dashboard": "Agent portal",
-    "agent_freelancers": "My freelancers",
-    "agent_earnings": "Earnings",
-    "agent_documents": "Documents",
+    "agent_dashboard": "Agent cabinet",
+    "agent_freelancers": "My performers",
+    "agent_earnings": "Agent earnings",
+    "agent_documents": "Agent documents",
     "ai": "AI Analytics",
     "aiChat": "AI Chat",
     "aiSuggestions": "AI Suggestions",
@@ -181,7 +181,12 @@
     "reports": "Reports",
     "organization": "Organisation",
     "employee_new": "Add employee",
-    "shift_detail_demo": "Shift (demo)"
+    "shift_detail_demo": "Shift (demo)",
+    "freelance_applications_new": "New freelance application",
+    "freelance_application_detail_demo": "Application demo",
+    "freelance_payouts_list": "Freelance payouts registry",
+    "freelance_agent_detail_demo": "Agent demo",
+    "service_norms": "Service norms"
   },
   "task": {
     "title": "Task",
@@ -3473,6 +3478,38 @@
         "save": "Save",
         "test": "Test connection",
         "disconnect": "Disconnect"
+      },
+      "external_hr_section": {
+        "title": "External HR system",
+        "description": "Connect your HR service to auto-import freelance performers",
+        "status_connected": "Connected",
+        "status_disconnected": "Not connected",
+        "actions": {
+          "connect": "Connect",
+          "test_connection": "Test",
+          "disconnect": "Disconnect",
+          "sync_now": "Sync now"
+        },
+        "form": {
+          "endpoint_label": "Endpoint URL",
+          "api_key_label": "API key",
+          "tenant_id_label": "Tenant ID",
+          "sync_schedule_label": "Sync schedule"
+        },
+        "stats": {
+          "synced_freelancers": "Synced performers",
+          "last_sync_at": "Last sync",
+          "next_sync_at": "Next sync",
+          "errors_24h": "Errors in 24h"
+        },
+        "logs_drawer_title": "Sync log",
+        "toasts": {
+          "connected": "HR system connected",
+          "test_ok": "Connection established",
+          "test_failed": "Failed to connect",
+          "synced": "Sync complete",
+          "disconnected": "HR system disconnected"
+        }
       }
     },
     "audit": {
@@ -5443,6 +5480,584 @@
         "challenge_updated": "Challenge updated",
         "challenge_cancelled": "Challenge cancelled",
         "error": "Operation failed"
+      }
+    },
+    "freelanceDashboard": {
+      "page_title": "Freelance",
+      "page_subtitle": "Budget, applications, per-object limits",
+      "breadcrumbs": {
+        "home": "Home",
+        "freelance": "Freelance"
+      },
+      "actions": {
+        "new_application": "New application"
+      },
+      "filters": {
+        "period_label": "Period",
+        "period_day": "Day",
+        "period_week": "Week",
+        "period_month": "Month",
+        "source_label": "Source",
+        "source_all": "All sources",
+        "source_internal": "Internal",
+        "source_external": "External",
+        "scope_label": "Object"
+      },
+      "kpi": {
+        "budget": "Budget",
+        "spent": "Spent",
+        "remaining": "Remaining",
+        "forecast": "Forecast",
+        "client_direct_hint": "Reference values from norms"
+      },
+      "budget_table": {
+        "title": "Per-object budgets",
+        "columns": {
+          "object": "Object",
+          "period": "Period",
+          "limit": "Limit",
+          "spent": "Spent",
+          "by_plan": "By plan",
+          "overspend": "Overspend",
+          "status": "Status"
+        }
+      },
+      "states": {
+        "forbidden_title": "Access restricted"
+      },
+      "toasts": {
+        "error": "Failed to load data"
+      }
+    },
+    "freelanceApplications": {
+      "page_title": "Freelance applications",
+      "page_subtitle": "Application list, filter by status and source",
+      "breadcrumbs": {
+        "home": "Home",
+        "freelance": "Freelance",
+        "applications": "Applications"
+      },
+      "actions": {
+        "new": "New application",
+        "export": "Export"
+      },
+      "filters": {
+        "search_placeholder": "Search by # or object",
+        "status_label": "Status",
+        "source_label": "Source",
+        "store_label": "Store",
+        "date_range": "Period"
+      },
+      "status": {
+        "DRAFT": "Draft",
+        "PENDING": "Awaiting approval",
+        "APPROVED": "Approved",
+        "REJECTED": "Rejected",
+        "FULFILLED": "Fulfilled",
+        "REPLACED_WITH_BONUS": "Replaced with bonus",
+        "MIXED": "Mixed"
+      },
+      "columns": {
+        "id": "#",
+        "store": "Object",
+        "service": "Service",
+        "amount": "Amount",
+        "status": "Status",
+        "source": "Source",
+        "created_at": "Created",
+        "decision_by": "Decision"
+      },
+      "empty": {
+        "no_applications": "No applications yet",
+        "no_applications_cta": "Create first"
+      },
+      "toasts": {
+        "exported": "Export ready",
+        "error": "Failed to load"
+      }
+    },
+    "freelanceApplicationNew": {
+      "page_title": "New freelance application",
+      "page_subtitle": "Create application: object, service, amount",
+      "breadcrumbs": {
+        "home": "Home",
+        "freelance": "Freelance",
+        "applications": "Applications",
+        "new": "New"
+      },
+      "form": {
+        "store_label": "Object",
+        "store_placeholder": "Select store/workshop",
+        "service_label": "Service",
+        "service_placeholder": "Select service",
+        "quantity_label": "Quantity (hours/units)",
+        "rate_label": "Rate, ₽",
+        "amount_label": "Amount, ₽",
+        "amount_hint": "Auto-computed by norm or enter manually",
+        "agent_label": "Agent",
+        "agent_optional": "Optional",
+        "comment_label": "Comment",
+        "date_from_label": "From",
+        "date_to_label": "To",
+        "submit": "Submit for approval",
+        "save_draft": "Save draft",
+        "cancel": "Cancel"
+      },
+      "validation": {
+        "store_required": "Select object",
+        "service_required": "Select service",
+        "amount_min": "Minimum 1 ₽",
+        "date_invalid": "End date must be after start"
+      },
+      "budget_warning": {
+        "title": "Budget overrun",
+        "description": "This application will exceed the object budget by {amount} ₽"
+      },
+      "toasts": {
+        "submitted": "Application submitted",
+        "draft_saved": "Draft saved",
+        "error": "Failed to create application"
+      }
+    },
+    "freelanceApplicationDetail": {
+      "page_title": "Freelance application",
+      "breadcrumbs": {
+        "home": "Home",
+        "freelance": "Freelance",
+        "applications": "Applications",
+        "detail": "Application"
+      },
+      "actions": {
+        "approve": "Approve",
+        "reject": "Reject",
+        "request_revision": "Request revisions",
+        "replace_with_bonus": "Replace with bonus",
+        "edit": "Edit",
+        "cancel": "Cancel application"
+      },
+      "sections": {
+        "summary": "Summary",
+        "service_details": "Service details",
+        "budget": "Budget",
+        "history": "Approval history",
+        "linked_bonus": "Linked bonus pool",
+        "documents": "Documents"
+      },
+      "summary": {
+        "store": "Object",
+        "service": "Service",
+        "amount": "Amount",
+        "agent": "Agent",
+        "no_agent": "Without agent",
+        "created_by": "Author",
+        "created_at": "Created"
+      },
+      "history_event": {
+        "submitted": "Submitted for approval",
+        "approved": "Approved",
+        "rejected": "Rejected",
+        "revision_requested": "Revisions requested",
+        "replaced_with_bonus": "Replaced with bonus",
+        "fulfilled": "Fulfilled"
+      },
+      "approve_dialog": {
+        "title": "Approve application?",
+        "description": "{amount} ₽ will be charged to {store} budget",
+        "confirm": "Approve"
+      },
+      "reject_dialog": {
+        "title": "Reject application?",
+        "reason_label": "Reason (required)",
+        "confirm": "Reject"
+      },
+      "replace_bonus_dialog": {
+        "title": "Replace application with a bonus pool?",
+        "description": "Bonus ≈50% of full cost. Savings: {saved} ₽",
+        "amount_label": "Bonus pool amount, ₽",
+        "confirm": "Create bonus"
+      },
+      "toasts": {
+        "approved": "Application approved",
+        "rejected": "Application rejected",
+        "replaced": "Application replaced with bonus",
+        "error": "Failed to perform action"
+      }
+    },
+    "freelanceServicesList": {
+      "page_title": "Delivered services registry",
+      "page_subtitle": "Including no-show registry",
+      "breadcrumbs": {
+        "home": "Home",
+        "freelance": "Freelance",
+        "services": "Services"
+      },
+      "tabs": {
+        "all": "All",
+        "delivered": "Delivered",
+        "no_show": "No-shows"
+      },
+      "filters": {
+        "search": "Search",
+        "status": "Status",
+        "store": "Store",
+        "agent": "Agent",
+        "date_range": "Period"
+      },
+      "columns": {
+        "date": "Date",
+        "store": "Object",
+        "service": "Service",
+        "performer": "Performer",
+        "agent": "Agent",
+        "amount": "Amount",
+        "status": "Status"
+      },
+      "status": {
+        "DELIVERED": "Delivered",
+        "NO_SHOW": "No-show",
+        "CANCELLED": "Cancelled"
+      },
+      "no_show_alert": "No-show — priority comms with agent",
+      "empty": {
+        "no_services": "No delivered services for the period"
+      },
+      "toasts": {
+        "error": "Failed to load"
+      }
+    },
+    "freelancePayoutsList": {
+      "page_title": "Freelance payouts registry",
+      "page_subtitle": "Managed payout periods and registries",
+      "breadcrumbs": {
+        "home": "Home",
+        "freelance": "Freelance",
+        "payouts": "Payouts"
+      },
+      "actions": {
+        "create_register": "Create registry",
+        "approve": "Approve",
+        "send_to_payment": "Send to payment",
+        "export": "Export"
+      },
+      "filters": {
+        "period": "Period",
+        "status": "Status",
+        "store": "Store"
+      },
+      "status": {
+        "OPEN": "Open",
+        "READY": "Ready to approve",
+        "APPROVED": "Approved",
+        "PAYING": "Paying",
+        "PAID": "Paid"
+      },
+      "columns": {
+        "register_id": "Registry #",
+        "period": "Period",
+        "stores": "Stores",
+        "lines_count": "Lines",
+        "amount": "Amount",
+        "status": "Status"
+      },
+      "summary": {
+        "total_amount": "Total amount",
+        "lines_total": "Lines",
+        "agents_total": "Agents"
+      },
+      "empty": {
+        "no_payouts": "No registries for the period"
+      },
+      "toasts": {
+        "approved": "Registry approved",
+        "sent": "Sent to payment",
+        "error": "Failed"
+      }
+    },
+    "freelanceBudgetLimits": {
+      "page_title": "Freelance budget limits",
+      "page_subtitle": "Per-object monthly limits",
+      "breadcrumbs": {
+        "home": "Home",
+        "freelance": "Freelance",
+        "limits": "Limits"
+      },
+      "actions": {
+        "set_default": "Set network default",
+        "save": "Save",
+        "reset": "Reset"
+      },
+      "filters": {
+        "period": "Period",
+        "store_type": "Object type"
+      },
+      "table": {
+        "columns": {
+          "object": "Object",
+          "current_limit": "Current limit",
+          "spent": "Spent",
+          "new_limit": "New limit",
+          "diff": "Change"
+        }
+      },
+      "presets": {
+        "by_revenue": "By revenue",
+        "by_size": "By area",
+        "by_employees": "By headcount",
+        "manual": "Manual"
+      },
+      "warning_overspent": "Object already exceeds the proposed limit",
+      "toasts": {
+        "saved": "Limits saved",
+        "error": "Failed"
+      }
+    },
+    "freelanceAgents": {
+      "page_title": "Agents directory",
+      "page_subtitle": "External agents supplying performers",
+      "breadcrumbs": {
+        "home": "Home",
+        "freelance": "Freelance",
+        "agents": "Agents"
+      },
+      "actions": {
+        "new_agent": "New agent",
+        "export": "Export"
+      },
+      "filters": {
+        "search": "Search",
+        "status": "Status",
+        "tier": "Tier"
+      },
+      "columns": {
+        "agent": "Agent",
+        "tier": "Tier",
+        "performers": "Performers",
+        "month_amount": "Monthly turnover",
+        "rating": "Rating",
+        "no_show_rate": "No-show %",
+        "status": "Status"
+      },
+      "tier": {
+        "BRONZE": "Bronze",
+        "SILVER": "Silver",
+        "GOLD": "Gold",
+        "PLATINUM": "Platinum"
+      },
+      "status": {
+        "ACTIVE": "Active",
+        "PAUSED": "Paused",
+        "BLOCKED": "Blocked"
+      },
+      "empty": {
+        "no_agents": "No agents yet"
+      },
+      "toasts": {
+        "created": "Agent created",
+        "error": "Failed"
+      }
+    },
+    "freelanceAgentDetail": {
+      "page_title": "Agent details",
+      "breadcrumbs": {
+        "home": "Home",
+        "freelance": "Freelance",
+        "agents": "Agents",
+        "detail": "Agent"
+      },
+      "tabs": {
+        "summary": "Summary",
+        "performers": "Performers",
+        "services": "Services",
+        "payouts": "Payouts",
+        "documents": "Documents",
+        "history": "History"
+      },
+      "kpi": {
+        "tier": "Tier",
+        "rating": "Rating",
+        "month_amount": "Monthly turnover",
+        "no_show_rate": "No-show %",
+        "total_performers": "Total performers",
+        "active_performers": "Active"
+      },
+      "actions": {
+        "pause": "Pause",
+        "block": "Block",
+        "edit": "Edit"
+      },
+      "block_dialog": {
+        "title": "Block agent?",
+        "reason_label": "Reason",
+        "confirm": "Block"
+      },
+      "toasts": {
+        "saved": "Saved",
+        "blocked": "Agent blocked",
+        "paused": "Agent paused",
+        "error": "Failed"
+      }
+    },
+    "agentDashboard": {
+      "page_title": "Agent cabinet",
+      "page_subtitle": "Summary of your performers",
+      "kpi": {
+        "active_performers": "Active performers",
+        "month_earnings": "Monthly earnings",
+        "pending_payouts": "Pending payouts",
+        "no_show_count": "No-shows this month"
+      },
+      "sections": {
+        "recent_services": "Recent services",
+        "alerts": "Notifications",
+        "tier_progress": "Tier progress"
+      },
+      "tier_progress": {
+        "current_tier": "Current tier",
+        "next_tier": "To {tier}",
+        "progress_label": "Quarterly turnover"
+      },
+      "alerts_empty": "No notifications"
+    },
+    "agentFreelancers": {
+      "page_title": "My performers",
+      "page_subtitle": "Individuals working via you",
+      "actions": {
+        "add": "Add",
+        "export": "Export"
+      },
+      "filters": {
+        "search": "Search",
+        "status": "Status"
+      },
+      "columns": {
+        "name": "Name",
+        "phone": "Phone",
+        "stores": "Stores",
+        "month_amount": "Monthly earnings",
+        "no_show_rate": "No-show %",
+        "status": "Status"
+      },
+      "status": {
+        "ACTIVE": "Active",
+        "PAUSED": "Paused",
+        "BLOCKED": "Blocked"
+      },
+      "empty": {
+        "no_freelancers": "No performers yet",
+        "cta": "Add first"
+      },
+      "toasts": {
+        "created": "Performer added",
+        "error": "Failed"
+      }
+    },
+    "agentEarnings": {
+      "page_title": "Earnings registry",
+      "page_subtitle": "Earnings by periods and registries",
+      "filters": {
+        "period": "Period",
+        "register": "Registry"
+      },
+      "kpi": {
+        "total_amount": "Amount",
+        "agent_fee": "Agent fee",
+        "to_freelancers": "To performers",
+        "tax_withheld": "Tax withheld"
+      },
+      "columns": {
+        "date": "Date",
+        "service": "Service",
+        "freelancer": "Performer",
+        "store": "Object",
+        "amount": "Amount",
+        "register": "Registry"
+      },
+      "empty": {
+        "no_earnings": "No earnings for the period"
+      }
+    },
+    "agentDocuments": {
+      "page_title": "Documents",
+      "page_subtitle": "Contracts, acts, reports",
+      "actions": {
+        "upload": "Upload",
+        "download": "Download"
+      },
+      "filters": {
+        "type": "Type",
+        "year": "Year"
+      },
+      "columns": {
+        "title": "Title",
+        "type": "Type",
+        "date": "Date",
+        "size": "Size",
+        "status": "Status"
+      },
+      "type": {
+        "CONTRACT": "Contract",
+        "ACT": "Act",
+        "INVOICE": "Invoice",
+        "REPORT": "Report",
+        "OTHER": "Other"
+      },
+      "status": {
+        "SIGNED": "Signed",
+        "PENDING_SIGNATURE": "Pending signature",
+        "DRAFT": "Draft"
+      },
+      "empty": {
+        "no_documents": "No documents yet"
+      },
+      "toasts": {
+        "uploaded": "Document uploaded",
+        "error": "Failed"
+      }
+    },
+    "serviceNorms": {
+      "page_title": "Service norms",
+      "page_subtitle": "Standard units and rates for services",
+      "breadcrumbs": {
+        "home": "Home",
+        "taxonomy": "Taxonomy",
+        "norms": "Norms"
+      },
+      "actions": {
+        "create": "Create norm",
+        "import": "Import",
+        "export": "Export"
+      },
+      "filters": {
+        "search": "Search",
+        "category": "Category"
+      },
+      "columns": {
+        "code": "Code",
+        "name": "Name",
+        "unit": "Unit",
+        "rate": "Rate, ₽",
+        "norm_per_hour": "Norm/hour",
+        "category": "Category",
+        "actions": "Actions"
+      },
+      "form": {
+        "code_label": "Code",
+        "name_label": "Name",
+        "unit_label": "Unit",
+        "rate_label": "Rate, ₽",
+        "norm_per_hour_label": "Norm/hour",
+        "category_label": "Category",
+        "description_label": "Description",
+        "submit": "Save"
+      },
+      "empty": {
+        "no_norms": "No norms set yet",
+        "cta": "Create first"
+      },
+      "toasts": {
+        "saved": "Norm saved",
+        "deleted": "Deleted",
+        "error": "Failed"
       }
     }
   }
