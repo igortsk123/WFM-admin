@@ -8,7 +8,7 @@ import { toast } from "sonner"
 import {
   RefreshCw, MoreVertical, Pencil, Copy, UserX, ShieldAlert, Archive as ArchiveIcon,
   MessageSquare, FileText, User, MapPin, Store, Clock, CheckCircle2, XCircle,
-  ChevronLeft, ChevronDown, Download, Send, Plus, Trash2, ThumbsUp, ThumbsDown,
+  ChevronLeft, ChevronDown, Download, Send, Plus, Trash2,
   AlertTriangle, FileQuestion, Lightbulb, LayoutGrid,
 } from "lucide-react"
 
@@ -23,6 +23,7 @@ import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 import { TaskStateBadge } from "@/components/shared/task-state-badge"
 import { ReviewStateBadge } from "@/components/shared/review-state-badge"
@@ -35,7 +36,7 @@ import { RejectDialogContent } from "./reject-dialog-content"
 import { ArchiveDialogContent } from "./archive-dialog-content"
 import { TransferDialogContent } from "./transfer-dialog-content"
 import { SubtaskAddDialogContent } from "./subtask-add-dialog-content"
-import { SubtaskRejectDialogContent } from "./subtask-reject-dialog-content"
+import { SubtaskSuggestEditDialogContent } from "./subtask-suggest-edit-dialog-content"
 import { StatusOverrideDialogContent } from "./status-override-dialog-content"
 import { AssignDialogContent } from "./assign-dialog-content"
 
@@ -47,8 +48,6 @@ import {
   transferTask,
   updateTask,
   addSubtaskToTask,
-  approveSubtask,
-  rejectSubtask,
   removeSubtask,
 } from "@/lib/api/tasks"
 import type { TaskDetail as TaskDetailType } from "@/lib/api/tasks"
@@ -182,7 +181,7 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
   const [assignOpen, setAssignOpen] = useState(false)
   const [overrideOpen, setOverrideOpen] = useState(false)
   const [subtaskAddOpen, setSubtaskAddOpen] = useState(false)
-  const [subtaskRejectId, setSubtaskRejectId] = useState<number | null>(null)
+  const [subtaskSuggestEdit, setSubtaskSuggestEdit] = useState<Subtask | null>(null)
   const [lightboxOpen, setLightboxOpen] = useState(false)
 
   // Pending states
@@ -248,6 +247,7 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
   // ── role helpers ──────────────────────────────────────────────────
   const isManager = ["SUPERVISOR", "REGIONAL", "NETWORK_OPS", "STORE_DIRECTOR"].includes(user.role)
   const isNetworkOps = user.role === "NETWORK_OPS"
+  const isStoreDirector = user.role === "STORE_DIRECTOR"
   const canReview = isManager && task?.review_state === "ON_REVIEW"
   const canTransfer = isManager && (task?.state === "IN_PROGRESS" || task?.state === "PAUSED")
   // Server-computed flag; falls back to runtime check for non-t-1042 tasks
@@ -351,24 +351,11 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
     }
   }
 
-  async function handleSubtaskApprove(id: number) {
-    try {
-      await approveSubtask(String(id))
-      toast.success(t("subtask_toast_approved"))
-      await load()
-    } catch {
-      toast.error(tCommon("error"))
-    }
-  }
-
-  async function handleSubtaskReject(id: number, reason: string) {
-    try {
-      await rejectSubtask(String(id), reason)
-      toast.success(t("subtask_toast_rejected"))
-      await load()
-    } catch {
-      toast.error(tCommon("error"))
-    }
+  async function handleSubtaskSuggestEdit(_subtask: Subtask, _newText: string) {
+    // Stub: отправить предложение в /subtasks/moderation очередь.
+    // На MVP — просто показываем тост; реальная мутация добавится с API.
+    toast.success(t("subtask_toast_suggested_edit"))
+    setSubtaskSuggestEdit(null)
   }
 
   async function handleSubtaskDelete(id: number) {
@@ -382,6 +369,11 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
   }
 
   // ── Computed values ───────────────────────────────────────────────
+  // Первая невыполненная подзадача (review_state !== ACCEPTED) — для autofill в reject-диалоге
+  const firstIncompleteSubtaskName = task?.subtasks?.find(
+    (s) => s.review_state !== "ACCEPTED",
+  )?.name
+
   const actualMin = task?.history_brief
     ? task.history_brief.work_intervals.reduce((acc, iv) => {
         return acc + Math.floor((new Date(iv.to).getTime() - new Date(iv.from).getTime()) / 60000)
@@ -608,21 +600,8 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
         />
       ) : (
         <>
-          {/* Text report */}
-          <Card>
-            <CardHeader className="pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">{t("section_report_text")}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {task.report_text ? (
-                <p className="text-sm leading-relaxed whitespace-pre-wrap text-foreground">{task.report_text}</p>
-              ) : (
-                <p className="text-sm italic text-muted-foreground">{t("no_report_text")}</p>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Photo */}
+          {/* Photo — секция показывается только если фото требуется или уже загружено */}
+          {(task.requires_photo || task.report_image_url) && (
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">{t("section_report_photo")}</CardTitle>
@@ -693,6 +672,7 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
               ) : null}
             </CardContent>
           </Card>
+          )}
 
           {/* Timing stats */}
           {actualMin !== null && (
@@ -746,7 +726,7 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
                     <XCircle className="size-4 mr-1.5" />{t("btn_reject")}
                   </Button>
                 </DialogTrigger>
-                <RejectDialogContent onReject={handleReject} onClose={() => setRejectOpen(false)} isPending={rejectPending} />
+                <RejectDialogContent onReject={handleReject} onClose={() => setRejectOpen(false)} isPending={rejectPending} incompleteSubtaskName={firstIncompleteSubtaskName} />
               </Dialog>
               <Dialog open={approveOpen} onOpenChange={setApproveOpen}>
                 <DialogTrigger asChild>
@@ -803,10 +783,9 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
                     <td className="px-4 py-3">
                       <SubtaskActionsMenu
                         subtask={subtask}
-                        isManager={isManager}
+                        isStoreDirector={isStoreDirector}
                         isNetworkOps={isNetworkOps}
-                        onApprove={() => handleSubtaskApprove(subtask.id)}
-                        onRejectOpen={() => setSubtaskRejectId(subtask.id)}
+                        onSuggestEdit={() => setSubtaskSuggestEdit(subtask)}
                         onDelete={() => handleSubtaskDelete(subtask.id)}
                       />
                     </td>
@@ -835,10 +814,9 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
                   </div>
                   <SubtaskActionsMenu
                     subtask={subtask}
-                    isManager={isManager}
+                    isStoreDirector={isStoreDirector}
                     isNetworkOps={isNetworkOps}
-                    onApprove={() => handleSubtaskApprove(subtask.id)}
-                    onRejectOpen={() => setSubtaskRejectId(subtask.id)}
+                    onSuggestEdit={() => setSubtaskSuggestEdit(subtask)}
                     onDelete={() => handleSubtaskDelete(subtask.id)}
                   />
                 </div>
@@ -859,12 +837,15 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
         <SubtaskAddDialogContent onAdd={handleSubtaskAdd} onClose={() => setSubtaskAddOpen(false)} />
       </Dialog>
 
-      {/* Subtask reject dialog */}
-      <Dialog open={subtaskRejectId !== null} onOpenChange={(v) => { if (!v) setSubtaskRejectId(null) }}>
-        <SubtaskRejectDialogContent
-          onReject={(reason) => handleSubtaskReject(subtaskRejectId!, reason)}
-          onClose={() => setSubtaskRejectId(null)}
-        />
+      {/* Subtask suggest-edit dialog */}
+      <Dialog open={subtaskSuggestEdit !== null} onOpenChange={(v) => { if (!v) setSubtaskSuggestEdit(null) }}>
+        {subtaskSuggestEdit && (
+          <SubtaskSuggestEditDialogContent
+            currentText={subtaskSuggestEdit.name}
+            onSubmit={(newText) => handleSubtaskSuggestEdit(subtaskSuggestEdit, newText)}
+            onClose={() => setSubtaskSuggestEdit(null)}
+          />
+        )}
       </Dialog>
     </div>
   )
@@ -1241,7 +1222,7 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
                 <span className="hidden md:inline ml-1.5 text-xs opacity-60">R</span>
               </Button>
             </DialogTrigger>
-            <RejectDialogContent onReject={handleReject} onClose={() => setRejectOpen(false)} isPending={rejectPending} />
+            <RejectDialogContent onReject={handleReject} onClose={() => setRejectOpen(false)} isPending={rejectPending} incompleteSubtaskName={firstIncompleteSubtaskName} />
           </Dialog>
 
           {/* Approve */}
@@ -1359,14 +1340,13 @@ function TitleInlineEditButton({ title, onSave }: { title: string; onSave: (v: s
 // ──────────────────────────────────────────────────────────────────
 interface SubtaskActionsMenuProps {
   subtask: Subtask
-  isManager: boolean
+  isStoreDirector: boolean
   isNetworkOps: boolean
-  onApprove: () => void
-  onRejectOpen: () => void
+  onSuggestEdit: () => void
   onDelete: () => void
 }
 
-function SubtaskActionsMenu({ subtask, isManager, isNetworkOps, onApprove, onRejectOpen, onDelete }: SubtaskActionsMenuProps) {
+function SubtaskActionsMenu({ subtask, isStoreDirector, isNetworkOps, onSuggestEdit, onDelete }: SubtaskActionsMenuProps) {
   const t = useTranslations("screen.taskDetail")
   return (
     <DropdownMenu>
@@ -1376,21 +1356,27 @@ function SubtaskActionsMenu({ subtask, isManager, isNetworkOps, onApprove, onRej
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {isManager && subtask.review_state === "PENDING" && (
-          <DropdownMenuItem onClick={onApprove}>
-            <ThumbsUp className="size-4 mr-2 text-success" />
-            {t("subtask_action_approve")}
+        {isStoreDirector ? (
+          <DropdownMenuItem onClick={onSuggestEdit}>
+            <Pencil className="size-4 mr-2 text-info" />
+            {t("subtask_action_suggest_edit")}
           </DropdownMenuItem>
-        )}
-        {isManager && subtask.review_state === "PENDING" && (
-          <DropdownMenuItem onClick={onRejectOpen}>
-            <ThumbsDown className="size-4 mr-2 text-destructive" />
-            {t("subtask_action_reject")}
-          </DropdownMenuItem>
+        ) : (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none opacity-50">
+                  <Pencil className="size-4 mr-2 text-info" />
+                  {t("subtask_action_suggest_edit")}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>{t("subtask_action_suggest_edit_disabled_hint")}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         )}
         {(subtask.review_state === "PENDING" || subtask.review_state === "REJECTED" || isNetworkOps) && (
           <>
-            {isManager && subtask.review_state === "PENDING" && <DropdownMenuSeparator />}
+            <DropdownMenuSeparator />
             <DropdownMenuItem
               className="text-destructive focus:text-destructive"
               onClick={onDelete}
