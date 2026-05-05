@@ -2645,6 +2645,101 @@
         "reordered": "Order saved",
         "error": "Operation failed"
       }
+    },
+    "regulations": {
+      "page_title": "Regulations",
+      "page_subtitle": "Documents AI uses to answer worker questions about tasks",
+      "breadcrumbs": {
+        "home": "Home",
+        "taxonomy": "Taxonomy",
+        "regulations": "Regulations"
+      },
+      "counter": "{count, plural, one {# document} other {# documents}}",
+      "actions": {
+        "upload": "Upload document",
+        "export": "Export list",
+        "more": "More"
+      },
+      "stats": {
+        "total": "Total documents",
+        "ai_uses_week": "AI usage past week",
+        "untagged": "Untagged",
+        "trend_30d": "30-day trend"
+      },
+      "filters": {
+        "search_placeholder": "Search by name / description",
+        "work_type": "Work type",
+        "zone": "Zone",
+        "uploaded_by": "Uploaded by",
+        "show_archived": "Show archived",
+        "untagged_only": "Untagged only",
+        "clear_all": "Clear all"
+      },
+      "columns": {
+        "name": "Name",
+        "tags": "Tags",
+        "format": "Format",
+        "size": "Size",
+        "uploaded_at": "Uploaded",
+        "uploaded_by": "By",
+        "ai_uses": "AI uses",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "active": "Active",
+        "archived": "Archived"
+      },
+      "row_actions": {
+        "view": "Open",
+        "download": "Download",
+        "edit_tags": "Edit tags",
+        "replace": "Replace file (new version)",
+        "archive": "Archive",
+        "restore": "Restore"
+      },
+      "upload_sheet": {
+        "title": "Upload regulation",
+        "file_label": "File",
+        "file_drop_hint": "Drop PDF / Word / TXT, up to 20 MB",
+        "name_label": "Name",
+        "description_label": "Description (optional)",
+        "work_types_label": "Applies to work types",
+        "zones_label": "Applies to zones",
+        "submit": "Upload",
+        "cancel": "Cancel",
+        "validation_file_required": "Select a file",
+        "validation_name_required": "Enter a name"
+      },
+      "detail_sheet": {
+        "info_section": "Info",
+        "tags_section": "Tags",
+        "ai_usage_section": "AI usage",
+        "history_section": "History",
+        "no_tags": "No tags",
+        "uploaded_label": "Uploaded",
+        "uploaded_by_label": "By",
+        "size_label": "Size",
+        "format_label": "Format",
+        "version_label": "Version",
+        "ai_usage_total": "Total usage",
+        "ai_usage_period": "Past 90 days"
+      },
+      "empty": {
+        "no_regulations_title": "No regulations yet",
+        "no_regulations_subtitle": "Upload the first one — AI will use it as context",
+        "no_regulations_cta": "Upload document",
+        "filtered_title": "Nothing found",
+        "filtered_reset": "Reset filters"
+      },
+      "toasts": {
+        "uploaded": "Document uploaded",
+        "updated": "Document updated",
+        "archived": "Document archived",
+        "restored": "Document restored",
+        "downloaded": "Document downloaded",
+        "error": "Operation failed"
+      }
     }
   }
 }

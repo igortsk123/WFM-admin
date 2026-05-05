@@ -2645,6 +2645,101 @@
         "reordered": "Порядок сохранён",
         "error": "Не удалось выполнить операцию"
       }
+    },
+    "regulations": {
+      "page_title": "Регламенты",
+      "page_subtitle": "Документы которые ИИ использует чтобы отвечать работникам по задачам",
+      "breadcrumbs": {
+        "home": "Главная",
+        "taxonomy": "Таксономия",
+        "regulations": "Регламенты"
+      },
+      "counter": "{count, plural, one {# документ} few {# документа} many {# документов} other {# документов}}",
+      "actions": {
+        "upload": "Загрузить документ",
+        "export": "Экспорт списка",
+        "more": "Ещё"
+      },
+      "stats": {
+        "total": "Всего документов",
+        "ai_uses_week": "Использований ИИ за неделю",
+        "untagged": "Без тегов",
+        "trend_30d": "Тренд 30 дней"
+      },
+      "filters": {
+        "search_placeholder": "Поиск по названию / описанию",
+        "work_type": "Тип работ",
+        "zone": "Зона",
+        "uploaded_by": "Загрузил",
+        "show_archived": "Включая архивные",
+        "untagged_only": "Только без тегов",
+        "clear_all": "Очистить все"
+      },
+      "columns": {
+        "name": "Название",
+        "tags": "Теги",
+        "format": "Формат",
+        "size": "Размер",
+        "uploaded_at": "Загружен",
+        "uploaded_by": "Кем",
+        "ai_uses": "ИИ-использования",
+        "status": "Статус",
+        "actions": "Действия"
+      },
+      "status": {
+        "active": "Активен",
+        "archived": "Архив"
+      },
+      "row_actions": {
+        "view": "Открыть",
+        "download": "Скачать",
+        "edit_tags": "Изменить теги",
+        "replace": "Заменить файл (новая версия)",
+        "archive": "Архивировать",
+        "restore": "Восстановить"
+      },
+      "upload_sheet": {
+        "title": "Загрузить регламент",
+        "file_label": "Файл",
+        "file_drop_hint": "Перетащите PDF / Word / TXT, до 20 МБ",
+        "name_label": "Название",
+        "description_label": "Описание (опционально)",
+        "work_types_label": "Применимо к типам работ",
+        "zones_label": "Применимо к зонам",
+        "submit": "Загрузить",
+        "cancel": "Отмена",
+        "validation_file_required": "Выберите файл",
+        "validation_name_required": "Укажите название"
+      },
+      "detail_sheet": {
+        "info_section": "Сведения",
+        "tags_section": "Теги",
+        "ai_usage_section": "Использования ИИ",
+        "history_section": "История",
+        "no_tags": "Без тегов",
+        "uploaded_label": "Загружено",
+        "uploaded_by_label": "Кем",
+        "size_label": "Размер",
+        "format_label": "Формат",
+        "version_label": "Версия",
+        "ai_usage_total": "Всего использований",
+        "ai_usage_period": "За 90 дней"
+      },
+      "empty": {
+        "no_regulations_title": "Регламентов пока нет",
+        "no_regulations_subtitle": "Загрузите первый документ — ИИ начнёт его использовать",
+        "no_regulations_cta": "Загрузить документ",
+        "filtered_title": "Никого не найдено",
+        "filtered_reset": "Сбросить фильтры"
+      },
+      "toasts": {
+        "uploaded": "Документ загружен",
+        "updated": "Документ обновлён",
+        "archived": "Документ архивирован",
+        "restored": "Документ восстановлен",
+        "downloaded": "Документ скачан",
+        "error": "Не удалось выполнить операцию"
+      }
     }
   }
 }

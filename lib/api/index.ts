@@ -368,12 +368,15 @@ export {
 
 export {
   type RegulationDetail,
+  type RegulationListParams,
+  type RegulationsStats,
   getRegulations,
   getRegulationById,
   uploadRegulation,
   updateRegulation,
   archiveRegulation,
   downloadRegulation,
+  getRegulationsStats,
 } from "./regulations";
 
 // ═══════════════════════════════════════════════════════════════════

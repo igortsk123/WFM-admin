@@ -28,6 +28,33 @@ export interface RegulationDetail extends Regulation {
   usage_chart_90d: number[];
 }
 
+/** Filter params для regulations list (chat 33b). */
+export interface RegulationListParams extends ApiListParams {
+  search?: string;
+  /** Multi-фильтр по типам работ (тегам). */
+  work_type_ids?: number[];
+  /** Multi-фильтр по зонам (тегам). */
+  zone_ids?: number[];
+  /** Single legacy work_type_id. */
+  work_type_id?: number;
+  /** Single legacy zone_id. */
+  zone_id?: number;
+  /** ID кто загрузил. */
+  uploaded_by_user_id?: number;
+  /** Архивные / активные. По умолчанию false. */
+  is_archived?: boolean;
+  /** Только без тегов (untagged) — для filter-chip «Без тегов». */
+  untagged_only?: boolean;
+}
+
+/** Aggregated stats для KpiCards на regulations screen. */
+export interface RegulationsStats {
+  total_count: number;
+  ai_uses_7d: number;
+  ai_uses_chart_30d: number[];
+  untagged_count: number;
+}
+
 // ═══════════════════════════════════════════════════════════════════
 // LIST & GET
 // ═══════════════════════════════════════════════════════════════════
@@ -37,18 +64,18 @@ export interface RegulationDetail extends Regulation {
  * @endpoint GET /regulations
  */
 export async function getRegulations(
-  params: ApiListParams & {
-    work_type_id?: number;
-    zone_id?: number;
-    is_archived?: boolean;
-  } = {}
+  params: RegulationListParams = {}
 ): Promise<ApiListResponse<Regulation>> {
   await delay(300);
 
   const {
     work_type_id,
+    work_type_ids,
     zone_id,
+    zone_ids,
+    uploaded_by_user_id,
     is_archived = false,
+    untagged_only,
     search,
     page = 1,
     page_size = 20,
@@ -58,11 +85,33 @@ export async function getRegulations(
 
   let filtered = MOCK_REGULATIONS.filter((r) => r.is_archived === is_archived);
 
-  if (work_type_id) {
-    filtered = filtered.filter((r) => r.work_type_ids?.includes(work_type_id));
+  // Multi-фильтр по work_types (matches if regulation tag is in any of requested ids).
+  const effectiveWtIds = work_type_ids && work_type_ids.length > 0
+    ? work_type_ids
+    : (work_type_id ? [work_type_id] : null);
+  if (effectiveWtIds) {
+    filtered = filtered.filter((r) =>
+      r.work_type_ids?.some((wid) => effectiveWtIds.includes(wid)),
+    );
   }
-  if (zone_id) {
-    filtered = filtered.filter((r) => r.zone_ids?.includes(zone_id));
+
+  const effectiveZoneIds = zone_ids && zone_ids.length > 0
+    ? zone_ids
+    : (zone_id ? [zone_id] : null);
+  if (effectiveZoneIds) {
+    filtered = filtered.filter((r) =>
+      r.zone_ids?.some((zid) => effectiveZoneIds.includes(zid)),
+    );
+  }
+
+  if (uploaded_by_user_id) {
+    filtered = filtered.filter((r) => r.uploaded_by === uploaded_by_user_id);
+  }
+
+  if (untagged_only) {
+    filtered = filtered.filter(
+      (r) => (!r.work_type_ids || r.work_type_ids.length === 0) && (!r.zone_ids || r.zone_ids.length === 0),
+    );
   }
 
   if (search) {
@@ -70,7 +119,7 @@ export async function getRegulations(
     filtered = filtered.filter(
       (r) =>
         r.name.toLowerCase().includes(q) ||
-        (r.description ?? "").toLowerCase().includes(q)
+        (r.description ?? "").toLowerCase().includes(q),
     );
   }
 
@@ -85,6 +134,25 @@ export async function getRegulations(
   const data = filtered.slice((page - 1) * page_size, page * page_size);
 
   return { data, total, page, page_size };
+}
+
+/**
+ * Get aggregated stats for regulations screen (KpiCards).
+ * @endpoint GET /regulations/stats
+ */
+export async function getRegulationsStats(): Promise<ApiResponse<RegulationsStats>> {
+  await delay(200);
+  const active = MOCK_REGULATIONS.filter((r) => !r.is_archived);
+  const total_count = active.length;
+  const untagged_count = active.filter(
+    (r) => (!r.work_type_ids || r.work_type_ids.length === 0) && (!r.zone_ids || r.zone_ids.length === 0),
+  ).length;
+  // Mock-телеметрия: AI usage за неделю + 30-day sparkline (детерминированные)
+  const ai_uses_7d = 142;
+  const ai_uses_chart_30d = Array.from({ length: 30 }, (_, i) => 80 + ((i * 7) % 30) + Math.floor(i / 4));
+  return {
+    data: { total_count, ai_uses_7d, ai_uses_chart_30d, untagged_count },
+  };
 }
 
 /**
