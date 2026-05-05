@@ -36,3 +36,6 @@ export { ImpersonationBanner } from "./impersonation-banner"
 export { RoleSwitcher } from "./role-switcher"
 export { FreelancerStatusBadge, getFreelancerStatusLabel } from "./freelancer-status-badge"
 export { ApplicationStatusBadge } from "./application-status-badge"
+
+// Agent cabinet shell
+export { AgentSidebar } from "./agent-sidebar"

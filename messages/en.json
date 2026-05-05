@@ -188,6 +188,24 @@
     "freelance_agent_detail_demo": "Agent demo",
     "service_norms": "Service norms"
   },
+  "agent": {
+    "nav": {
+      "dashboard": "Home",
+      "freelancers": "My performers",
+      "earnings": "Earnings",
+      "documents": "Documents"
+    },
+    "topbar": {
+      "logout": "Sign out",
+      "notifications": "Notifications",
+      "payout_done": "Payout completed",
+      "no_show": "Performer no-show"
+    },
+    "access_denied": {
+      "title": "Access denied",
+      "description": "You do not have permission to view this page."
+    }
+  },
   "task": {
     "title": "Task",
     "titlePlural": "Tasks",
@@ -5939,23 +5957,53 @@
     "agentDashboard": {
       "page_title": "Agent cabinet",
       "page_subtitle": "Summary of your performers",
+      "greeting": "Good day, {name}",
       "kpi": {
         "active_performers": "Active performers",
+        "earnings_30d": "Earnings (30 days)",
+        "earnings_7d": "Earnings (7 days)",
+        "recent_payouts_count": "Recent payouts",
         "month_earnings": "Monthly earnings",
         "pending_payouts": "Pending payouts",
         "no_show_count": "No-shows this month"
       },
       "sections": {
+        "recent_payouts": "Recent payouts",
+        "today_activity": "Today's activity",
         "recent_services": "Recent services",
         "alerts": "Notifications",
         "tier_progress": "Tier progress"
+      },
+      "payouts": {
+        "empty_title": "No payouts yet",
+        "empty_description": "Payouts will appear after your performers complete their first shifts.",
+        "view_all": "All payouts",
+        "freelancer": "Performer",
+        "amount": "Amount",
+        "date": "Date"
+      },
+      "today": {
+        "empty_title": "No shifts today",
+        "empty_description": "None of your performers are scheduled for today.",
+        "status_scheduled": "Scheduled",
+        "status_checked_in": "Checked in",
+        "status_working": "Working",
+        "status_done": "Done",
+        "status_no_show": "No-show",
+        "geo_mismatch": "Geo location mismatch",
+        "shift_time": "{start} — {end}"
       },
       "tier_progress": {
         "current_tier": "Current tier",
         "next_tier": "To {tier}",
         "progress_label": "Quarterly turnover"
       },
-      "alerts_empty": "No notifications"
+      "alerts_empty": "No notifications",
+      "error_title": "Failed to load dashboard",
+      "error_description": "Check your connection and try again.",
+      "retry": "Retry",
+      "client_direct_title": "Agent cabinet unavailable",
+      "client_direct_description": "Your organisation uses direct settlement with performers (CLIENT_DIRECT). The agent cabinet is only available in NOMINAL_ACCOUNT mode."
     },
     "agentFreelancers": {
       "page_title": "My performers",
