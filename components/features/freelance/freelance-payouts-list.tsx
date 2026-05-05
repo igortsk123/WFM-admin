@@ -209,7 +209,7 @@ function PayoutDetailSheet({ payoutId, onClose, onRetry }: PayoutDetailSheetProp
     setLoading(true);
     try {
       const res = await getPayoutById(id);
-      setDetail(res.data as DetailedPayout);
+      setDetail(res.data as unknown as DetailedPayout);
     } catch {
       // silently fail
     } finally {

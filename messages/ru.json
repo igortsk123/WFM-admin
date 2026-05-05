@@ -6064,332 +6064,331 @@
         "doc_error": "Не удалось получить ссылку на документ"
       }
     },
-      "actions": {
-        "create_register": "Создать реестр",
-        "approve": "Утвердить",
-        "send_to_payment": "Отправить в оплату",
-        "export": "Экспорт"
-      },
-      "filters": {
-        "period": "Период",
-        "status": "Статус",
-        "store": "Магаз��н"
-      },
-      "status": {
-        "OPEN": "Открыт",
-        "READY": "Готов к утверждению",
-        "APPROVED": "Утверждён",
-        "PAYING": "В оплате",
-        "PAID": "Оплачен"
-      },
+    "actions": {
+      "create_register": "Создать реестр",
+      "approve": "Утвердить",
+      "send_to_payment": "Отправить в оплату",
+      "export": "Экспорт"
+    },
+    "filters": {
+      "period": "Период",
+      "status": "Статус",
+      "store": "Магаз��н"
+    },
+    "status": {
+      "OPEN": "Открыт",
+      "READY": "Готов к утверждению",
+      "APPROVED": "Утверждён",
+      "PAYING": "В оплате",
+      "PAID": "Оплачен"
+    },
+    "columns": {
+      "register_id": "№ реестра",
+      "period": "Период",
+      "stores": "Магазины",
+      "lines_count": "Записей",
+      "amount": "Сумма",
+      "status": "Статус"
+    },
+    "summary": {
+      "total_amount": "Сумма к оплате",
+      "lines_total": "Записей",
+      "agents_total": "Агентов"
+    },
+    "empty": {
+      "no_payouts": "Нет реестров за период"
+    },
+    "toasts": {
+      "approved": "Реестр утверждён",
+      "sent": "Отправлено в оплату",
+      "error": "Не удалось"
+    }
+  },
+  "freelanceBudgetLimits": {
+    "page_title": "Лимиты бюджета на внештат",
+    "page_subtitle": "Настройка месячных лимитов на объекты",
+    "breadcrumbs": {
+      "home": "Главная",
+      "freelance": "Внештат",
+      "limits": "Лимиты"
+    },
+    "actions": {
+      "set_default": "Задать по сети",
+      "save": "Сохранить",
+      "reset": "Сбросить"
+    },
+    "filters": {
+      "period": "Период",
+      "store_type": "Тип объекта"
+    },
+    "table": {
       "columns": {
-        "register_id": "№ реестра",
-        "period": "Период",
-        "stores": "Магазины",
-        "lines_count": "Записей",
-        "amount": "Сумма",
-        "status": "Статус"
-      },
-      "summary": {
-        "total_amount": "Сумма к оплате",
-        "lines_total": "Записей",
-        "agents_total": "Агентов"
-      },
-      "empty": {
-        "no_payouts": "Нет реестров за период"
-      },
-      "toasts": {
-        "approved": "Реестр утверждён",
-        "sent": "Отправлено в оплату",
-        "error": "Не удалось"
+        "object": "Объект",
+        "current_limit": "Текущий лимит",
+        "spent": "Потрачено",
+        "new_limit": "Новый лимит",
+        "diff": "Изменение"
       }
     },
-    "freelanceBudgetLimits": {
-      "page_title": "Лимиты бюджета на внештат",
-      "page_subtitle": "Настройка месячных лимитов на объекты",
-      "breadcrumbs": {
-        "home": "Главная",
-        "freelance": "Внештат",
-        "limits": "Лимиты"
-      },
-      "actions": {
-        "set_default": "Задать по сети",
-        "save": "Сохранить",
-        "reset": "Сбросить"
-      },
-      "filters": {
-        "period": "Период",
-        "store_type": "Тип объекта"
-      },
-      "table": {
-        "columns": {
-          "object": "Объект",
-          "current_limit": "Текущий лимит",
-          "spent": "Потрачено",
-          "new_limit": "Новый лимит",
-          "diff": "Изменение"
-        }
-      },
-      "presets": {
-        "by_revenue": "По выручке",
-        "by_size": "По площади",
-        "by_employees": "По штату",
-        "manual": "Вручную"
-      },
-      "warning_overspent": "Объект уже превысил предложенный лимит",
-      "toasts": {
-        "saved": "Лимиты сохранены",
-        "error": "Не удалось"
-      }
+    "presets": {
+      "by_revenue": "По выручке",
+      "by_size": "По площади",
+      "by_employees": "По штату",
+      "manual": "Вручную"
     },
-    "freelanceAgents": {
-      "page_title": "Справочник агентов",
-      "page_subtitle": "Внешние агенты, обеспечивающие исполнителей",
-      "breadcrumbs": {
-        "home": "Главная",
-        "freelance": "Внештат",
-        "agents": "Агенты"
-      },
-      "actions": {
-        "new_agent": "Новый агент",
-        "export": "Экспорт"
-      },
-      "filters": {
-        "search": "Поиск",
-        "status": "Статус",
-        "tier": "Уровень"
-      },
-      "columns": {
-        "agent": "Агент",
-        "tier": "Уровень",
-        "performers": "Исполнителей",
-        "month_amount": "Оборот за месяц",
-        "rating": "Рейтинг",
-        "no_show_rate": "% невыходов",
-        "status": "Статус"
-      },
-      "tier": {
-        "BRONZE": "Бронза",
-        "SILVER": "Серебро",
-        "GOLD": "Золото",
-        "PLATINUM": "Платина"
-      },
-      "status": {
-        "ACTIVE": "Активен",
-        "PAUSED": "На паузе",
-        "BLOCKED": "Заблокирован"
-      },
-      "empty": {
-        "no_agents": "Агентов пока нет"
-      },
-      "toasts": {
-        "created": "Агент создан",
-        "error": "Не удалось"
-      }
+    "warning_overspent": "Объект уже превысил предложенный лимит",
+    "toasts": {
+      "saved": "Лимиты сохранены",
+      "error": "Не удалось"
+    }
+  },
+  "freelanceAgents": {
+    "page_title": "Справочник агентов",
+    "page_subtitle": "Внешние агенты, обеспечивающие исполнителей",
+    "breadcrumbs": {
+      "home": "Главная",
+      "freelance": "Внештат",
+      "agents": "Агенты"
     },
-    "freelanceAgentDetail": {
-      "page_title": "Карточка агента",
-      "breadcrumbs": {
-        "home": "Главная",
-        "freelance": "Внештат",
-        "agents": "Агенты",
-        "detail": "Агент"
-      },
-      "tabs": {
-        "summary": "Обзор",
-        "performers": "Исполнители",
-        "services": "Услуги",
-        "payouts": "Выплаты",
-        "documents": "Документы",
-        "history": "История"
-      },
-      "kpi": {
-        "tier": "Уровень",
-        "rating": "Рейтинг",
-        "month_amount": "Оборот за месяц",
-        "no_show_rate": "% невыходов",
-        "total_performers": "Всего исполнителей",
-        "active_performers": "Активных"
-      },
-      "actions": {
-        "pause": "На паузу",
-        "block": "Заблокировать",
-        "edit": "Редактировать"
-      },
-      "block_dialog": {
-        "title": "Заблокировать агента?",
-        "reason_label": "Причина",
-        "confirm": "Заблокировать"
-      },
-      "toasts": {
-        "saved": "Сохранено",
-        "blocked": "Агент заблокирован",
-        "paused": "Агент на паузе",
-        "error": "Не удалось"
-      }
+    "actions": {
+      "new_agent": "Новый агент",
+      "export": "Экспорт"
     },
-    "agentDashboard": {
-      "page_title": "Кабинет агента",
-      "page_subtitle": "Сводка по вашим исполнителям",
-      "kpi": {
-        "active_performers": "Активных исполнителей",
-        "month_earnings": "Доход за месяц",
-        "pending_payouts": "Ожидают выплаты",
-        "no_show_count": "Невыходов за месяц"
-      },
-      "sections": {
-        "recent_services": "Последние услуги",
-        "alerts": "Уведомления",
-        "tier_progress": "Прогресс по уровню"
-      },
-      "tier_progress": {
-        "current_tier": "Текущий уровень",
-        "next_tier": "До {tier}",
-        "progress_label": "Оборот за квартал"
-      },
-      "alerts_empty": "Уведомлений нет"
+    "filters": {
+      "search": "Поиск",
+      "status": "Статус",
+      "tier": "Уровень"
     },
-    "agentFreelancers": {
-      "page_title": "Мои исполнители",
-      "page_subtitle": "Список физлиц, работающих через вас",
-      "actions": {
-        "add": "Добавить",
-        "export": "Экспорт"
-      },
-      "filters": {
-        "search": "Поиск",
-        "status": "Статус"
-      },
-      "columns": {
-        "name": "ФИО",
-        "phone": "Телефон",
-        "stores": "Магазины",
-        "month_amount": "Доход за месяц",
-        "no_show_rate": "% невыходов",
-        "status": "Статус"
-      },
-      "status": {
-        "ACTIVE": "Активен",
-        "PAUSED": "На паузе",
-        "BLOCKED": "Заблокирован"
-      },
-      "empty": {
-        "no_freelancers": "Исполнителей пока нет",
-        "cta": "Добавить первого"
-      },
-      "toasts": {
-        "created": "Исполнитель добавлен",
-        "error": "Не удалось"
-      }
+    "columns": {
+      "agent": "Агент",
+      "tier": "Уровень",
+      "performers": "Исполнителей",
+      "month_amount": "Оборот за месяц",
+      "rating": "Рейтинг",
+      "no_show_rate": "% невыходов",
+      "status": "Статус"
     },
-    "agentEarnings": {
-      "page_title": "Реестр доходов",
-      "page_subtitle": "Доходы по периодам и реестрам",
-      "filters": {
-        "period": "Период",
-        "register": "Реестр"
-      },
-      "kpi": {
-        "total_amount": "Сумма",
-        "agent_fee": "Комиссия агента",
-        "to_freelancers": "К исполнителям",
-        "tax_withheld": "Удержано налогов"
-      },
-      "columns": {
-        "date": "Дата",
-        "service": "Услуга",
-        "freelancer": "Исполнитель",
-        "store": "Объект",
-        "amount": "Сумма",
-        "register": "Реестр"
-      },
-      "empty": {
-        "no_earnings": "Нет доходов за период"
-      }
+    "tier": {
+      "BRONZE": "Бронза",
+      "SILVER": "Серебро",
+      "GOLD": "Золото",
+      "PLATINUM": "Платина"
     },
-    "agentDocuments": {
-      "page_title": "Документы",
-      "page_subtitle": "Договоры, акты, отчёты",
-      "actions": {
-        "upload": "Загрузить",
-        "download": "Скачать"
-      },
-      "filters": {
-        "type": "��ип",
-        "year": "Год"
-      },
-      "columns": {
-        "title": "Название",
-        "type": "Тип",
-        "date": "Дата",
-        "size": "Размер",
-        "status": "Статус"
-      },
-      "type": {
-        "CONTRACT": "Договор",
-        "ACT": "Акт",
-        "INVOICE": "Счёт",
-        "REPORT": "Отчёт",
-        "OTHER": "Другое"
-      },
-      "status": {
-        "SIGNED": "Подписан",
-        "PENDING_SIGNATURE": "Ожидает подписи",
-        "DRAFT": "Черновик"
-      },
-      "empty": {
-        "no_documents": "Документов пока нет"
-      },
-      "toasts": {
-        "uploaded": "Документ загружен",
-        "error": "Не удалось"
-      }
+    "status": {
+      "ACTIVE": "Активен",
+      "PAUSED": "На паузе",
+      "BLOCKED": "Заблокирован"
     },
-    "serviceNorms": {
-      "page_title": "Нормативы работ",
-      "page_subtitle": "Стандартные единицы и ставки для услуг",
-      "breadcrumbs": {
-        "home": "Главная",
-        "taxonomy": "Таксономия",
-        "norms": "Нормативы"
-      },
-      "actions": {
-        "create": "Создать норматив",
-        "import": "Импорт",
-        "export": "Экспорт"
-      },
-      "filters": {
-        "search": "Поиск",
-        "category": "Категория"
-      },
-      "columns": {
-        "code": "Код",
-        "name": "Название",
-        "unit": "Ед.",
-        "rate": "Ставка, ₽",
-        "norm_per_hour": "Норма/час",
-        "category": "Категория",
-        "actions": "Действия"
-      },
-      "form": {
-        "code_label": "Код",
-        "name_label": "Название",
-        "unit_label": "Единица",
-        "rate_label": "Ставка, ₽",
-        "norm_per_hour_label": "Норма/час",
-        "category_label": "Категория",
-        "description_label": "Описание",
-        "submit": "Сохранить"
-      },
-      "empty": {
-        "no_norms": "Нормативы пока не заданы",
-        "cta": "Создать первый"
-      },
-      "toasts": {
-        "saved": "Норматив сохранён",
-        "deleted": "Удалён",
-        "error": "Не удалось"
-      }
+    "empty": {
+      "no_agents": "Агентов пока нет"
+    },
+    "toasts": {
+      "created": "Агент создан",
+      "error": "Не удалось"
+    }
+  },
+  "freelanceAgentDetail": {
+    "page_title": "Карточка агента",
+    "breadcrumbs": {
+      "home": "Главная",
+      "freelance": "Внештат",
+      "agents": "Агенты",
+      "detail": "Агент"
+    },
+    "tabs": {
+      "summary": "Обзор",
+      "performers": "Исполнители",
+      "services": "Услуги",
+      "payouts": "Выплаты",
+      "documents": "Документы",
+      "history": "История"
+    },
+    "kpi": {
+      "tier": "Уровень",
+      "rating": "Рейтинг",
+      "month_amount": "Оборот за месяц",
+      "no_show_rate": "% невыходов",
+      "total_performers": "Всего исполнителей",
+      "active_performers": "Активных"
+    },
+    "actions": {
+      "pause": "На паузу",
+      "block": "Заблокировать",
+      "edit": "Редактировать"
+    },
+    "block_dialog": {
+      "title": "Заблокировать агента?",
+      "reason_label": "Причина",
+      "confirm": "Заблокировать"
+    },
+    "toasts": {
+      "saved": "Сохранено",
+      "blocked": "Агент заблокирован",
+      "paused": "Агент на паузе",
+      "error": "Не удалось"
+    }
+  },
+  "agentDashboard": {
+    "page_title": "Кабинет агента",
+    "page_subtitle": "Сводка по вашим исполнителям",
+    "kpi": {
+      "active_performers": "Активных исполнителей",
+      "month_earnings": "Доход за месяц",
+      "pending_payouts": "Ожидают выплаты",
+      "no_show_count": "Невыходов за месяц"
+    },
+    "sections": {
+      "recent_services": "Последние услуги",
+      "alerts": "Уведомления",
+      "tier_progress": "Прогресс по уровню"
+    },
+    "tier_progress": {
+      "current_tier": "Текущий уровень",
+      "next_tier": "До {tier}",
+      "progress_label": "Оборот за квартал"
+    },
+    "alerts_empty": "Уведомлений нет"
+  },
+  "agentFreelancers": {
+    "page_title": "Мои исполнители",
+    "page_subtitle": "Список физлиц, работающих через вас",
+    "actions": {
+      "add": "Добавить",
+      "export": "Экспорт"
+    },
+    "filters": {
+      "search": "Поиск",
+      "status": "Статус"
+    },
+    "columns": {
+      "name": "ФИО",
+      "phone": "Телефон",
+      "stores": "Магазины",
+      "month_amount": "Доход за месяц",
+      "no_show_rate": "% невыходов",
+      "status": "Статус"
+    },
+    "status": {
+      "ACTIVE": "Активен",
+      "PAUSED": "На паузе",
+      "BLOCKED": "Заблокирован"
+    },
+    "empty": {
+      "no_freelancers": "Исполнителей пока нет",
+      "cta": "Добавить первого"
+    },
+    "toasts": {
+      "created": "Исполнитель добавлен",
+      "error": "Не удалось"
+    }
+  },
+  "agentEarnings": {
+    "page_title": "Реестр доходов",
+    "page_subtitle": "Доходы по периодам и реестрам",
+    "filters": {
+      "period": "Период",
+      "register": "Реестр"
+    },
+    "kpi": {
+      "total_amount": "Сумма",
+      "agent_fee": "Комиссия агента",
+      "to_freelancers": "К исполнителям",
+      "tax_withheld": "Удержано налогов"
+    },
+    "columns": {
+      "date": "Дата",
+      "service": "Услуга",
+      "freelancer": "Исполнитель",
+      "store": "Объект",
+      "amount": "Сумма",
+      "register": "Реестр"
+    },
+    "empty": {
+      "no_earnings": "Нет доходов за период"
+    }
+  },
+  "agentDocuments": {
+    "page_title": "Документы",
+    "page_subtitle": "Договоры, акты, отчёты",
+    "actions": {
+      "upload": "Загрузить",
+      "download": "Скачать"
+    },
+    "filters": {
+      "type": "��ип",
+      "year": "Год"
+    },
+    "columns": {
+      "title": "Название",
+      "type": "Тип",
+      "date": "Дата",
+      "size": "Размер",
+      "status": "Статус"
+    },
+    "type": {
+      "CONTRACT": "Договор",
+      "ACT": "Акт",
+      "INVOICE": "Счёт",
+      "REPORT": "Отчёт",
+      "OTHER": "Другое"
+    },
+    "status": {
+      "SIGNED": "Подписан",
+      "PENDING_SIGNATURE": "Ожидает подписи",
+      "DRAFT": "Черновик"
+    },
+    "empty": {
+      "no_documents": "Документов пока нет"
+    },
+    "toasts": {
+      "uploaded": "Документ загружен",
+      "error": "Не удалось"
+    }
+  },
+  "serviceNorms": {
+    "page_title": "Нормативы работ",
+    "page_subtitle": "Стандартные единицы и ставки для услуг",
+    "breadcrumbs": {
+      "home": "Главная",
+      "taxonomy": "Таксономия",
+      "norms": "Нормативы"
+    },
+    "actions": {
+      "create": "Создать норматив",
+      "import": "Импорт",
+      "export": "Экспорт"
+    },
+    "filters": {
+      "search": "Поиск",
+      "category": "Категория"
+    },
+    "columns": {
+      "code": "Код",
+      "name": "Название",
+      "unit": "Ед.",
+      "rate": "Ставка, ₽",
+      "norm_per_hour": "Норма/час",
+      "category": "Категория",
+      "actions": "Действия"
+    },
+    "form": {
+      "code_label": "Код",
+      "name_label": "Название",
+      "unit_label": "Единица",
+      "rate_label": "Ставка, ₽",
+      "norm_per_hour_label": "Норма/час",
+      "category_label": "Категория",
+      "description_label": "Описание",
+      "submit": "Сохранить"
+    },
+    "empty": {
+      "no_norms": "Нормативы пока не заданы",
+      "cta": "Создать первый"
+    },
+    "toasts": {
+      "saved": "Норматив сохранён",
+      "deleted": "Удалён",
+      "error": "Не удалось"
     }
   }
 }
