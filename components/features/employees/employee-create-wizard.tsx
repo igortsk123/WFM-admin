@@ -44,6 +44,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -107,6 +108,8 @@ function buildStep1Schema(tV: (key: string) => string) {
       ),
     date_of_birth: z.date().optional(),
     employee_type: z.enum(["STAFF", "FREELANCE"]),
+    /** Доля ставки — для штатных сотрудников. */
+    rate_fraction: z.enum(["QUARTER", "HALF", "THREE_QUARTER", "FULL"]).optional(),
     avatar_preview: z.string().optional(),
   });
 }
@@ -134,7 +137,7 @@ function buildStep3Schema() {
 
 function buildStep4Schema(tV: (key: string) => string) {
   return z.object({
-    invite_method: z.enum(["EMAIL", "NONE"], {
+    invite_method: z.enum(["EMAIL", "TELEGRAM", "MAX", "WHATSAPP", "NONE"], {
       message: tV("invite_method_required"),
     }),
     invite_message: z.string().optional(),
@@ -153,6 +156,7 @@ interface WizardValues {
   email?: string;
   date_of_birth?: Date;
   employee_type: EmployeeType;
+  rate_fraction?: "QUARTER" | "HALF" | "THREE_QUARTER" | "FULL";
   avatar_preview?: string;
   // Step 2
   store_id: number;
@@ -261,7 +265,7 @@ export function EmployeeCreateWizard() {
     agent_id: null,
     oferta_channel: "SMS",
     permissions: [],
-    invite_method: "EMAIL",
+    invite_method: "NONE",
     notify_manager: false,
   });
 
@@ -304,6 +308,7 @@ export function EmployeeCreateWizard() {
       email: masterValues.email ?? "",
       date_of_birth: masterValues.date_of_birth,
       employee_type: masterValues.employee_type ?? "STAFF",
+      rate_fraction: masterValues.rate_fraction ?? "FULL",
       avatar_preview: avatarPreview,
     },
   });
@@ -334,7 +339,7 @@ export function EmployeeCreateWizard() {
   const form4 = useForm<z.input<typeof step4Schema>>({
     resolver: zodResolver(step4Schema),
     defaultValues: {
-      invite_method: masterValues.invite_method ?? "EMAIL",
+      invite_method: masterValues.invite_method ?? "NONE",
       invite_message: masterValues.invite_message ?? buildInviteTemplate(masterValues),
       notify_manager: masterValues.notify_manager ?? false,
     },
@@ -627,6 +632,12 @@ export function EmployeeCreateWizard() {
             value={
               s4Watch.invite_method === "EMAIL"
                 ? t("step4.method_email")
+                : s4Watch.invite_method === "TELEGRAM"
+                ? "Telegram"
+                : s4Watch.invite_method === "MAX"
+                ? "Max"
+                : s4Watch.invite_method === "WHATSAPP"
+                ? "WhatsApp"
                 : t("step4.method_none")
             }
           />
@@ -1004,42 +1015,29 @@ export function EmployeeCreateWizard() {
                       )}
                     />
 
-                    {/* Employment type */}
+                    {/* Employment type — только STAFF; внештатники ведутся через /freelance/agents.
+                        Поле скрыто из UI, всегда STAFF. Доля ставки — отдельным полем ниже. */}
+
+                    {/* Доля ставки */}
                     <FormField
                       control={form1.control}
-                      name="employee_type"
+                      name="rate_fraction"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>{t("step1.employment_type")}</FormLabel>
-                          <FormControl>
-                            <RadioGroup
-                              value={field.value}
-                              onValueChange={field.onChange}
-                              className="flex gap-4"
-                            >
-                              <div className="flex items-center gap-2">
-                                <RadioGroupItem value="STAFF" id="type-staff" />
-                                <Label htmlFor="type-staff">{t("step1.employment_staff")}</Label>
-                              </div>
-                              <div className="flex items-center gap-2">
-                                <RadioGroupItem value="FREELANCE" id="type-freelance" />
-                                <Label htmlFor="type-freelance">{t("step1.employment_freelance")}</Label>
-                              </div>
-                            </RadioGroup>
-                          </FormControl>
-                          {field.value === "FREELANCE" && (
-                            <div className="space-y-2 mt-2">
-                              <Alert className="border-info/30 bg-info/5">
-                                <Info className="size-4 text-info" />
-                                <AlertDescription className="text-sm">
-                                  {t("step1.freelance_alert")}
-                                </AlertDescription>
-                              </Alert>
-                              <p className="text-xs text-muted-foreground">
-                                {t("step1.freelance_external_hint")}
-                              </p>
-                            </div>
-                          )}
+                          <FormLabel>{t("step1.rate_fraction_label")}</FormLabel>
+                          <Select value={field.value ?? "FULL"} onValueChange={field.onChange}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder={t("step1.rate_fraction_placeholder")} />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              <SelectItem value="QUARTER">{t("step1.rate_quarter")}</SelectItem>
+                              <SelectItem value="HALF">{t("step1.rate_half")}</SelectItem>
+                              <SelectItem value="THREE_QUARTER">{t("step1.rate_three_quarter")}</SelectItem>
+                              <SelectItem value="FULL">{t("step1.rate_full")}</SelectItem>
+                            </SelectContent>
+                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -1477,47 +1475,82 @@ export function EmployeeCreateWizard() {
                       handleStepAction();
                     }}
                   >
-                    {/* Invite method */}
+                    {/* Invite — toggle "отправить" + выбор канала */}
                     <FormField
                       control={form4.control}
                       name="invite_method"
                       render={({ field }) => {
                         const emailAvailable = !!s1Watch.email;
+                        const sendInvite = field.value !== "NONE";
                         return (
                           <FormItem>
-                            <FormLabel>{t("step4.method")}</FormLabel>
-                            <FormControl>
-                              <RadioGroup
-                                value={field.value}
-                                onValueChange={field.onChange}
-                                className="space-y-2"
-                              >
-                                <div className="flex flex-col gap-1">
-                                  <div className="flex items-center gap-2">
-                                    <RadioGroupItem
-                                      value="EMAIL"
-                                      id="invite-email"
-                                      disabled={!emailAvailable}
-                                    />
-                                    <Label
-                                      htmlFor="invite-email"
-                                      className={cn(!emailAvailable && "text-muted-foreground")}
-                                    >
-                                      {t("step4.method_email")}
-                                    </Label>
-                                  </div>
-                                  {!emailAvailable && (
-                                    <p className="pl-6 text-xs text-muted-foreground">
-                                      {t("step4.method_email_disabled_hint")}
-                                    </p>
-                                  )}
-                                </div>
-                                <div className="flex items-center gap-2">
-                                  <RadioGroupItem value="NONE" id="invite-none" />
-                                  <Label htmlFor="invite-none">{t("step4.method_none")}</Label>
-                                </div>
-                              </RadioGroup>
-                            </FormControl>
+                            <div className="flex items-center justify-between rounded-lg border p-3">
+                              <div className="flex flex-col gap-0.5">
+                                <Label className="text-sm font-medium">{t("step4.send_invite")}</Label>
+                                <span className="text-xs text-muted-foreground">{t("step4.send_invite_hint")}</span>
+                              </div>
+                              <Switch
+                                checked={sendInvite}
+                                onCheckedChange={(v) => field.onChange(v ? (emailAvailable ? "EMAIL" : "TELEGRAM") : "NONE")}
+                              />
+                            </div>
+                            {sendInvite && (
+                              <div className="mt-3">
+                                <FormLabel className="text-sm">{t("step4.method")}</FormLabel>
+                                <RadioGroup
+                                  value={field.value}
+                                  onValueChange={field.onChange}
+                                  className="mt-2 grid grid-cols-2 gap-2"
+                                >
+                                  <Label
+                                    htmlFor="invite-email"
+                                    className={cn(
+                                      "flex items-center gap-2 rounded-md border p-2 cursor-pointer",
+                                      !emailAvailable && "opacity-50 cursor-not-allowed",
+                                      field.value === "EMAIL" && "border-primary bg-primary/5",
+                                    )}
+                                  >
+                                    <RadioGroupItem value="EMAIL" id="invite-email" disabled={!emailAvailable} />
+                                    <span className="text-sm">{t("step4.method_email")}</span>
+                                  </Label>
+                                  <Label
+                                    htmlFor="invite-telegram"
+                                    className={cn(
+                                      "flex items-center gap-2 rounded-md border p-2 cursor-pointer",
+                                      field.value === "TELEGRAM" && "border-primary bg-primary/5",
+                                    )}
+                                  >
+                                    <RadioGroupItem value="TELEGRAM" id="invite-telegram" />
+                                    <span className="text-sm">Telegram</span>
+                                  </Label>
+                                  <Label
+                                    htmlFor="invite-max"
+                                    className={cn(
+                                      "flex items-center gap-2 rounded-md border p-2 cursor-pointer",
+                                      field.value === "MAX" && "border-primary bg-primary/5",
+                                    )}
+                                  >
+                                    <RadioGroupItem value="MAX" id="invite-max" />
+                                    <span className="text-sm">Max</span>
+                                  </Label>
+                                  <Label
+                                    htmlFor="invite-whatsapp"
+                                    className={cn(
+                                      "flex items-center gap-2 rounded-md border p-2 cursor-pointer",
+                                      field.value === "WHATSAPP" && "border-primary bg-primary/5",
+                                    )}
+                                  >
+                                    <RadioGroupItem value="WHATSAPP" id="invite-whatsapp" />
+                                    <span className="text-sm">WhatsApp</span>
+                                  </Label>
+                                </RadioGroup>
+                                {!emailAvailable && field.value === "EMAIL" && (
+                                  <p className="mt-1.5 text-xs text-muted-foreground">
+                                    {t("step4.method_email_disabled_hint")}
+                                  </p>
+                                )}
+                              </div>
+                            )}
                             <FormMessage />
                           </FormItem>
                         );
