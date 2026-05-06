@@ -735,11 +735,14 @@ export function TaskDistribution() {
       setIsLoadingStores(true)
       try {
         const response = await getStores({})
-        // getStores returns ApiListResponse — нет поля success, всегда есть data
         setStores(response.data)
-        // Auto-select first store or user's store
+        // Default = первый СПАР Томск (наш «хедлайн» магазин с реалистичными моками
+        // tasks и shifts). Если нет СПАР — берём первый.
         if (response.data.length > 0) {
-          setSelectedStoreId(response.data[0].id)
+          const defaultStore = response.data.find(
+            (s) => /спар|spar/i.test(s.name) && /томск/i.test(s.name),
+          ) ?? response.data.find((s) => /спар|spar/i.test(s.name)) ?? response.data[0]
+          setSelectedStoreId(defaultStore.id)
         }
       } catch (error) {
         console.error("Failed to load stores:", error)
