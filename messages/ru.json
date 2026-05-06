@@ -960,6 +960,14 @@
         "no_zone": "Без зоны",
         "summary": "{distributed} ч / {planned} ч"
       },
+      "view_mode": {
+        "by_task": "По задачам",
+        "by_employee": "По сотрудникам"
+      },
+      "by_employee": {
+        "section_title": "Сотрудники на смене",
+        "free_label": "Свободно: {hours} ч"
+      },
       "plan_bar": {
         "summary": "В плане: {tasks, plural, one {# задача} few {# задачи} many {# задач} other {# задач}}, {hours} ч",
         "reset": "Сбросить",

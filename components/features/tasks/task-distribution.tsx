@@ -20,6 +20,8 @@ import {
   Wand2,
   RotateCcw,
   CheckCircle2,
+  ListChecks,
+  UsersRound,
 } from "lucide-react"
 
 import type { FunctionalRole, Store } from "@/lib/types"
@@ -78,6 +80,7 @@ import { EmptyState } from "@/components/shared/empty-state"
 // ─────────────────────────────────────────────────────────────────────────────
 
 type PeriodTab = "today" | "tomorrow"
+type ViewMode = "by-task" | "by-employee"
 
 interface AllocationState {
   [userId: number]: number // minutes allocated
@@ -1152,6 +1155,106 @@ function EmployeeSheet({
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// EmployeeBigCard — карточка для режима «По сотрудникам»: имя/смена/загрузка
+// + чипы задач (план + сохранённые). Клик по карточке → EmployeeSheet.
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface EmployeeBigCardProps {
+  employee: EmployeeUtilization
+  planMin: number
+  planTasks: { taskId: string; title: string; minutes: number }[]
+  onClick: () => void
+  t: ReturnType<typeof useTranslations>
+}
+
+function EmployeeBigCard({ employee, planMin, planTasks, onClick, t }: EmployeeBigCardProps) {
+  const fullName = getFullName(employee.user.first_name, employee.user.last_name)
+  const previewUtilization = employee.shift_total_min > 0
+    ? Math.round(((employee.assigned_min + planMin) / employee.shift_total_min) * 100)
+    : 0
+  const freeMin = Math.max(0, employee.shift_total_min - employee.assigned_min - planMin)
+  const isOverloaded = previewUtilization > 100
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={cn(
+        "w-full text-left rounded-lg border bg-card p-3 transition-colors",
+        "hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        planMin > 0 && "ring-1 ring-warning",
+        isOverloaded && "ring-1 ring-destructive"
+      )}
+    >
+      <div className="flex items-start gap-3">
+        <Avatar className="size-10 shrink-0">
+          <AvatarImage src={employee.user.avatar_url} alt={fullName} />
+          <AvatarFallback className="bg-accent text-accent-foreground">
+            {getInitials(employee.user.first_name, employee.user.last_name)}
+          </AvatarFallback>
+        </Avatar>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-start justify-between gap-2 mb-0.5">
+            <span className="text-sm font-medium truncate">{fullName}</span>
+            <div className="flex items-center gap-1 shrink-0">
+              {employee.has_bonus_task && (
+                <Badge variant="secondary" className="text-[10px] px-1 py-0">
+                  <Star className="size-2.5 mr-0.5" />
+                  {t("utilization.bonus_badge")}
+                </Badge>
+              )}
+              {planMin > 0 && (
+                <Badge variant="outline" className="text-[10px] px-1 py-0 border-warning text-warning">
+                  <Wand2 className="size-2.5 mr-0.5" />
+                  +{minutesToHours(planMin)} ч
+                </Badge>
+              )}
+            </div>
+          </div>
+          <p className="text-xs text-muted-foreground mb-2 truncate">
+            {employee.user.position_name ?? "—"} ·{" "}
+            {formatShiftTime(employee.shift_start, employee.shift_end)}
+          </p>
+
+          {/* Utilization bar */}
+          <div className="flex items-center gap-2 mb-2">
+            <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+              <div
+                className={cn("h-full transition-all", getUtilizationColor(previewUtilization))}
+                style={{ width: `${Math.min(previewUtilization, 100)}%` }}
+              />
+            </div>
+            <span className={cn("text-xs font-medium shrink-0 w-10 text-right", getUtilizationTextColor(previewUtilization))}>
+              {previewUtilization}%
+            </span>
+          </div>
+          <p className="text-xs text-muted-foreground mb-2">
+            {t("by_employee.free_label", { hours: minutesToHours(freeMin) })}
+          </p>
+
+          {/* Plan tasks chips */}
+          {planTasks.length > 0 && (
+            <div className="flex flex-wrap gap-1 mt-2">
+              {planTasks.map((pt) => (
+                <span
+                  key={pt.taskId}
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] bg-warning/10 text-warning border border-warning/30 max-w-[200px]"
+                  title={pt.title}
+                >
+                  <Wand2 className="size-2.5 shrink-0" />
+                  <span className="truncate">{pt.title}</span>
+                  <span className="shrink-0">· {minutesToHours(pt.minutes)} ч</span>
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </button>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // StickyPlanBar — нижняя панель «N задач в плане → подтвердить/сбросить»
 // Показывается только когда план непустой.
 // ─────────────────────────────────────────────────────────────────────────────
@@ -1243,6 +1346,8 @@ export function TaskDistribution() {
   const [employeeSheetOpen, setEmployeeSheetOpen] = React.useState(false)
   const [isAutoRunning, setIsAutoRunning] = React.useState(false)
   const [isConfirming, setIsConfirming] = React.useState(false)
+  // Какой ракурс показываем: список задач (по дефолту) или список сотрудников
+  const [viewMode, setViewMode] = React.useState<ViewMode>("by-task")
 
   // Локальный план — staged allocations не закоммичены на сервер.
   // Map<taskId, allocations[]>. Подтверждается через StickyPlanBar.
@@ -1490,97 +1595,181 @@ export function TaskDistribution() {
         </div>
       </div>
 
-      {/* Mobile utilization collapsible */}
-      <MobileUtilizationCollapsible
-        employees={employees}
-        planMinByUser={planMinByUser}
-        onSelectEmployee={handleSelectEmployee}
-        isLoading={isLoadingEmployees}
-        date={currentDate}
-        t={t}
-        locale={locale}
-      />
+      {/* View mode tabs — выбор ракурса */}
+      <Tabs value={viewMode} onValueChange={(v) => setViewMode(v as ViewMode)}>
+        <TabsList className="grid w-full sm:w-auto sm:inline-grid grid-cols-2">
+          <TabsTrigger value="by-task" className="gap-1.5">
+            <ListChecks className="size-3.5" />
+            <span>{t("view_mode.by_task")}</span>
+          </TabsTrigger>
+          <TabsTrigger value="by-employee" className="gap-1.5">
+            <UsersRound className="size-3.5" />
+            <span>{t("view_mode.by_employee")}</span>
+          </TabsTrigger>
+        </TabsList>
+      </Tabs>
+
+      {/* Mobile utilization collapsible — только в by-task режиме (в by-employee
+          сотрудники = основной контент) */}
+      {viewMode === "by-task" && (
+        <MobileUtilizationCollapsible
+          employees={employees}
+          planMinByUser={planMinByUser}
+          onSelectEmployee={handleSelectEmployee}
+          isLoading={isLoadingEmployees}
+          date={currentDate}
+          t={t}
+          locale={locale}
+        />
+      )}
 
       {/* Main layout */}
-      <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-        {/* Left: Tasks */}
+      {viewMode === "by-task" ? (
+        <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+          {/* Left: Tasks */}
+          <div className="space-y-4">
+            <h2 className="text-sm font-medium text-muted-foreground">
+              {t("sections.unassigned")}
+              {tasks.length > 0 && (
+                <span className="ml-1.5 text-foreground">({tasks.filter(t => t.remaining_minutes > 0).length})</span>
+              )}
+            </h2>
+
+            {isLoadingTasks ? (
+              <div className="grid gap-4 sm:grid-cols-2">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <Card key={i}>
+                    <CardContent className="p-4 space-y-3">
+                      <Skeleton className="h-4 w-3/4" />
+                      <Skeleton className="h-3 w-1/2" />
+                      <Skeleton className="h-1.5 w-full rounded-full" />
+                      <Skeleton className="h-9 w-full" />
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : tasks.length === 0 ? (
+              <Card>
+                <CardContent className="py-12">
+                  <EmptyState
+                    icon={Sparkles}
+                    title={t("empty.no_tasks_title")}
+                    description={t("empty.no_tasks_description")}
+                  />
+                </CardContent>
+              </Card>
+            ) : (
+              <div className="space-y-3">
+                {Array.from(
+                  tasks.reduce((acc, task) => {
+                    const zone = task.zone_name ?? t("zone_group.no_zone")
+                    if (!acc.has(zone)) acc.set(zone, [])
+                    acc.get(zone)!.push(task)
+                    return acc
+                  }, new Map<string, UnassignedTask[]>())
+                )
+                  .sort(([za, ta], [zb, tb]) => {
+                    const ra = ta.some((t) => t.remaining_minutes > 0)
+                    const rb = tb.some((t) => t.remaining_minutes > 0)
+                    if (ra !== rb) return ra ? -1 : 1
+                    return za.localeCompare(zb)
+                  })
+                  .map(([zone, zoneTasks]) => (
+                    <TaskZoneGroup
+                      key={zone}
+                      zoneName={zone}
+                      tasks={zoneTasks}
+                      plan={plan}
+                      onDistribute={handleDistribute}
+                      disabled={!canEdit}
+                      t={t}
+                    />
+                  ))}
+              </div>
+            )}
+          </div>
+
+          {/* Right: Team utilization (desktop only) */}
+          <div className="hidden lg:block">
+            <TeamUtilizationPanel
+              employees={employees}
+              planMinByUser={planMinByUser}
+              onSelectEmployee={handleSelectEmployee}
+              isLoading={isLoadingEmployees}
+              date={currentDate}
+              t={t}
+              locale={locale}
+            />
+          </div>
+        </div>
+      ) : (
+        // ── By Employee mode ──────────────────────────────────────────
         <div className="space-y-4">
           <h2 className="text-sm font-medium text-muted-foreground">
-            {t("sections.unassigned")}
-            {tasks.length > 0 && (
-              <span className="ml-1.5 text-foreground">({tasks.filter(t => t.remaining_minutes > 0).length})</span>
+            {t("by_employee.section_title")}
+            {employees.length > 0 && (
+              <span className="ml-1.5 text-foreground">({employees.length})</span>
             )}
           </h2>
-
-          {isLoadingTasks ? (
-            <div className="grid gap-4 sm:grid-cols-2">
-              {Array.from({ length: 4 }).map((_, i) => (
+          {isLoadingEmployees ? (
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {Array.from({ length: 6 }).map((_, i) => (
                 <Card key={i}>
-                  <CardContent className="p-4 space-y-3">
-                    <Skeleton className="h-4 w-3/4" />
-                    <Skeleton className="h-3 w-1/2" />
-                    <Skeleton className="h-1.5 w-full rounded-full" />
-                    <Skeleton className="h-9 w-full" />
+                  <CardContent className="p-3 space-y-2">
+                    <div className="flex gap-3">
+                      <Skeleton className="size-10 rounded-full shrink-0" />
+                      <div className="flex-1 space-y-2">
+                        <Skeleton className="h-3 w-24" />
+                        <Skeleton className="h-2 w-32" />
+                        <Skeleton className="h-1.5 w-full rounded-full" />
+                      </div>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
-          ) : tasks.length === 0 ? (
+          ) : employees.length === 0 ? (
             <Card>
               <CardContent className="py-12">
                 <EmptyState
-                  icon={Sparkles}
-                  title={t("empty.no_tasks_title")}
-                  description={t("empty.no_tasks_description")}
+                  icon={Calendar}
+                  title={t("empty.no_shifts_title")}
+                  description={t("empty.no_shifts_description")}
                 />
               </CardContent>
             </Card>
           ) : (
-            <div className="space-y-3">
-              {Array.from(
-                tasks.reduce((acc, task) => {
-                  const zone = task.zone_name ?? t("zone_group.no_zone")
-                  if (!acc.has(zone)) acc.set(zone, [])
-                  acc.get(zone)!.push(task)
-                  return acc
-                }, new Map<string, UnassignedTask[]>())
-              )
-                // Sort zones: те где есть нераспределённые задачи — первыми;
-                // среди равных — alpha
-                .sort(([za, ta], [zb, tb]) => {
-                  const ra = ta.some((t) => t.remaining_minutes > 0)
-                  const rb = tb.some((t) => t.remaining_minutes > 0)
-                  if (ra !== rb) return ra ? -1 : 1
-                  return za.localeCompare(zb)
-                })
-                .map(([zone, zoneTasks]) => (
-                  <TaskZoneGroup
-                    key={zone}
-                    zoneName={zone}
-                    tasks={zoneTasks}
-                    plan={plan}
-                    onDistribute={handleDistribute}
-                    disabled={!canEdit}
+            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {employees.map((emp) => {
+                const empPlanTasks: { taskId: string; title: string; minutes: number }[] = []
+                for (const [tid, allocs] of plan) {
+                  const myAlloc = allocs.find((a) => a.userId === emp.user.id)
+                  if (myAlloc) {
+                    const task = tasks.find((tt) => tt.id === tid)
+                    if (task) {
+                      empPlanTasks.push({
+                        taskId: tid,
+                        title: task.title,
+                        minutes: myAlloc.minutes,
+                      })
+                    }
+                  }
+                }
+                return (
+                  <EmployeeBigCard
+                    key={emp.user.id}
+                    employee={emp}
+                    planMin={planMinByUser.get(emp.user.id) ?? 0}
+                    planTasks={empPlanTasks}
+                    onClick={() => handleSelectEmployee(emp)}
                     t={t}
                   />
-                ))}
+                )
+              })}
             </div>
           )}
         </div>
-
-        {/* Right: Team utilization (desktop only) */}
-        <div className="hidden lg:block">
-          <TeamUtilizationPanel
-            employees={employees}
-            planMinByUser={planMinByUser}
-            onSelectEmployee={handleSelectEmployee}
-            isLoading={isLoadingEmployees}
-            date={currentDate}
-            t={t}
-            locale={locale}
-          />
-        </div>
-      </div>
+      )}
 
       {/* Sticky bottom bar — план для подтверждения */}
       <StickyPlanBar

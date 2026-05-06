@@ -805,6 +805,14 @@
         "no_zone": "No zone",
         "summary": "{distributed}h / {planned}h"
       },
+      "view_mode": {
+        "by_task": "By tasks",
+        "by_employee": "By employees"
+      },
+      "by_employee": {
+        "section_title": "Employees on shift",
+        "free_label": "Free: {hours}h"
+      },
       "plan_bar": {
         "summary": "In plan: {tasks, plural, one {# task} other {# tasks}}, {hours}h",
         "reset": "Reset",
