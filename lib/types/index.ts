@@ -504,6 +504,13 @@ export interface TaskEvent {
   occurred_at: string;
 }
 
+/**
+ * Источник предложения подзадачи (для review_state='PENDING'):
+ *   - worker — сотрудник предложил при выполнении (только work_type='Другие работы')
+ *   - store_director — управляющий магазина из task-detail предложил отредактировать
+ */
+export type SubtaskSuggestionSource = "worker" | "store_director";
+
 /** Ранее Operation — это шаги выполнения внутри задачи */
 export interface Subtask {
   id: number;
@@ -513,6 +520,10 @@ export interface Subtask {
   hints_count: number;
   duration_min?: number;
   order: number;
+  /** Только для review_state='PENDING': кто предложил эту подзадачу. */
+  suggestion_source?: SubtaskSuggestionSource;
+  suggested_by_user_id?: number;
+  suggested_by_user_name?: string;
 }
 
 /**

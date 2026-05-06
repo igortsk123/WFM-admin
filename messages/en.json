@@ -128,7 +128,7 @@
     "task_detail_demo": "Example task (T-1042)",
     "tasks_review": "Under review",
     "tasks_archive": "Tasks",
-    "subtasks_moderation": "Subtask moderation",
+    "subtasks_moderation": "Subtask suggestions",
     "goals": "Goals",
     "network_goals": "Network goals",
     "bonus_tasks": "Bonus tasks",
@@ -1294,8 +1294,13 @@
       "filters_reset": "Reset"
     },
     "subtasksModeration": {
-      "title": "Subtask moderation",
-      "hint": "Subtasks proposed by workers during task execution",
+      "title": "Subtask suggestions",
+      "hint": "Subtasks proposed by workers and store managers — awaiting supervisor approval",
+      "source": {
+        "label": "Source",
+        "worker": "From worker",
+        "store_director": "From store manager"
+      },
       "counter": "{count} pending",
       "search_placeholder": "Search by subtask name, work type",
       "filter_store": "Store",

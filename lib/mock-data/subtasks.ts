@@ -833,84 +833,165 @@ const subtasksDetailDemo: Subtask[] = [
 // ══════════════════════════════════════════════════════════════════
 
 // ══════════════════════════════════════════════════════════════════
-// Pending moderation queue — 8 subtasks proposed by workers
-// Task IDs below are existing MOCK_TASKS ids; store/zone info is
-// embedded in SubtaskPending (enriched at query time).
-// IDs 200-207 reserved for this set.
+// Pending moderation queue — 12 subtask suggestions
+//
+// Источники предложений:
+//   - 8 store_director: управляющий магазина предлагает добавить подзадачу
+//     к существующему типизированному task'у (Контроль, Касса, Уборка...)
+//   - 4 worker: сотрудник работал над "Другие работы" и предлагает
+//     преднастроить нестандартную подзадачу (per плану 5.3 — только
+//     work_type=7 / Другие работы)
+//
+// Task IDs ниже — существующие из MOCK_TASKS.
 // ══════════════════════════════════════════════════════════════════
 
 const subtasksModerationQueue: Subtask[] = [
+  // ── 8 от управляющих магазинов (любые типы работ) ──
   {
     id: 200,
-    task_id: "task-005",  // store_id=1 SPAR-TOM-001, work_type_id=11 Контроль
+    task_id: "task-005",
     name: "Проверка датчиков температуры",
     review_state: "PENDING",
     hints_count: 2,
     duration_min: 12,
     order: 99,
+    suggestion_source: "store_director",
+    suggested_by_user_id: 25,
+    suggested_by_user_name: "Романов И. А.",
   },
   {
     id: 201,
-    task_id: "task-004",  // store_id=3 SPAR-NSK-001, work_type_id=13 Приёмка
+    task_id: "task-004",
     name: "Перепроверка партии после возврата",
     review_state: "PENDING",
     hints_count: 0,
     duration_min: 25,
     order: 99,
+    suggestion_source: "store_director",
+    suggested_by_user_id: 27,
+    suggested_by_user_name: "Дроздов А. С.",
   },
   {
     id: 202,
-    task_id: "task-013",  // store_id=5 FC-TOM-001, work_type_id=12 Уборка
+    task_id: "task-013",
     name: "Очистка зоны выпечки от муки",
     review_state: "PENDING",
     hints_count: 1,
     duration_min: 8,
     order: 99,
+    suggestion_source: "store_director",
+    suggested_by_user_id: 29,
+    suggested_by_user_name: "Бородин В. М.",
   },
   {
     id: 203,
-    task_id: "task-001",  // store_id=1 SPAR-TOM-001, work_type_id=2 Касса
+    task_id: "task-001",
     name: "Калибровка весов",
     review_state: "PENDING",
     hints_count: 0,
     duration_min: 5,
     order: 99,
+    suggestion_source: "store_director",
+    suggested_by_user_id: 25,
+    suggested_by_user_name: "Романов И. А.",
   },
   {
     id: 204,
-    task_id: "task-017",  // store_id=2 SPAR-TOM-002, work_type_id=11 Контроль
+    task_id: "task-017",
     name: "Сборка корзины с просрочкой",
     review_state: "PENDING",
     hints_count: 3,
     duration_min: 15,
     order: 99,
+    suggestion_source: "store_director",
+    suggested_by_user_id: 26,
+    suggested_by_user_name: "Соколова Н. И.",
   },
   {
     id: 205,
-    task_id: "task-008",  // store_id=1 SPAR-TOM-001, work_type_id=5 Переоценка
+    task_id: "task-008",
     name: "Замена ценников после переоценки",
     review_state: "PENDING",
     hints_count: 1,
     duration_min: 18,
     order: 99,
+    suggestion_source: "store_director",
+    suggested_by_user_id: 25,
+    suggested_by_user_name: "Романов И. А.",
   },
   {
     id: 206,
-    task_id: "task-014",  // store_id=3 SPAR-NSK-001, work_type_id=13 Складские
+    task_id: "task-014",
     name: "Доукладка алкоголя из подсобки",
     review_state: "PENDING",
     hints_count: 0,
     duration_min: 22,
     order: 99,
+    suggestion_source: "store_director",
+    suggested_by_user_id: 27,
+    suggested_by_user_name: "Дроздов А. С.",
   },
   {
     id: 207,
-    task_id: "task-012",  // store_id=6 FC-TOM-002, work_type_id=6 Контроль
+    task_id: "task-012",
     name: "Сверка остатков по холодильнику",
     review_state: "PENDING",
     hints_count: 2,
     duration_min: 10,
     order: 99,
+    suggestion_source: "store_director",
+    suggested_by_user_id: 30,
+    suggested_by_user_name: "Кулаков Е. Б.",
+  },
+
+  // ── 4 от сотрудников (только task с work_type=7 «Другие работы») ──
+  {
+    id: 208,
+    task_id: "task-003", // work_type=7 Другие работы (Касса)
+    name: "Оттереть следы от кроссовок на полу",
+    review_state: "PENDING",
+    hints_count: 0,
+    duration_min: 12,
+    order: 99,
+    suggestion_source: "worker",
+    suggested_by_user_id: 42,
+    suggested_by_user_name: "Кузнецова Ольга",
+  },
+  {
+    id: 209,
+    task_id: "task-015", // work_type=7 Другие работы (Склад)
+    name: "Разобрать поддон после доставки",
+    review_state: "PENDING",
+    hints_count: 0,
+    duration_min: 18,
+    order: 99,
+    suggestion_source: "worker",
+    suggested_by_user_id: 51,
+    suggested_by_user_name: "Семёнов Илья",
+  },
+  {
+    id: 210,
+    task_id: "task-003",
+    name: "Заклеить пробитую упаковку молока на полке",
+    review_state: "PENDING",
+    hints_count: 0,
+    duration_min: 4,
+    order: 99,
+    suggestion_source: "worker",
+    suggested_by_user_id: 38,
+    suggested_by_user_name: "Журавлёв Артём",
+  },
+  {
+    id: 211,
+    task_id: "task-015",
+    name: "Свернуть и убрать праздничную POS-оснастку",
+    review_state: "PENDING",
+    hints_count: 0,
+    duration_min: 25,
+    order: 99,
+    suggestion_source: "worker",
+    suggested_by_user_id: 65,
+    suggested_by_user_name: "Михайлова Светлана",
   },
 ];
 
