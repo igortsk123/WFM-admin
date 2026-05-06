@@ -99,7 +99,11 @@ export async function getFreelancers(
   });
 
   if (status) filtered = filtered.filter((f) => f.freelancer_status === status);
-  if (agent_id) filtered = filtered.filter((f) => f.agent_id === agent_id);
+  if (agent_id === "__none__") {
+    filtered = filtered.filter((f) => !f.agent_id);
+  } else if (agent_id) {
+    filtered = filtered.filter((f) => f.agent_id === agent_id);
+  }
   if (available_only) filtered = filtered.filter((f) => f.is_available);
   if (min_rating !== undefined) {
     filtered = filtered.filter((f) => (f.rating ?? 0) >= min_rating);

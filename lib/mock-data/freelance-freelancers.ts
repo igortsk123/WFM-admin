@@ -2,11 +2,17 @@ import type { User } from "@/lib/types";
 
 /**
  * @endpoint GET /api/freelance/freelancers
- * 18 FREELANCE users. IDs start at 100 to avoid collision with MOCK_USERS (1-31).
- * Distribution: 6 ACTIVE (agent-001) + 7 ACTIVE (agent-002, 2 of which EXTERNAL_SYNC)
- *             + 2 ACTIVE (agent-003) + 1 NEW + 1 BLOCKED + 1 ARCHIVED
- * All ACTIVE have oferta_accepted_at in the past. NEW has null.
- * Ratings 4.2-4.9 for ACTIVE, null for NEW/BLOCKED/ARCHIVED.
+ * 23 FREELANCE users. IDs start at 100 to avoid collision with MOCK_USERS (1-31).
+ *
+ * Distribution:
+ *   - 6 ACTIVE через agent-001 (ИП Захарова)
+ *   - 7 ACTIVE через agent-002 (ООО «Кадровый партнёр»; 2 EXTERNAL_SYNC)
+ *   - 2 ACTIVE через agent-003 (ИП Никитин)
+ *   - 5 ACTIVE независимых (agent_id: null) — фрилансер не закреплён за агентом
+ *   - 1 NEW + 1 BLOCKED + 1 ARCHIVED
+ *
+ * agent_id опционален: фрилансер может работать самостоятельно (CLIENT_DIRECT
+ * payment_mode), либо через агента-ИП (NOMINAL_ACCOUNT mode).
  */
 export const MOCK_FREELANCERS: User[] = [
   // ── 6 ACTIVE with agent-001 (ИП Захарова М.С.) ──────────────────
@@ -307,7 +313,99 @@ export const MOCK_FREELANCERS: User[] = [
     source: "MANUAL",
   },
 
-  // ── 1 BLOCKED (без агента) ───────────────────────────────────────
+  // ── 5 ACTIVE независимых (без agent_id) — фрилансер сам по себе ──
+  {
+    id: 118,
+    sso_id: "sso-fl-118",
+    phone: "+79136001001",
+    first_name: "Иван",
+    last_name: "Соколов",
+    middle_name: "Сергеевич",
+    type: "FREELANCE",
+    hired_at: "2025-09-15",
+    archived: false,
+    preferred_locale: "ru",
+    preferred_timezone: "Asia/Tomsk",
+    freelancer_status: "ACTIVE",
+    agent_id: null,
+    oferta_accepted_at: "2025-09-15",
+    rating: 4.6,
+    source: "MANUAL",
+  },
+  {
+    id: 119,
+    sso_id: "sso-fl-119",
+    phone: "+79136001002",
+    first_name: "Алина",
+    last_name: "Жукова",
+    middle_name: "Дмитриевна",
+    type: "FREELANCE",
+    hired_at: "2025-11-20",
+    archived: false,
+    preferred_locale: "ru",
+    preferred_timezone: "Asia/Tomsk",
+    freelancer_status: "ACTIVE",
+    agent_id: null,
+    oferta_accepted_at: "2025-11-20",
+    rating: 4.4,
+    source: "MANUAL",
+  },
+  {
+    id: 120,
+    sso_id: "sso-fl-120",
+    phone: "+79136001003",
+    first_name: "Роман",
+    last_name: "Морозов",
+    middle_name: "Андреевич",
+    type: "FREELANCE",
+    hired_at: "2026-01-10",
+    archived: false,
+    preferred_locale: "ru",
+    preferred_timezone: "Asia/Novosibirsk",
+    freelancer_status: "ACTIVE",
+    agent_id: null,
+    oferta_accepted_at: "2026-01-10",
+    rating: 4.2,
+    source: "MANUAL",
+  },
+  {
+    id: 121,
+    sso_id: "sso-fl-121",
+    phone: "+79136001004",
+    first_name: "Татьяна",
+    last_name: "Богданова",
+    middle_name: "Игоревна",
+    type: "FREELANCE",
+    hired_at: "2026-02-22",
+    archived: false,
+    preferred_locale: "ru",
+    preferred_timezone: "Asia/Tomsk",
+    freelancer_status: "ACTIVE",
+    agent_id: null,
+    oferta_accepted_at: "2026-02-22",
+    rating: 4.7,
+    source: "MANUAL",
+  },
+  {
+    id: 122,
+    sso_id: "sso-fl-122",
+    phone: "+79136001005",
+    first_name: "Никита",
+    last_name: "Лебедев",
+    middle_name: "Валерьевич",
+    type: "FREELANCE",
+    hired_at: "2026-03-12",
+    archived: false,
+    preferred_locale: "ru",
+    preferred_timezone: "Asia/Tomsk",
+    freelancer_status: "ACTIVE",
+    agent_id: null,
+    oferta_accepted_at: "2026-03-12",
+    rating: 4.0,
+    source: "MANUAL",
+  },
+
+  // ── 1 BLOCKED ────────────────────────────────────────────────────
   {
     id: 116,
     sso_id: "sso-fl-116",
@@ -327,7 +425,7 @@ export const MOCK_FREELANCERS: User[] = [
     source: "MANUAL",
   },
 
-  // ── 1 ARCHIVED (без агента, история) ────────────────────────────
+  // ── 1 ARCHIVED ───────────────────────────────────────────────────
   {
     id: 117,
     sso_id: "sso-fl-117",

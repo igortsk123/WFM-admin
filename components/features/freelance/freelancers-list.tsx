@@ -392,6 +392,7 @@ export function FreelancersList() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">{t("filters.agent_any")}</SelectItem>
+            <SelectItem value="__none__">{t("filters.agent_none")}</SelectItem>
             {agents.map((a) => (
               <SelectItem key={a.id} value={a.id}>
                 {a.name}
