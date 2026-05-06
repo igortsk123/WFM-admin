@@ -79,6 +79,8 @@ export {
   updateUserPermissions,
   bulkAssignPermission,
   bulkRevokePermission,
+  bulkUpdateRole,
+  bulkUpdateStore,
   // Permissions coverage (matrix stats)
   type PermissionCoverageRow,
   getPermissionsCoverage,

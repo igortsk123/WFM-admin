@@ -691,6 +691,77 @@ export async function bulkRevokePermission(
   return { success: true };
 }
 
+/**
+ * Bulk update functional role for multiple users.
+ * Например: «10 человек назначить ProdUniver», «5 человек сделать Deputy».
+ * Заменяет все текущие active functional roles этих пользователей.
+ * @param userIds Array of user IDs
+ * @param role New functional role to assign
+ * @endpoint POST /users/bulk-role
+ */
+export async function bulkUpdateRole(
+  userIds: number[],
+  role: FunctionalRole
+): Promise<ApiMutationResponse> {
+  await delay(400);
+
+  if (userIds.length === 0) {
+    return {
+      success: false,
+      error: { code: "EMPTY_LIST", message: "No user IDs provided" },
+    };
+  }
+
+  const missingIds = userIds.filter((id) => !MOCK_USERS.find((u) => u.id === id));
+  if (missingIds.length > 0) {
+    return {
+      success: false,
+      error: {
+        code: "USERS_NOT_FOUND",
+        message: `Users not found: ${missingIds.join(", ")}`,
+      },
+    };
+  }
+
+  console.log(`[v0] Bulk role update ${role} for users:`, userIds);
+  return { success: true };
+}
+
+/**
+ * Bulk transfer multiple users to another store.
+ * Создаёт новый Assignment в target-магазине, archive'ит старый.
+ * @param userIds Array of user IDs
+ * @param storeId Target store ID
+ * @endpoint POST /users/bulk-store
+ */
+export async function bulkUpdateStore(
+  userIds: number[],
+  storeId: number
+): Promise<ApiMutationResponse> {
+  await delay(450);
+
+  if (userIds.length === 0) {
+    return {
+      success: false,
+      error: { code: "EMPTY_LIST", message: "No user IDs provided" },
+    };
+  }
+
+  const missingIds = userIds.filter((id) => !MOCK_USERS.find((u) => u.id === id));
+  if (missingIds.length > 0) {
+    return {
+      success: false,
+      error: {
+        code: "USERS_NOT_FOUND",
+        message: `Users not found: ${missingIds.join(", ")}`,
+      },
+    };
+  }
+
+  console.log(`[v0] Bulk transferred users ${userIds.join(",")} to store ${storeId}`);
+  return { success: true };
+}
+
 // ═══════════════════════════════════════════════════════════════════
 // PROFILE — MY ASSIGNMENTS (chat 35)
 // ═══════════════════════════════════════════════════════════════════

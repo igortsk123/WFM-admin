@@ -1489,9 +1489,32 @@
       },
       "bulk": {
         "selected": "{count, plural, one {# employee selected} other {# employees selected}}",
-        "assign_permission": "Assign permission",
+        "clear_selection": "Clear selection",
+        "assign_permission": "Assign zone",
+        "revoke_permission": "Revoke zone",
+        "assign_role": "Assign role",
+        "change_store": "Change store",
+        "assign_zone": "Assign zone",
+        "revoke_zone": "Revoke zone",
+        "zones_menu": "Zones",
+        "assign_task": "Assign task",
         "archive": "Archive",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "dialog": {
+          "assign_role_title": "Assign role to {count} employees",
+          "assign_role_select": "Role",
+          "change_store_title": "Transfer to store",
+          "change_store_desc": "Selected employees will get a new assignment in the chosen store; current one will be archived.",
+          "change_store_select": "Store",
+          "assign_task_title": "Assign task to selected",
+          "assign_task_desc": "Pick an existing template or create a new task — it will appear for all {count} employees at once.",
+          "submit": "Apply",
+          "submitting": "Applying..."
+        },
+        "toast_done": "Operation completed for {count} employees",
+        "toast_role_done": "Role {role} assigned ({count})",
+        "toast_store_done": "Transferred to store: {count} employees",
+        "toast_error": "Failed to apply — try again later"
       },
       "dialogs": {
         "permission_title": "Assign permission",
