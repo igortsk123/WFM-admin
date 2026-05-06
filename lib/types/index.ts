@@ -833,6 +833,82 @@ export interface FreelancerAssignment {
   status: "SCHEDULED" | "CHECKED_IN" | "WORKING" | "DONE" | "NO_SHOW";
 }
 
+// ───────────────────────────────────────────────────────────────────
+// Task offer routing — последовательное предложение задания фрилансерам
+// по рейтингу с эксклюзивным окном (60/30/15 мин)
+// ───────────────────────────────────────────────────────────────────
+
+/** Тип tier'а: TOP_3 → 60 мин, TOP_5 → 30 мин, REST → 15 мин */
+export type OfferTier = "TOP_3" | "TOP_5" | "REST";
+
+export type TaskOfferStatus =
+  | "ROUTING"      // в процессе обзвона очереди
+  | "FILLED"       // кто-то принял
+  | "EXPIRED_ALL"  // вся очередь прошла, никто не принял
+  | "CANCELLED";
+
+export type OfferAttemptStatus =
+  | "PENDING"          // активная попытка, ждём ответ в окне эксклюзива
+  | "ACCEPTED"         // принял в своём окне (или из fallback'а)
+  | "DECLINED"         // явно отказался в своём окне
+  | "EXPIRED"          // окно истекло, фрилансер не отреагировал
+  | "WAITING"          // ещё не отправлено (стоит в очереди)
+  | "LATE_FALLBACK";   // окно истекло, но фрилансер откликнулся позже — ждёт fallback'а
+
+/**
+ * Задание, отправляемое на routing-обзвон.
+ * Содержит параметры задачи + параметры routing'а (очередь кандидатов).
+ */
+export interface TaskOffer {
+  id: string;
+  // Параметры задания
+  work_type_id: number;
+  work_type_name: string;
+  store_id: number;
+  store_name: string;
+  shift_date: string;       // YYYY-MM-DD
+  start_time: string;       // HH:mm
+  duration_hours: number;
+  price_rub: number;
+  note?: string;
+  // Routing
+  status: TaskOfferStatus;
+  candidate_count: number;
+  /** Текущая активная попытка (PENDING). null если все отработали или offer FILLED. */
+  current_attempt_id: string | null;
+  filled_by_freelancer_id?: number | null;
+  filled_by_attempt_id?: string | null;
+  created_at: string;
+  filled_at?: string | null;
+  expires_all_at?: string | null;  // когда последний кандидат потеряет окно
+  created_by_user_id: number;
+}
+
+/**
+ * Одна попытка предложить задание конкретному фрилансеру в очереди.
+ * Создаются все сразу при createTaskOffer, но статус активной — только у одной за раз
+ * (та у которой shortest exclusive_until среди PENDING).
+ */
+export interface OfferAttempt {
+  id: string;
+  offer_id: string;
+  freelancer_id: number;
+  freelancer_name: string;
+  freelancer_avatar_url?: string;
+  rating: number | null;
+  /** Позиция в очереди (1 = top by rating). */
+  rank: number;
+  tier: OfferTier;
+  /** Длительность эксклюзивного окна в минутах (60/30/15 от tier'а). */
+  exclusive_minutes: number;
+  /** Когда отправлено фрилансеру push'ом. null если ещё в WAITING. */
+  sent_at: string | null;
+  /** Когда заканчивается эксклюзивное окно. null если ещё не отправлено. */
+  exclusive_until: string | null;
+  status: OfferAttemptStatus;
+  responded_at?: string | null;
+}
+
 /**
  * Оказанная услуга.
  * scheduled_hours — обещано часов (заявлено в application)
