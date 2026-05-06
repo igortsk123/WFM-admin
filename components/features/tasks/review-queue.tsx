@@ -248,16 +248,10 @@ function QueueCard({ task, isSelected, onClick, t, locale }: QueueCardProps) {
         {task.title}
       </p>
 
-      {/* Subtitle — title attribute показывает полный текст при hover.
-          inline-style гарантирует что truncate не перебивается каскадом. */}
+      {/* Subtitle — 2 строки max с переносом слов; title= для полного текста на hover */}
       <p
-        className="text-xs text-muted-foreground mb-1.5 max-w-full"
+        className="text-xs text-muted-foreground mb-1.5 max-w-full line-clamp-2 break-words"
         title={subtitle}
-        style={{
-          overflow: "hidden",
-          textOverflow: "ellipsis",
-          whiteSpace: "nowrap",
-        }}
       >
         {subtitle}
       </p>
