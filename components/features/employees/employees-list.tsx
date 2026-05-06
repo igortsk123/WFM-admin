@@ -27,7 +27,14 @@ import type {
   FreelancerStatus,
 } from "@/lib/types"
 import type { UserWithAssignment } from "@/lib/api/users"
-import { getUsers, archiveUser, bulkAssignPermission } from "@/lib/api/users"
+import {
+  getUsers,
+  archiveUser,
+  bulkAssignPermission,
+  bulkRevokePermission,
+  bulkUpdateRole,
+  bulkUpdateStore,
+} from "@/lib/api/users"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
 import { useAuth } from "@/lib/contexts/auth-context"
 
@@ -68,6 +75,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
 
 import { PageHeader } from "@/components/shared/page-header"
@@ -398,6 +406,274 @@ function PermissionAssignDialog({
 }
 
 // ─────────────────────────────────────────────────────────────────
+// BULK ROLE DIALOG
+// ─────────────────────────────────────────────────────────────────
+
+interface BulkRoleDialogProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  selectedIds: number[]
+  onSuccess: () => void
+}
+
+function BulkRoleDialog({
+  open,
+  onOpenChange,
+  selectedIds,
+  onSuccess,
+}: BulkRoleDialogProps) {
+  const t = useTranslations("screen.employees")
+  const tRole = useTranslations("role.functional")
+  const [selectedRole, setSelectedRole] = React.useState<FunctionalRole | "">("")
+  const [loading, setLoading] = React.useState(false)
+
+  const roleOptions = (ALL_ROLES as FunctionalRole[]).map((r) => ({
+    value: r,
+    label: tRole(
+      r === "WORKER"
+        ? "worker"
+        : r === "STORE_DIRECTOR"
+        ? "store_director"
+        : r === "SUPERVISOR"
+        ? "supervisor"
+        : r === "REGIONAL"
+        ? "regional"
+        : r === "NETWORK_OPS"
+        ? "network_ops"
+        : r === "HR_MANAGER"
+        ? "hr_manager"
+        : "operator"
+    ),
+  }))
+
+  async function handleConfirm() {
+    if (!selectedRole) return
+    setLoading(true)
+    try {
+      const result = await bulkUpdateRole(selectedIds, selectedRole)
+      if (result.success) {
+        toast.success(
+          t("bulk.toast_role_done", {
+            role: roleOptions.find((o) => o.value === selectedRole)?.label ?? selectedRole,
+            count: selectedIds.length,
+          })
+        )
+        onSuccess()
+        onOpenChange(false)
+        setSelectedRole("")
+      } else {
+        toast.error(t("bulk.toast_error"))
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-sm">
+        <DialogHeader>
+          <DialogTitle>
+            {t("bulk.dialog.assign_role_title", { count: selectedIds.length })}
+          </DialogTitle>
+        </DialogHeader>
+        <div className="py-2">
+          <SingleSelectCombobox
+            options={roleOptions}
+            value={selectedRole}
+            onValueChange={(v) => setSelectedRole(v as FunctionalRole | "")}
+            placeholder={t("bulk.dialog.assign_role_select")}
+            className="w-full"
+          />
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
+            {t("bulk.cancel")}
+          </Button>
+          <Button onClick={handleConfirm} disabled={!selectedRole || loading}>
+            {loading ? <Spinner className="size-4 mr-2" /> : null}
+            {t("bulk.dialog.submit")}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────
+// BULK STORE DIALOG
+// ─────────────────────────────────────────────────────────────────
+
+interface BulkStoreDialogProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  selectedIds: number[]
+  onSuccess: () => void
+}
+
+function BulkStoreDialog({
+  open,
+  onOpenChange,
+  selectedIds,
+  onSuccess,
+}: BulkStoreDialogProps) {
+  const t = useTranslations("screen.employees")
+  const [selectedStoreId, setSelectedStoreId] = React.useState<string>("")
+  const [loading, setLoading] = React.useState(false)
+
+  const storeOptions = STORE_OPTIONS.map((s) => ({
+    value: String(s.id),
+    label: s.name,
+  }))
+
+  async function handleConfirm() {
+    if (!selectedStoreId) return
+    setLoading(true)
+    try {
+      const result = await bulkUpdateStore(selectedIds, Number(selectedStoreId))
+      if (result.success) {
+        toast.success(
+          t("bulk.toast_store_done", { count: selectedIds.length })
+        )
+        onSuccess()
+        onOpenChange(false)
+        setSelectedStoreId("")
+      } else {
+        toast.error(t("bulk.toast_error"))
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-sm">
+        <DialogHeader>
+          <DialogTitle>{t("bulk.dialog.change_store_title")}</DialogTitle>
+        </DialogHeader>
+        <div className="py-2 space-y-2">
+          <p className="text-sm text-muted-foreground">
+            {t("bulk.dialog.change_store_desc")}
+          </p>
+          <SingleSelectCombobox
+            options={storeOptions}
+            value={selectedStoreId}
+            onValueChange={setSelectedStoreId}
+            placeholder={t("bulk.dialog.change_store_select")}
+            className="w-full"
+          />
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
+            {t("bulk.cancel")}
+          </Button>
+          <Button onClick={handleConfirm} disabled={!selectedStoreId || loading}>
+            {loading ? <Spinner className="size-4 mr-2" /> : null}
+            {t("bulk.dialog.submit")}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────
+// BULK ZONE DIALOG (assign or revoke)
+// ─────────────────────────────────────────────────────────────────
+
+interface BulkZoneDialogProps {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  mode: "assign" | "revoke"
+  selectedIds: number[]
+  onSuccess: () => void
+}
+
+function BulkZoneDialog({
+  open,
+  onOpenChange,
+  mode,
+  selectedIds,
+  onSuccess,
+}: BulkZoneDialogProps) {
+  const t = useTranslations("screen.employees")
+  const tPerm = useTranslations("permission")
+  const [selectedPerm, setSelectedPerm] = React.useState<Permission | "">("")
+  const [loading, setLoading] = React.useState(false)
+
+  const permOptions = ALL_PERMISSIONS.map((p) => ({
+    value: p,
+    label: tPerm(
+      p === "CASHIER"
+        ? "cashier"
+        : p === "SALES_FLOOR"
+        ? "sales_floor"
+        : p === "SELF_CHECKOUT"
+        ? "self_checkout"
+        : p === "WAREHOUSE"
+        ? "warehouse"
+        : "production_line"
+    ),
+  }))
+
+  async function handleConfirm() {
+    if (!selectedPerm) return
+    setLoading(true)
+    try {
+      const result =
+        mode === "assign"
+          ? await bulkAssignPermission(selectedIds, selectedPerm)
+          : await bulkRevokePermission(selectedIds, selectedPerm)
+      if (result.success) {
+        toast.success(t("bulk.toast_done", { count: selectedIds.length }))
+        onSuccess()
+        onOpenChange(false)
+        setSelectedPerm("")
+      } else {
+        toast.error(t("bulk.toast_error"))
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-sm">
+        <DialogHeader>
+          <DialogTitle>
+            {mode === "assign" ? t("bulk.assign_zone") : t("bulk.revoke_zone")}
+          </DialogTitle>
+        </DialogHeader>
+        <div className="py-2">
+          <SingleSelectCombobox
+            options={permOptions}
+            value={selectedPerm}
+            onValueChange={(v) => setSelectedPerm(v as Permission | "")}
+            placeholder={t("dialogs.permission_select")}
+            className="w-full"
+          />
+        </div>
+        <DialogFooter>
+          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
+            {t("bulk.cancel")}
+          </Button>
+          <Button
+            onClick={handleConfirm}
+            disabled={!selectedPerm || loading}
+            variant={mode === "revoke" ? "destructive" : "default"}
+          >
+            {loading ? <Spinner className="size-4 mr-2" /> : null}
+            {t("bulk.dialog.submit")}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────
 // HELPERS
 // ─────────────────────────────────────────────────────────────────
 
@@ -479,6 +755,11 @@ export function EmployeesList() {
   const [archivingId, setArchivingId] = React.useState<number | null>(null)
   const [bulkArchiveDialogOpen, setBulkArchiveDialogOpen] =
     React.useState(false)
+  const [bulkRoleDialogOpen, setBulkRoleDialogOpen] = React.useState(false)
+  const [bulkStoreDialogOpen, setBulkStoreDialogOpen] = React.useState(false)
+  const [bulkZoneMode, setBulkZoneMode] = React.useState<"assign" | "revoke">("assign")
+  const [bulkZoneDialogOpen, setBulkZoneDialogOpen] = React.useState(false)
+  const [bulkBarLoading, setBulkBarLoading] = React.useState(false)
 
   // ── Fetch ───────────────────────────────────────────────────────
   const fetchData = React.useCallback(async () => {
@@ -1782,39 +2063,141 @@ export function EmployeesList() {
           className={cn(
             "fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border shadow-lg",
             "flex items-center gap-3 px-4 py-3 md:px-6",
-            "md:left-[var(--sidebar-width,260px)]"
+            "md:left-[var(--sidebar-width,260px)]",
+            bulkBarLoading && "pointer-events-none opacity-70"
           )}
         >
-          <span className="text-sm font-medium text-foreground shrink-0">
-            {t("bulk.selected", { count: selectedIds.size })}
-          </span>
-          <div className="flex items-center gap-2 flex-1">
+          {/* Left: count + deselect */}
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-sm font-medium text-foreground">
+              {t("bulk.selected", { count: selectedIds.size })}
+            </span>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-7 px-2 text-muted-foreground"
+              onClick={() => setSelectedIds(new Set())}
+            >
+              <X className="size-3.5 mr-1" />
+              <span className="hidden sm:inline">{t("bulk.clear_selection")}</span>
+            </Button>
+          </div>
+
+          {/* Right: action buttons */}
+          <div className="flex items-center gap-2 flex-1 justify-end flex-wrap">
+            {bulkBarLoading && <Spinner className="size-4 shrink-0" />}
+
+            {/* Assign role */}
             <Button
               size="sm"
               variant="outline"
-              onClick={() => setPermDialogOpen(true)}
+              className="hidden sm:flex"
+              onClick={() => setBulkRoleDialogOpen(true)}
+              disabled={bulkBarLoading}
             >
-              {t("bulk.assign_permission")}
+              {t("bulk.assign_role")}
             </Button>
+
+            {/* Change store */}
+            <Button
+              size="sm"
+              variant="outline"
+              className="hidden sm:flex"
+              onClick={() => setBulkStoreDialogOpen(true)}
+              disabled={bulkBarLoading}
+            >
+              {t("bulk.change_store")}
+            </Button>
+
+            {/* Zones dropdown */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={bulkBarLoading}
+                >
+                  {t("bulk.zones_menu")}
+                  <ChevronsUpDown className="ml-1.5 size-3.5" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem
+                  onClick={() => {
+                    setBulkZoneMode("assign")
+                    setBulkZoneDialogOpen(true)
+                  }}
+                >
+                  {t("bulk.assign_zone")}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="text-destructive focus:text-destructive"
+                  onClick={() => {
+                    setBulkZoneMode("revoke")
+                    setBulkZoneDialogOpen(true)
+                  }}
+                >
+                  {t("bulk.revoke_zone")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Assign task */}
+            <Button
+              size="sm"
+              variant="outline"
+              className="hidden sm:flex"
+              disabled={bulkBarLoading}
+              onClick={() => {
+                const ids = Array.from(selectedIds).join(",")
+                router.push(`${ADMIN_ROUTES.taskNew}?bulk_employee_ids=${ids}`)
+              }}
+            >
+              {t("bulk.assign_task")}
+            </Button>
+
+            {/* Mobile: compact more menu for non-zone actions */}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="sm:hidden size-8"
+                  disabled={bulkBarLoading}
+                >
+                  <MoreVertical className="size-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem onClick={() => setBulkRoleDialogOpen(true)}>
+                  {t("bulk.assign_role")}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setBulkStoreDialogOpen(true)}>
+                  {t("bulk.change_store")}
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    const ids = Array.from(selectedIds).join(",")
+                    router.push(`${ADMIN_ROUTES.taskNew}?bulk_employee_ids=${ids}`)
+                  }}
+                >
+                  {t("bulk.assign_task")}
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+
+            {/* Archive (HR/NETWORK_OPS only) */}
             {canArchiveBulk && (
               <Button
                 size="sm"
                 variant="destructive"
                 onClick={() => setBulkArchiveDialogOpen(true)}
+                disabled={bulkBarLoading}
               >
                 {t("bulk.archive")}
               </Button>
             )}
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="size-8 shrink-0 ml-auto"
-            onClick={() => setSelectedIds(new Set())}
-            aria-label={t("bulk.cancel")}
-          >
-            <X className="size-4" />
-          </Button>
         </div>
       )}
 
@@ -1822,6 +2205,37 @@ export function EmployeesList() {
       <PermissionAssignDialog
         open={permDialogOpen}
         onOpenChange={setPermDialogOpen}
+        selectedIds={Array.from(selectedIds)}
+        onSuccess={() => {
+          fetchData()
+          setSelectedIds(new Set())
+        }}
+      />
+
+      <BulkRoleDialog
+        open={bulkRoleDialogOpen}
+        onOpenChange={setBulkRoleDialogOpen}
+        selectedIds={Array.from(selectedIds)}
+        onSuccess={() => {
+          fetchData()
+          setSelectedIds(new Set())
+        }}
+      />
+
+      <BulkStoreDialog
+        open={bulkStoreDialogOpen}
+        onOpenChange={setBulkStoreDialogOpen}
+        selectedIds={Array.from(selectedIds)}
+        onSuccess={() => {
+          fetchData()
+          setSelectedIds(new Set())
+        }}
+      />
+
+      <BulkZoneDialog
+        open={bulkZoneDialogOpen}
+        onOpenChange={setBulkZoneDialogOpen}
+        mode={bulkZoneMode}
         selectedIds={Array.from(selectedIds)}
         onSuccess={() => {
           fetchData()
