@@ -122,3 +122,12 @@
 - Список фрилансеров отдельный от агента — частично сделано, нужна полная independence
 - Дашборд аналитика по shift_kind каналам closure (если потребуется)
 - TaskAllocation domain extended (V0 уже сделал основу в task-distribution.tsx)
+
+## Архитектурные policies (зафиксированы)
+
+- **Split-workflow Claude+V0** (с chat 22): foundation от Claude, UI от V0. Не запускать V0 пока foundation не смерджен.
+- **Patch ≠ Patch:** если patch-промпт добавляет новые типы / API / i18n / tabs / Dialog — это extension, нужен Claude foundation (иначе V0 платит +$1.5-2 за самостоятельную foundation).
+- **Monolith threshold = 600 строк:** компоненты крупнее → план разбить на sub-components в TECH-DEBT (отложенный refactor).
+- **Cleanup batch threshold = 10 пунктов:** non-критичные warnings (unused imports, prefer-const) копим в TECH-DEBT, batch-чисткой когда наберётся 10+.
+- **PR-driven workflow** (без plans/<slug>.md): каждое изменение = PR. Plan-first используем только для серий 5+ задач.
+- **Pattern-based foundation** (7 типов): см. [PATTERNS.md](./PATTERNS.md). Foundation работа предсказуема по pattern.
