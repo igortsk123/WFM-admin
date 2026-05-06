@@ -6309,6 +6309,7 @@
       "badge_available": "Свободен",
       "row_actions": {
         "menu": "Действия",
+        "open_profile": "Открыть профиль",
         "offer_task": "Предложить задание",
         "open_agent": "Открыть карточку агента"
       },
@@ -6338,6 +6339,41 @@
         "field_note_placeholder": "Особые условия, инструкции...",
         "submit": "Отправить предложение",
         "toast_sent": "Предложение отправлено: {name}"
+      }
+    },
+    "freelancerDetail": {
+      "breadcrumb_home": "Главная",
+      "breadcrumb_freelance": "Внештат",
+      "breadcrumb_freelancers": "Исполнители",
+      "back_to_list": "К списку исполнителей",
+      "not_found_title": "Исполнитель не найден",
+      "not_found_desc": "Возможно ID неверен или исполнителя удалили",
+      "error_load": "Не удалось загрузить",
+      "stat_completed_30d": "Завершено за 30 дней",
+      "stat_active_now": "В работе сейчас",
+      "stat_total_lifetime": "Всего заданий",
+      "stat_joined": "В системе",
+      "tabs": {
+        "assignments": "Задания",
+        "history": "История",
+        "documents": "Документы"
+      },
+      "upcoming_empty_title": "Заданий пока нет",
+      "upcoming_empty_desc": "Когда сеть пришлёт предложение и оно будет принято — появится здесь",
+      "history_empty_title": "История пуста",
+      "history_empty_desc": "Завершённые смены и невыходы будут здесь",
+      "documents_title": "Документы",
+      "oferta": "Оферта",
+      "oferta_signed": "Подписана {date}",
+      "oferta_unsigned": "Не подписана — приём задач заблокирован",
+      "agent_link": "Агент-ИП",
+      "open_agent": "Открыть",
+      "status": {
+        "scheduled": "Запланирована",
+        "checked_in": "Прибыл на точку",
+        "working": "Выполняет",
+        "done": "Завершена",
+        "no_show": "Не вышел"
       }
     },
     "freelanceAgents": {

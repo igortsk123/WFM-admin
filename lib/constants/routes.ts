@@ -87,6 +87,7 @@ export const ADMIN_ROUTES = {
   freelanceAgents: "/freelance/agents",
   freelanceAgentDetail: (id: string) => `/freelance/agents/${id}`,
   freelanceFreelancers: "/freelance/freelancers",
+  freelanceFreelancerDetail: (id: number) => `/freelance/freelancers/${id}`,
 } as const;
 
 /**
