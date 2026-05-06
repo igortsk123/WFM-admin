@@ -395,6 +395,14 @@ export interface WorkType {
   acceptance_policy_default: AcceptancePolicy;
   allow_new_subtasks: boolean;
   hints_count: number;
+  /**
+   * Дефолтный приоритет задачи этого типа (1-100, по соглашению LAMA):
+   *   1   — критичные операции (КСО, Касса, Менеджерские)
+   *   2-13 — выкладка по зонам (раздаётся вручную при создании)
+   *   100 — другие работы (низший приоритет, в самом низу очереди)
+   * Используется UI как стартовое значение в Task Form.
+   */
+  default_priority?: number;
 }
 
 export interface Hint {
@@ -622,6 +630,8 @@ export interface ProductCategory {
   id: number;
   code: string;
   name: string;
+  /** LAMA-зона (id из MOCK_ZONES, 100+). Optional — старые категории без привязки. */
+  zone_id?: number;
 }
 
 /** AI-Assistant цель + ручная */

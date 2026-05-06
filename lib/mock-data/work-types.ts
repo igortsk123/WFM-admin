@@ -20,6 +20,7 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     acceptance_policy_default: "MANUAL",
     allow_new_subtasks: true,
     hints_count: 0,
+    default_priority: 1,
   },
   {
     id: 2,
@@ -33,6 +34,7 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     acceptance_policy_default: "AUTO",
     allow_new_subtasks: true,
     hints_count: 0,
+    default_priority: 1,
   },
   {
     id: 3,
@@ -46,6 +48,7 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     acceptance_policy_default: "AUTO",
     allow_new_subtasks: true,
     hints_count: 0,
+    default_priority: 1,
   },
   {
     id: 4,
@@ -59,6 +62,7 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     acceptance_policy_default: "MANUAL",
     allow_new_subtasks: true,
     hints_count: 0,
+    default_priority: 5,
   },
   {
     id: 5,
@@ -72,6 +76,7 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     acceptance_policy_default: "MANUAL",
     allow_new_subtasks: true,
     hints_count: 0,
+    default_priority: 3,
   },
   {
     id: 6,
@@ -85,6 +90,7 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     acceptance_policy_default: "MANUAL",
     allow_new_subtasks: true,
     hints_count: 0,
+    default_priority: 4,
   },
   {
     id: 7,
@@ -98,6 +104,7 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     acceptance_policy_default: "MANUAL",
     allow_new_subtasks: true,
     hints_count: 0,
+    default_priority: 100,
   },
   {
     id: 8,
@@ -111,6 +118,7 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     acceptance_policy_default: "AUTO",
     allow_new_subtasks: false,
     hints_count: 0,
+    default_priority: 99,
   },
   {
     id: 9,
@@ -124,6 +132,7 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     acceptance_policy_default: "MANUAL",
     allow_new_subtasks: true,
     hints_count: 0,
+    default_priority: 5,
   },
   {
     id: 10,
@@ -137,6 +146,7 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     acceptance_policy_default: "MANUAL",
     allow_new_subtasks: true,
     hints_count: 0,
+    default_priority: 3,
   },
   {
     id: 11,
@@ -150,6 +160,7 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     acceptance_policy_default: "MANUAL",
     allow_new_subtasks: true,
     hints_count: 0,
+    default_priority: 3,
   },
   {
     id: 12,
@@ -163,6 +174,7 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     acceptance_policy_default: "AUTO",
     allow_new_subtasks: true,
     hints_count: 0,
+    default_priority: 12,
   },
   {
     id: 13,
@@ -176,6 +188,7 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     acceptance_policy_default: "MANUAL",
     allow_new_subtasks: true,
     hints_count: 0,
+    default_priority: 13,
   },
 
   // ── Производство (id 21–25) ── видны только при object_type=WORKSHOP/PRODUCTION_LINE ──
@@ -191,6 +204,7 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     acceptance_policy_default: "MANUAL",
     allow_new_subtasks: true,
     hints_count: 0,
+    default_priority: 11,
   },
   {
     id: 22,
