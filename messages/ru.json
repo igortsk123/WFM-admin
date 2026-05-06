@@ -127,6 +127,7 @@
     "task_new": "Новая задача",
     "task_detail_demo": "Пример задачи (T-1042)",
     "tasks_review": "На проверке",
+    "tasks_distribute": "Распределение задач",
     "tasks_archive": "Задачи",
     "subtasks_moderation": "Предложения подзадач",
     "goals": "Цели",
@@ -908,6 +909,80 @@
       "error_desc": "Проверьте соединение и попробуйте снова",
       "pagination_info": "{from}–{to} из {total}"
     },
+    "taskDistribution": {
+      "title": "Распределение задач",
+      "subtitle": "Утренний планировщик",
+      "breadcrumb_home": "Главная",
+      "breadcrumb_tasks": "Задачи",
+      "breadcrumb_distribute": "Распределение",
+      "toolbar": {
+        "store": "Магазин",
+        "store_placeholder": "Выберите магазин",
+        "period": {
+          "today": "Сегодня",
+          "tomorrow": "Завтра",
+          "custom": "Выбрать"
+        }
+      },
+      "sections": {
+        "unassigned": "Нераспределённые задачи",
+        "assigned": "Распределённые задачи"
+      },
+      "taskCard": {
+        "unassigned_hours": "Нераспределено: {remaining} ч из {total} ч",
+        "fully_distributed": "Полностью распределено",
+        "distribute": "Распределить",
+        "zone": "Зона",
+        "work_type": "Тип работы",
+        "source_ai": "Предложено ИИ",
+        "source_manager": "Создано вручную",
+        "source_planned": "Плановая"
+      },
+      "sheet": {
+        "title": "Распределить: {taskTitle}",
+        "employee_list_header": "Сотрудники на смене",
+        "hours_input_label": "Часов",
+        "distributed_summary": "Распределено: {distributed} ч / {total} ч",
+        "remaining": "Осталось: {remaining} ч",
+        "save": "Сохранить распределение",
+        "save_later": "Распределить позже",
+        "remaining_warning": "Осталось {remaining} ч нераспределено",
+        "shift_time": "Смена: {start}–{end}"
+      },
+      "utilization": {
+        "title": "Утилизация команды",
+        "date_label": "на {date}",
+        "employees_count": "{count, plural, one {# сотрудник на смене} few {# сотрудника на смене} other {# сотрудников на смене}}",
+        "hours_format": "{assigned} ч / {total} ч смены",
+        "bonus_badge": "+бонус",
+        "summary": "Свободно: {free} ч / Всего: {total} ч",
+        "available": "Свободно",
+        "assigned": "Назначено"
+      },
+      "ai_hints": {
+        "title": "Подсказки от ИИ",
+        "suggestion": "ИИ предлагает: задача «{task}» подходит {employee} — свободен на {hours} ч",
+        "accept": "Принять",
+        "reject": "Отклонить"
+      },
+      "empty": {
+        "no_tasks_title": "Все задачи распределены",
+        "no_tasks_description": "На выбранную дату нет нераспределённых задач",
+        "no_shifts_title": "Нет смен на этот день",
+        "no_shifts_description": "Добавьте сотрудников на смену для распределения задач"
+      },
+      "toast": {
+        "distributed_success": "Задача «{task}» распределена",
+        "distributed_error": "Ошибка при распределении"
+      },
+      "forbidden": {
+        "tooltip": "Только директор магазина может распределять задачи"
+      },
+      "loading": {
+        "tasks": "Загрузка задач...",
+        "employees": "Загрузка сотрудников..."
+      }
+    },
     "taskDetail": {
       "breadcrumb_home": "Главная",
       "breadcrumb_tasks": "Задачи",
@@ -1024,7 +1099,7 @@
       "sidebar_not_assigned": "Не назначен",
       "sidebar_assign_btn": "Назначить",
       "sidebar_elapsed": "На задаче {time}",
-      "sidebar_location": "Локация",
+      "sidebar_location": "Локаци��",
       "sidebar_timing": "Тайминг",
       "sidebar_timing_planned": "План:",
       "sidebar_timing_actual": "Факт:",
@@ -1580,7 +1655,7 @@
       "payouts_tab": {
         "col_date": "Дата",
         "col_gross": "Брутто",
-        "col_commission": "Комиссия",
+        "col_commission": "Ком��ссия",
         "col_net": "Нетто",
         "col_status": "Статус",
         "col_action": "Акт",
@@ -1756,7 +1831,7 @@
         "lama_card": "Интеграция с LAMA",
         "lama_synced_at": "Последняя синхронизация: {date}",
         "danger_card": "Опасная зона",
-        "archive_hint": "Архивирование скрывает магазин из списков задач, смен и отчётов. Действие обратимо."
+        "archive_hint": "Архивирование скры��ает магазин из списков задач, смен и отчётов. Действие обратимо."
       },
       "dialogs": {
         "edit_title": "Редактировать магазин",
@@ -3095,7 +3170,7 @@
         "fmcg_baseline_hint": "Если порог не задан — ИИ использует среднее по сети как baseline.",
         "thresholds_section": "Пороги по группам товаров",
         "ops_section": "Пороги по операциям",
-        "col_group": "Группа",
+        "col_group": "Груп��а",
         "col_writeoff_norm": "Норма списаний %",
         "col_oos_norm": "Норма OOS %",
         "col_expiration_alert": "Скоропорт (часов)",
@@ -3356,7 +3431,7 @@
       "ai_sources": {
         "section_title": "Ис��очники данных для ИИ-помощника",
         "section_subtitle": "Эти источники питают аналитический модуль ИИ. Без них предложения будут менее точными",
-        "hint_demo_alert": "ИИ-помощник работает в demo-режиме на статичных данных. Для реальных предложений подключите хотя бы Кассы и Остатки.",
+        "hint_demo_alert": "ИИ-п��мощник работает в demo-режиме на статичных данных. Для реальных предложений подключите хотя бы Кассы и Остатки.",
         "hint_demo_link": "Что подключать в первую очередь?",
         "connect": "Подключить",
         "configure": "Настроить",
@@ -3595,7 +3670,7 @@
           "save": "Сохранить настройки",
           "test": "Тест подключения",
           "test_success": "Соединение установлено",
-          "test_error": "Не удалось подключиться",
+          "test_error": "Не у��алось подключиться",
           "trigger_sync": "Запустить синхронизацию вручную",
           "log_col_datetime": "Дата/время",
           "log_col_trigger": "Триггер",
@@ -4544,7 +4619,7 @@
         "ai_label": "ИИ",
         "ai_hint": "ИИ предлагает, нужно одобрение",
         "yesterday_label": "Невыполненные вчера",
-        "yesterday_hint": "Авто-перенос в бонусный пул",
+        "yesterday_hint": "Авто-перенос в бон��сный пул",
         "footer_hint": "Мож��о комбинировать. ИИ работает поверх активной цели."
       },
       "yesterday_pool_card": {
@@ -6709,7 +6784,7 @@
         "earnings_30d": "Доход за 30 дней",
         "earnings_7d": "Доход за 7 дней",
         "recent_payouts_count": "Свежих выплат",
-        "month_earnings": "Доход за месяц",
+        "month_earnings": "До��од за месяц",
         "pending_payouts": "Ожидают выплаты",
         "no_show_count": "Невыходов за месяц"
       },
@@ -7199,7 +7274,7 @@
     },
     "empty": {
       "no_documents": "Документов пока нет",
-      "no_documents_description": "Они появляются автоматически после выплат на ваш счёт.",
+      "no_documents_description": "Они появляются автоматич��ски после выплат на ваш счёт.",
       "no_results": "Ничего не найдено",
       "no_results_description": "Попробуйте изменить фильтры."
     },

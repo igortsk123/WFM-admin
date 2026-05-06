@@ -15,6 +15,7 @@ export const ADMIN_ROUTES = {
   taskDetail: (id: string) => `/tasks/${id}`,
   taskEdit: (id: string) => `/tasks/${id}/edit`,
   tasksReview: "/tasks/review",
+  tasksDistribute: "/tasks/distribute",
   tasksArchive: "/tasks?archived=true",
   subtasksModeration: "/subtasks/moderation",
 
