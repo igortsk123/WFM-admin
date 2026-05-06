@@ -212,51 +212,55 @@ function QueueCard({ task, isSelected, onClick, t, locale }: QueueCardProps) {
   const completedAt = task.history_brief?.completed_at
     ? fmtRelative(task.history_brief.completed_at, locale)
     : null
+  const subtitle = [task.store_name, task.zone_name, task.work_type_name].filter(Boolean).join(" / ")
 
   return (
     <button
       type="button"
       onClick={onClick}
       className={cn(
-        "w-full p-3 rounded-lg border-2 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        "w-full max-w-full overflow-hidden p-3 rounded-lg border text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         "min-h-[44px]",
         isSelected
           ? "border-primary bg-accent"
-          : "border-transparent hover:border-border"
+          : "border-border/40 hover:border-border hover:bg-muted/30"
       )}
     >
       {/* Top row */}
       <div className="flex items-center justify-between gap-2 mb-1.5">
-        <div className="flex items-center gap-2 min-w-0">
+        <div className="flex items-center gap-2 min-w-0 flex-1">
           <Avatar className="size-7 shrink-0">
             <AvatarImage src={task.assignee_avatar} alt={task.assignee_name ?? ""} />
             <AvatarFallback className="text-xs bg-accent text-accent-foreground">
               {task.assignee_name ? getInitials(task.assignee_name) : "?"}
             </AvatarFallback>
           </Avatar>
-          <span className="text-xs font-medium truncate">{task.assignee_name ?? "—"}</span>
+          <span className="text-xs font-medium truncate min-w-0">{task.assignee_name ?? "—"}</span>
         </div>
-        <div className="flex items-center gap-1 shrink-0 text-muted-foreground">
+        <div className="flex items-center gap-1 shrink-0 text-muted-foreground whitespace-nowrap">
           <Clock className="size-3" />
           <span className="text-xs">{waitTime}</span>
         </div>
       </div>
 
       {/* Title */}
-      <p className="text-sm font-medium line-clamp-2 mb-1 text-foreground">{task.title}</p>
+      <p className="text-sm font-medium line-clamp-2 mb-1 text-foreground break-words">{task.title}</p>
 
-      {/* Subtitle */}
-      <p className="text-xs text-muted-foreground truncate mb-1.5">
-        {[task.store_name, task.zone_name, task.work_type_name].filter(Boolean).join(" / ")}
+      {/* Subtitle — title attribute показывает полный текст при hover */}
+      <p
+        className="text-xs text-muted-foreground truncate mb-1.5"
+        title={subtitle}
+      >
+        {subtitle}
       </p>
 
       {/* Bottom row */}
-      <div className="flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1">
+      <div className="flex items-center justify-between gap-2 min-w-0">
+        <div className="flex items-center gap-1 shrink-0">
           {task.requires_photo && <Camera className="size-3 text-muted-foreground" />}
         </div>
         {completedAt && (
-          <span className="text-xs text-muted-foreground">{completedAt}</span>
+          <span className="text-xs text-muted-foreground whitespace-nowrap">{completedAt}</span>
         )}
       </div>
     </button>

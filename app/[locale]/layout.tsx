@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AuthProvider } from "@/lib/contexts/auth-context";
 import { routing, type Locale } from "@/i18n/routing";
+import { FONT_SCALE_HYDRATE_SCRIPT } from "@/components/shared/font-scale-toggle";
 
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
@@ -37,6 +38,12 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} className={`${inter.variable} bg-background`}>
+      <head>
+        {/* Pre-hydrate font-scale из localStorage чтобы избежать FOUC */}
+        <script
+          dangerouslySetInnerHTML={{ __html: FONT_SCALE_HYDRATE_SCRIPT }}
+        />
+      </head>
       <body className="min-h-screen font-sans antialiased">
         <NextIntlClientProvider messages={messages}>
           <NuqsAdapter>
