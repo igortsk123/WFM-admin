@@ -479,7 +479,17 @@ interface EmployeeUtilizationRowProps {
 
 function EmployeeUtilizationRow({ employee, planMin = 0, onSelect, t }: EmployeeUtilizationRowProps) {
   const fullName = getFullName(employee.user.first_name, employee.user.last_name)
-  const assignedLabel = formatHM(employee.assigned_min, t)
+  const effectiveAssigned = employee.assigned_min + planMin
+  const effectivePct = employee.shift_total_min > 0
+    ? Math.round((effectiveAssigned / employee.shift_total_min) * 100)
+    : 0
+  const serverPct = employee.shift_total_min > 0
+    ? (employee.assigned_min / employee.shift_total_min) * 100
+    : 0
+  const planPct = employee.shift_total_min > 0
+    ? (planMin / employee.shift_total_min) * 100
+    : 0
+  const assignedLabel = formatHM(effectiveAssigned, t)
   const totalLabel = formatHM(employee.shift_total_min, t)
 
   const content = (
@@ -506,15 +516,22 @@ function EmployeeUtilizationRow({ employee, planMin = 0, onSelect, t }: Employee
             </Badge>
           )}
         </div>
+        {/* Stacked bar: saved (primary) + planned (primary/40), как в TaskCard.
+            Цвет fill отражает effectivePct (saved+plan) — после auto бар сразу
+            визуально показывает «как будет после подтверждения». */}
         <div className="flex items-center gap-2">
-          <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
+          <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden flex">
             <div
-              className={cn("h-full transition-all", getUtilizationColor(employee.utilization_pct))}
-              style={{ width: `${Math.min(employee.utilization_pct, 100)}%` }}
+              className={cn("h-full transition-all", getUtilizationColor(effectivePct))}
+              style={{ width: `${Math.min(serverPct, 100)}%` }}
+            />
+            <div
+              className="h-full bg-primary/40 transition-all"
+              style={{ width: `${Math.max(0, Math.min(planPct, 100 - serverPct))}%` }}
             />
           </div>
-          <span className={cn("text-xs font-medium shrink-0", getUtilizationTextColor(employee.utilization_pct))}>
-            {employee.utilization_pct}%
+          <span className={cn("text-xs font-medium shrink-0", getUtilizationTextColor(effectivePct))}>
+            {effectivePct}%
           </span>
         </div>
         <span className="text-xs text-muted-foreground">
@@ -559,7 +576,16 @@ function TeamUtilizationPanel({ employees, planMinByUser, onSelectEmployee, isLo
 
   const totalShiftMinutes = employees.reduce((sum, e) => sum + e.shift_total_min, 0)
   const totalAssignedMinutes = employees.reduce((sum, e) => sum + e.assigned_min, 0)
-  const freeMinutes = totalShiftMinutes - totalAssignedMinutes
+  const totalPlanMinutes = Array.from(planMinByUser.values()).reduce(
+    (sum, n) => sum + n,
+    0
+  )
+  // Свободное время с учётом плана — auto-распределение сразу должно показать
+  // что свободного времени стало меньше.
+  const freeMinutes = Math.max(
+    0,
+    totalShiftMinutes - totalAssignedMinutes - totalPlanMinutes
+  )
 
   if (isLoading) {
     return (
