@@ -23,6 +23,7 @@ import {
   Camera,
   Pencil,
   Trash2,
+  Info,
 } from "lucide-react";
 import { format } from "date-fns";
 import { ru } from "date-fns/locale";
