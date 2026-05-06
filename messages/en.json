@@ -127,6 +127,7 @@
     "task_new": "New task",
     "task_detail_demo": "Example task (T-1042)",
     "tasks_review": "Under review",
+    "tasks_distribute": "Task Distribution",
     "tasks_archive": "Tasks",
     "subtasks_moderation": "Subtask suggestions",
     "goals": "Goals",
@@ -752,6 +753,80 @@
       "error_title": "Failed to load tasks",
       "error_desc": "Check your connection and try again",
       "pagination_info": "{from}–{to} of {total}"
+    },
+    "taskDistribution": {
+      "title": "Task Distribution",
+      "subtitle": "Morning Planner",
+      "breadcrumb_home": "Home",
+      "breadcrumb_tasks": "Tasks",
+      "breadcrumb_distribute": "Distribution",
+      "toolbar": {
+        "store": "Store",
+        "store_placeholder": "Select store",
+        "period": {
+          "today": "Today",
+          "tomorrow": "Tomorrow",
+          "custom": "Custom"
+        }
+      },
+      "sections": {
+        "unassigned": "Unassigned Tasks",
+        "assigned": "Assigned Tasks"
+      },
+      "taskCard": {
+        "unassigned_hours": "Unassigned: {remaining}h of {total}h",
+        "fully_distributed": "Fully distributed",
+        "distribute": "Distribute",
+        "zone": "Zone",
+        "work_type": "Work type",
+        "source_ai": "AI suggested",
+        "source_manager": "Created manually",
+        "source_planned": "Planned"
+      },
+      "sheet": {
+        "title": "Distribute: {taskTitle}",
+        "employee_list_header": "Employees on shift",
+        "hours_input_label": "Hours",
+        "distributed_summary": "Distributed: {distributed}h / {total}h",
+        "remaining": "Remaining: {remaining}h",
+        "save": "Save distribution",
+        "save_later": "Distribute later",
+        "remaining_warning": "{remaining}h remaining",
+        "shift_time": "Shift: {start}–{end}"
+      },
+      "utilization": {
+        "title": "Team Utilization",
+        "date_label": "on {date}",
+        "employees_count": "{count, plural, one {# employee on shift} other {# employees on shift}}",
+        "hours_format": "{assigned}h / {total}h shift",
+        "bonus_badge": "+bonus",
+        "summary": "Available: {free}h / Total: {total}h",
+        "available": "Available",
+        "assigned": "Assigned"
+      },
+      "ai_hints": {
+        "title": "AI Suggestions",
+        "suggestion": "AI suggests: task \"{task}\" fits {employee} — {hours}h available",
+        "accept": "Accept",
+        "reject": "Reject"
+      },
+      "empty": {
+        "no_tasks_title": "All tasks distributed",
+        "no_tasks_description": "No unassigned tasks for the selected date",
+        "no_shifts_title": "No shifts today",
+        "no_shifts_description": "Add employees to shift to distribute tasks"
+      },
+      "toast": {
+        "distributed_success": "Task \"{task}\" distributed",
+        "distributed_error": "Distribution failed"
+      },
+      "forbidden": {
+        "tooltip": "Only store director can distribute tasks"
+      },
+      "loading": {
+        "tasks": "Loading tasks...",
+        "employees": "Loading employees..."
+      }
     },
     "taskDetail": {
       "breadcrumb_home": "Home",
