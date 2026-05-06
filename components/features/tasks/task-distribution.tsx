@@ -1083,39 +1083,46 @@ function StickyPlanBar({
 }: StickyPlanBarProps) {
   if (taskCount === 0) return null
 
+  // bottom-16 на mobile (64px) чтобы не перекрываться с MobileBottomNav (h-16, fixed),
+  // bottom-0 на md+ (нет mobile nav)
   return (
-    <div className="sticky bottom-0 -mx-4 md:-mx-6 px-4 md:px-6 py-3 bg-card/95 backdrop-blur border-t shadow-lg z-10">
-      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-        <div className="flex items-center gap-2 min-w-0">
-          <Wand2 className="size-4 text-warning shrink-0" />
-          <span className="text-sm font-medium truncate">
-            {t("plan_bar.summary", {
-              tasks: taskCount,
-              hours: minutesToHours(totalMinutes),
-            })}
-          </span>
-        </div>
-        <div className="flex items-center gap-2 sm:ml-auto">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={onReset}
-            disabled={isConfirming}
-            className="gap-1.5"
-          >
-            <RotateCcw className="size-3.5" />
-            {t("plan_bar.reset")}
-          </Button>
-          <Button
-            size="sm"
-            onClick={onConfirm}
-            disabled={!canEdit || isConfirming}
-            className="gap-1.5"
-          >
-            <CheckCircle2 className="size-3.5" />
-            {isConfirming ? t("plan_bar.confirming") : t("plan_bar.confirm")}
-          </Button>
-        </div>
+    <div className="sticky bottom-16 md:bottom-0 -mx-4 md:-mx-6 px-4 md:px-6 py-3 bg-card/95 backdrop-blur border-t shadow-lg z-30">
+      <div className="flex items-center gap-2 sm:gap-3">
+        <Wand2 className="size-4 text-warning shrink-0" />
+        <span className="text-xs sm:text-sm font-medium truncate min-w-0 flex-1">
+          {t("plan_bar.summary", {
+            tasks: taskCount,
+            hours: minutesToHours(totalMinutes),
+          })}
+        </span>
+        {/* Reset: на узких icon-only с tooltip; sm+ обычная */}
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onReset}
+                disabled={isConfirming}
+                className="shrink-0 gap-1.5"
+                aria-label={t("plan_bar.reset")}
+              >
+                <RotateCcw className="size-3.5" />
+                <span className="hidden sm:inline">{t("plan_bar.reset")}</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent className="sm:hidden">{t("plan_bar.reset")}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        <Button
+          size="sm"
+          onClick={onConfirm}
+          disabled={!canEdit || isConfirming}
+          className="shrink-0 gap-1.5"
+        >
+          <CheckCircle2 className="size-3.5" />
+          <span>{isConfirming ? t("plan_bar.confirming") : t("plan_bar.confirm")}</span>
+        </Button>
       </div>
     </div>
   )
@@ -1234,10 +1241,18 @@ export function TaskDistribution() {
     loadData()
   }, [selectedStoreId, currentDate, t])
 
-  // Handle distribute button click
+  // Handle distribute button click — закрываем employee sheet если открыт
   const handleDistribute = (task: UnassignedTask) => {
+    setEmployeeSheetOpen(false)
     setSelectedTask(task)
     setSheetOpen(true)
+  }
+
+  // Handle employee row click — закрываем task sheet если открыт
+  const handleSelectEmployee = (emp: EmployeeUtilization) => {
+    setSheetOpen(false)
+    setSelectedEmployee(emp)
+    setEmployeeSheetOpen(true)
   }
 
   // Auto-distribute: алгоритм предлагает план, кладём в локальный state.
@@ -1278,12 +1293,17 @@ export function TaskDistribution() {
   const handleResetPlan = () => {
     if (plan.size === 0) return
     setPlan(new Map())
+    setSheetOpen(false)
+    setEmployeeSheetOpen(false)
     toast.info(t("toast.plan_reset"))
   }
 
   // Подтвердить план — применяем все allocations через assignTaskToUser
   const handleConfirmPlan = async () => {
     if (!selectedStoreId || !canEdit || plan.size === 0) return
+    // Закрываем оба sheet'а — данные under них становятся stale после refresh
+    setSheetOpen(false)
+    setEmployeeSheetOpen(false)
     setIsConfirming(true)
     let okCount = 0
     let errCount = 0
@@ -1350,11 +1370,11 @@ export function TaskDistribution() {
             </TabsTrigger>
           </TabsList>
         </Tabs>
-        <div className="sm:ml-auto">
+        <div className="w-full sm:w-auto sm:ml-auto">
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
-                <span>
+                <span className="block w-full sm:w-auto">
                   <Button
                     variant="default"
                     size="sm"
@@ -1367,7 +1387,7 @@ export function TaskDistribution() {
                       tasks.length === 0 ||
                       employees.length === 0
                     }
-                    className="gap-1.5"
+                    className="gap-1.5 w-full sm:w-auto"
                   >
                     <Wand2 className="size-4" />
                     {isAutoRunning ? t("toolbar.auto_running") : t("toolbar.auto")}
@@ -1386,10 +1406,7 @@ export function TaskDistribution() {
       <MobileUtilizationCollapsible
         employees={employees}
         planMinByUser={planMinByUser}
-        onSelectEmployee={(emp) => {
-          setSelectedEmployee(emp)
-          setEmployeeSheetOpen(true)
-        }}
+        onSelectEmployee={handleSelectEmployee}
         isLoading={isLoadingEmployees}
         date={currentDate}
         t={t}
