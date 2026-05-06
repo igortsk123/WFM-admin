@@ -2242,6 +2242,14 @@
         "late_hint": "{minutes} min late",
         "overtime_hint": "{minutes} min overtime",
         "conflict_hint": "Overlaps with another shift",
+        "conflict_title": "Schedule conflict",
+        "conflict_reason": {
+          "OVERLAP": "Shift overlaps with another shift of the same employee",
+          "LATE_CLOSE": "Shift closed significantly later than planned end",
+          "OVERFLOW": "Actual time exceeded planned window by more than an hour",
+          "OTHER": "Mismatch between planned and actual schedule"
+        },
+        "planned_hint": "Shift not opened yet",
         "actions": {
           "open_shift": "Open shift",
           "reopen": "Reopen",

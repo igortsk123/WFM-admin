@@ -204,27 +204,70 @@ function ShiftBlock({ slot, onClick, onAction, compact = false }: ShiftBlockProp
           ) : null}
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="min-w-36">
+      <DropdownMenuContent align="start" className="min-w-56">
+        {/* Header — info всегда */}
+        <div className="px-2 py-1.5 text-xs">
+          <div className="font-medium text-foreground">{slot.user_name}</div>
+          <div className="text-muted-foreground">
+            {formatHM(slot.planned_start)}–{formatHM(slot.planned_end)}
+            {slot.zone_name ? ` · ${slot.zone_name}` : ""}
+          </div>
+          {slot.position_name && (
+            <div className="text-muted-foreground">{slot.position_name}</div>
+          )}
+        </div>
+
+        {/* Conflict explanation */}
+        {slot.has_conflict && (
+          <>
+            <div className="my-1 h-px bg-border" />
+            <div className="px-2 py-1.5 text-xs">
+              <div className="flex items-center gap-1.5 font-medium text-destructive">
+                <AlertTriangle className="size-3" />
+                {t("slot.conflict_title")}
+              </div>
+              <div className="mt-0.5 text-muted-foreground">
+                {t(`slot.conflict_reason.${slot.conflict_reason ?? "OTHER"}`)}
+              </div>
+            </div>
+          </>
+        )}
+
+        {/* Status-specific actions */}
+        {slot.status === "NEW" && (
+          <>
+            <div className="my-1 h-px bg-border" />
+            <div className="px-2 py-1 text-xs text-muted-foreground italic">
+              {t("slot.planned_hint")}
+            </div>
+          </>
+        )}
         {slot.status === "CLOSED" && (
-          <DropdownMenuItem
-            onClick={(e) => {
-              e.stopPropagation();
-              onAction("reopen", slot);
-            }}
-          >
-            {t("slot.actions.reopen")}
-          </DropdownMenuItem>
+          <>
+            <div className="my-1 h-px bg-border" />
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                onAction("reopen", slot);
+              }}
+            >
+              {t("slot.actions.reopen")}
+            </DropdownMenuItem>
+          </>
         )}
         {slot.status === "OPENED" && (
-          <DropdownMenuItem
-            onClick={(e) => {
-              e.stopPropagation();
-              onAction("force_close", slot);
-            }}
-            className="text-destructive focus:text-destructive"
-          >
-            {t("slot.actions.force_close")}
-          </DropdownMenuItem>
+          <>
+            <div className="my-1 h-px bg-border" />
+            <DropdownMenuItem
+              onClick={(e) => {
+                e.stopPropagation();
+                onAction("force_close", slot);
+              }}
+              className="text-destructive focus:text-destructive"
+            >
+              {t("slot.actions.force_close")}
+            </DropdownMenuItem>
+          </>
         )}
       </DropdownMenuContent>
     </DropdownMenu>
