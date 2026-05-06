@@ -53,17 +53,17 @@ jobs:
             echo "::endgroup::"
 
             echo "::group::Build new image"
-            # ВАЖНО: docker build должен реально завершиться успехом ДО swap'а.
-            # `| tail -30` маскирует exit code, поэтому используем tee + PIPESTATUS.
-            set -o pipefail
-            docker build -t wfm-admin:new . 2>&1 | tee /tmp/wfm-build.log | tail -30
-            BUILD_EXIT=${PIPESTATUS[0]}
-            if [ "$BUILD_EXIT" != "0" ]; then
-              echo "BUILD FAILED with exit $BUILD_EXIT — НЕ трогаем running контейнер"
-              tail -50 /tmp/wfm-build.log
-              exit "$BUILD_EXIT"
+            # Не использую `| tail` или PIPESTATUS — appleboy/ssh-action иногда
+            # запускает скрипт в sh, где PIPESTATUS не работает.
+            # `if !` достоверно ловит exit-code в любом POSIX shell.
+            if ! docker build -t wfm-admin:new . > /tmp/wfm-build.log 2>&1; then
+              echo "BUILD FAILED — НЕ трогаем running контейнер"
+              tail -60 /tmp/wfm-build.log
+              exit 1
             fi
-            # Дополнительно: image должен существовать
+            # Финальный exit-tail для CI лога (для удобства диагностики при success)
+            tail -10 /tmp/wfm-build.log
+            # Sanity: image должен существовать
             docker image inspect wfm-admin:new > /dev/null
             echo "::endgroup::"
 
