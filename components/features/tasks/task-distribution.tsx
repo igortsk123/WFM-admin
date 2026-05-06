@@ -17,14 +17,16 @@ import {
   Users,
   ChevronRight,
   ChevronDown,
+  Wand2,
 } from "lucide-react"
 
-import type { Store } from "@/lib/types"
+import type { FunctionalRole, Store } from "@/lib/types"
 import type { UnassignedTask, EmployeeUtilization, TaskDistributionAllocation } from "@/lib/api/distribution"
 import {
   getStoreUnassignedTasks,
   getStoreEmployeesUtilization,
   assignTaskToUser,
+  autoDistribute,
 } from "@/lib/api/distribution"
 import { getStores } from "@/lib/api/stores"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
@@ -719,9 +721,17 @@ export function TaskDistribution() {
   const [selectedTask, setSelectedTask] = React.useState<UnassignedTask | null>(null)
   const [sheetOpen, setSheetOpen] = React.useState(false)
   const [isSaving, setIsSaving] = React.useState(false)
+  const [isAutoRunning, setIsAutoRunning] = React.useState(false)
 
-  // Check if user can edit (STORE_DIRECTOR only)
-  const canEdit = user?.role === "STORE_DIRECTOR"
+  // Распределять может директор магазина и выше по иерархии
+  const DISTRIBUTOR_ROLES: FunctionalRole[] = [
+    "STORE_DIRECTOR",
+    "SUPERVISOR",
+    "REGIONAL",
+    "NETWORK_OPS",
+    "PLATFORM_ADMIN",
+  ]
+  const canEdit = !!user?.role && DISTRIBUTOR_ROLES.includes(user.role)
 
   // Get current date based on period
   const currentDate = React.useMemo(() => {
@@ -789,6 +799,46 @@ export function TaskDistribution() {
     setSheetOpen(true)
   }
 
+  // Auto-distribute: алгоритм предлагает план + сразу применяем (commit 1).
+  // Review-before-commit добавим в commit 2 с локальным plan-state.
+  const handleAutoDistribute = async () => {
+    if (!selectedStoreId || !canEdit) return
+    const plan = autoDistribute(tasks, employees)
+    if (plan.size === 0) {
+      toast.info(t("toast.auto_nothing"))
+      return
+    }
+    setIsAutoRunning(true)
+    let okCount = 0
+    let errCount = 0
+    for (const [taskId, allocations] of plan) {
+      try {
+        const res = await assignTaskToUser(taskId, allocations)
+        if (res.success) okCount++
+        else errCount++
+      } catch {
+        errCount++
+      }
+    }
+    // Refresh
+    try {
+      const [tasksRes, employeesRes] = await Promise.all([
+        getStoreUnassignedTasks(selectedStoreId, currentDate),
+        getStoreEmployeesUtilization(selectedStoreId, currentDate),
+      ])
+      setTasks(tasksRes.data)
+      setEmployees(employeesRes.data)
+    } catch {
+      // ignore — toast уже покажет факт
+    }
+    if (errCount > 0) {
+      toast.error(t("toast.auto_partial", { ok: okCount, err: errCount }))
+    } else {
+      toast.success(t("toast.auto_done", { count: okCount }))
+    }
+    setIsAutoRunning(false)
+  }
+
   // Handle save allocation
   const handleSaveAllocation = async (allocations: TaskDistributionAllocation[]) => {
     if (!selectedTask) return
@@ -848,6 +898,36 @@ export function TaskDistribution() {
             </TabsTrigger>
           </TabsList>
         </Tabs>
+        <div className="sm:ml-auto">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={handleAutoDistribute}
+                    disabled={
+                      !canEdit ||
+                      isAutoRunning ||
+                      isLoadingTasks ||
+                      isLoadingEmployees ||
+                      tasks.length === 0 ||
+                      employees.length === 0
+                    }
+                    className="gap-1.5"
+                  >
+                    <Wand2 className="size-4" />
+                    {isAutoRunning ? t("toolbar.auto_running") : t("toolbar.auto")}
+                  </Button>
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                {canEdit ? t("toolbar.auto_hint") : t("forbidden.tooltip")}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
       </div>
 
       {/* Mobile utilization collapsible */}

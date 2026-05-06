@@ -428,3 +428,88 @@ export async function clearTaskAllocations(
 
   return { success: true };
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// AUTO-DISTRIBUTE ALGORITHM (pure, sync — no server side-effects)
+// ═══════════════════════════════════════════════════════════════════
+
+/**
+ * Greedy plan: sort tasks by priority asc (1 = critical), для каждой —
+ * сначала кандидаты с совпадением зоны (employee.zones ∩ task.zone_name);
+ * если совпадений нет — fallback на всех со свободным временем.
+ * Внутри кандидатов сортировка по убыванию свободных минут (наименее
+ * загруженный первым). Аллоцируем greedy пока задача не закрыта или
+ * кандидаты не закончились.
+ *
+ * Возвращает план — Map<taskId, allocations>. Caller показывает план в UI
+ * для подтверждения, затем коммитит через assignTaskToUser per task.
+ *
+ * Не делает API-вызовов, не мутирует серверное состояние. Идемпотентна.
+ */
+export function autoDistribute(
+  tasks: UnassignedTask[],
+  employees: EmployeeUtilization[]
+): Map<string, TaskDistributionAllocation[]> {
+  const plan = new Map<string, TaskDistributionAllocation[]>();
+
+  // Mutable per-employee free minutes — shrinks as мы аллоцируем
+  const freeByUser = new Map<number, number>();
+  for (const emp of employees) {
+    freeByUser.set(
+      emp.user.id,
+      Math.max(0, emp.shift_total_min - emp.assigned_min)
+    );
+  }
+
+  // Sort: priority asc (1 = high, 100 = low), затем zone alpha для группировки
+  const sorted = [...tasks]
+    .filter((t) => t.remaining_minutes > 0)
+    .sort((a, b) => {
+      const pa = a.priority ?? 100;
+      const pb = b.priority ?? 100;
+      if (pa !== pb) return pa - pb;
+      return (a.zone_name ?? "").localeCompare(b.zone_name ?? "");
+    });
+
+  for (const task of sorted) {
+    let remaining = task.remaining_minutes;
+    const allocations: TaskDistributionAllocation[] = [];
+
+    // Step 1: zone match (по shift zone сотрудника)
+    const zoneMatch = task.zone_name
+      ? employees.filter(
+          (e) =>
+            e.user.zones?.includes(task.zone_name!) &&
+            (freeByUser.get(e.user.id) ?? 0) > 0
+        )
+      : [];
+
+    // Step 2: fallback all available если zone match пуст
+    const candidates =
+      zoneMatch.length > 0
+        ? zoneMatch
+        : employees.filter((e) => (freeByUser.get(e.user.id) ?? 0) > 0);
+
+    // Most-free first
+    const ranked = [...candidates].sort(
+      (a, b) =>
+        (freeByUser.get(b.user.id) ?? 0) - (freeByUser.get(a.user.id) ?? 0)
+    );
+
+    for (const emp of ranked) {
+      if (remaining <= 0) break;
+      const free = freeByUser.get(emp.user.id) ?? 0;
+      if (free <= 0) continue;
+      const allocate = Math.min(remaining, free);
+      allocations.push({ userId: emp.user.id, minutes: allocate });
+      freeByUser.set(emp.user.id, free - allocate);
+      remaining -= allocate;
+    }
+
+    if (allocations.length > 0) {
+      plan.set(task.id, allocations);
+    }
+  }
+
+  return plan;
+}

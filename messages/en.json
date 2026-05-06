@@ -779,7 +779,10 @@
           "today": "Today",
           "tomorrow": "Tomorrow",
           "custom": "Custom"
-        }
+        },
+        "auto": "Auto",
+        "auto_running": "Distributing…",
+        "auto_hint": "Auto-distribute: zone match first, then employees with most free time"
       },
       "sections": {
         "unassigned": "Unassigned Tasks",
@@ -830,10 +833,13 @@
       },
       "toast": {
         "distributed_success": "Task \"{task}\" distributed",
-        "distributed_error": "Distribution failed"
+        "distributed_error": "Distribution failed",
+        "auto_done": "{count, plural, one {# task} other {# tasks}} distributed automatically",
+        "auto_partial": "Distributed {ok}, errors: {err}",
+        "auto_nothing": "Nothing to distribute — everything is already assigned"
       },
       "forbidden": {
-        "tooltip": "Only store director can distribute tasks"
+        "tooltip": "Only store director and above can distribute tasks"
       },
       "loading": {
         "tasks": "Loading tasks...",
