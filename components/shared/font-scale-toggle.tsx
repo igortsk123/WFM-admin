@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
-type FontScale = "M" | "L" | "XL"
+type FontScale = "M" | "L" | "XL" | "XXL"
 
 const STORAGE_KEY = "wfm-font-scale"
 
@@ -33,6 +33,13 @@ function applyScale(scale: FontScale) {
   } else {
     document.documentElement.setAttribute("data-font-scale", scale)
   }
+}
+
+/** Краткий индикатор-бэйдж под иконкой когда не дефолт. */
+const SCALE_BADGE: Record<Exclude<FontScale, "M">, string> = {
+  L: "+10",
+  XL: "+20",
+  XXL: "+30",
 }
 
 /**
@@ -51,7 +58,7 @@ export function FontScaleToggle() {
   useEffect(() => {
     try {
       const stored = localStorage.getItem(STORAGE_KEY) as FontScale | null
-      if (stored === "L" || stored === "XL") {
+      if (stored === "L" || stored === "XL" || stored === "XXL") {
         setScale(stored)
         applyScale(stored)
       }
@@ -85,8 +92,8 @@ export function FontScaleToggle() {
               >
                 <Type className="size-4" />
                 {hydrated && scale !== "M" && (
-                  <span className="absolute -bottom-0.5 -right-0.5 text-[9px] font-bold leading-none bg-primary text-primary-foreground rounded-full size-3.5 flex items-center justify-center">
-                    {scale === "L" ? "+" : "++"}
+                  <span className="absolute -bottom-1 -right-1 text-[8px] font-bold leading-none bg-primary text-primary-foreground rounded-full px-1 py-0.5 min-w-[18px] text-center">
+                    {SCALE_BADGE[scale]}
                   </span>
                 )}
               </Button>
@@ -95,7 +102,7 @@ export function FontScaleToggle() {
           <TooltipContent>{t("tooltip")}</TooltipContent>
         </Tooltip>
       </TooltipProvider>
-      <DropdownMenuContent align="end" className="w-52">
+      <DropdownMenuContent align="end" className="w-56">
         <DropdownMenuLabel>{t("label")}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => changeScale("M")}>
@@ -105,16 +112,22 @@ export function FontScaleToggle() {
           {scale === "M" && <Check className="size-4 ml-2" />}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => changeScale("L")}>
-          <span className={cn("flex-1", scale === "L" && "font-medium")} style={{ fontSize: "1rem" }}>
+          <span className={cn("flex-1", scale === "L" && "font-medium")} style={{ fontSize: "0.95rem" }}>
             {t("l")}
           </span>
           {scale === "L" && <Check className="size-4 ml-2" />}
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => changeScale("XL")}>
-          <span className={cn("flex-1", scale === "XL" && "font-medium")} style={{ fontSize: "1.1rem" }}>
+          <span className={cn("flex-1", scale === "XL" && "font-medium")} style={{ fontSize: "1.05rem" }}>
             {t("xl")}
           </span>
           {scale === "XL" && <Check className="size-4 ml-2" />}
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => changeScale("XXL")}>
+          <span className={cn("flex-1", scale === "XXL" && "font-medium")} style={{ fontSize: "1.15rem" }}>
+            {t("xxl")}
+          </span>
+          {scale === "XXL" && <Check className="size-4 ml-2" />}
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
@@ -127,4 +140,4 @@ export function FontScaleToggle() {
  *
  * Use в app/layout.tsx через `<script dangerouslySetInnerHTML>`.
  */
-export const FONT_SCALE_HYDRATE_SCRIPT = `(function(){try{var s=localStorage.getItem('${STORAGE_KEY}');if(s==='L'||s==='XL'){document.documentElement.setAttribute('data-font-scale',s);}}catch(e){}})();`
+export const FONT_SCALE_HYDRATE_SCRIPT = `(function(){try{var s=localStorage.getItem('${STORAGE_KEY}');if(s==='L'||s==='XL'||s==='XXL'){document.documentElement.setAttribute('data-font-scale',s);}}catch(e){}})();`

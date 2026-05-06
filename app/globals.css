@@ -252,14 +252,17 @@
   }
 
   /* ═══════════════════════════════════════════════════════════════════
-     FONT SCALE — accessibility toggle (data-font-scale на <html>)
-     По стандарту WCAG 2.1 SC 1.4.4 — текст должен масштабироваться до 200%.
+     FONT SCALE — пользовательский переключатель размера (data-font-scale на <html>)
      Default = 16px (стандарт админок shadcn/ui, MUI, GitHub).
+     Соответствует WCAG 2.1 SC 1.4.4 (resize text 200%).
      ═══════════════════════════════════════════════════════════════════ */
   html[data-font-scale="L"] {
-    font-size: 17.6px; /* +10% — комфортно для повседневной работы */
+    font-size: 17.6px; /* +10% */
   }
   html[data-font-scale="XL"] {
-    font-size: 19.2px; /* +20% — для слабовидящих */
+    font-size: 19.2px; /* +20% */
+  }
+  html[data-font-scale="XXL"] {
+    font-size: 20.8px; /* +30% */
   }
 }
