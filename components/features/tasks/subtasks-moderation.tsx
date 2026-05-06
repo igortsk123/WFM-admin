@@ -8,17 +8,18 @@ import {
   SearchX,
   X,
   ChevronDown,
-  ChevronUp,
   Clock,
-  Lightbulb,
   ExternalLink,
   ChevronsUpDown,
   Check,
+  User,
+  UserCog,
 } from "lucide-react"
 import { Link } from "@/i18n/navigation"
 import { useLocale } from "next-intl"
 
 import type { SubtaskWithTaskTitle } from "@/lib/api/tasks"
+import type { SubtaskSuggestionSource } from "@/lib/types"
 import {
   getSubtasksPending,
   approveSubtask,
@@ -31,10 +32,10 @@ import { cn } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   Dialog,
   DialogContent,
@@ -42,12 +43,6 @@ import {
   DialogTitle,
   DialogFooter,
 } from "@/components/ui/dialog"
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet"
 import {
   Popover,
   PopoverContent,
@@ -65,8 +60,6 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 
 import { PageHeader } from "@/components/shared/page-header"
 import { FilterChip } from "@/components/shared/filter-chip"
-import { UserCell } from "@/components/shared/user-cell"
-import { ResponsiveDataTable } from "@/components/shared/responsive-data-table"
 import { EmptyState } from "@/components/shared/empty-state"
 import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet"
 
@@ -84,6 +77,12 @@ function relativeTime(isoDate: string, locale: string): string {
   return rtf.format(Math.round(diff / 86400000), "day")
 }
 
+function getInitials(firstName?: string, lastName?: string): string {
+  const f = firstName?.[0] ?? ""
+  const l = lastName?.[0] ?? ""
+  return `${f}${l}`.toUpperCase() || "?"
+}
+
 // ═══════════════════════════════════════════════════════════════════
 // TYPES
 // ═══════════════════════════════════════════════════════════════════
@@ -93,10 +92,36 @@ interface ComboOption {
   label: string
 }
 
-interface TableCol {
-  key: string
-  header: React.ReactNode
-  cell: (row: SubtaskWithTaskTitle) => React.ReactNode
+// ═══════════════════════════════════════════════════════════════════
+// SOURCE BADGE
+// ═══════════════════════════════════════════════════════════════════
+
+interface SourceBadgeProps {
+  source?: SubtaskSuggestionSource
+}
+
+function SourceBadge({ source }: SourceBadgeProps) {
+  const t = useTranslations("screen.subtasksModeration.source")
+
+  if (source === "worker") {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs font-medium text-primary bg-primary/10 border border-primary/20 rounded-full px-2 py-0.5">
+        <User className="size-3 shrink-0" />
+        {t("worker")}
+      </span>
+    )
+  }
+
+  if (source === "store_director") {
+    return (
+      <span className="inline-flex items-center gap-1 text-xs font-medium text-foreground bg-muted border border-border rounded-full px-2 py-0.5">
+        <UserCog className="size-3 shrink-0" />
+        {t("store_director")}
+      </span>
+    )
+  }
+
+  return null
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -219,143 +244,213 @@ function ComboboxFilter({ placeholder, options, value, onSelect, className }: Co
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// EXPAND SHEET (mobile)
+// EXPANDED BODY
 // ═══════════════════════════════════════════════════════════════════
 
-interface ExpandSheetProps {
-  open: boolean
-  subtask: SubtaskWithTaskTitle | null
-  onClose: () => void
+interface ExpandedBodyProps {
+  subtask: SubtaskWithTaskTitle
   onApprove: (id: number) => void
   onReject: (id: number) => void
 }
 
-function ExpandSheet({ open, subtask, onClose, onApprove, onReject }: ExpandSheetProps) {
+function ExpandedBody({ subtask, onApprove, onReject }: ExpandedBodyProps) {
   const t = useTranslations("screen.subtasksModeration")
 
-  if (!subtask) return null
-
   return (
-    <Sheet open={open} onOpenChange={(v) => { if (!v) onClose() }}>
-      <SheetContent side="bottom" className="max-h-[80vh] overflow-y-auto rounded-t-2xl">
-        <SheetHeader className="pb-3 border-b mb-4">
-          <SheetTitle className="text-base text-left">{t("expand_title")}</SheetTitle>
-        </SheetHeader>
-        <div className="flex flex-col gap-4">
+    <div
+      className="px-4 pb-4 pt-0 flex flex-col gap-4 border-t border-border mt-3"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Full subtask name */}
+      <div className="pt-3">
+        <p className="text-xs text-muted-foreground mb-0.5">{t("col_subtask")}</p>
+        <p className="text-sm font-medium text-foreground">{subtask.name}</p>
+      </div>
+
+      {/* Linked task */}
+      <div>
+        <p className="text-xs text-muted-foreground mb-0.5">{t("expand_used_in_tasks")}</p>
+        <Link
+          href={ADMIN_ROUTES.taskDetail(subtask.task_id)}
+          className="text-sm text-primary hover:underline inline-flex items-center gap-1"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <span>{subtask.task_title}</span>
+          <ExternalLink className="size-3.5 shrink-0" />
+        </Link>
+      </div>
+
+      {/* Duration + hints row */}
+      <div className="flex items-center gap-6">
+        {subtask.duration_min != null && (
           <div>
-            <p className="text-xs text-muted-foreground mb-1">{t("col_subtask")}</p>
-            <p className="font-medium text-foreground">{subtask.name}</p>
-            <p className="text-xs text-muted-foreground mt-0.5">{subtask.work_type_name} · {subtask.zone_name}</p>
+            <p className="text-xs text-muted-foreground mb-0.5">{t("col_duration")}</p>
+            <span className="flex items-center gap-1 text-sm text-foreground">
+              <Clock className="size-3.5 text-muted-foreground" />
+              {t("duration_min", { min: subtask.duration_min })}
+            </span>
           </div>
-          <div>
-            <p className="text-xs text-muted-foreground mb-1">{t("col_task")}</p>
-            <Link
-              href={ADMIN_ROUTES.taskDetail(subtask.task_id)}
-              className="text-sm text-primary flex items-center gap-1"
-              onClick={onClose}
-            >
-              {subtask.task_title}
-              <ExternalLink className="size-3.5" />
-            </Link>
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground mb-1">{t("col_store")}</p>
-            <p className="text-sm text-foreground">{subtask.store_name}</p>
-          </div>
-          {subtask.proposed_by && (
-            <div>
-              <p className="text-xs text-muted-foreground mb-1">{t("col_proposed_by")}</p>
-              <UserCell user={subtask.proposed_by} />
-            </div>
-          )}
-          <div className="flex gap-6">
-            <div>
-              <p className="text-xs text-muted-foreground mb-1">{t("col_duration")}</p>
-              <span className="flex items-center gap-1 text-sm">
-                <Clock className="size-3.5 text-muted-foreground" />
-                {t("duration_min", { min: subtask.duration_min ?? 0 })}
-              </span>
-            </div>
-            <div>
-              <p className="text-xs text-muted-foreground mb-1">{t("col_hints")}</p>
-              <span className="flex items-center gap-1 text-sm">
-                <Lightbulb className="size-3.5 text-muted-foreground" />
-                {subtask.hints_count}
-              </span>
-            </div>
-          </div>
-          {subtask.hints_count > 0 ? (
-            <div>
-              <p className="text-xs text-muted-foreground mb-1">{t("expand_hints")}</p>
-              <p className="text-sm text-foreground">{t("expand_hints_count", { count: subtask.hints_count })}</p>
-            </div>
-          ) : (
-            <p className="text-xs text-muted-foreground">{t("expand_no_hints")}</p>
-          )}
-          <div className="flex gap-3 pt-2 border-t">
-            <Button
-              className="flex-1 bg-success text-success-foreground hover:bg-success/90 h-11"
-              onClick={() => { onApprove(subtask.id); onClose() }}
-            >
-              {t("btn_approve")}
-            </Button>
-            <Button
-              variant="outline"
-              className="flex-1 h-11 border-destructive text-destructive hover:bg-destructive/10"
-              onClick={() => { onReject(subtask.id); onClose() }}
-            >
-              {t("btn_reject")}
-            </Button>
-          </div>
+        )}
+        <div>
+          <p className="text-xs text-muted-foreground mb-0.5">{t("expand_hints")}</p>
+          <p className="text-sm text-foreground">
+            {subtask.hints_count > 0
+              ? t("expand_hints_count", { count: subtask.hints_count })
+              : t("expand_no_hints")}
+          </p>
         </div>
-      </SheetContent>
-    </Sheet>
+      </div>
+
+      {/* Action buttons */}
+      <div className="flex gap-2 pt-1">
+        <Button
+          className="flex-1 h-11 bg-success text-success-foreground hover:bg-success/90"
+          onClick={() => onApprove(subtask.id)}
+        >
+          {t("btn_approve")}
+        </Button>
+        <Button
+          variant="outline"
+          className="flex-1 h-11 border-destructive text-destructive hover:bg-destructive/10"
+          onClick={() => onReject(subtask.id)}
+        >
+          {t("btn_reject")}
+        </Button>
+      </div>
+    </div>
   )
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// INLINE EXPAND ROW (desktop)
+// SUBTASK CARD
 // ═══════════════════════════════════════════════════════════════════
 
-interface ExpandRowProps {
+interface SubtaskCardProps {
   subtask: SubtaskWithTaskTitle
+  isExpanded: boolean
+  onToggle: () => void
+  onApprove: (id: number) => void
+  onReject: (id: number) => void
 }
 
-function ExpandRow({ subtask }: ExpandRowProps) {
-  const t = useTranslations("screen.subtasksModeration")
+function SubtaskCard({ subtask, isExpanded, onToggle, onApprove, onReject }: SubtaskCardProps) {
   const locale = useLocale()
+  const p = subtask.proposed_by
 
   return (
-    <div className="bg-muted/30 border-t border-border px-4 py-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-      <div>
-        <p className="text-xs text-muted-foreground mb-1">{t("expand_used_in_tasks")}</p>
-        <Link
-          href={ADMIN_ROUTES.taskDetail(subtask.task_id)}
-          className="text-sm text-primary hover:underline flex items-center gap-1"
-          target="_blank"
-          rel="noreferrer"
-        >
-          {subtask.task_title}
-          <ExternalLink className="size-3" />
-        </Link>
+    <div
+      className={cn(
+        "rounded-xl border border-border bg-card transition-colors cursor-pointer",
+        "hover:bg-accent",
+        isExpanded && "bg-accent/50"
+      )}
+      onClick={onToggle}
+      role="button"
+      aria-expanded={isExpanded}
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          onToggle()
+        }
+      }}
+    >
+      {/* Card header — always visible */}
+      <div className="flex items-start gap-3 p-4 min-h-[44px]">
+        {/* Main content */}
+        <div className="flex-1 min-w-0 flex flex-col gap-2">
+          {/* Top row: source badge */}
+          <div className="flex items-center justify-between gap-2">
+            <SourceBadge source={subtask.suggestion_source} />
+            <ChevronDown
+              className={cn(
+                "size-4 text-muted-foreground shrink-0 transition-transform duration-200",
+                isExpanded && "rotate-180"
+              )}
+            />
+          </div>
+
+          {/* Subtask name */}
+          <p className="text-sm font-semibold text-foreground line-clamp-2 leading-relaxed">
+            {subtask.name}
+          </p>
+
+          {/* Chips: work type + zone */}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <Badge
+              variant="secondary"
+              className="text-xs font-normal px-2 py-0.5 rounded-md"
+            >
+              {subtask.work_type_name}
+            </Badge>
+            {subtask.zone_name && subtask.zone_name !== "—" && (
+              <Badge
+                variant="outline"
+                className="text-xs font-normal px-2 py-0.5 rounded-md"
+              >
+                {subtask.zone_name}
+              </Badge>
+            )}
+          </div>
+
+          {/* Author row */}
+          {p && (
+            <div className="flex items-center gap-2 pt-0.5">
+              <Avatar className="size-6 shrink-0">
+                <AvatarImage src={(p as { avatar_url?: string }).avatar_url} alt={`${p.first_name} ${p.last_name}`} />
+                <AvatarFallback className="text-[10px]">
+                  {getInitials(p.first_name, p.last_name)}
+                </AvatarFallback>
+              </Avatar>
+              <span className="text-xs text-muted-foreground truncate">
+                {p.last_name} {p.first_name}
+                {p.middle_name ? ` ${p.middle_name[0]}.` : ""}
+                {" · "}
+                {subtask.created_at ? relativeTime(subtask.created_at, locale) : "—"}
+              </span>
+            </div>
+          )}
+
+          {/* Store + frequency for worker-sourced subtasks */}
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className="text-xs text-muted-foreground">{subtask.store_name}</span>
+          </div>
+        </div>
       </div>
-      <div>
-        <p className="text-xs text-muted-foreground mb-1">{t("expand_hints")}</p>
-        <p className="text-sm text-foreground">
-          {subtask.hints_count > 0
-            ? t("expand_hints_count", { count: subtask.hints_count })
-            : t("expand_no_hints")}
-        </p>
+
+      {/* Expanded body */}
+      {isExpanded && (
+        <ExpandedBody
+          subtask={subtask}
+          onApprove={onApprove}
+          onReject={onReject}
+        />
+      )}
+    </div>
+  )
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// SKELETON CARD
+// ═══════════════════════════════════════════════════════════════════
+
+function SubtaskCardSkeleton() {
+  return (
+    <div className="rounded-xl border border-border bg-card p-4 flex flex-col gap-3">
+      <div className="flex items-center justify-between">
+        <Skeleton className="h-5 w-28 rounded-full" />
+        <Skeleton className="h-4 w-4 rounded" />
       </div>
-      <div>
-        <p className="text-xs text-muted-foreground mb-1">{t("col_store")}</p>
-        <p className="text-sm text-foreground">{subtask.store_name}</p>
+      <Skeleton className="h-4 w-3/4" />
+      <Skeleton className="h-4 w-1/2" />
+      <div className="flex items-center gap-1.5">
+        <Skeleton className="h-5 w-20 rounded-md" />
+        <Skeleton className="h-5 w-16 rounded-md" />
       </div>
-      <div>
-        <p className="text-xs text-muted-foreground mb-1">{t("col_created")}</p>
-        <p className="text-sm text-foreground">
-          {subtask.created_at ? relativeTime(subtask.created_at, locale) : "—"}
-        </p>
+      <div className="flex items-center gap-2">
+        <Skeleton className="h-6 w-6 rounded-full" />
+        <Skeleton className="h-4 w-40" />
       </div>
     </div>
   )
@@ -368,7 +463,6 @@ function ExpandRow({ subtask }: ExpandRowProps) {
 export function SubtasksModeration() {
   const t = useTranslations("screen.subtasksModeration")
   const tc = useTranslations("common")
-  const locale = useLocale()
 
   // ── data state ──
   const [rows, setRows] = React.useState<SubtaskWithTaskTitle[]>([])
@@ -387,19 +481,11 @@ export function SubtasksModeration() {
   const [workTypeId, setWorkTypeId] = React.useState("")
   const [zoneId, setZoneId] = React.useState("")
 
-  // ── selection ──
-  const [selected, setSelected] = React.useState<Set<number>>(new Set())
-
-  // ── expand (desktop inline) ──
+  // ── expand state ──
   const [expandedId, setExpandedId] = React.useState<number | null>(null)
-
-  // ── expand sheet (mobile) ──
-  const [sheetSubtask, setSheetSubtask] = React.useState<SubtaskWithTaskTitle | null>(null)
-  const [sheetOpen, setSheetOpen] = React.useState(false)
 
   // ── reject dialog ──
   const [rejectTarget, setRejectTarget] = React.useState<number | null>(null)
-  const [rejectBulk, setRejectBulk] = React.useState(false)
 
   // ── load filter options ──
   React.useEffect(() => {
@@ -447,7 +533,7 @@ export function SubtasksModeration() {
   const handleApprove = async (id: number) => {
     setRows((prev) => prev.filter((r) => r.id !== id))
     setTotal((prev) => prev - 1)
-    setSelected((prev) => { const s = new Set(prev); s.delete(id); return s })
+    if (expandedId === id) setExpandedId(null)
     const res = await approveSubtask(String(id))
     if (res.success) {
       toast.success(t("toast_approved"))
@@ -458,21 +544,13 @@ export function SubtasksModeration() {
 
   // ── reject ──
   const handleRejectConfirm = async (reason: string) => {
-    if (rejectBulk) {
-      const ids = Array.from(selected)
-      setRows((prev) => prev.filter((r) => !selected.has(r.id)))
-      setTotal((prev) => prev - ids.length)
-      setSelected(new Set())
-      setRejectTarget(null)
-      setRejectBulk(false)
-      await Promise.all(ids.map((id) => rejectSubtask(String(id), reason)))
-      toast.success(t("toast_bulk_rejected", { count: ids.length }))
-    } else if (rejectTarget !== null) {
-      setRows((prev) => prev.filter((r) => r.id !== rejectTarget))
+    if (rejectTarget !== null) {
+      const id = rejectTarget
+      setRows((prev) => prev.filter((r) => r.id !== id))
       setTotal((prev) => prev - 1)
-      setSelected((prev) => { const s = new Set(prev); s.delete(rejectTarget); return s })
+      if (expandedId === id) setExpandedId(null)
       setRejectTarget(null)
-      const res = await rejectSubtask(String(rejectTarget), reason)
+      const res = await rejectSubtask(String(id), reason)
       if (res.success) {
         toast.success(t("toast_rejected"))
       } else {
@@ -481,232 +559,6 @@ export function SubtasksModeration() {
     }
   }
 
-  // ── bulk approve ──
-  const handleBulkApprove = async () => {
-    const ids = Array.from(selected)
-    setRows((prev) => prev.filter((r) => !selected.has(r.id)))
-    setTotal((prev) => prev - ids.length)
-    setSelected(new Set())
-    await Promise.all(ids.map((id) => approveSubtask(String(id))))
-    toast.success(t("toast_bulk_approved", { count: ids.length }))
-  }
-
-  // ── select helpers ──
-  const toggleSelect = (id: number) => {
-    setSelected((prev) => {
-      const s = new Set(prev)
-      if (s.has(id)) s.delete(id)
-      else s.add(id)
-      return s
-    })
-  }
-
-  const toggleSelectAll = () => {
-    if (selected.size === rows.length) setSelected(new Set())
-    else setSelected(new Set(rows.map((r) => r.id)))
-  }
-
-  // ── columns ──
-  const columns: TableCol[] = React.useMemo(
-    () => [
-      {
-        key: "select",
-        header: (
-          <Checkbox
-            checked={rows.length > 0 && selected.size === rows.length}
-            onCheckedChange={toggleSelectAll}
-            aria-label="Select all"
-          />
-        ),
-        cell: (sub) => (
-          <Checkbox
-            checked={selected.has(sub.id)}
-            onCheckedChange={() => toggleSelect(sub.id)}
-            aria-label={`Select ${sub.name}`}
-            onClick={(e) => e.stopPropagation()}
-          />
-        ),
-      },
-      {
-        key: "name",
-        header: t("col_subtask"),
-        cell: (sub) => {
-          const isExpanded = expandedId === sub.id
-          return (
-            <div className="flex flex-col min-w-0 max-w-[280px]">
-              <button
-                className="text-sm font-medium text-foreground hover:text-primary text-left truncate flex items-center gap-1"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setExpandedId(isExpanded ? null : sub.id)
-                }}
-              >
-                {sub.name}
-                {isExpanded ? (
-                  <ChevronUp className="size-3.5 text-muted-foreground shrink-0" />
-                ) : (
-                  <ChevronDown className="size-3.5 text-muted-foreground shrink-0" />
-                )}
-              </button>
-              <span className="text-xs text-muted-foreground truncate">
-                {sub.work_type_name} · {sub.zone_name}
-              </span>
-            </div>
-          )
-        },
-      },
-      {
-        key: "task_title",
-        header: t("col_task"),
-        cell: (sub) => (
-          <Link
-            href={ADMIN_ROUTES.taskDetail(sub.task_id)}
-            className="text-sm text-primary hover:underline flex items-center gap-1 max-w-[200px] truncate"
-            onClick={(e) => e.stopPropagation()}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <span className="truncate">{sub.task_title}</span>
-            <ExternalLink className="size-3 shrink-0" />
-          </Link>
-        ),
-      },
-      {
-        key: "store_name",
-        header: t("col_store"),
-        cell: (sub) => (
-          <span className="text-sm text-foreground whitespace-nowrap">{sub.store_name}</span>
-        ),
-      },
-      {
-        key: "proposed_by",
-        header: t("col_proposed_by"),
-        cell: (sub) => {
-          const p = sub.proposed_by
-          if (!p) return <span className="text-muted-foreground text-sm">—</span>
-          return <UserCell user={p} />
-        },
-      },
-      {
-        key: "duration_min",
-        header: t("col_duration"),
-        cell: (sub) => (
-          <span className="flex items-center gap-1.5 text-sm text-foreground whitespace-nowrap">
-            <Clock className="size-3.5 text-muted-foreground" />
-            {t("duration_min", { min: sub.duration_min ?? 0 })}
-          </span>
-        ),
-      },
-      {
-        key: "hints_count",
-        header: t("col_hints"),
-        cell: (sub) => (
-          <span className="flex items-center gap-1.5 text-sm text-foreground">
-            <Lightbulb className="size-3.5 text-muted-foreground" />
-            {sub.hints_count}
-          </span>
-        ),
-      },
-      {
-        key: "created_at",
-        header: t("col_created"),
-        cell: (sub) => {
-          const d = sub.created_at
-          if (!d) return <span className="text-muted-foreground text-sm">—</span>
-          return (
-            <span className="text-sm text-muted-foreground whitespace-nowrap">
-              {relativeTime(d, locale)}
-            </span>
-          )
-        },
-      },
-      {
-        key: "actions",
-        header: t("col_actions"),
-        cell: (sub) => (
-          <div className="flex items-center gap-2" onClick={(e) => e.stopPropagation()}>
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-8 text-success hover:bg-success/10 hover:text-success text-xs px-3"
-              onClick={() => handleApprove(sub.id)}
-            >
-              {t("btn_approve")}
-            </Button>
-            <Button
-              size="sm"
-              variant="ghost"
-              className="h-8 text-destructive hover:bg-destructive/10 hover:text-destructive text-xs px-3"
-              onClick={() => setRejectTarget(sub.id)}
-            >
-              {t("btn_reject")}
-            </Button>
-          </div>
-        ),
-      },
-    ],
-    [rows, selected, expandedId, t, locale]
-  )
-
-  // ── mobile card render ──
-  const mobileCardRender = (sub: SubtaskWithTaskTitle) => (
-    <div
-      className="flex flex-col gap-2"
-      onClick={() => {
-        setSheetSubtask(sub)
-        setSheetOpen(true)
-      }}
-    >
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2 min-w-0">
-          <Checkbox
-            checked={selected.has(sub.id)}
-            onCheckedChange={() => toggleSelect(sub.id)}
-            onClick={(e) => e.stopPropagation()}
-            className="mt-0.5 shrink-0"
-            aria-label={`Select ${sub.name}`}
-          />
-          <div className="min-w-0">
-            <p className="text-sm font-medium text-foreground truncate">{sub.name}</p>
-            <p className="text-xs text-muted-foreground truncate">{sub.task_title} · {sub.store_name}</p>
-          </div>
-        </div>
-      </div>
-      <div className="flex items-center gap-3 text-xs text-muted-foreground pl-8">
-        <span className="flex items-center gap-1">
-          <Clock className="size-3.5" />
-          {t("duration_min", { min: sub.duration_min ?? 0 })}
-        </span>
-        {sub.hints_count > 0 && (
-          <span className="flex items-center gap-1">
-            <Lightbulb className="size-3.5" />
-            {sub.hints_count}
-          </span>
-        )}
-      </div>
-      <div className="flex gap-2 mt-1 pl-8">
-        <Button
-          size="sm"
-          variant="ghost"
-          className="h-9 flex-1 text-success hover:bg-success/10 hover:text-success text-xs touch-target"
-          onClick={(e) => { e.stopPropagation(); handleApprove(sub.id) }}
-        >
-          {t("btn_approve")}
-        </Button>
-        <Button
-          size="sm"
-          variant="ghost"
-          className="h-9 flex-1 text-destructive hover:bg-destructive/10 hover:text-destructive text-xs touch-target"
-          onClick={(e) => { e.stopPropagation(); setRejectTarget(sub.id) }}
-        >
-          {t("btn_reject")}
-        </Button>
-      </div>
-    </div>
-  )
-
-  // ── custom table with inline expand rows ──
-  const _tableData = rows
   const isEmpty = !isLoading && rows.length === 0
   const isFiltered = !!(search || storeId || workTypeId || zoneId)
 
@@ -829,160 +681,57 @@ export function SubtasksModeration() {
         </Alert>
       )}
 
-      {/* Table — desktop */}
-      <div className="hidden md:block">
-        {isLoading ? (
-          <div className="rounded-lg border border-border overflow-hidden">
-            <table className="w-full">
-              <tbody>
-                {Array.from({ length: 6 }).map((_, i) => (
-                  <tr key={i} className="border-b border-border last:border-0">
-                    {[48, 280, 200, 160, 180, 80, 60, 80, 140].map((w, j) => (
-                      <td key={j} className="px-4 py-3">
-                        <Skeleton className="h-4" style={{ width: w }} />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ) : isEmpty ? (
-          isFiltered ? (
-            <EmptyState
-              icon={SearchX}
-              title={t("empty_filtered_title")}
-              description={t("empty_filtered_desc")}
-            />
-          ) : (
-            <EmptyState
-              icon={CheckCircle2}
-              title={t("empty_queue_title")}
-              description={t("empty_queue_desc")}
-              className="[&_svg]:text-success"
-            />
-          )
+      {/* Card list */}
+      {isLoading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <SubtaskCardSkeleton key={i} />
+          ))}
+        </div>
+      ) : isEmpty ? (
+        isFiltered ? (
+          <EmptyState
+            icon={SearchX}
+            title={t("empty_filtered_title")}
+            description={t("empty_filtered_desc")}
+          />
         ) : (
-          <div className="rounded-lg border border-border overflow-hidden">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-muted/30 border-b border-border">
-                  {columns.map((col) => (
-                    <th
-                      key={col.key}
-                      className="text-left text-xs text-muted-foreground uppercase tracking-wide h-9 px-4 font-medium"
-                    >
-                      {col.header}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row) => (
-                  <React.Fragment key={row.id}>
-                    <tr
-                      className={cn(
-                        "border-b border-border hover:bg-muted/20 transition-colors",
-                        selected.has(row.id) && "bg-accent/30"
-                      )}
-                    >
-                      {columns.map((col) => (
-                        <td key={col.key} className="px-4 py-3 align-middle">
-                          {col.cell(row)}
-                        </td>
-                      ))}
-                    </tr>
-                    {expandedId === row.id && (
-                      <tr>
-                        <td colSpan={columns.length} className="p-0">
-                          <ExpandRow subtask={row} />
-                        </td>
-                      </tr>
-                    )}
-                  </React.Fragment>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
-
-      {/* Table — mobile */}
-      <div className="md:hidden">
-        <ResponsiveDataTable<SubtaskWithTaskTitle>
-          columns={[]}
-          data={rows}
-          mobileCardRender={mobileCardRender}
-          isLoading={isLoading}
-          isEmpty={isEmpty}
-          emptyMessage={
-            isFiltered
-              ? { title: t("empty_filtered_title"), description: t("empty_filtered_desc") }
-              : { title: t("empty_queue_title"), description: t("empty_queue_desc") }
-          }
-        />
-      </div>
-
-      {/* Bulk action bar */}
-      {selected.size > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 z-50 md:sticky md:bottom-4 bg-card border-t md:border border-border md:rounded-lg shadow-lg px-4 py-3 flex items-center gap-3">
-          <span className="text-sm font-medium text-foreground shrink-0">
-            {t("bulk_selected", { count: selected.size })}
-          </span>
-          <div className="flex items-center gap-2 ml-auto">
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-9 border-success text-success hover:bg-success/10"
-              onClick={handleBulkApprove}
-            >
-              {t("bulk_approve_all")}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-9 border-destructive text-destructive hover:bg-destructive/10"
-              onClick={() => setRejectBulk(true)}
-            >
-              {t("bulk_reject_all")}
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-9 text-muted-foreground"
-              onClick={() => setSelected(new Set())}
-            >
-              <X className="size-4 mr-1" />
-              {t("bulk_clear")}
-            </Button>
-          </div>
+          <EmptyState
+            icon={CheckCircle2}
+            title={t("empty_queue_title")}
+            description={t("empty_queue_desc")}
+            className="[&_svg]:text-success"
+          />
+        )
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          {rows.map((row) => (
+            <SubtaskCard
+              key={row.id}
+              subtask={row}
+              isExpanded={expandedId === row.id}
+              onToggle={() => setExpandedId(expandedId === row.id ? null : row.id)}
+              onApprove={handleApprove}
+              onReject={(id) => setRejectTarget(id)}
+            />
+          ))}
         </div>
       )}
 
-      {/* Reject dialog (single) */}
+      {/* Reject dialog */}
       <RejectDialog
-        open={rejectTarget !== null && !rejectBulk}
+        open={rejectTarget !== null}
         title={t("reject_dialog_title")}
         onConfirm={handleRejectConfirm}
         onClose={() => setRejectTarget(null)}
       />
 
-      {/* Reject dialog (bulk) */}
-      <RejectDialog
-        open={rejectBulk}
-        title={t("bulk_reject_dialog_title")}
-        onConfirm={handleRejectConfirm}
-        onClose={() => setRejectBulk(false)}
-      />
-
-      {/* Mobile expand sheet */}
-      <ExpandSheet
-        open={sheetOpen}
-        subtask={sheetSubtask}
-        onClose={() => setSheetOpen(false)}
-        onApprove={handleApprove}
-        onReject={(id) => { setSheetOpen(false); setRejectTarget(id) }}
-      />
+      {/* Clear selection pill (if filter is active, show count) */}
+      {!isLoading && total > 0 && (
+        <p className="text-xs text-muted-foreground text-center">
+          {t("counter", { count: total })}
+        </p>
+      )}
     </div>
   )
 }
