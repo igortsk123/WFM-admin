@@ -466,10 +466,28 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="min-w-[200px]">
-        <DropdownMenuItem onClick={() => router.push(ADMIN_ROUTES.taskEdit(task.id))}>
-          <Pencil className="size-4 mr-2" />
-          {t("action_edit")}
-        </DropdownMenuItem>
+        {/* Edit: STORE_DIRECTOR может редактировать только если task.editable_by_store=true
+            (т.е. он сам её создал). Спущенные сверху задачи — read-only для него. */}
+        {isStoreDirector && task.editable_by_store === false ? (
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none opacity-50">
+                  <Pencil className="size-4 mr-2" />
+                  {t("action_edit")}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="text-xs max-w-48">{t("action_edit_disabled_hint")}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        ) : (
+          <DropdownMenuItem onClick={() => router.push(ADMIN_ROUTES.taskEdit(task.id))}>
+            <Pencil className="size-4 mr-2" />
+            {t("action_edit")}
+          </DropdownMenuItem>
+        )}
         <DropdownMenuItem onClick={() => router.push(`${ADMIN_ROUTES.taskNew}?duplicate=${task.id}`)}>
           <Copy className="size-4 mr-2" />
           {t("action_duplicate")}

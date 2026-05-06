@@ -992,6 +992,7 @@
       "badge_chain": "Конвейер {pos}/{total}",
       "action_refresh": "Обновить",
       "action_edit": "Редактировать",
+      "action_edit_disabled_hint": "Задача спущена сверху — редактировать может только супервайзер и выше. Подзадачи можно добавлять.",
       "action_duplicate": "Дублировать",
       "action_transfer": "Передать другому",
       "action_change_status": "Изменить статус",

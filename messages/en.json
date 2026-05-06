@@ -837,6 +837,7 @@
       "badge_chain": "Chain {pos}/{total}",
       "action_refresh": "Refresh",
       "action_edit": "Edit",
+      "action_edit_disabled_hint": "Task pushed from above — only supervisors and higher can edit. You can still add subtasks.",
       "action_duplicate": "Duplicate",
       "action_transfer": "Transfer",
       "action_change_status": "Change status",
