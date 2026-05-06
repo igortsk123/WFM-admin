@@ -39,6 +39,24 @@ const ADMIN_PREFIXES = [
   "/subtasks",
 ];
 
+/**
+ * Очистить Location header от внутреннего порта listener'а.
+ * Next.js standalone (PORT=3000) генерирует абсолютные URL с этим портом
+ * при работе за reverse proxy — даже если Host header без порта. Эта функция
+ * убирает `:3000` из Location, чтобы редиректы оставались на основном домене.
+ */
+function stripUpstreamPort(response: NextResponse): NextResponse {
+  const location = response.headers.get("location");
+  if (!location) return response;
+  // Убираем :3000 из абсолютных URL (https://host:3000/... → https://host/...)
+  // и из относительных protocol-less (//host:3000/... → //host/...)
+  const fixed = location.replace(/^(https?:\/\/[^/:]+):3000(\/|$)/, "$1$2");
+  if (fixed !== location) {
+    response.headers.set("location", fixed);
+  }
+  return response;
+}
+
 export default function middleware(request: NextRequest): NextResponse {
   const { pathname } = request.nextUrl;
 
@@ -54,7 +72,8 @@ export default function middleware(request: NextRequest): NextResponse {
   ) {
     const agentUrl = request.nextUrl.clone();
     agentUrl.pathname = "/agent";
-    return NextResponse.redirect(agentUrl);
+    agentUrl.port = "";
+    return stripUpstreamPort(NextResponse.redirect(agentUrl));
   }
 
   // ── Guard: non-AGENT (and non-PLATFORM_ADMIN) trying to access /agent ───────
@@ -66,11 +85,12 @@ export default function middleware(request: NextRequest): NextResponse {
   ) {
     const dashboardUrl = request.nextUrl.clone();
     dashboardUrl.pathname = "/dashboard";
-    return NextResponse.redirect(dashboardUrl);
+    dashboardUrl.port = "";
+    return stripUpstreamPort(NextResponse.redirect(dashboardUrl));
   }
 
   // Let next-intl handle locale routing for everything else
-  return handleI18nRouting(request);
+  return stripUpstreamPort(handleI18nRouting(request));
 }
 
 export const config = {
