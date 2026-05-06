@@ -52,6 +52,16 @@ jobs:
             git log -1 --oneline
             echo "::endgroup::"
 
+            echo "::group::Pre-build cleanup"
+            # Чистим dangling images + старый builder cache ДО build, чтобы
+            # избежать «no space left on device» при docker build (50G partition
+            # быстро забивается интермедиатами). Tagged images (:latest, :prev)
+            # НЕ удаляются — `prune` без `-a` чистит только dangling.
+            docker image prune -f 2>&1 | tail -3
+            docker builder prune -af --filter "until=2h" 2>&1 | tail -3
+            df -h / | tail -1
+            echo "::endgroup::"
+
             echo "::group::Build new image"
             # Не использую `| tail` или PIPESTATUS — appleboy/ssh-action иногда
             # запускает скрипт в sh, где PIPESTATUS не работает.
