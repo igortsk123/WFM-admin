@@ -43,7 +43,7 @@ jobs:
           command_timeout: 15m
           script_stop: true
           script: |
-            set -e
+            set -euo pipefail
 
             echo "::group::Pull latest main"
             cd /opt/wfm-admin
@@ -53,7 +53,18 @@ jobs:
             echo "::endgroup::"
 
             echo "::group::Build new image"
-            docker build -t wfm-admin:new . 2>&1 | tail -30
+            # ВАЖНО: docker build должен реально завершиться успехом ДО swap'а.
+            # `| tail -30` маскирует exit code, поэтому используем tee + PIPESTATUS.
+            set -o pipefail
+            docker build -t wfm-admin:new . 2>&1 | tee /tmp/wfm-build.log | tail -30
+            BUILD_EXIT=${PIPESTATUS[0]}
+            if [ "$BUILD_EXIT" != "0" ]; then
+              echo "BUILD FAILED with exit $BUILD_EXIT — НЕ трогаем running контейнер"
+              tail -50 /tmp/wfm-build.log
+              exit "$BUILD_EXIT"
+            fi
+            # Дополнительно: image должен существовать
+            docker image inspect wfm-admin:new > /dev/null
             echo "::endgroup::"
 
             echo "::group::Blue-green swap"
