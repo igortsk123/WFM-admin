@@ -198,8 +198,9 @@
       "tooltip": "Font size",
       "label": "Font size",
       "m": "Standard",
-      "l": "Larger",
-      "xl": "Large (low-vision)"
+      "l": "10% larger",
+      "xl": "20% larger",
+      "xxl": "30% larger"
     }
   },
   "agent": {
