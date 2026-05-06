@@ -156,7 +156,10 @@ export function FreelancerDetail({ freelancerId }: Props) {
                       </Link>
                     </span>
                   ) : (
-                    <span className="text-warning">{tStatus("no_agent")}</span>
+                    <span className="inline-flex items-center gap-1 text-muted-foreground">
+                      <Building2 className="size-3.5" />
+                      {tStatus("no_agent")}
+                    </span>
                   )}
                   {data.preferred_timezone && (
                     <span className="inline-flex items-center gap-1">

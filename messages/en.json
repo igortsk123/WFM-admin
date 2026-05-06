@@ -6270,6 +6270,7 @@
         "search_placeholder": "Search by name or phone",
         "agent": "Agent",
         "agent_any": "Any agent",
+        "agent_none": "No agent (independent)",
         "available_only": "Available only"
       },
       "columns": {
