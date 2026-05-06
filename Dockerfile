@@ -38,8 +38,8 @@ ENV HOSTNAME=0.0.0.0
 RUN addgroup --system --gid 1001 nodejs \
     && adduser --system --uid 1001 nextjs
 
-# Standalone output даёт только то что нужно
-COPY --from=builder /app/public ./public
+# Standalone output даёт только то что нужно.
+# /public опционально — копируем только если он есть (в этом проекте пока нет)
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
