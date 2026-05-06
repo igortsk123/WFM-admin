@@ -927,6 +927,12 @@
       "breadcrumb_home": "Главная",
       "breadcrumb_tasks": "Задачи",
       "breadcrumb_distribute": "Распределение",
+      "hm": {
+        "zero": "0 мин",
+        "h_only": "{h} ч",
+        "m_only": "{m} мин",
+        "h_m": "{h} ч {m} мин"
+      },
       "toolbar": {
         "store": "Магазин",
         "store_placeholder": "Выберите магазин",
@@ -944,12 +950,12 @@
         "assigned": "Распределённые задачи"
       },
       "taskCard": {
-        "unassigned_hours": "Нераспределено: {remaining} ч из {total} ч",
+        "unassigned_hours": "Нераспределено: {remaining} из {total}",
         "fully_distributed": "Полностью распределено",
         "full_after_confirm": "Будет распределено после подтверждения",
         "distribute": "Распределить",
         "edit_plan": "Изменить план",
-        "in_plan_badge": "+{hours} ч в плане",
+        "in_plan_badge": "+{time} в плане",
         "zone": "Зона",
         "work_type": "Тип работы",
         "source_ai": "Предложено ИИ",
@@ -958,7 +964,7 @@
       },
       "zone_group": {
         "no_zone": "Без зоны",
-        "summary": "{distributed} ч / {planned} ч"
+        "summary": "{distributed} / {planned}"
       },
       "view_mode": {
         "by_task": "По задачам",
@@ -966,10 +972,10 @@
       },
       "by_employee": {
         "section_title": "Сотрудники на смене",
-        "free_label": "Свободно: {hours} ч"
+        "free_label": "Свободно: {time}"
       },
       "plan_bar": {
-        "summary": "В плане: {tasks, plural, one {# задача} few {# задачи} many {# задач} other {# задач}}, {hours} ч",
+        "summary": "В плане: {tasks, plural, one {# задача} few {# задачи} many {# задач} other {# задач}}, {time}",
         "reset": "Сбросить",
         "confirm": "Подтвердить план",
         "confirming": "Применяю…"
@@ -977,7 +983,7 @@
       "employeeSheet": {
         "shift_label": "Смена: {shift}",
         "utilization_label": "Загрузка после плана",
-        "hours_breakdown": "Назначено: {assigned} ч · в плане: +{plan} ч · смена: {total} ч",
+        "hours_breakdown": "Назначено: {assigned} · в плане: +{plan} · смена: {total}",
         "plan_section": "Задачи в плане",
         "plan_empty": "В плане пока нет задач для этого сотрудника",
         "add_section": "Добавить задачу",
@@ -986,11 +992,11 @@
         "add_picker_placeholder": "Выберите задачу…",
         "add_picker_search": "Поиск…",
         "add_picker_empty": "Не найдено",
-        "add_picker_remaining": "Осталось {hours} ч",
-        "add_free_hint": "Свободно у сотрудника: {hours} ч",
-        "over_shift_warning": "Сверх смены: +{hours} ч (уведомим супервайзера)",
+        "add_picker_remaining": "Осталось {time}",
+        "add_free_hint": "Свободно у сотрудника: {time}",
+        "over_shift_warning": "Сверх смены: +{time}",
         "over_shift_warning_full": "Смена полностью занята — назначение будет сверх плана",
-        "over_task_warning": "Сверх плана задачи: +{hours} ч",
+        "over_task_warning": "Сверх плана задачи: +{time}",
         "add_button": "Добавить в план",
         "remove_aria": "Убрать из плана",
         "close": "Закрыть"
@@ -999,21 +1005,21 @@
         "title": "Распределить: {taskTitle}",
         "employee_list_header": "Сотрудники на смене",
         "hours_input_label": "Часов",
-        "distributed_summary": "Распределено: {distributed} ч / {total} ч",
-        "remaining": "Осталось: {remaining} ч",
-        "over_task": "Сверх плана задачи: +{over} ч",
+        "distributed_summary": "Распределено: {distributed} / {total}",
+        "remaining": "Осталось: {remaining}",
+        "over_task": "Сверх плана задачи: +{over}",
         "save": "Сохранить распределение",
         "save_later": "Распределить позже",
-        "remaining_warning": "Осталось {remaining} ч нераспределено",
+        "remaining_warning": "Осталось {remaining} нераспределено",
         "shift_time": "Смена: {start}–{end}"
       },
       "utilization": {
         "title": "Утилизация команды",
         "date_label": "на {date}",
         "employees_count": "{count, plural, one {# сотрудник на смене} few {# сотрудника на смене} other {# сотрудников на смене}}",
-        "hours_format": "{assigned} ч / {total} ч смены",
+        "hours_format": "{assigned} / {total} смены",
         "bonus_badge": "+бонус",
-        "summary": "Свободно: {free} ч / Всего: {total} ч",
+        "summary": "Свободно: {free} / Всего: {total}",
         "available": "Свободно",
         "assigned": "Назначено"
       },
@@ -1038,7 +1044,7 @@
         "plan_reset": "План сброшен",
         "confirm_done": "План применён: {count, plural, one {# задача распределена} few {# задачи распределено} many {# задач распределено} other {# задач распределено}}",
         "confirm_partial": "Применено {ok}, ошибок: {err}",
-        "confirm_over_shift": "Применено {count}, у {over, plural, one {# сотрудника} few {# сотрудников} many {# сотрудников} other {# сотрудников}} сверх смены — супервайзер уведомлён"
+        "confirm_over_shift": "Применено {count}, у {over, plural, one {# сотрудника} few {# сотрудников} many {# сотрудников} other {# сотрудников}} превышение смены > 20% — супервайзер уведомлён"
       },
       "forbidden": {
         "tooltip": "Распределять задачи может директор магазина и выше"

@@ -102,14 +102,76 @@ function getFullName(firstName: string, lastName: string, middleName?: string): 
   return parts.join(" ")
 }
 
-function minutesToHours(min: number): string {
-  const h = min / 60
-  if (h === Math.floor(h)) return `${h}`
-  return h.toFixed(2).replace(/\.?0+$/, "")
+/**
+ * Форматирует минуты в человеко-читаемое «1 ч 15 мин».
+ * Никаких дробей — точность до минуты.
+ * Через i18n keys hm.zero / h_only / m_only / h_m чтобы локаль управлялась
+ * центрально (ru: «ч/мин», en: «h/min»).
+ */
+function formatHM(min: number, t: ReturnType<typeof useTranslations>): string {
+  const safeMin = Math.max(0, Math.round(min))
+  const h = Math.floor(safeMin / 60)
+  const m = safeMin % 60
+  if (h === 0 && m === 0) return t("hm.zero")
+  if (m === 0) return t("hm.h_only", { h })
+  if (h === 0) return t("hm.m_only", { m })
+  return t("hm.h_m", { h, m })
 }
 
-function hoursToMinutes(hours: number): number {
-  return Math.round(hours * 60)
+/**
+ * Dual-input «X ч Y мин» — точность до минуты, никаких дробей.
+ * value/onChange работают в минутах (целое число).
+ */
+interface HoursMinutesInputProps {
+  value: number
+  onChange: (totalMin: number) => void
+  disabled?: boolean
+  invalid?: boolean
+  className?: string
+  hLabel?: string
+  mLabel?: string
+}
+
+function HoursMinutesInput({
+  value, onChange, disabled, invalid, className, hLabel = "ч", mLabel = "мин",
+}: HoursMinutesInputProps) {
+  const safeVal = Math.max(0, Math.round(value))
+  const h = Math.floor(safeVal / 60)
+  const m = safeVal % 60
+  return (
+    <div className={cn("flex items-center gap-1", className)}>
+      <Input
+        type="number"
+        min="0"
+        value={h || ""}
+        onChange={(e) => {
+          const newH = Math.max(0, parseInt(e.target.value) || 0)
+          onChange(newH * 60 + m)
+        }}
+        className={cn("w-12 h-8 text-sm text-center px-1", invalid && "border-warning focus-visible:ring-warning")}
+        placeholder="0"
+        disabled={disabled}
+        aria-label={hLabel}
+      />
+      <span className="text-xs text-muted-foreground shrink-0">{hLabel}</span>
+      <Input
+        type="number"
+        min="0"
+        max="59"
+        value={m || ""}
+        onChange={(e) => {
+          const raw = parseInt(e.target.value) || 0
+          const newM = Math.max(0, Math.min(59, raw))
+          onChange(h * 60 + newM)
+        }}
+        className={cn("w-12 h-8 text-sm text-center px-1", invalid && "border-warning focus-visible:ring-warning")}
+        placeholder="0"
+        disabled={disabled}
+        aria-label={mLabel}
+      />
+      <span className="text-xs text-muted-foreground shrink-0">{mLabel}</span>
+    </div>
+  )
 }
 
 function getUtilizationColor(pct: number): string {
@@ -206,11 +268,11 @@ interface TaskCardProps {
 }
 
 function TaskCard({ task, planAllocations, onDistribute, disabled, t }: TaskCardProps) {
-  const totalHours = minutesToHours(task.planned_minutes)
+  const totalLabel = formatHM(task.planned_minutes, t)
   const planMin = planAllocations.reduce((sum, a) => sum + a.minutes, 0)
   const effectiveDistributed = task.distributed_minutes + planMin
   const effectiveRemaining = Math.max(0, task.planned_minutes - effectiveDistributed)
-  const remainingHours = minutesToHours(effectiveRemaining)
+  const remainingLabel = formatHM(effectiveRemaining, t)
   const isFullyDistributed = effectiveRemaining === 0
   const distributedPct = (task.distributed_minutes / task.planned_minutes) * 100
   const planPct = (planMin / task.planned_minutes) * 100
@@ -235,7 +297,7 @@ function TaskCard({ task, planAllocations, onDistribute, disabled, t }: TaskCard
             {planMin > 0 && (
               <Badge variant="outline" className="text-xs border-warning text-warning gap-1">
                 <Wand2 className="size-3" />
-                {t("taskCard.in_plan_badge", { hours: minutesToHours(planMin) })}
+                {t("taskCard.in_plan_badge", { time: formatHM(planMin, t) })}
               </Badge>
             )}
           </div>
@@ -253,7 +315,7 @@ function TaskCard({ task, planAllocations, onDistribute, disabled, t }: TaskCard
           </span>
           <span className="flex items-center gap-1">
             <Clock className="size-3" />
-            {totalHours} ч
+            {totalLabel}
           </span>
         </div>
 
@@ -267,7 +329,7 @@ function TaskCard({ task, planAllocations, onDistribute, disabled, t }: TaskCard
                 ? planMin > 0
                   ? t("taskCard.full_after_confirm")
                   : t("taskCard.fully_distributed")
-                : t("taskCard.unassigned_hours", { remaining: remainingHours, total: totalHours })}
+                : t("taskCard.unassigned_hours", { remaining: remainingLabel, total: totalLabel })}
             </span>
           </div>
           <div className="h-1.5 bg-muted rounded-full overflow-hidden flex">
@@ -330,8 +392,8 @@ interface EmployeeUtilizationRowProps {
 
 function EmployeeUtilizationRow({ employee, planMin = 0, onSelect, t }: EmployeeUtilizationRowProps) {
   const fullName = getFullName(employee.user.first_name, employee.user.last_name)
-  const assignedHours = minutesToHours(employee.assigned_min)
-  const totalHours = minutesToHours(employee.shift_total_min)
+  const assignedLabel = formatHM(employee.assigned_min, t)
+  const totalLabel = formatHM(employee.shift_total_min, t)
 
   const content = (
     <>
@@ -347,7 +409,7 @@ function EmployeeUtilizationRow({ employee, planMin = 0, onSelect, t }: Employee
           {planMin > 0 && (
             <Badge variant="outline" className="text-[10px] px-1 py-0 border-warning text-warning">
               <Wand2 className="size-2.5 mr-0.5" />
-              +{minutesToHours(planMin)} ч
+              +{formatHM(planMin, t)}
             </Badge>
           )}
           {employee.has_bonus_task && (
@@ -369,7 +431,7 @@ function EmployeeUtilizationRow({ employee, planMin = 0, onSelect, t }: Employee
           </span>
         </div>
         <span className="text-xs text-muted-foreground">
-          {t("utilization.hours_format", { assigned: assignedHours, total: totalHours })}
+          {t("utilization.hours_format", { assigned: assignedLabel, total: totalLabel })}
         </span>
       </div>
     </>
@@ -480,8 +542,8 @@ function TeamUtilizationPanel({ employees, planMinByUser, onSelectEmployee, isLo
         <div className="mt-4 pt-3 border-t">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">{t("utilization.summary", {
-              free: minutesToHours(freeMinutes),
-              total: minutesToHours(totalShiftMinutes),
+              free: formatHM(freeMinutes, t),
+              total: formatHM(totalShiftMinutes, t),
             })}</span>
           </div>
         </div>
@@ -535,12 +597,12 @@ function DistributionSheet({
   const distributedMinutes = Object.values(allocations).reduce((sum, min) => sum + min, 0)
   const remainingMinutes = totalTaskMinutes - distributedMinutes
 
-  const handleAllocationChange = (userId: number, hours: number) => {
-    const minutes = hoursToMinutes(hours)
+  const handleAllocationChange = (userId: number, minutes: number) => {
     setAllocations((prev) => {
       if (minutes <= 0) {
-        const { [userId]: _, ...rest } = prev
-        return rest
+        const next = { ...prev }
+        delete next[userId]
+        return next
       }
       return { ...prev, [userId]: minutes }
     })
@@ -573,27 +635,27 @@ function DistributionSheet({
             <span>{task.zone_name}</span>
             <span className="text-border">·</span>
             <Clock className="size-3" />
-            <span>{minutesToHours(totalTaskMinutes)} ч</span>
+            <span>{formatHM(totalTaskMinutes, t)}</span>
           </div>
         </SheetHeader>
 
         {/* Distribution summary */}
         <div className="px-4 py-3 bg-muted/50 border-b">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
             <span className="text-sm font-medium">
               {t("sheet.distributed_summary", {
-                distributed: minutesToHours(distributedMinutes),
-                total: minutesToHours(totalTaskMinutes),
+                distributed: formatHM(distributedMinutes, t),
+                total: formatHM(totalTaskMinutes, t),
               })}
             </span>
             {remainingMinutes > 0 && (
               <Badge variant="outline" className="text-xs">
-                {t("sheet.remaining", { remaining: minutesToHours(remainingMinutes) })}
+                {t("sheet.remaining", { remaining: formatHM(remainingMinutes, t) })}
               </Badge>
             )}
             {overTaskMinutes > 0 && (
               <Badge variant="destructive" className="text-xs">
-                {t("sheet.over_task", { over: minutesToHours(overTaskMinutes) })}
+                {t("sheet.over_task", { over: formatHM(overTaskMinutes, t) })}
               </Badge>
             )}
           </div>
@@ -616,7 +678,6 @@ function DistributionSheet({
           <div className="space-y-3">
             {employees.map((emp) => {
               const currentAllocation = allocations[emp.user.id] || 0
-              const currentHours = currentAllocation / 60
               const fullName = getFullName(emp.user.first_name, emp.user.last_name)
               const freeMinutes = emp.shift_total_min - emp.assigned_min
               const previewUtilization = emp.shift_total_min > 0
@@ -633,7 +694,7 @@ function DistributionSheet({
                       </AvatarFallback>
                     </Avatar>
                     <div className="flex-1 min-w-0">
-                      <div className="flex items-center justify-between gap-2">
+                      <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
                           <p className="text-sm font-medium truncate">{fullName}</p>
                           <p className="text-xs text-muted-foreground">
@@ -643,23 +704,13 @@ function DistributionSheet({
                             })}
                           </p>
                         </div>
-                        <div className="flex items-center gap-2 shrink-0">
-                          <Input
-                            type="number"
-                            step="0.25"
-                            min="0"
-                            value={currentHours || ""}
-                            onChange={(e) => handleAllocationChange(emp.user.id, parseFloat(e.target.value) || 0)}
-                            className={cn(
-                              "w-20 h-8 text-sm text-center",
-                              currentAllocation > freeMinutes + 1 && "border-destructive focus-visible:ring-destructive"
-                            )}
-                            placeholder="0"
-                            disabled={!canEdit}
-                            aria-invalid={currentAllocation > freeMinutes + 1}
-                          />
-                          <span className="text-xs text-muted-foreground w-4">ч</span>
-                        </div>
+                        <HoursMinutesInput
+                          value={currentAllocation}
+                          onChange={(min) => handleAllocationChange(emp.user.id, min)}
+                          disabled={!canEdit}
+                          invalid={currentAllocation > freeMinutes + 1}
+                          className="shrink-0"
+                        />
                       </div>
                       {/* Utilization bar */}
                       <div className="mt-2">
@@ -678,7 +729,7 @@ function DistributionSheet({
                           </span>
                         </div>
                         <p className="text-xs text-muted-foreground mt-0.5">
-                          {t("utilization.available")}: {minutesToHours(freeMinutes)} ч
+                          {t("utilization.available")}: {formatHM(freeMinutes, t)}
                         </p>
                       </div>
                     </div>
@@ -824,8 +875,8 @@ function TaskZoneGroup({ zoneName, tasks, plan, onDistribute, disabled, t }: Tas
           <div className="flex items-center gap-2 shrink-0">
             <span className="text-xs text-muted-foreground hidden sm:inline">
               {t("zone_group.summary", {
-                distributed: minutesToHours(totalDistributed + totalInPlan),
-                planned: minutesToHours(totalPlanned),
+                distributed: formatHM(totalDistributed + totalInPlan, t),
+                planned: formatHM(totalPlanned, t),
               })}
             </span>
             <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
@@ -997,9 +1048,9 @@ function EmployeeSheet({
           </div>
           <p className="text-xs text-muted-foreground mt-1.5">
             {t("employeeSheet.hours_breakdown", {
-              assigned: minutesToHours(employee.assigned_min),
-              plan: minutesToHours(planMin),
-              total: minutesToHours(employee.shift_total_min),
+              assigned: formatHM(employee.assigned_min, t),
+              plan: formatHM(planMin, t),
+              total: formatHM(employee.shift_total_min, t),
             })}
           </p>
         </div>
@@ -1031,7 +1082,7 @@ function EmployeeSheet({
                       <span className="text-border">·</span>
                       <span className="flex items-center gap-1">
                         <Clock className="size-3" />
-                        {minutesToHours(item.minutes)} ч
+                        {formatHM(item.minutes, t)}
                       </span>
                     </div>
                   </div>
@@ -1107,7 +1158,7 @@ function EmployeeSheet({
                                 <span className="text-sm font-medium truncate">{task.title}</span>
                                 <span className="text-xs text-muted-foreground">
                                   {task.zone_name} · {t("employeeSheet.add_picker_remaining", {
-                                    hours: minutesToHours(task.remaining_minutes),
+                                    time: formatHM(task.remaining_minutes, t),
                                   })}
                                 </span>
                               </div>
@@ -1119,23 +1170,13 @@ function EmployeeSheet({
                   </PopoverContent>
                 </Popover>
 
-                <div className="flex items-center gap-2">
-                  <Input
-                    type="number"
-                    step="0.25"
-                    min="0"
-                    value={addMinutes / 60 || ""}
-                    onChange={(e) =>
-                      setAddMinutes(hoursToMinutes(parseFloat(e.target.value) || 0))
-                    }
-                    className={cn(
-                      "h-9 w-24 text-sm text-center",
-                      (overShiftBy > 0 || overTaskBy > 0) && "border-warning focus-visible:ring-warning"
-                    )}
-                    placeholder="0"
+                <div className="flex items-center gap-2 flex-wrap">
+                  <HoursMinutesInput
+                    value={addMinutes}
+                    onChange={setAddMinutes}
                     disabled={!canEdit || !selectedTask}
+                    invalid={overShiftBy > 0 || overTaskBy > 0}
                   />
-                  <span className="text-xs text-muted-foreground">ч</span>
                   <Button
                     size="sm"
                     onClick={handleAddToPlan}
@@ -1148,7 +1189,7 @@ function EmployeeSheet({
                 {selectedTask && overShiftBy === 0 && overTaskBy === 0 && (
                   <p className="text-xs text-muted-foreground">
                     {t("employeeSheet.add_free_hint", {
-                      hours: minutesToHours(freeMin),
+                      time: formatHM(freeMin, t),
                     })}
                   </p>
                 )}
@@ -1156,7 +1197,7 @@ function EmployeeSheet({
                   <p className="text-xs text-warning flex items-center gap-1">
                     <Wand2 className="size-3 shrink-0" />
                     {t("employeeSheet.over_shift_warning", {
-                      hours: minutesToHours(overShiftBy),
+                      time: formatHM(overShiftBy, t),
                     })}
                   </p>
                 )}
@@ -1164,7 +1205,7 @@ function EmployeeSheet({
                   <p className="text-xs text-warning flex items-center gap-1">
                     <Wand2 className="size-3 shrink-0" />
                     {t("employeeSheet.over_task_warning", {
-                      hours: minutesToHours(overTaskBy),
+                      time: formatHM(overTaskBy, t),
                     })}
                   </p>
                 )}
@@ -1235,7 +1276,7 @@ function EmployeeBigCard({ employee, planMin, planTasks, onClick, t }: EmployeeB
               {planMin > 0 && (
                 <Badge variant="outline" className="text-[10px] px-1 py-0 border-warning text-warning">
                   <Wand2 className="size-2.5 mr-0.5" />
-                  +{minutesToHours(planMin)} ч
+                  +{formatHM(planMin, t)}
                 </Badge>
               )}
             </div>
@@ -1258,7 +1299,7 @@ function EmployeeBigCard({ employee, planMin, planTasks, onClick, t }: EmployeeB
             </span>
           </div>
           <p className="text-xs text-muted-foreground mb-2">
-            {t("by_employee.free_label", { hours: minutesToHours(freeMin) })}
+            {t("by_employee.free_label", { time: formatHM(freeMin, t) })}
           </p>
 
           {/* Plan tasks chips */}
@@ -1272,7 +1313,7 @@ function EmployeeBigCard({ employee, planMin, planTasks, onClick, t }: EmployeeB
                 >
                   <Wand2 className="size-2.5 shrink-0" />
                   <span className="truncate">{pt.title}</span>
-                  <span className="shrink-0">· {minutesToHours(pt.minutes)} ч</span>
+                  <span className="shrink-0">· {formatHM(pt.minutes, t)}</span>
                 </span>
               ))}
             </div>
@@ -1312,7 +1353,7 @@ function StickyPlanBar({
         <span className="text-xs sm:text-sm font-medium truncate min-w-0 flex-1">
           {t("plan_bar.summary", {
             tasks: taskCount,
-            hours: minutesToHours(totalMinutes),
+            time: formatHM(totalMinutes, t),
           })}
         </span>
         {/* Reset: на узких icon-only с tooltip; sm+ обычная */}
@@ -1538,14 +1579,23 @@ export function TaskDistribution() {
         allocByUser.set(a.userId, (allocByUser.get(a.userId) ?? 0) + a.minutes)
       }
     }
+    // Threshold уведомления: >20% сверх плановой смены (per user requirement
+    // «при превышении более чем на 20% от плана»). Меньшие over-shift
+    // допустимы директором без эскалации supervisor.
     const overShifts: OverShiftEntry[] = []
     for (const emp of employees) {
       const additional = allocByUser.get(emp.user.id) ?? 0
       const totalAfter = emp.assigned_min + additional
-      if (totalAfter > emp.shift_total_min) {
+      const threshold =
+        emp.shift_total_min > 0 ? emp.shift_total_min * 1.2 : 0
+      if (totalAfter > threshold) {
         overShifts.push({
           userId: emp.user.id,
-          userName: getFullName(emp.user.first_name, emp.user.last_name, emp.user.middle_name),
+          userName: getFullName(
+            emp.user.first_name,
+            emp.user.last_name,
+            emp.user.middle_name
+          ),
           shiftMin: emp.shift_total_min,
           totalAfterMin: totalAfter,
         })

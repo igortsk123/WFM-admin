@@ -772,6 +772,12 @@
       "breadcrumb_home": "Home",
       "breadcrumb_tasks": "Tasks",
       "breadcrumb_distribute": "Distribution",
+      "hm": {
+        "zero": "0 min",
+        "h_only": "{h}h",
+        "m_only": "{m} min",
+        "h_m": "{h}h {m} min"
+      },
       "toolbar": {
         "store": "Store",
         "store_placeholder": "Select store",
@@ -789,12 +795,12 @@
         "assigned": "Assigned Tasks"
       },
       "taskCard": {
-        "unassigned_hours": "Unassigned: {remaining}h of {total}h",
+        "unassigned_hours": "Unassigned: {remaining} of {total}",
         "fully_distributed": "Fully distributed",
         "full_after_confirm": "Will be distributed after confirm",
         "distribute": "Distribute",
         "edit_plan": "Edit plan",
-        "in_plan_badge": "+{hours}h in plan",
+        "in_plan_badge": "+{time} in plan",
         "zone": "Zone",
         "work_type": "Work type",
         "source_ai": "AI suggested",
@@ -803,7 +809,7 @@
       },
       "zone_group": {
         "no_zone": "No zone",
-        "summary": "{distributed}h / {planned}h"
+        "summary": "{distributed} / {planned}"
       },
       "view_mode": {
         "by_task": "By tasks",
@@ -811,10 +817,10 @@
       },
       "by_employee": {
         "section_title": "Employees on shift",
-        "free_label": "Free: {hours}h"
+        "free_label": "Free: {time}"
       },
       "plan_bar": {
-        "summary": "In plan: {tasks, plural, one {# task} other {# tasks}}, {hours}h",
+        "summary": "In plan: {tasks, plural, one {# task} other {# tasks}}, {time}",
         "reset": "Reset",
         "confirm": "Confirm plan",
         "confirming": "Applying…"
@@ -822,7 +828,7 @@
       "employeeSheet": {
         "shift_label": "Shift: {shift}",
         "utilization_label": "Load after plan",
-        "hours_breakdown": "Assigned: {assigned}h · in plan: +{plan}h · shift: {total}h",
+        "hours_breakdown": "Assigned: {assigned} · in plan: +{plan} · shift: {total}",
         "plan_section": "Tasks in plan",
         "plan_empty": "No tasks in plan yet for this employee",
         "add_section": "Add task",
@@ -831,11 +837,11 @@
         "add_picker_placeholder": "Select a task…",
         "add_picker_search": "Search…",
         "add_picker_empty": "Not found",
-        "add_picker_remaining": "{hours}h remaining",
-        "add_free_hint": "Free for employee: {hours}h",
-        "over_shift_warning": "Over shift: +{hours}h (supervisor will be notified)",
+        "add_picker_remaining": "{time} remaining",
+        "add_free_hint": "Free for employee: {time}",
+        "over_shift_warning": "Over shift: +{time}",
         "over_shift_warning_full": "Shift fully booked — assignment will be over plan",
-        "over_task_warning": "Over task plan: +{hours}h",
+        "over_task_warning": "Over task plan: +{time}",
         "add_button": "Add to plan",
         "remove_aria": "Remove from plan",
         "close": "Close"
@@ -844,21 +850,21 @@
         "title": "Distribute: {taskTitle}",
         "employee_list_header": "Employees on shift",
         "hours_input_label": "Hours",
-        "distributed_summary": "Distributed: {distributed}h / {total}h",
-        "remaining": "Remaining: {remaining}h",
-        "over_task": "Over task plan: +{over}h",
+        "distributed_summary": "Distributed: {distributed} / {total}",
+        "remaining": "Remaining: {remaining}",
+        "over_task": "Over task plan: +{over}",
         "save": "Save distribution",
         "save_later": "Distribute later",
-        "remaining_warning": "{remaining}h remaining",
+        "remaining_warning": "{remaining} remaining",
         "shift_time": "Shift: {start}–{end}"
       },
       "utilization": {
         "title": "Team Utilization",
         "date_label": "on {date}",
         "employees_count": "{count, plural, one {# employee on shift} other {# employees on shift}}",
-        "hours_format": "{assigned}h / {total}h shift",
+        "hours_format": "{assigned} / {total} shift",
         "bonus_badge": "+bonus",
-        "summary": "Available: {free}h / Total: {total}h",
+        "summary": "Available: {free} / Total: {total}",
         "available": "Available",
         "assigned": "Assigned"
       },
@@ -883,7 +889,7 @@
         "plan_reset": "Plan reset",
         "confirm_done": "Plan applied: {count, plural, one {# task distributed} other {# tasks distributed}}",
         "confirm_partial": "Applied {ok}, errors: {err}",
-        "confirm_over_shift": "Applied {count}, {over, plural, one {# employee} other {# employees}} over shift — supervisor notified"
+        "confirm_over_shift": "Applied {count}, {over, plural, one {# employee} other {# employees}} over shift > 20% — supervisor notified"
       },
       "forbidden": {
         "tooltip": "Only store director and above can distribute tasks"
