@@ -1,55 +1,31 @@
-# WFM Admin Playbook — INDEX (Tier 0)
+# `_claude/` — Tier 0 entry для Claude
 
-> Always-read pointer. С него начинай новую сессию.
+> Начни здесь любую новую сессию по проекту WFM Admin.
 
-## Текущее состояние (обновляется руками после каждого чата)
+## Decision tree
 
-- **Последний завершённый V0:** 28 (schedule) — V0 PR #65 в main
-- **Foundations в main:** до chat 33b (#73) — 26/27/28/29/30/31/32/33/33b готовы
-- **V0 готов к запуску:** 29 (shift-detail), 30 (work-types), 31 (zones), 32 (positions), 33 (hints), 33b (regulations) — 6 чатов ждут запуска
-- **Активные V0-чаты:** 26/27/28 закрыты
-- **Дата:** 2026-05-03
-
-## Decision tree — что читать
-
-| Юзер пишет | Открыть в этом порядке |
+| Сценарий | Что читать |
 |---|---|
-| «делаем foundation для chat N» | 1. `_claude-only/CHAT-AUDIT.md` (строка N — pattern, foundation Y/N, reuse_from)<br>2. `_claude-only/PATTERNS.md` (нужный pattern целиком)<br>3. V0-промпт `06-screens-m0/N-*.md` или `07-...`/`08-`/`09-` |
-| «продолжаем chat N в V0» | 1. `_claude-only/CHAT-AUDIT.md` (статус foundation для N — должен быть смерджен)<br>2. V0-промпт N (проверить аннотацию CONTEXT-PACK) |
-| «билд упал на Vercel» | 1. лог ошибки от юзера<br>2. `WFM-admin/.claude/rules/` (auto-load уже сработал) — открой релевантное правило по пути файла<br>3. `TECH-DEBT.md` (чтобы записать non-критичные warnings) |
-| «cleanup pass» | 1. `TECH-DEBT.md` Active backlog — есть ли 10+ пунктов<br>2. промпт «cleanup pass» оттуда |
-| «как мы работаем» | `WORKFLOW.md` |
-| «сравни ход с прошлым разом» / «текущая статистика по экранам» | `_claude-only/CHAT-AUDIT.md` |
-| «сколько ушло на V0 за последний чат» | юзер обычно сообщает, добавить в CHAT-AUDIT |
+| **Старт сессии** | [PROJECT-STATE.md](./PROJECT-STATE.md) — что готово, ключевые решения, terminology |
+| **Делаешь foundation для нового экрана** | [PATTERNS.md](./PATTERNS.md) → нужный pattern (list-with-filters / detail-screen / crud-form / settings / report / wizard / agent-cabinet) |
+| **Review V0 PR** | [V0-FAIL-PATTERNS.md](./V0-FAIL-PATTERNS.md) — 14 повторяющихся ошибок |
+| **Деплой / билд упал в CI** | [DEPLOY.md](./DEPLOY.md) — workflow, manual rollback, что НЕ делать руками |
+| **Новое API / меняешь моки** | [SYNC-WITH-BACKEND.md](./SYNC-WITH-BACKEND.md) — сначала сверить с `../backend/apis/` (живые контракты) |
+| **Хочу проверить терминологию / стиль** | [PREFERENCES.md](./PREFERENCES.md) — terminology, tokens, language, тон |
+| **Историческая справка по operations серии MY-PLAN** | [operations-v1/](./operations-v1/) — 10 планов 2026-05-06, выполнено |
 
-## Правила split-workflow (короткая версия)
+## Файлы в `_claude/`
 
-1. **Claude foundation-PR → мердж в main** (types/API/i18n/page-wrapper/stub)
-2. **V0-чат запускается ТОЛЬКО после мерджа foundation** — иначе V0 продублирует работу (см. урок чат 23 → закрыли мой PR #48)
-3. **После V0 PR** — `npx tsc --noEmit` + `npx next build` локально → если красный, точечный fix-PR от Claude
-4. **Warnings → `TECH-DEBT.md`** (не V0, не сейчас) — чистим раз в 5 чатов
-
-## Patch ≠ Patch (урок чата 23a)
-
-Если `XXa-...-patch-pro.md` промпт добавляет:
-- новые поля API/types
-- новый i18n namespace
-- новые tabs / Dialog-flows / actions
-
-— это **extension**, не patch. Foundation от Claude всё равно нужен ($1.5 экономии vs если V0 делает сам).
-
-## Файлы playbook
-
-| Файл | Назначение |
-|---|---|
-| `INDEX.md` (этот) | Tier 0 entry point |
-| `WORKFLOW.md` | Полный split-workflow процесс |
-| `_claude-only/PATTERNS.md` | 7 foundation patterns (list-with-filters / detail / crud-form / settings / report / wizard / agent-cabinet) |
-| `_claude-only/CHAT-AUDIT.md` | Таблица 42 чатов (pattern, foundation, reuse_from, done статус) |
-| `_claude-only/DECISIONS.md` | Реестр архитектурных решений с датой и обоснованием |
-| `TECH-DEBT.md` | Non-критичные warnings + monolith split backlog |
-| `00-system/project-instructions-{1..6}.md` | Project Instructions для V0 (не для Claude) |
-| `06-screens-m0/`, `07-screens-priority/`, `08-screens-stretch/`, `09-screens-freelance/` | V0-промпты по экранам |
+| Файл | О чём | Размер |
+|---|---|---|
+| `INDEX.md` (этот) | Tier 0 entry | ~80 строк |
+| `PROJECT-STATE.md` | Current state, ключевые решения, что готово | ~150 строк |
+| `DEPLOY.md` | CI/CD, прод, manual rollback | ~95 строк |
+| `PATTERNS.md` | 7 foundation patterns для типовых экранов | ~190 строк |
+| `V0-FAIL-PATTERNS.md` | 14 повторяющихся V0 ошибок | ~80 строк |
+| `PREFERENCES.md` | Terminology, tokens, style | ~70 строк |
+| `SYNC-WITH-BACKEND.md` | Mobile+backend как живой справочник, синхронизация | новый |
+| `operations-v1/` | Архив MY-PLAN-1..10 (выполнено, для blame/history) | 10 файлов |
 
 ## Path-scoped rules (auto-load в Claude Code)
 
@@ -57,23 +33,25 @@
 
 | Файл | paths | Когда грузится |
 |---|---|---|
-| `agent-workflow.md` | (always) | Любая сессия в репо WFM-admin |
-| `code-standards.md` | `**/*.{ts,tsx}` | Редактируешь TypeScript |
-| `ui-rules.md` | `app/**/*.tsx`, `components/**/*.tsx`, `globals.css` | Редактируешь UI |
-| `i18n-rules.md` | `**/*.{ts,tsx}`, `messages/**/*.json` | Редактируешь компонент или i18n |
-| `api-rules.md` | `lib/api/**`, `lib/types/**`, `lib/mock-data/**` | Редактируешь API слой |
-| `shared-components.md` | `components/features/**/*.tsx`, `components/shared/**/*.tsx` | Редактируешь feature-компонент |
+| `agent-workflow.md` | (always) | Любая сессия в репо |
+| `code-standards.md` | `**/*.{ts,tsx}` | Редактирую TypeScript |
+| `ui-rules.md` | `app/**/*.tsx`, `components/**/*.tsx`, `globals.css` | Редактирую UI |
+| `i18n-rules.md` | `**/*.{ts,tsx}`, `messages/**/*.json` | Редактирую компонент или i18n |
+| `api-rules.md` | `lib/api/**`, `lib/types/**`, `lib/mock-data/**` | Редактирую API слой |
+| `shared-components.md` | `components/features/**/*.tsx`, `components/shared/**/*.tsx` | Редактирую feature-компонент |
 
-**В этом INDEX перечислены чтобы помнить что они есть.** Не нужно копировать содержимое — Claude Code сам подгружает по paths.
+**Не нужно копировать содержимое в этот memory bank** — Claude Code сам подгружает.
 
-## Где код / domain
+## Соседние папки в `.memory_bank/`
 
-- **Код админки:** `C:/Users/SPECTRE/WFM-admin/` (есть свой `CLAUDE.md` + `.claude/rules/`)
-- **Доменные модели + API контракты:** `C:/Users/SPECTRE/WFM/.memory_bank/domain/`, `backend/api_*.md`
-- **Auto-memory:** `C:/Users/SPECTRE/.claude/projects/c--Users-SPECTRE-WFM/memory/`
+- `../CLAUDE.md` — root manifest всего проекта WFM (web + mobile + backend)
+- `../INDEX-WEB.md` — entry для admin/web work
+- `../README.md` — обзор всего memory bank, куда что класть
+- `../domain/` — модели не зависящие от платформы (task, user, shift, auth)
+- `../backend/apis/` — **живые API contracts** ⚠ используются другими командами, синхронизируй admin под них
+- `../mobile/` — **живой mobile проект (production)** ⚠ справочник, не моя область
+- `../guides/` — documentation_style, lang, ci_cd
+- `../plans/` — активные планы (>3 шагов), `../completed_plans/` — архив
+- `../screens/`, `../business/` — куда user кидает контекст
 
-## Когда обновлять INDEX.md
-
-- После каждого закрытого чата → обновить «Последний завершённый чат» + «Следующий»
-- Если меняется workflow — апдейт decision tree
-- Не нагружать новыми файлами — INDEX.md должен оставаться < 100 строк
+См. [SYNC-WITH-BACKEND.md](./SYNC-WITH-BACKEND.md) для подробностей.
