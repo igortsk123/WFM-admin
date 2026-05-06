@@ -621,6 +621,87 @@ export const MOCK_SHIFTS: ShiftMock[] = [
   },
 
   // ═══════════════════════════════════════════════════════════════
+  // SUBSTITUTE shifts (подработка) — штатные сотрудники подменяют
+  // в другом магазине того же юрлица в свой выходной. Должность та же,
+  // ЗП штатная. На pie chart циклограмм — канал PART_TIME.
+  // ═══════════════════════════════════════════════════════════════
+  {
+    id: 4101,
+    plan_id: 9101,
+    status: "NEW",
+    user_id: 15, // Козлова Дарья — штатный кассир в store 1 (СПАР Ленина 80)
+    user_name: "Козлова Дарья Андреевна",
+    store_id: 2, // вышла подработать в store 2 (СПАР Красноармейская 99)
+    store_name: "СПАР Томск, ул. Учебная 8",
+    zone_id: 3,
+    zone_name: "Касса",
+    shift_date: TOMORROW,
+    planned_start: `${TOMORROW}T09:00:00+07:00`,
+    planned_end: `${TOMORROW}T17:00:00+07:00`,
+    late_minutes: 0,
+    overtime_minutes: 0,
+    shift_kind: "SUBSTITUTE",
+    home_store_id: 1,
+  },
+  {
+    id: 4102,
+    plan_id: 9102,
+    status: "OPENED",
+    user_id: 17, // Орлов Антон — старший кассир в store 2
+    user_name: "Орлов Антон Викторович",
+    store_id: 1, // подработал в магазине 1
+    store_name: "СПАР Томск, пр. Ленина 80",
+    zone_id: 3,
+    zone_name: "Касса",
+    shift_date: TODAY,
+    planned_start: `${TODAY}T08:00:00+07:00`,
+    planned_end: `${TODAY}T16:00:00+07:00`,
+    actual_start: `${TODAY}T08:05:00+07:00`,
+    late_minutes: 5,
+    overtime_minutes: 0,
+    shift_kind: "SUBSTITUTE",
+    home_store_id: 2,
+  },
+  {
+    id: 4103,
+    plan_id: 9103,
+    status: "CLOSED",
+    user_id: 19, // Зайцев Никита — обычно store 3
+    user_name: "Зайцев Никита Олегович",
+    store_id: 1,
+    store_name: "СПАР Томск, пр. Ленина 80",
+    zone_id: 1,
+    zone_name: "Торговый зал",
+    shift_date: YESTERDAY,
+    planned_start: `${YESTERDAY}T10:00:00+07:00`,
+    planned_end: `${YESTERDAY}T18:00:00+07:00`,
+    actual_start: `${YESTERDAY}T10:00:00+07:00`,
+    actual_end: `${YESTERDAY}T18:15:00+07:00`,
+    late_minutes: 0,
+    overtime_minutes: 15,
+    shift_kind: "SUBSTITUTE",
+    home_store_id: 3,
+  },
+  {
+    id: 4104,
+    plan_id: 9104,
+    status: "NEW",
+    user_id: 21, // Лаврова Анна — обычно store 4 (Abricos)
+    user_name: "Лаврова Анна Кирилловна",
+    store_id: 1,
+    store_name: "СПАР Томск, пр. Ленина 80",
+    zone_id: 100, // LAMA-зона Фреш 1
+    zone_name: "Фреш 1",
+    shift_date: TOMORROW,
+    planned_start: `${TOMORROW}T07:00:00+07:00`,
+    planned_end: `${TOMORROW}T15:00:00+07:00`,
+    late_minutes: 0,
+    overtime_minutes: 0,
+    shift_kind: "SUBSTITUTE",
+    home_store_id: 4,
+  },
+
+  // ═══════════════════════════════════════════════════════════════
   // Generated full May 2026 schedule (3-31 May)
   // 7 stores × 3 смены × 29 дней = ~600 shifts
   // CLOSED для прошлых дат, NEW для будущих
