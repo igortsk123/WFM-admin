@@ -243,16 +243,7 @@ export async function getStoreUnassignedTasks(
     };
   });
 
-  return {
-    success: true,
-    data: unassignedTasks,
-    meta: {
-      total: unassignedTasks.length,
-      page: 1,
-      page_size: unassignedTasks.length,
-      total_pages: 1,
-    },
-  };
+  return { data: unassignedTasks, total: unassignedTasks.length, page: 1, page_size: unassignedTasks.length };
 }
 
 /**
@@ -271,10 +262,7 @@ export async function getStoreEmployeesUtilization(
   );
 
   if (shifts.length === 0) {
-    return {
-      success: true,
-      data: [],
-    };
+    return { data: [] };
   }
 
   // Calculate utilization for each employee on shift
@@ -327,10 +315,7 @@ export async function getStoreEmployeesUtilization(
   // Sort by utilization (lowest first - most available)
   utilizations.sort((a, b) => a.utilization_pct - b.utilization_pct);
 
-  return {
-    success: true,
-    data: utilizations,
-  };
+  return { data: utilizations };
 }
 
 /**
@@ -346,16 +331,7 @@ export async function getStoreShiftsToday(
     (s) => s.store_id === storeId && s.shift_date === date
   );
 
-  return {
-    success: true,
-    data: shifts,
-    meta: {
-      total: shifts.length,
-      page: 1,
-      page_size: shifts.length,
-      total_pages: 1,
-    },
-  };
+  return { data: shifts, total: shifts.length, page: 1, page_size: shifts.length };
 }
 
 /**
@@ -397,10 +373,7 @@ export async function assignTaskToUser(
   // Store allocations
   taskAllocations.set(taskId, assignments);
 
-  return {
-    success: true,
-    data: { id: taskId },
-  };
+  return { success: true };
 }
 
 /**
@@ -413,10 +386,7 @@ export async function getTaskAllocations(
 
   const allocations = taskAllocations.get(taskId) || [];
 
-  return {
-    success: true,
-    data: allocations,
-  };
+  return { data: allocations };
 }
 
 /**
@@ -429,8 +399,5 @@ export async function clearTaskAllocations(
 
   taskAllocations.delete(taskId);
 
-  return {
-    success: true,
-    data: { id: taskId },
-  };
+  return { success: true };
 }

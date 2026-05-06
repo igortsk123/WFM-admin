@@ -735,12 +735,11 @@ export function TaskDistribution() {
       setIsLoadingStores(true)
       try {
         const response = await getStores({})
-        if (response.success) {
-          setStores(response.data)
-          // Auto-select first store or user's store
-          if (response.data.length > 0) {
-            setSelectedStoreId(response.data[0].id)
-          }
+        // getStores returns ApiListResponse — нет поля success, всегда есть data
+        setStores(response.data)
+        // Auto-select first store or user's store
+        if (response.data.length > 0) {
+          setSelectedStoreId(response.data[0].id)
         }
       } catch (error) {
         console.error("Failed to load stores:", error)
@@ -756,6 +755,8 @@ export function TaskDistribution() {
     if (!selectedStoreId) return
 
     async function loadData() {
+      // selectedStoreId guarded by `if (!selectedStoreId) return` выше
+      if (selectedStoreId === null) return
       setIsLoadingTasks(true)
       setIsLoadingEmployees(true)
 
@@ -765,12 +766,8 @@ export function TaskDistribution() {
           getStoreEmployeesUtilization(selectedStoreId, currentDate),
         ])
 
-        if (tasksRes.success) {
-          setTasks(tasksRes.data)
-        }
-        if (employeesRes.success) {
-          setEmployees(employeesRes.data)
-        }
+        setTasks(tasksRes.data)
+        setEmployees(employeesRes.data)
       } catch (error) {
         console.error("Failed to load data:", error)
         toast.error(t("toast.distributed_error"))
@@ -802,9 +799,7 @@ export function TaskDistribution() {
         
         // Refresh data
         const tasksRes = await getStoreUnassignedTasks(selectedStoreId!, currentDate)
-        if (tasksRes.success) {
-          setTasks(tasksRes.data)
-        }
+        setTasks(tasksRes.data)
       } else {
         toast.error(t("toast.distributed_error"))
       }
