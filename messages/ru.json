@@ -1488,10 +1488,33 @@
         "archive": "Архивировать"
       },
       "bulk": {
-        "selected": "{count, plural, one {Выбран # сотрудник} few {Выбр��но # сотрудника} many {Выбрано # сотрудников} other {Выбрано # сотрудников}}",
-        "assign_permission": "Назначить привилегию",
+        "selected": "{count, plural, one {Выбран # сотрудник} few {Выбрано # сотрудника} many {Выбрано # сотрудников} other {Выбрано # сотрудников}}",
+        "clear_selection": "Снять выбор",
+        "assign_permission": "Назначить зону",
+        "revoke_permission": "Отозвать зону",
+        "assign_role": "Назначить роль",
+        "change_store": "Сменить магазин",
+        "assign_zone": "Назначить зону",
+        "revoke_zone": "Отозвать зону",
+        "zones_menu": "Зоны",
+        "assign_task": "Назначить задачу",
         "archive": "Архивировать",
-        "cancel": "Отмена"
+        "cancel": "Отмена",
+        "dialog": {
+          "assign_role_title": "Назначить роль для {count} сотрудников",
+          "assign_role_select": "Роль",
+          "change_store_title": "Перевести в магазин",
+          "change_store_desc": "Сотрудники получат новое назначение в выбранном магазине, текущее уйдёт в архив.",
+          "change_store_select": "Магазин",
+          "assign_task_title": "Назначить задачу выбранным",
+          "assign_task_desc": "Можно выбрать существующий шаблон или создать новую задачу — она появится сразу у всех {count} сотрудников.",
+          "submit": "Применить",
+          "submitting": "Применяю..."
+        },
+        "toast_done": "Операция выполнена для {count} сотрудников",
+        "toast_role_done": "Роль {role} назначена ({count})",
+        "toast_store_done": "Переведено в магазин: {count} сотрудников",
+        "toast_error": "Не удалось выполнить — попробуйте позже"
       },
       "dialogs": {
         "permission_title": "Назначить привилегию",
