@@ -1,0 +1,75 @@
+name: Deploy to wfm.prodstor.com
+
+on:
+  push:
+    branches: [main]
+  # Manual trigger из Actions UI — для retry если что-то сломалось
+  workflow_dispatch:
+
+# Одновременно только 1 deploy. Если приходит новый push пока идёт билд —
+# отменяем текущий и запускаем новый (свежий main всегда в приоритете).
+concurrency:
+  group: deploy-prod
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build + blue-green swap
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: SSH deploy
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.DEPLOY_HOST }}
+          username: ${{ secrets.DEPLOY_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          # Билд может занять 4-5 мин на этом сервере
+          command_timeout: 15m
+          script_stop: true
+          script: |
+            set -e
+
+            echo "::group::Pull latest main"
+            cd /opt/wfm-admin
+            git fetch origin main
+            git reset --hard origin/main
+            git log -1 --oneline
+            echo "::endgroup::"
+
+            echo "::group::Build new image"
+            docker build -t wfm-admin:new . 2>&1 | tail -30
+            echo "::endgroup::"
+
+            echo "::group::Blue-green swap"
+            # Сохраним предыдущий image как :prev — возможный откат через workflow_dispatch
+            if docker images wfm-admin:latest -q | grep -q .; then
+              docker tag wfm-admin:latest wfm-admin:prev
+            fi
+            docker stop wfm-admin 2>/dev/null || true
+            docker rm wfm-admin 2>/dev/null || true
+            docker tag wfm-admin:new wfm-admin:latest
+            docker rmi wfm-admin:new
+            docker run -d --name wfm-admin --restart unless-stopped \
+              -p 127.0.0.1:3004:3000 wfm-admin:latest
+            echo "::endgroup::"
+
+            echo "::group::Smoke test"
+            sleep 5
+            STATUS=$(curl -sI -o /dev/null -w "%{http_code}" -m 10 https://wfm.prodstor.com/)
+            if [ "$STATUS" != "307" ] && [ "$STATUS" != "200" ]; then
+              echo "FAIL: production returned $STATUS, rolling back"
+              docker stop wfm-admin
+              docker rm wfm-admin
+              docker tag wfm-admin:prev wfm-admin:latest
+              docker run -d --name wfm-admin --restart unless-stopped \
+                -p 127.0.0.1:3004:3000 wfm-admin:latest
+              exit 1
+            fi
+            echo "OK: https://wfm.prodstor.com/ returned $STATUS"
+            echo "::endgroup::"
+
+            echo "::group::Cleanup"
+            docker image prune -f --filter "until=24h" 2>&1 | tail -3
+            echo "::endgroup::"
