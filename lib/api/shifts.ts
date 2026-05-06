@@ -126,6 +126,8 @@ export interface ScheduleSlot {
   actual_end?: string;
   status: ShiftStatus;
   has_conflict?: boolean;
+  /** Тип конфликта (если has_conflict=true): пересечение смен / поздно закрыта / выход за плановое */
+  conflict_reason?: "OVERLAP" | "LATE_CLOSE" | "OVERFLOW" | "OTHER";
   late_minutes?: number;
   overtime_minutes?: number;
 }

@@ -619,4 +619,108 @@ export const MOCK_SHIFTS: ShiftMock[] = [
     late_minutes: 0,
     overtime_minutes: 0,
   },
+
+  // ═══════════════════════════════════════════════════════════════
+  // Generated full May 2026 schedule (3-31 May)
+  // 7 stores × 3 смены × 29 дней = ~600 shifts
+  // CLOSED для прошлых дат, NEW для будущих
+  // ═══════════════════════════════════════════════════════════════
+  ...generateMayShifts(),
 ];
+
+// ═══════════════════════════════════════════════════════════════════
+// May 2026 generator — cycles through 18 worker users × 7 stores
+// ═══════════════════════════════════════════════════════════════════
+
+function generateMayShifts(): ShiftMock[] {
+  const result: ShiftMock[] = [];
+  let nextId = 5000;
+  let nextPlanId = 10000;
+
+  // Источники: 18 worker user IDs (id 15-32 — это диапазон WORKER в моках)
+  const workerIds: number[] = [15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 28, 29, 30, 31, 32, 33, 34, 35];
+  const userNames: Record<number, string> = {
+    15: "Козлова Дарья Андреевна",
+    16: "Новиков Максим Юрьевич",
+    17: "Орлов Антон Викторович",
+    18: "Волкова Мария Александровна",
+    19: "Зайцев Никита Олегович",
+    20: "Сергеев Игорь Дмитриевич",
+    21: "Лаврова Анна Кирилловна",
+    22: "Тимофеев Денис Романович",
+    23: "Гусева Полина Игоревна",
+    24: "Пономарёв Артём Сергеевич",
+    28: "Соловьёва Вера Николаевна",
+    29: "Кудряшов Олег Михайлович",
+    30: "Никитина Ольга Львовна",
+    31: "Виноградов Илья Викторович",
+    32: "Лебедева Татьяна Юрьевна",
+    33: "Большаков Кирилл Алексеевич",
+    34: "Петрова Юлия Александровна",
+    35: "Носов Андрей Степанович",
+  };
+
+  // 7 магазинов из MOCK_STORES
+  const stores = [
+    { id: 1, name: "СПАР Томск, пр. Ленина 80" },
+    { id: 2, name: "СПАР Томск, ул. Учебная 8" },
+    { id: 3, name: "СПАР Северск, ул. Курчатова 5" },
+    { id: 4, name: "Abricos Томск, пр. Кирова 51" },
+    { id: 5, name: "СПАР Новосибирск, ул. Кошурникова 22" },
+    { id: 6, name: "Первоцвет Томск, пр. Мира 76" },
+    { id: 7, name: "Food City Томск Global Market, пр. Ленина 217" },
+  ];
+
+  const zones = [
+    { id: 1, name: "Торговый зал" },
+    { id: 2, name: "Склад" },
+    { id: 3, name: "Касса" },
+  ];
+
+  // 3 смены в день: утро (08-16), день (10-19), вечер (14-22)
+  const shiftWindows: Array<[string, string]> = [
+    ["08:00:00", "16:00:00"],
+    ["10:00:00", "19:00:00"],
+    ["14:00:00", "22:00:00"],
+  ];
+
+  // MOCK_TODAY = 2026-05-01. CLOSED для дат < 1, NEW для > 1, OPENED для сегодня
+  // Здесь генерим 3-31 мая (29 дней)
+  for (let day = 3; day <= 31; day++) {
+    const dateStr = `2026-05-${String(day).padStart(2, "0")}`;
+    const isPast = day < 1; // never past for these dates
+    const isToday = false;
+
+    stores.forEach((store, storeIdx) => {
+      shiftWindows.forEach(([start, end], shiftIdx) => {
+        // pick worker by deterministic round-robin
+        const workerIdx = (day * 7 + storeIdx * 3 + shiftIdx) % workerIds.length;
+        const userId = workerIds[workerIdx];
+        const zone = zones[(day + storeIdx + shiftIdx) % zones.length];
+
+        const shift: ShiftMock = {
+          id: nextId++,
+          plan_id: nextPlanId++,
+          // Все майские генерим как NEW (planned future) — для current смены
+          // already есть в основном MOCK_SHIFTS
+          status: isPast ? "CLOSED" : isToday ? "OPENED" : "NEW",
+          user_id: userId,
+          user_name: userNames[userId] ?? `Сотрудник #${userId}`,
+          store_id: store.id,
+          store_name: store.name,
+          zone_id: zone.id,
+          zone_name: zone.name,
+          shift_date: dateStr,
+          planned_start: `${dateStr}T${start}+07:00`,
+          planned_end: `${dateStr}T${end}+07:00`,
+          late_minutes: 0,
+          overtime_minutes: 0,
+        };
+
+        result.push(shift);
+      });
+    });
+  }
+
+  return result;
+}
