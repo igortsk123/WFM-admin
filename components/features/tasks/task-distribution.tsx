@@ -22,6 +22,8 @@ import {
   CheckCircle2,
   ListChecks,
   UsersRound,
+  X,
+  Pencil,
 } from "lucide-react"
 
 import type { FunctionalRole, Store } from "@/lib/types"
@@ -234,7 +236,7 @@ function HoursMinutesInput({
       disabled={disabled}
       className={cn(
         "w-28 h-8 text-sm text-center",
-        invalid && "border-warning focus-visible:ring-warning",
+        invalid && "border-destructive focus-visible:ring-destructive",
         className
       )}
       placeholder={t("hm.placeholder")}
@@ -351,7 +353,7 @@ function TaskCard({ task, planAllocations, onDistribute, disabled, t }: TaskCard
     <Card className={cn(
       "transition-shadow hover:shadow-md",
       isFullyDistributed && planMin === 0 && "opacity-60",
-      planMin > 0 && "ring-1 ring-warning"
+      planMin > 0 && "ring-1 ring-primary"
     )}>
       <CardContent className="p-4">
         {/* Title and source badge */}
@@ -365,7 +367,7 @@ function TaskCard({ task, planAllocations, onDistribute, disabled, t }: TaskCard
               </Badge>
             )}
             {planMin > 0 && (
-              <Badge variant="outline" className="text-xs border-warning text-warning gap-1">
+              <Badge variant="outline" className="text-xs border-primary text-primary gap-1">
                 <Wand2 className="size-3" />
                 {t("taskCard.in_plan_badge", { time: formatHM(planMin, t) })}
               </Badge>
@@ -402,13 +404,15 @@ function TaskCard({ task, planAllocations, onDistribute, disabled, t }: TaskCard
                 : t("taskCard.unassigned_hours", { remaining: remainingLabel, total: totalLabel })}
             </span>
           </div>
+          {/* Saved (primary) + staged (primary/40) — обе заливки одного hue,
+              разная opacity чтоб не конфликтовать. */}
           <div className="h-1.5 bg-muted rounded-full overflow-hidden flex">
             <div
               className="h-full bg-primary transition-all"
               style={{ width: `${distributedPct}%` }}
             />
             <div
-              className="h-full bg-warning transition-all"
+              className="h-full bg-primary/40 transition-all"
               style={{ width: `${planPct}%` }}
             />
           </div>
@@ -477,7 +481,7 @@ function EmployeeUtilizationRow({ employee, planMin = 0, onSelect, t }: Employee
         <div className="flex items-center gap-1.5">
           <span className="text-sm font-medium truncate">{fullName}</span>
           {planMin > 0 && (
-            <Badge variant="outline" className="text-[10px] px-1 py-0 border-warning text-warning">
+            <Badge variant="outline" className="text-[10px] px-1 py-0 border-primary text-primary">
               <Wand2 className="size-2.5 mr-0.5" />
               +{formatHM(planMin, t)}
             </Badge>
@@ -1031,12 +1035,12 @@ function EmployeeSheet({
   }
   const planMin = planItems.reduce((sum, item) => sum + item.minutes, 0)
 
-  // Задачи доступные для добавления — те у которых есть остаток и сотрудник
-  // ещё не в плане этой задачи
+  // Задачи доступные для picker'а: с остатком + не в плане сотрудника
+  // (исключение — текущая выбранная задача в edit-mode, чтоб combobox показал её)
   const availableTasks = tasks.filter(
     (task) =>
       task.remaining_minutes > 0 &&
-      !planItems.some((item) => item.task.id === task.id)
+      (!planItems.some((item) => item.task.id === task.id) || task.id === addTaskId)
   )
 
   // Free time с учётом плана (server assigned + plan)
@@ -1075,8 +1079,16 @@ function EmployeeSheet({
   }
 
   const selectedTask = tasks.find((tt) => tt.id === addTaskId)
+  // Edit mode = выбранная в picker'е задача уже в плане сотрудника
+  const isEditMode = !!addTaskId && planItems.some((p) => p.task.id === addTaskId)
   // Hint только — не блокируем ввод. Реальная позитивная проверка на > 0.
-  const overShiftBy = Math.max(0, addMinutes - freeMin)
+  // freeMin для edit-режима учитывает что текущее значение уже включено
+  // в planMin → надо «вернуть» его обратно для корректного hint.
+  const editingItemMinutes = isEditMode
+    ? planItems.find((p) => p.task.id === addTaskId)?.minutes ?? 0
+    : 0
+  const adjustedFreeMin = freeMin + editingItemMinutes
+  const overShiftBy = Math.max(0, addMinutes - adjustedFreeMin)
   const overTaskBy = selectedTask ? Math.max(0, addMinutes - selectedTask.remaining_minutes) : 0
 
   return (
@@ -1137,45 +1149,67 @@ function EmployeeSheet({
             </p>
           ) : (
             <div className="space-y-2 mb-4">
-              {planItems.map((item) => (
-                <div
-                  key={item.task.id}
-                  className="flex items-start gap-2 p-2 rounded-md border border-warning/30 bg-warning/5"
-                >
-                  <Wand2 className="size-3.5 text-warning shrink-0 mt-0.5" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium line-clamp-2">{item.task.title}</p>
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
-                      <span className="flex items-center gap-1">
-                        <MapPin className="size-3" />
-                        {item.task.zone_name}
-                      </span>
-                      <span className="text-border">·</span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="size-3" />
-                        {formatHM(item.minutes, t)}
-                      </span>
-                    </div>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="size-7 shrink-0 text-muted-foreground hover:text-destructive"
-                    onClick={() => handleRemoveFromPlan(item.task.id)}
-                    disabled={!canEdit}
-                    aria-label={t("employeeSheet.remove_aria")}
+              {planItems.map((item) => {
+                const isSelected = addTaskId === item.task.id
+                return (
+                  <div
+                    key={item.task.id}
+                    className={cn(
+                      "flex items-start gap-2 p-2 rounded-md border bg-primary/5 transition-colors",
+                      isSelected ? "border-primary ring-1 ring-primary/40" : "border-primary/30"
+                    )}
                   >
-                    <RotateCcw className="size-3.5" />
-                  </Button>
-                </div>
-              ))}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setAddTaskId(item.task.id)
+                        setAddMinutes(item.minutes)
+                      }}
+                      className="flex-1 flex items-start gap-2 min-w-0 text-left focus-visible:outline-none rounded -mx-1 -my-0.5 px-1 py-0.5 hover:bg-primary/10 focus-visible:bg-primary/10 transition-colors"
+                      aria-label={t("employeeSheet.edit_aria")}
+                    >
+                      <div className="flex items-center gap-1 shrink-0 mt-0.5">
+                        <Wand2 className="size-3.5 text-primary" />
+                        <Pencil className="size-3 text-primary/60" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium line-clamp-2">{item.task.title}</p>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
+                          <span className="flex items-center gap-1">
+                            <MapPin className="size-3" />
+                            {item.task.zone_name}
+                          </span>
+                          <span className="text-border">·</span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="size-3" />
+                            {formatHM(item.minutes, t)}
+                          </span>
+                        </div>
+                      </div>
+                    </button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-7 shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleRemoveFromPlan(item.task.id)
+                      }}
+                      disabled={!canEdit}
+                      aria-label={t("employeeSheet.remove_aria")}
+                    >
+                      <X className="size-3.5" />
+                    </Button>
+                  </div>
+                )
+              })}
             </div>
           )}
 
-          {/* Add task */}
+          {/* Add / Edit task */}
           <div className="border-t pt-3">
             <p className="text-xs font-medium text-muted-foreground mb-2">
-              {t("employeeSheet.add_section")}
+              {isEditMode ? t("employeeSheet.edit_section") : t("employeeSheet.add_section")}
             </p>
             {availableTasks.length === 0 ? (
               <p className="text-xs text-muted-foreground italic">
@@ -1183,8 +1217,14 @@ function EmployeeSheet({
               </p>
             ) : (
               <div className="space-y-2">
-                {freeMin === 0 && (
-                  <p className="text-xs text-warning flex items-center gap-1">
+                {isEditMode && (
+                  <p className="text-xs text-primary flex items-center gap-1.5">
+                    <Pencil className="size-3 shrink-0" />
+                    {t("employeeSheet.edit_mode_hint")}
+                  </p>
+                )}
+                {freeMin === 0 && !isEditMode && (
+                  <p className="text-xs text-destructive flex items-center gap-1.5">
                     <Wand2 className="size-3 shrink-0" />
                     {t("employeeSheet.over_shift_warning_full")}
                   </p>
@@ -1255,18 +1295,30 @@ function EmployeeSheet({
                     disabled={!canEdit || !addTaskId || addMinutes <= 0}
                     className="ml-auto"
                   >
-                    {t("employeeSheet.add_button")}
+                    {t(isEditMode ? "employeeSheet.update_button" : "employeeSheet.add_button")}
                   </Button>
+                  {isEditMode && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setAddTaskId("")
+                        setAddMinutes(60)
+                      }}
+                    >
+                      {t("employeeSheet.cancel_edit")}
+                    </Button>
+                  )}
                 </div>
                 {selectedTask && overShiftBy === 0 && overTaskBy === 0 && (
                   <p className="text-xs text-muted-foreground">
                     {t("employeeSheet.add_free_hint", {
-                      time: formatHM(freeMin, t),
+                      time: formatHM(adjustedFreeMin, t),
                     })}
                   </p>
                 )}
                 {overShiftBy > 0 && (
-                  <p className="text-xs text-warning flex items-center gap-1">
+                  <p className="text-xs text-destructive flex items-center gap-1.5">
                     <Wand2 className="size-3 shrink-0" />
                     {t("employeeSheet.over_shift_warning", {
                       time: formatHM(overShiftBy, t),
@@ -1274,7 +1326,7 @@ function EmployeeSheet({
                   </p>
                 )}
                 {overTaskBy > 0 && (
-                  <p className="text-xs text-warning flex items-center gap-1">
+                  <p className="text-xs text-destructive flex items-center gap-1.5">
                     <Wand2 className="size-3 shrink-0" />
                     {t("employeeSheet.over_task_warning", {
                       time: formatHM(overTaskBy, t),
@@ -1324,7 +1376,7 @@ function EmployeeBigCard({ employee, planMin, planTasks, onClick, t }: EmployeeB
       className={cn(
         "w-full text-left rounded-lg border bg-card p-3 transition-colors",
         "hover:bg-muted/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        planMin > 0 && "ring-1 ring-warning",
+        planMin > 0 && "ring-1 ring-primary",
         isOverloaded && "ring-1 ring-destructive"
       )}
     >
@@ -1346,7 +1398,7 @@ function EmployeeBigCard({ employee, planMin, planTasks, onClick, t }: EmployeeB
                 </Badge>
               )}
               {planMin > 0 && (
-                <Badge variant="outline" className="text-[10px] px-1 py-0 border-warning text-warning">
+                <Badge variant="outline" className="text-[10px] px-1 py-0 border-primary text-primary bg-primary/5">
                   <Wand2 className="size-2.5 mr-0.5" />
                   +{formatHM(planMin, t)}
                 </Badge>
@@ -1380,7 +1432,7 @@ function EmployeeBigCard({ employee, planMin, planTasks, onClick, t }: EmployeeB
               {planTasks.map((pt) => (
                 <span
                   key={pt.taskId}
-                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] bg-warning/10 text-warning border border-warning/30 max-w-[200px]"
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] bg-primary/10 text-primary border border-primary/30 max-w-[200px]"
                   title={pt.title}
                 >
                   <Wand2 className="size-2.5 shrink-0" />
@@ -1421,7 +1473,7 @@ function StickyPlanBar({
   return (
     <div className="sticky bottom-16 md:bottom-0 -mx-4 md:-mx-6 px-4 md:px-6 py-3 bg-card/95 backdrop-blur border-t shadow-lg z-30">
       <div className="flex items-center gap-2 sm:gap-3">
-        <Wand2 className="size-4 text-warning shrink-0" />
+        <Wand2 className="size-4 text-primary shrink-0" />
         <span className="text-xs sm:text-sm font-medium truncate min-w-0 flex-1">
           {t("plan_bar.summary", {
             tasks: taskCount,

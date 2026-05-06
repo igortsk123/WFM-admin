@@ -846,6 +846,11 @@
         "over_shift_warning_full": "Shift fully booked — assignment will be over plan",
         "over_task_warning": "Over task plan: +{time}",
         "add_button": "Add to plan",
+        "update_button": "Save",
+        "cancel_edit": "Cancel",
+        "edit_section": "Edit task in plan",
+        "edit_mode_hint": "Editing the duration of selected task — click «Save»",
+        "edit_aria": "Edit task in plan",
         "remove_aria": "Remove from plan",
         "close": "Close"
       },
