@@ -244,12 +244,20 @@ function QueueCard({ task, isSelected, onClick, t, locale }: QueueCardProps) {
       </div>
 
       {/* Title */}
-      <p className="text-sm font-medium line-clamp-2 mb-1 text-foreground break-words">{task.title}</p>
+      <p className="text-sm font-medium line-clamp-2 mb-1 text-foreground break-words">
+        {task.title}
+      </p>
 
-      {/* Subtitle — title attribute показывает полный текст при hover */}
+      {/* Subtitle — title attribute показывает полный текст при hover.
+          inline-style гарантирует что truncate не перебивается каскадом. */}
       <p
-        className="text-xs text-muted-foreground truncate mb-1.5"
+        className="text-xs text-muted-foreground mb-1.5 max-w-full"
         title={subtitle}
+        style={{
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+          whiteSpace: "nowrap",
+        }}
       >
         {subtitle}
       </p>
@@ -1019,7 +1027,7 @@ export function ReviewQueue() {
               </div>
             ) : (
               <ScrollArea className="lg:h-[calc(100vh-180px)]">
-                <div className="flex flex-col gap-1.5 pr-2">
+                <div className="flex flex-col gap-1.5 pr-4">
                   {tasks.map((task) => (
                     <QueueCard
                       key={task.id}

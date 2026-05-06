@@ -475,8 +475,24 @@ interface CollapsibleNavItemProps {
 
 function CollapsibleNavItem({ item, role, ctx, isActive, t }: CollapsibleNavItemProps) {
   const visibleSubs = item.sub?.filter((s) => isItemVisible(s, role, ctx)) ?? [];
+  // Smart active match: если у sub есть «более конкретный» сосед (например /tasks vs /tasks/distribute),
+  // то для этого sub'а требуется exact match — иначе оба подсветятся одновременно.
+  const subHrefs = visibleSubs.map((s) => s.href.split("?")[0]);
+  function isSubActive(subHref: string): boolean {
+    const cleanHref = subHref.split("?")[0];
+    const hasMoreSpecificSibling = subHrefs.some(
+      (other) => other !== cleanHref && other.startsWith(cleanHref + "/"),
+    );
+    if (hasMoreSpecificSibling) {
+      // /tasks при наличии /tasks/distribute → активен только когда pathname точно /tasks
+      return isActive(cleanHref) && !subHrefs.some(
+        (other) => other !== cleanHref && other.startsWith(cleanHref + "/") && isActive(other),
+      );
+    }
+    return isActive(cleanHref);
+  }
   const parentActive = isActive(item.href);
-  const anySubActive = visibleSubs.some((s) => isActive(s.href));
+  const anySubActive = visibleSubs.some((s) => isSubActive(s.href));
   const defaultOpen = parentActive || anySubActive;
   const Icon = item.icon;
 
@@ -518,7 +534,7 @@ function CollapsibleNavItem({ item, role, ctx, isActive, t }: CollapsibleNavItem
           <SidebarMenuSub>
             {visibleSubs.map((sub) => {
               const SubIcon = sub.icon;
-              const subActive = isActive(sub.href);
+              const subActive = isSubActive(sub.href);
               return (
                 <SidebarMenuSubItem key={sub.href}>
                   <SidebarMenuSubButton
