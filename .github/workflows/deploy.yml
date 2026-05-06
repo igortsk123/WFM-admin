@@ -13,8 +13,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  typecheck:
+    name: Type check (gate)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install --no-audit --no-fund
+      - run: npx tsc --noEmit
+
   deploy:
     name: Build + blue-green swap
+    needs: typecheck
     runs-on: ubuntu-latest
     timeout-minutes: 20
 

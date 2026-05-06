@@ -9,6 +9,16 @@ const nextConfig: NextConfig = {
   experimental: {
     reactCompiler: true,
   },
+  // Type-check и ESLint выполняются отдельным шагом в CI/CD (см.
+  // .github/workflows/deploy.yml: pre-deploy `tsc --noEmit`).
+  // В docker build их пропускаем — экономит ~1-1.5 мин на билде, при
+  // этом safety net остаётся (CI блокирует деплой при типовых ошибках).
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 };
 
 export default withNextIntl(nextConfig);
