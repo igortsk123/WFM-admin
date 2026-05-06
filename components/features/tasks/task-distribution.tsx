@@ -318,16 +318,18 @@ function TaskCard({ task, planAllocations, onDistribute, disabled, t }: TaskCard
 
 interface EmployeeUtilizationRowProps {
   employee: EmployeeUtilization
+  planMin?: number
+  onSelect?: () => void
   t: ReturnType<typeof useTranslations>
 }
 
-function EmployeeUtilizationRow({ employee, t }: EmployeeUtilizationRowProps) {
+function EmployeeUtilizationRow({ employee, planMin = 0, onSelect, t }: EmployeeUtilizationRowProps) {
   const fullName = getFullName(employee.user.first_name, employee.user.last_name)
   const assignedHours = minutesToHours(employee.assigned_min)
   const totalHours = minutesToHours(employee.shift_total_min)
 
-  return (
-    <div className="flex items-center gap-3 py-2">
+  const content = (
+    <>
       <Avatar className="size-8 shrink-0">
         <AvatarImage src={employee.user.avatar_url} alt={fullName} />
         <AvatarFallback className="text-xs bg-accent text-accent-foreground">
@@ -337,6 +339,12 @@ function EmployeeUtilizationRow({ employee, t }: EmployeeUtilizationRowProps) {
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-1.5">
           <span className="text-sm font-medium truncate">{fullName}</span>
+          {planMin > 0 && (
+            <Badge variant="outline" className="text-[10px] px-1 py-0 border-warning text-warning">
+              <Wand2 className="size-2.5 mr-0.5" />
+              +{minutesToHours(planMin)} ч
+            </Badge>
+          )}
           {employee.has_bonus_task && (
             <Badge variant="secondary" className="text-[10px] px-1 py-0">
               <Star className="size-2.5 mr-0.5" />
@@ -359,8 +367,22 @@ function EmployeeUtilizationRow({ employee, t }: EmployeeUtilizationRowProps) {
           {t("utilization.hours_format", { assigned: assignedHours, total: totalHours })}
         </span>
       </div>
-    </div>
+    </>
   )
+
+  if (onSelect) {
+    return (
+      <button
+        type="button"
+        onClick={onSelect}
+        className="w-full flex items-center gap-3 py-2 px-1 -mx-1 rounded-md text-left transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      >
+        {content}
+      </button>
+    )
+  }
+
+  return <div className="flex items-center gap-3 py-2">{content}</div>
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -369,13 +391,15 @@ function EmployeeUtilizationRow({ employee, t }: EmployeeUtilizationRowProps) {
 
 interface TeamUtilizationPanelProps {
   employees: EmployeeUtilization[]
+  planMinByUser: Map<number, number>
+  onSelectEmployee: (emp: EmployeeUtilization) => void
   isLoading: boolean
   date: string
   t: ReturnType<typeof useTranslations>
   locale: string
 }
 
-function TeamUtilizationPanel({ employees, isLoading, date, t, locale }: TeamUtilizationPanelProps) {
+function TeamUtilizationPanel({ employees, planMinByUser, onSelectEmployee, isLoading, date, t, locale }: TeamUtilizationPanelProps) {
   const dateLocale = locale === "en" ? enUS : ru
   const formattedDate = format(new Date(date), "d MMMM", { locale: dateLocale })
 
@@ -437,7 +461,13 @@ function TeamUtilizationPanel({ employees, isLoading, date, t, locale }: TeamUti
         <ScrollArea className="max-h-[400px] lg:max-h-[calc(100vh-300px)]">
           <div className="space-y-1">
             {employees.map((emp) => (
-              <EmployeeUtilizationRow key={emp.user.id} employee={emp} t={t} />
+              <EmployeeUtilizationRow
+                key={emp.user.id}
+                employee={emp}
+                planMin={planMinByUser.get(emp.user.id) ?? 0}
+                onSelect={() => onSelectEmployee(emp)}
+                t={t}
+              />
             ))}
           </div>
         </ScrollArea>
@@ -679,6 +709,8 @@ function DistributionSheet({
 
 interface MobileUtilizationCollapsibleProps {
   employees: EmployeeUtilization[]
+  planMinByUser: Map<number, number>
+  onSelectEmployee: (emp: EmployeeUtilization) => void
   isLoading: boolean
   date: string
   t: ReturnType<typeof useTranslations>
@@ -712,7 +744,13 @@ function MobileUtilizationCollapsible(props: MobileUtilizationCollapsibleProps) 
             <ScrollArea className="max-h-[300px]">
               <div className="space-y-1">
                 {props.employees.map((emp) => (
-                  <EmployeeUtilizationRow key={emp.user.id} employee={emp} t={props.t} />
+                  <EmployeeUtilizationRow
+                    key={emp.user.id}
+                    employee={emp}
+                    planMin={props.planMinByUser.get(emp.user.id) ?? 0}
+                    onSelect={() => props.onSelectEmployee(emp)}
+                    t={props.t}
+                  />
                 ))}
               </div>
             </ScrollArea>
@@ -720,6 +758,308 @@ function MobileUtilizationCollapsible(props: MobileUtilizationCollapsibleProps) 
         </CollapsibleContent>
       </Card>
     </Collapsible>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// EmployeeSheet — взгляд «от сотрудника к задачам»: его план + add/remove
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface EmployeeSheetProps {
+  employee: EmployeeUtilization | null
+  tasks: UnassignedTask[]
+  plan: Map<string, TaskDistributionAllocation[]>
+  open: boolean
+  onClose: () => void
+  onPlanChange: (next: Map<string, TaskDistributionAllocation[]>) => void
+  canEdit: boolean
+  t: ReturnType<typeof useTranslations>
+}
+
+function EmployeeSheet({
+  employee, tasks, plan, open, onClose, onPlanChange, canEdit, t,
+}: EmployeeSheetProps) {
+  const [addTaskId, setAddTaskId] = React.useState<string>("")
+  const [addMinutes, setAddMinutes] = React.useState<number>(60)
+  const [pickerOpen, setPickerOpen] = React.useState(false)
+
+  React.useEffect(() => {
+    if (employee) {
+      setAddTaskId("")
+      setAddMinutes(60)
+    }
+  }, [employee?.user.id])
+
+  if (!employee) return null
+
+  const userId = employee.user.id
+  const fullName = getFullName(employee.user.first_name, employee.user.last_name)
+
+  // Задачи в плане для этого сотрудника
+  const planItems: { task: UnassignedTask; minutes: number }[] = []
+  for (const [taskId, allocs] of plan) {
+    const myAlloc = allocs.find((a) => a.userId === userId)
+    if (myAlloc) {
+      const task = tasks.find((tt) => tt.id === taskId)
+      if (task) planItems.push({ task, minutes: myAlloc.minutes })
+    }
+  }
+  const planMin = planItems.reduce((sum, item) => sum + item.minutes, 0)
+
+  // Задачи доступные для добавления — те у которых есть остаток и сотрудник
+  // ещё не в плане этой задачи
+  const availableTasks = tasks.filter(
+    (task) =>
+      task.remaining_minutes > 0 &&
+      !planItems.some((item) => item.task.id === task.id)
+  )
+
+  // Free time с учётом плана (server assigned + plan)
+  const freeMin = Math.max(0, employee.shift_total_min - employee.assigned_min - planMin)
+  const previewUtilization = employee.shift_total_min > 0
+    ? Math.round(((employee.assigned_min + planMin) / employee.shift_total_min) * 100)
+    : 0
+
+  const handleRemoveFromPlan = (taskId: string) => {
+    const next = new Map(plan)
+    const allocs = next.get(taskId)
+    if (!allocs) return
+    const filtered = allocs.filter((a) => a.userId !== userId)
+    if (filtered.length === 0) {
+      next.delete(taskId)
+    } else {
+      next.set(taskId, filtered)
+    }
+    onPlanChange(next)
+  }
+
+  const handleAddToPlan = () => {
+    if (!addTaskId) return
+    const task = tasks.find((tt) => tt.id === addTaskId)
+    if (!task) return
+    const minutes = Math.min(addMinutes, task.remaining_minutes, freeMin)
+    if (minutes <= 0) return
+    const next = new Map(plan)
+    const existing = next.get(addTaskId) ?? []
+    // Не должен дублироваться (availableTasks отфильтровал) — но guard
+    const withoutMe = existing.filter((a) => a.userId !== userId)
+    next.set(addTaskId, [...withoutMe, { userId, minutes }])
+    onPlanChange(next)
+    setAddTaskId("")
+    setAddMinutes(60)
+  }
+
+  const selectedTask = tasks.find((tt) => tt.id === addTaskId)
+  const maxAddMinutes = selectedTask
+    ? Math.min(selectedTask.remaining_minutes, freeMin)
+    : freeMin
+
+  return (
+    <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
+      <SheetContent side="right" className="w-full sm:max-w-lg p-0 flex flex-col">
+        <SheetHeader className="px-4 pt-4 pb-3 border-b">
+          <div className="flex items-center gap-3">
+            <Avatar className="size-10">
+              <AvatarImage src={employee.user.avatar_url} alt={fullName} />
+              <AvatarFallback className="bg-accent text-accent-foreground">
+                {getInitials(employee.user.first_name, employee.user.last_name)}
+              </AvatarFallback>
+            </Avatar>
+            <div className="min-w-0 flex-1">
+              <SheetTitle className="text-base text-left truncate">{fullName}</SheetTitle>
+              <p className="text-xs text-muted-foreground truncate">
+                {t("employeeSheet.shift_label", {
+                  shift: formatShiftTime(employee.shift_start, employee.shift_end),
+                })}
+              </p>
+            </div>
+          </div>
+        </SheetHeader>
+
+        {/* Utilization preview */}
+        <div className="px-4 py-3 bg-muted/50 border-b">
+          <div className="flex items-center justify-between mb-2 text-sm">
+            <span className="text-muted-foreground">
+              {t("employeeSheet.utilization_label")}
+            </span>
+            <span className={cn("font-medium", getUtilizationTextColor(previewUtilization))}>
+              {previewUtilization}%
+            </span>
+          </div>
+          <div className="h-2 bg-muted rounded-full overflow-hidden">
+            <div
+              className={cn("h-full transition-all", getUtilizationColor(previewUtilization))}
+              style={{ width: `${Math.min(previewUtilization, 100)}%` }}
+            />
+          </div>
+          <p className="text-xs text-muted-foreground mt-1.5">
+            {t("employeeSheet.hours_breakdown", {
+              assigned: minutesToHours(employee.assigned_min),
+              plan: minutesToHours(planMin),
+              total: minutesToHours(employee.shift_total_min),
+            })}
+          </p>
+        </div>
+
+        <ScrollArea className="flex-1 px-4 py-3">
+          {/* Plan section */}
+          <p className="text-xs font-medium text-muted-foreground mb-2">
+            {t("employeeSheet.plan_section")}
+          </p>
+          {planItems.length === 0 ? (
+            <p className="text-xs text-muted-foreground italic mb-4">
+              {t("employeeSheet.plan_empty")}
+            </p>
+          ) : (
+            <div className="space-y-2 mb-4">
+              {planItems.map((item) => (
+                <div
+                  key={item.task.id}
+                  className="flex items-start gap-2 p-2 rounded-md border border-warning/30 bg-warning/5"
+                >
+                  <Wand2 className="size-3.5 text-warning shrink-0 mt-0.5" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium line-clamp-2">{item.task.title}</p>
+                    <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
+                      <span className="flex items-center gap-1">
+                        <MapPin className="size-3" />
+                        {item.task.zone_name}
+                      </span>
+                      <span className="text-border">·</span>
+                      <span className="flex items-center gap-1">
+                        <Clock className="size-3" />
+                        {minutesToHours(item.minutes)} ч
+                      </span>
+                    </div>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-7 shrink-0 text-muted-foreground hover:text-destructive"
+                    onClick={() => handleRemoveFromPlan(item.task.id)}
+                    disabled={!canEdit}
+                    aria-label={t("employeeSheet.remove_aria")}
+                  >
+                    <RotateCcw className="size-3.5" />
+                  </Button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Add task */}
+          <div className="border-t pt-3">
+            <p className="text-xs font-medium text-muted-foreground mb-2">
+              {t("employeeSheet.add_section")}
+            </p>
+            {availableTasks.length === 0 ? (
+              <p className="text-xs text-muted-foreground italic">
+                {t("employeeSheet.add_empty")}
+              </p>
+            ) : freeMin === 0 ? (
+              <p className="text-xs text-warning italic">
+                {t("employeeSheet.add_no_time")}
+              </p>
+            ) : (
+              <div className="space-y-2">
+                <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      className="w-full justify-between font-normal h-9"
+                      disabled={!canEdit}
+                    >
+                      <span className="truncate text-left text-sm">
+                        {selectedTask ? selectedTask.title : (
+                          <span className="text-muted-foreground">
+                            {t("employeeSheet.add_picker_placeholder")}
+                          </span>
+                        )}
+                      </span>
+                      <ChevronsUpDown className="ml-2 size-3.5 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
+                    <Command>
+                      <CommandInput placeholder={t("employeeSheet.add_picker_search")} className="h-8 text-sm" />
+                      <CommandList className="max-h-64">
+                        <CommandEmpty>{t("employeeSheet.add_picker_empty")}</CommandEmpty>
+                        <CommandGroup>
+                          {availableTasks.map((task) => (
+                            <CommandItem
+                              key={task.id}
+                              value={`${task.title} ${task.zone_name ?? ""}`}
+                              onSelect={() => {
+                                setAddTaskId(task.id)
+                                setAddMinutes(Math.min(60, task.remaining_minutes, freeMin))
+                                setPickerOpen(false)
+                              }}
+                            >
+                              <div className="flex flex-col gap-0.5 min-w-0">
+                                <span className="text-sm font-medium truncate">{task.title}</span>
+                                <span className="text-xs text-muted-foreground">
+                                  {task.zone_name} · {t("employeeSheet.add_picker_remaining", {
+                                    hours: minutesToHours(task.remaining_minutes),
+                                  })}
+                                </span>
+                              </div>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+
+                <div className="flex items-center gap-2">
+                  <Input
+                    type="number"
+                    step="0.25"
+                    min="0"
+                    max={minutesToHours(maxAddMinutes)}
+                    value={addMinutes / 60 || ""}
+                    onChange={(e) =>
+                      setAddMinutes(hoursToMinutes(parseFloat(e.target.value) || 0))
+                    }
+                    className="h-9 w-24 text-sm text-center"
+                    placeholder="0"
+                    disabled={!canEdit || !selectedTask}
+                  />
+                  <span className="text-xs text-muted-foreground">ч</span>
+                  <Button
+                    size="sm"
+                    onClick={handleAddToPlan}
+                    disabled={
+                      !canEdit ||
+                      !addTaskId ||
+                      addMinutes <= 0 ||
+                      addMinutes > maxAddMinutes
+                    }
+                    className="ml-auto"
+                  >
+                    {t("employeeSheet.add_button")}
+                  </Button>
+                </div>
+                {selectedTask && (
+                  <p className="text-xs text-muted-foreground">
+                    {t("employeeSheet.add_max_hint", {
+                      hours: minutesToHours(maxAddMinutes),
+                    })}
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+        </ScrollArea>
+
+        <SheetFooter className="border-t px-4 py-3">
+          <Button variant="outline" onClick={onClose} className="w-full">
+            {t("employeeSheet.close")}
+          </Button>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   )
 }
 
@@ -800,15 +1140,29 @@ export function TaskDistribution() {
   const [isLoadingTasks, setIsLoadingTasks] = React.useState(false)
   const [isLoadingEmployees, setIsLoadingEmployees] = React.useState(false)
 
-  // Sheet state
+  // Task sheet state (per-task editor)
   const [selectedTask, setSelectedTask] = React.useState<UnassignedTask | null>(null)
   const [sheetOpen, setSheetOpen] = React.useState(false)
+  // Employee sheet state (per-employee editor — взгляд от сотрудника)
+  const [selectedEmployee, setSelectedEmployee] = React.useState<EmployeeUtilization | null>(null)
+  const [employeeSheetOpen, setEmployeeSheetOpen] = React.useState(false)
   const [isAutoRunning, setIsAutoRunning] = React.useState(false)
   const [isConfirming, setIsConfirming] = React.useState(false)
 
   // Локальный план — staged allocations не закоммичены на сервер.
   // Map<taskId, allocations[]>. Подтверждается через StickyPlanBar.
   const [plan, setPlan] = React.useState<Map<string, TaskDistributionAllocation[]>>(new Map())
+
+  // Plan minutes по сотрудникам — для бейджа в EmployeeUtilizationRow
+  const planMinByUser = React.useMemo(() => {
+    const m = new Map<number, number>()
+    for (const allocs of plan.values()) {
+      for (const a of allocs) {
+        m.set(a.userId, (m.get(a.userId) ?? 0) + a.minutes)
+      }
+    }
+    return m
+  }, [plan])
 
   // Распределять может директор магазина и выше по иерархии
   const DISTRIBUTOR_ROLES: FunctionalRole[] = [
@@ -1031,6 +1385,11 @@ export function TaskDistribution() {
       {/* Mobile utilization collapsible */}
       <MobileUtilizationCollapsible
         employees={employees}
+        planMinByUser={planMinByUser}
+        onSelectEmployee={(emp) => {
+          setSelectedEmployee(emp)
+          setEmployeeSheetOpen(true)
+        }}
         isLoading={isLoadingEmployees}
         date={currentDate}
         t={t}
@@ -1091,6 +1450,11 @@ export function TaskDistribution() {
         <div className="hidden lg:block">
           <TeamUtilizationPanel
             employees={employees}
+            planMinByUser={planMinByUser}
+            onSelectEmployee={(emp) => {
+              setSelectedEmployee(emp)
+              setEmployeeSheetOpen(true)
+            }}
             isLoading={isLoadingEmployees}
             date={currentDate}
             t={t}
@@ -1113,7 +1477,7 @@ export function TaskDistribution() {
         t={t}
       />
 
-      {/* Distribution Sheet */}
+      {/* Distribution Sheet — взгляд «от задачи к сотрудникам» */}
       <DistributionSheet
         task={selectedTask}
         employees={employees}
@@ -1121,6 +1485,18 @@ export function TaskDistribution() {
         open={sheetOpen}
         onClose={() => setSheetOpen(false)}
         onSave={handleSaveAllocation}
+        canEdit={canEdit}
+        t={t}
+      />
+
+      {/* Employee Sheet — взгляд «от сотрудника к задачам» */}
+      <EmployeeSheet
+        employee={selectedEmployee}
+        tasks={tasks}
+        plan={plan}
+        open={employeeSheetOpen}
+        onClose={() => setEmployeeSheetOpen(false)}
+        onPlanChange={setPlan}
         canEdit={canEdit}
         t={t}
       />

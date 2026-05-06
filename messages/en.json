@@ -807,6 +807,24 @@
         "confirm": "Confirm plan",
         "confirming": "Applying…"
       },
+      "employeeSheet": {
+        "shift_label": "Shift: {shift}",
+        "utilization_label": "Load after plan",
+        "hours_breakdown": "Assigned: {assigned}h · in plan: +{plan}h · shift: {total}h",
+        "plan_section": "Tasks in plan",
+        "plan_empty": "No tasks in plan yet for this employee",
+        "add_section": "Add task",
+        "add_empty": "All tasks already distributed",
+        "add_no_time": "No free time in shift",
+        "add_picker_placeholder": "Select a task…",
+        "add_picker_search": "Search…",
+        "add_picker_empty": "Not found",
+        "add_picker_remaining": "{hours}h remaining",
+        "add_max_hint": "Maximum: {hours}h",
+        "add_button": "Add to plan",
+        "remove_aria": "Remove from plan",
+        "close": "Close"
+      },
       "sheet": {
         "title": "Distribute: {taskTitle}",
         "employee_list_header": "Employees on shift",

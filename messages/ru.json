@@ -962,6 +962,24 @@
         "confirm": "Подтвердить план",
         "confirming": "Применяю…"
       },
+      "employeeSheet": {
+        "shift_label": "Смена: {shift}",
+        "utilization_label": "Загрузка после плана",
+        "hours_breakdown": "Назначено: {assigned} ч · в плане: +{plan} ч · смена: {total} ч",
+        "plan_section": "Задачи в плане",
+        "plan_empty": "В плане пока нет задач для этого сотрудника",
+        "add_section": "Добавить задачу",
+        "add_empty": "Все задачи уже распределены",
+        "add_no_time": "Свободного времени в смене нет",
+        "add_picker_placeholder": "Выберите задачу…",
+        "add_picker_search": "Поиск…",
+        "add_picker_empty": "Не найдено",
+        "add_picker_remaining": "Осталось {hours} ч",
+        "add_max_hint": "Максимум: {hours} ч",
+        "add_button": "Добавить в план",
+        "remove_aria": "Убрать из плана",
+        "close": "Закрыть"
+      },
       "sheet": {
         "title": "Распределить: {taskTitle}",
         "employee_list_header": "Сотрудники на смене",
