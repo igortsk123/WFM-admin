@@ -358,7 +358,6 @@ export async function assignTaskToUser(
     };
   }
 
-  // Validate total doesn't exceed planned minutes
   const totalMinutes = assignments.reduce((sum, a) => sum + a.minutes, 0);
   if (totalMinutes > task.planned_minutes) {
     return {
@@ -370,8 +369,36 @@ export async function assignTaskToUser(
     };
   }
 
-  // Store allocations
+  // Store allocations (история распределения — для distribution-page state)
   taskAllocations.set(taskId, assignments);
+
+  // Создаём реальные задачи на конкретных сотрудников.
+  // Каждое распределение = отдельная Task в MOCK_TASKS, доступная в /tasks
+  // и /tasks/{id}. Это «дробление» родительской unassigned-задачи на исполняемые.
+  const now = new Date().toISOString();
+  for (const a of assignments) {
+    const user = MOCK_USERS.find((u) => u.id === a.userId);
+    if (!user) continue;
+    const userName = `${user.last_name} ${user.first_name}`;
+    const childId = `${taskId}--user-${a.userId}-${Date.now()}`;
+    const childTask: Task = {
+      ...task,
+      id: childId,
+      title: `${task.title} — ${userName}`,
+      planned_minutes: a.minutes,
+      assignee_id: a.userId,
+      assignee_name: userName,
+      assigned_to_permission: null,
+      state: "NEW",
+      review_state: "NONE",
+      source: task.source ?? "PLANNED",
+      // editable_by_store false — задача спущена сверху, директор только распределил
+      editable_by_store: false,
+      created_at: now,
+      updated_at: now,
+    };
+    MOCK_TASKS.push(childTask);
+  }
 
   return { success: true };
 }
