@@ -6283,6 +6283,7 @@
       "badge_available": "Available",
       "row_actions": {
         "menu": "Actions",
+        "open_profile": "Open profile",
         "offer_task": "Offer task",
         "open_agent": "Open agent card"
       },
@@ -6312,6 +6313,41 @@
         "field_note_placeholder": "Special conditions, instructions...",
         "submit": "Send offer",
         "toast_sent": "Offer sent: {name}"
+      }
+    },
+    "freelancerDetail": {
+      "breadcrumb_home": "Home",
+      "breadcrumb_freelance": "Freelance",
+      "breadcrumb_freelancers": "Performers",
+      "back_to_list": "Back to performers",
+      "not_found_title": "Performer not found",
+      "not_found_desc": "ID may be incorrect or performer was deleted",
+      "error_load": "Failed to load",
+      "stat_completed_30d": "Completed (30d)",
+      "stat_active_now": "Active now",
+      "stat_total_lifetime": "Total assignments",
+      "stat_joined": "In system",
+      "tabs": {
+        "assignments": "Assignments",
+        "history": "History",
+        "documents": "Documents"
+      },
+      "upcoming_empty_title": "No upcoming assignments",
+      "upcoming_empty_desc": "Will appear once the network sends an offer and it's accepted",
+      "history_empty_title": "History is empty",
+      "history_empty_desc": "Completed shifts and no-shows will appear here",
+      "documents_title": "Documents",
+      "oferta": "Offer agreement",
+      "oferta_signed": "Signed {date}",
+      "oferta_unsigned": "Not signed — task acceptance blocked",
+      "agent_link": "Agent",
+      "open_agent": "Open",
+      "status": {
+        "scheduled": "Scheduled",
+        "checked_in": "Checked in",
+        "working": "Working",
+        "done": "Done",
+        "no_show": "No-show"
       }
     },
     "freelanceAgents": {

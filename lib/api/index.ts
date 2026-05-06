@@ -628,6 +628,7 @@ export {
   type GetFreelancersParams,
   getFreelancers,
   getFreelancerById,
+  getFreelancerAssignments,
   sendTaskOffer,
 } from "./freelance-freelancers";
 

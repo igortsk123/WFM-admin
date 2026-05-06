@@ -175,6 +175,38 @@ export async function getFreelancerById(
 }
 
 /**
+ * Список заданий конкретного фрилансера (актуальные + история).
+ * @endpoint GET /freelance/freelancers/:id/assignments
+ */
+export async function getFreelancerAssignments(
+  freelancer_id: number,
+  params: { limit?: number } = {},
+): Promise<ApiListResponse<import("@/lib/types").FreelancerAssignment>> {
+  await delay(rand(150, 300));
+
+  if (isClientDirect()) {
+    throw new Error(MODULE_DISABLED_ERR);
+  }
+
+  const all = MOCK_FREELANCE_ASSIGNMENTS.filter((a) => a.freelancer_id === freelancer_id);
+  // Сортируем: активные/будущие сверху, потом завершённые от свежего к старому
+  const sorted = [...all].sort((a, b) => {
+    const aActive = a.status === "SCHEDULED" || a.status === "CHECKED_IN" || a.status === "WORKING";
+    const bActive = b.status === "SCHEDULED" || b.status === "CHECKED_IN" || b.status === "WORKING";
+    if (aActive !== bActive) return aActive ? -1 : 1;
+    return new Date(b.scheduled_start).getTime() - new Date(a.scheduled_start).getTime();
+  });
+
+  const limit = params.limit ?? 100;
+  return {
+    data: sorted.slice(0, limit),
+    total: sorted.length,
+    page: 1,
+    page_size: limit,
+  };
+}
+
+/**
  * Отправить предложение задания фрилансеру.
  * Бэкенд push-нёт в мобильное приложение фрилансера; в течение 60 минут он
  * принимает или отклоняет. На MVP — мок: console.log + success.

@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useRouter } from "@/i18n/navigation"
 import { useTranslations, useLocale } from "next-intl"
 import { useQueryState, parseAsString, parseAsInteger } from "nuqs"
 import { type ColumnDef } from "@tanstack/react-table"
@@ -9,6 +10,7 @@ import { MoreVertical, Send, ExternalLink, Star, Users } from "lucide-react"
 import type { FreelancerStatus } from "@/lib/types"
 import { getFreelancers, getAgents, type FreelancerWithStats } from "@/lib/api"
 import type { Agent } from "@/lib/types"
+import { ADMIN_ROUTES } from "@/lib/constants/routes"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -50,6 +52,7 @@ const TAB_STATUS_MAP: Record<FreelancerTab, FreelancerStatus | undefined> = {
 export function FreelancersList() {
   const t = useTranslations("screen.freelancers")
   const locale = useLocale()
+  const router = useRouter()
 
   const [tabParam, setTabParam] = useQueryState(
     "tab",
@@ -227,6 +230,15 @@ export function FreelancersList() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-52">
                 <DropdownMenuItem
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    router.push(ADMIN_ROUTES.freelanceFreelancerDetail(f.id))
+                  }}
+                >
+                  <ExternalLink className="size-4 mr-2" />
+                  {t("row_actions.open_profile")}
+                </DropdownMenuItem>
+                <DropdownMenuItem
                   disabled={!canOffer}
                   onClick={(e) => {
                     e.stopPropagation()
@@ -367,7 +379,15 @@ export function FreelancersList() {
         <ResponsiveDataTable
           columns={columns}
           data={data}
-          mobileCardRender={(f) => <FreelancerCard freelancer={f} onOffer={() => setOfferingTo(f)} t={t} />}
+          onRowClick={(f) => router.push(ADMIN_ROUTES.freelanceFreelancerDetail(f.id))}
+          mobileCardRender={(f) => (
+            <FreelancerCard
+              freelancer={f}
+              onOffer={() => setOfferingTo(f)}
+              onOpen={() => router.push(ADMIN_ROUTES.freelanceFreelancerDetail(f.id))}
+              t={t}
+            />
+          )}
         />
       )}
 
@@ -412,14 +432,15 @@ function formatDate(iso: string | undefined, locale: string): string {
 interface CardProps {
   freelancer: FreelancerWithStats
   onOffer: () => void
+  onOpen: () => void
   t: ReturnType<typeof useTranslations>
 }
 
-function FreelancerCard({ freelancer: f, onOffer, t }: CardProps) {
+function FreelancerCard({ freelancer: f, onOffer, onOpen, t }: CardProps) {
   const initials = `${f.last_name[0] ?? ""}${f.first_name[0] ?? ""}`
   const canOffer = f.freelancer_status === "ACTIVE"
   return (
-    <div className="flex flex-col gap-3 p-3">
+    <div className="flex flex-col gap-3 p-3" onClick={onOpen} role="button" tabIndex={0}>
       <div className="flex items-start gap-3">
         <Avatar className="size-10 shrink-0">
           <AvatarImage src={f.avatar_url} alt="" />
@@ -468,7 +489,12 @@ function FreelancerCard({ freelancer: f, onOffer, t }: CardProps) {
           </div>
         </div>
       </div>
-      <Button onClick={onOffer} disabled={!canOffer} size="sm" className="w-full">
+      <Button
+        onClick={(e) => { e.stopPropagation(); onOffer() }}
+        disabled={!canOffer}
+        size="sm"
+        className="w-full"
+      >
         <Send className="size-4 mr-1.5" />
         {t("row_actions.offer_task")}
       </Button>
