@@ -801,6 +801,10 @@
         "source_manager": "Created manually",
         "source_planned": "Planned"
       },
+      "zone_group": {
+        "no_zone": "No zone",
+        "summary": "{distributed}h / {planned}h"
+      },
       "plan_bar": {
         "summary": "In plan: {tasks, plural, one {# task} other {# tasks}}, {hours}h",
         "reset": "Reset",

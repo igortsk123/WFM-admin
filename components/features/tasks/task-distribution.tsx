@@ -762,6 +762,92 @@ function MobileUtilizationCollapsible(props: MobileUtilizationCollapsibleProps) 
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// TaskZoneGroup — collapsible секция по зоне с summary в шапке
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface TaskZoneGroupProps {
+  zoneName: string
+  tasks: UnassignedTask[]
+  plan: Map<string, TaskDistributionAllocation[]>
+  onDistribute: (task: UnassignedTask) => void
+  disabled: boolean
+  t: ReturnType<typeof useTranslations>
+}
+
+function TaskZoneGroup({ zoneName, tasks, plan, onDistribute, disabled, t }: TaskZoneGroupProps) {
+  const [open, setOpen] = React.useState(true)
+
+  const totalPlanned = tasks.reduce((s, tt) => s + tt.planned_minutes, 0)
+  const totalDistributed = tasks.reduce((s, tt) => s + tt.distributed_minutes, 0)
+  const totalInPlan = tasks.reduce((s, tt) => {
+    const planAllocs = plan.get(tt.id) ?? []
+    return s + planAllocs.reduce((ss, a) => ss + a.minutes, 0)
+  }, 0)
+  const fullyCovered = totalDistributed + totalInPlan >= totalPlanned
+  const coveragePct = totalPlanned > 0
+    ? Math.min(100, Math.round(((totalDistributed + totalInPlan) / totalPlanned) * 100))
+    : 0
+
+  return (
+    <Collapsible open={open} onOpenChange={setOpen} className="border rounded-lg overflow-hidden">
+      <CollapsibleTrigger asChild>
+        <button className="w-full flex items-center gap-3 px-3 py-2.5 bg-muted/30 hover:bg-muted/50 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          {open ? (
+            <ChevronDown className="size-4 text-muted-foreground shrink-0" />
+          ) : (
+            <ChevronRight className="size-4 text-muted-foreground shrink-0" />
+          )}
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <MapPin className="size-3.5 text-muted-foreground shrink-0" />
+            <span className="text-sm font-medium truncate">{zoneName}</span>
+            <Badge variant="secondary" className="text-xs shrink-0">
+              {tasks.length}
+            </Badge>
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-xs text-muted-foreground hidden sm:inline">
+              {t("zone_group.summary", {
+                distributed: minutesToHours(totalDistributed + totalInPlan),
+                planned: minutesToHours(totalPlanned),
+              })}
+            </span>
+            <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+              <div
+                className={cn(
+                  "h-full transition-all",
+                  fullyCovered ? "bg-success" : "bg-primary"
+                )}
+                style={{ width: `${coveragePct}%` }}
+              />
+            </div>
+            <span className={cn(
+              "text-xs font-medium shrink-0 w-10 text-right",
+              fullyCovered ? "text-success" : "text-muted-foreground"
+            )}>
+              {coveragePct}%
+            </span>
+          </div>
+        </button>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="grid gap-3 p-3 sm:grid-cols-2">
+          {tasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              planAllocations={plan.get(task.id) ?? []}
+              onDistribute={() => onDistribute(task)}
+              disabled={disabled}
+              t={t}
+            />
+          ))}
+        </div>
+      </CollapsibleContent>
+    </Collapsible>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // EmployeeSheet — взгляд «от сотрудника к задачам»: его план + add/remove
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -1448,17 +1534,34 @@ export function TaskDistribution() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-4 sm:grid-cols-2">
-              {tasks.map((task) => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  planAllocations={plan.get(task.id) ?? []}
-                  onDistribute={() => handleDistribute(task)}
-                  disabled={!canEdit}
-                  t={t}
-                />
-              ))}
+            <div className="space-y-3">
+              {Array.from(
+                tasks.reduce((acc, task) => {
+                  const zone = task.zone_name ?? t("zone_group.no_zone")
+                  if (!acc.has(zone)) acc.set(zone, [])
+                  acc.get(zone)!.push(task)
+                  return acc
+                }, new Map<string, UnassignedTask[]>())
+              )
+                // Sort zones: те где есть нераспределённые задачи — первыми;
+                // среди равных — alpha
+                .sort(([za, ta], [zb, tb]) => {
+                  const ra = ta.some((t) => t.remaining_minutes > 0)
+                  const rb = tb.some((t) => t.remaining_minutes > 0)
+                  if (ra !== rb) return ra ? -1 : 1
+                  return za.localeCompare(zb)
+                })
+                .map(([zone, zoneTasks]) => (
+                  <TaskZoneGroup
+                    key={zone}
+                    zoneName={zone}
+                    tasks={zoneTasks}
+                    plan={plan}
+                    onDistribute={handleDistribute}
+                    disabled={!canEdit}
+                    t={t}
+                  />
+                ))}
             </div>
           )}
         </div>
@@ -1468,10 +1571,7 @@ export function TaskDistribution() {
           <TeamUtilizationPanel
             employees={employees}
             planMinByUser={planMinByUser}
-            onSelectEmployee={(emp) => {
-              setSelectedEmployee(emp)
-              setEmployeeSheetOpen(true)
-            }}
+            onSelectEmployee={handleSelectEmployee}
             isLoading={isLoadingEmployees}
             date={currentDate}
             t={t}
