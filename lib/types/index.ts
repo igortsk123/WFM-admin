@@ -554,6 +554,15 @@ export interface Subtask {
  * ВАЖНО: id, plan_id — number (int в backend, не UUID).
  * Не путать с Task.id (UUID = string).
  */
+/**
+ * Тип смены:
+ *   REGULAR     — штатная смена в родном магазине сотрудника
+ *   SUBSTITUTE  — подработка: тот же STAFF в свой выходной вышел в другой магазин
+ *                 того же юрлица. Должность не меняется, ЗП по штатному расписанию.
+ *                 На циклограмме / pie chart канал закрытия = PART_TIME.
+ */
+export type ShiftKind = "REGULAR" | "SUBSTITUTE";
+
 export interface Shift {
   id: number;
   plan_id: number;
@@ -571,6 +580,10 @@ export interface Shift {
   actual_end?: string;
   late_minutes: number;
   overtime_minutes: number;
+  /** Default REGULAR. SUBSTITUTE = подработка в другом магазине в выходной. */
+  shift_kind?: ShiftKind;
+  /** Если shift_kind=SUBSTITUTE — id «родного» магазина сотрудника. Optional для REGULAR. */
+  home_store_id?: number;
 }
 
 export interface Notification {
