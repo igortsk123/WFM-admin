@@ -18,6 +18,8 @@ import {
   ChevronRight,
   ChevronDown,
   Wand2,
+  RotateCcw,
+  CheckCircle2,
 } from "lucide-react"
 
 import type { FunctionalRole, Store } from "@/lib/types"
@@ -192,37 +194,46 @@ function StoreCombobox({ stores, value, onChange, placeholder, className }: Stor
 
 interface TaskCardProps {
   task: UnassignedTask
+  planAllocations: TaskDistributionAllocation[]
   onDistribute: () => void
   disabled: boolean
   t: ReturnType<typeof useTranslations>
 }
 
-function TaskCard({ task, onDistribute, disabled, t }: TaskCardProps) {
+function TaskCard({ task, planAllocations, onDistribute, disabled, t }: TaskCardProps) {
   const totalHours = minutesToHours(task.planned_minutes)
-  const remainingHours = minutesToHours(task.remaining_minutes)
-  const isFullyDistributed = task.remaining_minutes === 0
-  const distributedPct = ((task.distributed_minutes) / task.planned_minutes) * 100
-
-  const sourceLabel = 
-    task.source === "AI" ? t("taskCard.source_ai") :
-    task.source === "MANAGER" ? t("taskCard.source_manager") :
-    t("taskCard.source_planned")
+  const planMin = planAllocations.reduce((sum, a) => sum + a.minutes, 0)
+  const effectiveDistributed = task.distributed_minutes + planMin
+  const effectiveRemaining = Math.max(0, task.planned_minutes - effectiveDistributed)
+  const remainingHours = minutesToHours(effectiveRemaining)
+  const isFullyDistributed = effectiveRemaining === 0
+  const distributedPct = (task.distributed_minutes / task.planned_minutes) * 100
+  const planPct = (planMin / task.planned_minutes) * 100
 
   return (
     <Card className={cn(
       "transition-shadow hover:shadow-md",
-      isFullyDistributed && "opacity-60"
+      isFullyDistributed && planMin === 0 && "opacity-60",
+      planMin > 0 && "ring-1 ring-warning"
     )}>
       <CardContent className="p-4">
         {/* Title and source badge */}
         <div className="flex items-start justify-between gap-2 mb-2">
           <h3 className="text-sm font-medium line-clamp-2 text-foreground">{task.title}</h3>
-          {task.source === "AI" && (
-            <Badge variant="secondary" className="shrink-0 text-xs gap-1">
-              <Sparkles className="size-3" />
-              ИИ
-            </Badge>
-          )}
+          <div className="flex items-center gap-1 shrink-0">
+            {task.source === "AI" && (
+              <Badge variant="secondary" className="text-xs gap-1">
+                <Sparkles className="size-3" />
+                ИИ
+              </Badge>
+            )}
+            {planMin > 0 && (
+              <Badge variant="outline" className="text-xs border-warning text-warning gap-1">
+                <Wand2 className="size-3" />
+                {t("taskCard.in_plan_badge", { hours: minutesToHours(planMin) })}
+              </Badge>
+            )}
+          </div>
         </div>
 
         {/* Meta info */}
@@ -241,20 +252,27 @@ function TaskCard({ task, onDistribute, disabled, t }: TaskCardProps) {
           </span>
         </div>
 
-        {/* Distribution progress */}
+        {/* Distribution progress — две полосы стэком: уже сохранено (primary)
+            + в плане (warning). Полная заливка = task будет полностью разнесена
+            после подтверждения плана. */}
         <div className="mb-3">
           <div className="flex items-center justify-between text-xs mb-1">
             <span className="text-muted-foreground">
-              {isFullyDistributed 
-                ? t("taskCard.fully_distributed")
-                : t("taskCard.unassigned_hours", { remaining: remainingHours, total: totalHours })
-              }
+              {isFullyDistributed
+                ? planMin > 0
+                  ? t("taskCard.full_after_confirm")
+                  : t("taskCard.fully_distributed")
+                : t("taskCard.unassigned_hours", { remaining: remainingHours, total: totalHours })}
             </span>
           </div>
-          <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-            <div 
+          <div className="h-1.5 bg-muted rounded-full overflow-hidden flex">
+            <div
               className="h-full bg-primary transition-all"
               style={{ width: `${distributedPct}%` }}
+            />
+            <div
+              className="h-full bg-warning transition-all"
+              style={{ width: `${planPct}%` }}
             />
           </div>
         </div>
@@ -266,16 +284,18 @@ function TaskCard({ task, onDistribute, disabled, t }: TaskCardProps) {
               <div>
                 <Button
                   size="sm"
-                  variant={isFullyDistributed ? "outline" : "default"}
+                  variant={isFullyDistributed && planMin === 0 ? "outline" : "default"}
                   className="w-full"
                   onClick={onDistribute}
-                  disabled={disabled || isFullyDistributed}
+                  disabled={disabled || (isFullyDistributed && planMin === 0)}
                 >
-                  {isFullyDistributed ? (
+                  {isFullyDistributed && planMin === 0 ? (
                     <>
                       <Check className="size-4 mr-1.5" />
                       {t("taskCard.fully_distributed")}
                     </>
+                  ) : planMin > 0 ? (
+                    t("taskCard.edit_plan")
                   ) : (
                     t("taskCard.distribute")
                   )}
@@ -442,10 +462,10 @@ function TeamUtilizationPanel({ employees, isLoading, date, t, locale }: TeamUti
 interface DistributionSheetProps {
   task: UnassignedTask | null
   employees: EmployeeUtilization[]
+  initialAllocations: TaskDistributionAllocation[]
   open: boolean
   onClose: () => void
-  onSave: (allocations: TaskDistributionAllocation[]) => Promise<void>
-  isSaving: boolean
+  onSave: (allocations: TaskDistributionAllocation[]) => void
   canEdit: boolean
   t: ReturnType<typeof useTranslations>
 }
@@ -453,21 +473,26 @@ interface DistributionSheetProps {
 function DistributionSheet({
   task,
   employees,
+  initialAllocations,
   open,
   onClose,
   onSave,
-  isSaving,
   canEdit,
   t,
 }: DistributionSheetProps) {
   const [allocations, setAllocations] = React.useState<AllocationState>({})
 
-  // Reset allocations when task changes
+  // Заполняем sheet существующим планом для этой задачи (если есть).
+  // Без этого user открыл бы пустой editor поверх уже наколдованного auto-плана.
   React.useEffect(() => {
     if (task) {
-      setAllocations({})
+      const initial: AllocationState = {}
+      for (const a of initialAllocations) {
+        initial[a.userId] = a.minutes
+      }
+      setAllocations(initial)
     }
-  }, [task?.id])
+  }, [task?.id, initialAllocations])
 
   if (!task) return null
 
@@ -486,15 +511,15 @@ function DistributionSheet({
     })
   }
 
-  const handleSave = async () => {
+  const handleSave = () => {
     const allocationsList: TaskDistributionAllocation[] = Object.entries(allocations)
-      .filter(([_, minutes]) => minutes > 0)
+      .filter(([, minutes]) => minutes > 0)
       .map(([userId, minutes]) => ({
         userId: parseInt(userId),
         minutes,
       }))
 
-    await onSave(allocationsList)
+    onSave(allocationsList)
   }
 
   const canSave = distributedMinutes > 0 && distributedMinutes <= totalTaskMinutes
@@ -630,10 +655,10 @@ function DistributionSheet({
                 <div className="flex-1">
                   <Button
                     onClick={handleSave}
-                    disabled={!canSave || isSaving || !canEdit}
+                    disabled={!canSave || !canEdit}
                     className="w-full"
                   >
-                    {isSaving ? "..." : t("sheet.save")}
+                    {t("sheet.save")}
                   </Button>
                 </div>
               </TooltipTrigger>
@@ -699,6 +724,64 @@ function MobileUtilizationCollapsible(props: MobileUtilizationCollapsibleProps) 
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// StickyPlanBar — нижняя панель «N задач в плане → подтвердить/сбросить»
+// Показывается только когда план непустой.
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface StickyPlanBarProps {
+  taskCount: number
+  totalMinutes: number
+  isConfirming: boolean
+  canEdit: boolean
+  onConfirm: () => void
+  onReset: () => void
+  t: ReturnType<typeof useTranslations>
+}
+
+function StickyPlanBar({
+  taskCount, totalMinutes, isConfirming, canEdit, onConfirm, onReset, t,
+}: StickyPlanBarProps) {
+  if (taskCount === 0) return null
+
+  return (
+    <div className="sticky bottom-0 -mx-4 md:-mx-6 px-4 md:px-6 py-3 bg-card/95 backdrop-blur border-t shadow-lg z-10">
+      <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+        <div className="flex items-center gap-2 min-w-0">
+          <Wand2 className="size-4 text-warning shrink-0" />
+          <span className="text-sm font-medium truncate">
+            {t("plan_bar.summary", {
+              tasks: taskCount,
+              hours: minutesToHours(totalMinutes),
+            })}
+          </span>
+        </div>
+        <div className="flex items-center gap-2 sm:ml-auto">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={onReset}
+            disabled={isConfirming}
+            className="gap-1.5"
+          >
+            <RotateCcw className="size-3.5" />
+            {t("plan_bar.reset")}
+          </Button>
+          <Button
+            size="sm"
+            onClick={onConfirm}
+            disabled={!canEdit || isConfirming}
+            className="gap-1.5"
+          >
+            <CheckCircle2 className="size-3.5" />
+            {isConfirming ? t("plan_bar.confirming") : t("plan_bar.confirm")}
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // TaskDistribution (Main Component)
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -720,8 +803,12 @@ export function TaskDistribution() {
   // Sheet state
   const [selectedTask, setSelectedTask] = React.useState<UnassignedTask | null>(null)
   const [sheetOpen, setSheetOpen] = React.useState(false)
-  const [isSaving, setIsSaving] = React.useState(false)
   const [isAutoRunning, setIsAutoRunning] = React.useState(false)
+  const [isConfirming, setIsConfirming] = React.useState(false)
+
+  // Локальный план — staged allocations не закоммичены на сервер.
+  // Map<taskId, allocations[]>. Подтверждается через StickyPlanBar.
+  const [plan, setPlan] = React.useState<Map<string, TaskDistributionAllocation[]>>(new Map())
 
   // Распределять может директор магазина и выше по иерархии
   const DISTRIBUTOR_ROLES: FunctionalRole[] = [
@@ -799,16 +886,51 @@ export function TaskDistribution() {
     setSheetOpen(true)
   }
 
-  // Auto-distribute: алгоритм предлагает план + сразу применяем (commit 1).
-  // Review-before-commit добавим в commit 2 с локальным plan-state.
-  const handleAutoDistribute = async () => {
+  // Auto-distribute: алгоритм предлагает план, кладём в локальный state.
+  // НЕ коммитит на сервер — директор подтверждает через StickyPlanBar.
+  const handleAutoDistribute = () => {
     if (!selectedStoreId || !canEdit) return
-    const plan = autoDistribute(tasks, employees)
-    if (plan.size === 0) {
-      toast.info(t("toast.auto_nothing"))
-      return
-    }
     setIsAutoRunning(true)
+    // Минимальный delay для UX чтоб кнопка показала «Распределяю…»
+    setTimeout(() => {
+      const proposal = autoDistribute(tasks, employees)
+      if (proposal.size === 0) {
+        toast.info(t("toast.auto_nothing"))
+      } else {
+        setPlan(proposal)
+        toast.success(t("toast.auto_proposed", { count: proposal.size }))
+      }
+      setIsAutoRunning(false)
+    }, 200)
+  }
+
+  // Sheet save → обновляем план для конкретной задачи (sync, без API)
+  const handleSaveAllocation = (allocations: TaskDistributionAllocation[]) => {
+    if (!selectedTask) return
+    setPlan((prev) => {
+      const next = new Map(prev)
+      if (allocations.length === 0) {
+        next.delete(selectedTask.id)
+      } else {
+        next.set(selectedTask.id, allocations)
+      }
+      return next
+    })
+    toast.success(t("toast.added_to_plan", { task: selectedTask.title }))
+    setSheetOpen(false)
+  }
+
+  // Сбросить весь локальный план (server state не трогается)
+  const handleResetPlan = () => {
+    if (plan.size === 0) return
+    setPlan(new Map())
+    toast.info(t("toast.plan_reset"))
+  }
+
+  // Подтвердить план — применяем все allocations через assignTaskToUser
+  const handleConfirmPlan = async () => {
+    if (!selectedStoreId || !canEdit || plan.size === 0) return
+    setIsConfirming(true)
     let okCount = 0
     let errCount = 0
     for (const [taskId, allocations] of plan) {
@@ -820,7 +942,7 @@ export function TaskDistribution() {
         errCount++
       }
     }
-    // Refresh
+    // Refresh из источника
     try {
       const [tasksRes, employeesRes] = await Promise.all([
         getStoreUnassignedTasks(selectedStoreId, currentDate),
@@ -829,39 +951,15 @@ export function TaskDistribution() {
       setTasks(tasksRes.data)
       setEmployees(employeesRes.data)
     } catch {
-      // ignore — toast уже покажет факт
+      // ignore — toast покажет результат
     }
+    setPlan(new Map())
     if (errCount > 0) {
-      toast.error(t("toast.auto_partial", { ok: okCount, err: errCount }))
+      toast.error(t("toast.confirm_partial", { ok: okCount, err: errCount }))
     } else {
-      toast.success(t("toast.auto_done", { count: okCount }))
+      toast.success(t("toast.confirm_done", { count: okCount }))
     }
-    setIsAutoRunning(false)
-  }
-
-  // Handle save allocation
-  const handleSaveAllocation = async (allocations: TaskDistributionAllocation[]) => {
-    if (!selectedTask) return
-
-    setIsSaving(true)
-    try {
-      const result = await assignTaskToUser(selectedTask.id, allocations)
-      if (result.success) {
-        toast.success(t("toast.distributed_success", { task: selectedTask.title }))
-        setSheetOpen(false)
-        
-        // Refresh data
-        const tasksRes = await getStoreUnassignedTasks(selectedStoreId!, currentDate)
-        setTasks(tasksRes.data)
-      } else {
-        toast.error(t("toast.distributed_error"))
-      }
-    } catch (error) {
-      console.error("Failed to save allocation:", error)
-      toast.error(t("toast.distributed_error"))
-    } finally {
-      setIsSaving(false)
-    }
+    setIsConfirming(false)
   }
 
   const selectedStore = stores.find((s) => s.id === selectedStoreId)
@@ -979,6 +1077,7 @@ export function TaskDistribution() {
                 <TaskCard
                   key={task.id}
                   task={task}
+                  planAllocations={plan.get(task.id) ?? []}
                   onDistribute={() => handleDistribute(task)}
                   disabled={!canEdit}
                   t={t}
@@ -1000,14 +1099,28 @@ export function TaskDistribution() {
         </div>
       </div>
 
+      {/* Sticky bottom bar — план для подтверждения */}
+      <StickyPlanBar
+        taskCount={plan.size}
+        totalMinutes={Array.from(plan.values()).reduce(
+          (sum, allocs) => sum + allocs.reduce((s, a) => s + a.minutes, 0),
+          0
+        )}
+        isConfirming={isConfirming}
+        canEdit={canEdit}
+        onConfirm={handleConfirmPlan}
+        onReset={handleResetPlan}
+        t={t}
+      />
+
       {/* Distribution Sheet */}
       <DistributionSheet
         task={selectedTask}
         employees={employees}
+        initialAllocations={selectedTask ? plan.get(selectedTask.id) ?? [] : []}
         open={sheetOpen}
         onClose={() => setSheetOpen(false)}
         onSave={handleSaveAllocation}
-        isSaving={isSaving}
         canEdit={canEdit}
         t={t}
       />

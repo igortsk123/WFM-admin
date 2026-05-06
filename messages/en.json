@@ -782,7 +782,7 @@
         },
         "auto": "Auto",
         "auto_running": "Distributing…",
-        "auto_hint": "Auto-distribute: zone match first, then employees with most free time"
+        "auto_hint": "Propose plan: zone match + free time. Review and confirm before applying."
       },
       "sections": {
         "unassigned": "Unassigned Tasks",
@@ -791,12 +791,21 @@
       "taskCard": {
         "unassigned_hours": "Unassigned: {remaining}h of {total}h",
         "fully_distributed": "Fully distributed",
+        "full_after_confirm": "Will be distributed after confirm",
         "distribute": "Distribute",
+        "edit_plan": "Edit plan",
+        "in_plan_badge": "+{hours}h in plan",
         "zone": "Zone",
         "work_type": "Work type",
         "source_ai": "AI suggested",
         "source_manager": "Created manually",
         "source_planned": "Planned"
+      },
+      "plan_bar": {
+        "summary": "In plan: {tasks, plural, one {# task} other {# tasks}}, {hours}h",
+        "reset": "Reset",
+        "confirm": "Confirm plan",
+        "confirming": "Applying…"
       },
       "sheet": {
         "title": "Distribute: {taskTitle}",
@@ -834,9 +843,12 @@
       "toast": {
         "distributed_success": "Task \"{task}\" distributed",
         "distributed_error": "Distribution failed",
-        "auto_done": "{count, plural, one {# task} other {# tasks}} distributed automatically",
-        "auto_partial": "Distributed {ok}, errors: {err}",
-        "auto_nothing": "Nothing to distribute — everything is already assigned"
+        "auto_proposed": "Plan proposed for {count, plural, one {# task} other {# tasks}} — review and confirm",
+        "auto_nothing": "Nothing to distribute — everything is already assigned",
+        "added_to_plan": "Task \"{task}\" added to plan",
+        "plan_reset": "Plan reset",
+        "confirm_done": "Plan applied: {count, plural, one {# task distributed} other {# tasks distributed}}",
+        "confirm_partial": "Applied {ok}, errors: {err}"
       },
       "forbidden": {
         "tooltip": "Only store director and above can distribute tasks"
