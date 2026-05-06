@@ -119,8 +119,46 @@ function formatHM(min: number, t: ReturnType<typeof useTranslations>): string {
 }
 
 /**
- * Dual-input «X ч Y мин» — точность до минуты, никаких дробей.
- * value/onChange работают в минутах (целое число).
+ * Парсер «1 ч 30 мин» / «1.5» / «90» / «1:30» / «1ч 7мин» → minutes.
+ *   - decimal или с «ч» → часы (1.5 = 90 мин, 1 ч = 60 мин)
+ *   - integer без юнитов → минуты (90 = 90 мин)
+ *   - «h:m» или «h m» → часы:минуты
+ * null если parse failed; 0 если empty.
+ */
+function parseHM(input: string): number | null {
+  const txt = input.trim().toLowerCase().replace(/,/g, ".")
+  if (!txt) return 0
+
+  const hMatch = txt.match(/(\d+(?:\.\d+)?)\s*ч/)
+  const mMatch = txt.match(/(\d+)\s*м/)
+
+  if (hMatch || mMatch) {
+    const h = hMatch ? parseFloat(hMatch[1]) : 0
+    const m = mMatch ? parseInt(mMatch[1], 10) : 0
+    if (isNaN(h) || isNaN(m)) return null
+    return Math.round(h * 60 + m)
+  }
+
+  const colon = txt.match(/^(\d+)\s*[:\s]\s*(\d+)$/)
+  if (colon) return parseInt(colon[1], 10) * 60 + parseInt(colon[2], 10)
+
+  const numMatch = txt.match(/^(\d+(?:\.\d+)?)$/)
+  if (numMatch) {
+    const num = parseFloat(numMatch[1])
+    if (isNaN(num) || num < 0) return null
+    if (txt.includes(".")) return Math.round(num * 60)
+    return Math.round(num)
+  }
+
+  return null
+}
+
+/**
+ * Single-field «X ч Y мин» с маской.
+ * - Стрелки ↑/↓ шагают по 15 мин (snap к ближайшему multiple).
+ * - Свободный typing: «1.5», «90», «1ч 7мин», «1:30» — всё парсится.
+ * - На blur форматируется в каноническое «X ч Y мин».
+ * value/onChange — minutes (integer).
  */
 interface HoursMinutesInputProps {
   value: number
@@ -128,49 +166,81 @@ interface HoursMinutesInputProps {
   disabled?: boolean
   invalid?: boolean
   className?: string
-  hLabel?: string
-  mLabel?: string
+  t: ReturnType<typeof useTranslations>
 }
 
 function HoursMinutesInput({
-  value, onChange, disabled, invalid, className, hLabel = "ч", mLabel = "мин",
+  value, onChange, disabled, invalid, className, t,
 }: HoursMinutesInputProps) {
-  const safeVal = Math.max(0, Math.round(value))
-  const h = Math.floor(safeVal / 60)
-  const m = safeVal % 60
+  const formatted = React.useMemo(
+    () => (value > 0 ? formatHM(value, t) : ""),
+    [value, t]
+  )
+  const [text, setText] = React.useState(formatted)
+  const [editing, setEditing] = React.useState(false)
+
+  // Sync external value → input text когда не редактируем
+  React.useEffect(() => {
+    if (!editing) setText(formatted)
+  }, [formatted, editing])
+
+  const commit = (raw: string) => {
+    const parsed = parseHM(raw)
+    if (parsed === null) {
+      // invalid — revert to current value
+      setText(formatted)
+      return
+    }
+    if (parsed !== value) onChange(parsed)
+    setText(parsed > 0 ? formatHM(parsed, t) : "")
+  }
+
+  const stepBy15 = (delta: 1 | -1) => {
+    const next =
+      delta > 0
+        ? Math.floor(value / 15) * 15 + 15
+        : Math.max(0, Math.ceil(value / 15) * 15 - 15)
+    onChange(next)
+    setText(next > 0 ? formatHM(next, t) : "")
+  }
+
   return (
-    <div className={cn("flex items-center gap-1", className)}>
-      <Input
-        type="number"
-        min="0"
-        value={h || ""}
-        onChange={(e) => {
-          const newH = Math.max(0, parseInt(e.target.value) || 0)
-          onChange(newH * 60 + m)
-        }}
-        className={cn("w-12 h-8 text-sm text-center px-1", invalid && "border-warning focus-visible:ring-warning")}
-        placeholder="0"
-        disabled={disabled}
-        aria-label={hLabel}
-      />
-      <span className="text-xs text-muted-foreground shrink-0">{hLabel}</span>
-      <Input
-        type="number"
-        min="0"
-        max="59"
-        value={m || ""}
-        onChange={(e) => {
-          const raw = parseInt(e.target.value) || 0
-          const newM = Math.max(0, Math.min(59, raw))
-          onChange(h * 60 + newM)
-        }}
-        className={cn("w-12 h-8 text-sm text-center px-1", invalid && "border-warning focus-visible:ring-warning")}
-        placeholder="0"
-        disabled={disabled}
-        aria-label={mLabel}
-      />
-      <span className="text-xs text-muted-foreground shrink-0">{mLabel}</span>
-    </div>
+    <Input
+      type="text"
+      inputMode="decimal"
+      value={text}
+      onChange={(e) => setText(e.target.value)}
+      onFocus={(e) => {
+        setEditing(true)
+        e.target.select()
+      }}
+      onBlur={() => {
+        setEditing(false)
+        commit(text)
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "ArrowUp") {
+          e.preventDefault()
+          stepBy15(1)
+        } else if (e.key === "ArrowDown") {
+          e.preventDefault()
+          stepBy15(-1)
+        } else if (e.key === "Enter") {
+          e.preventDefault()
+          commit(text)
+          ;(e.target as HTMLInputElement).blur()
+        }
+      }}
+      disabled={disabled}
+      className={cn(
+        "w-28 h-8 text-sm text-center",
+        invalid && "border-warning focus-visible:ring-warning",
+        className
+      )}
+      placeholder={t("hm.placeholder")}
+      aria-label={t("hm.aria_label")}
+      title={t("hm.step_hint")}
+    />
   )
 }
 
@@ -710,6 +780,7 @@ function DistributionSheet({
                           disabled={!canEdit}
                           invalid={currentAllocation > freeMinutes + 1}
                           className="shrink-0"
+                          t={t}
                         />
                       </div>
                       {/* Utilization bar */}
@@ -1176,6 +1247,7 @@ function EmployeeSheet({
                     onChange={setAddMinutes}
                     disabled={!canEdit || !selectedTask}
                     invalid={overShiftBy > 0 || overTaskBy > 0}
+                    t={t}
                   />
                   <Button
                     size="sm"

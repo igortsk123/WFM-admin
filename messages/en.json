@@ -776,7 +776,10 @@
         "zero": "0 min",
         "h_only": "{h}h",
         "m_only": "{m} min",
-        "h_m": "{h}h {m} min"
+        "h_m": "{h}h {m} min",
+        "placeholder": "0 min",
+        "aria_label": "Hours and minutes, step 15 min",
+        "step_hint": "↑↓ — step 15 min, or type freely (e.g. «1h 7min» or «90»)"
       },
       "toolbar": {
         "store": "Store",
