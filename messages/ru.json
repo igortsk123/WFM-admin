@@ -169,6 +169,7 @@
     "freelance_budget_limits": "Лимиты бюджета внештата",
     "freelance_agents": "Агенты",
     "freelance_freelancers": "Исполнители",
+    "freelance_offers": "Предложения",
     "agent_dashboard": "Кабинет агента",
     "agent_freelancers": "Мои исполнители",
     "agent_earnings": "Доходы агента",
@@ -6313,6 +6314,14 @@
         "offer_task": "Предложить задание",
         "open_agent": "Открыть карточку агента"
       },
+      "bulk": {
+        "select_all": "Выбрать всех",
+        "select_row": "Выбрать строку",
+        "selected_count": "{count, plural, one {Выбран {count} исполнитель} few {Выбрано {count} исполнителя} other {Выбрано {count} исполнителей}}",
+        "queue_hint": "Задание уйдёт по очереди — от высшего рейтинга",
+        "clear": "Снять выбор",
+        "offer_to_n": "Предложить выбранным ({count})"
+      },
       "card": {
         "completed_30d": "за 30 дней",
         "active_now": "сейчас в работе"
@@ -6338,7 +6347,16 @@
         "field_note": "Примечание (необязательно)",
         "field_note_placeholder": "Особые условия, инструкции...",
         "submit": "Отправить предложение",
-        "toast_sent": "Предложение отправлено: {name}"
+        "submit_bulk": "Запустить очередь",
+        "toast_sent": "Предложение отправлено: {name}",
+        "toast_bulk_started": "Очередь запущена ({count} кандидатов)",
+        "bulk_title": "Предложить задание {count} кандидатам",
+        "bulk_description": "Будут отсортированы по рейтингу. Каждому даётся эксклюзивное окно по tier'у.",
+        "bulk_queue_title": "Порядок отправки",
+        "bulk_queue_and_more": "...и ещё {count}",
+        "tier_top_3": "TOP 3",
+        "tier_top_5": "TOP 5",
+        "tier_rest": "Остальные"
       }
     },
     "freelancerDetail": {
@@ -6375,6 +6393,79 @@
         "done": "Завершена",
         "no_show": "Не вышел"
       }
+    },
+    "offers": {
+      "page_title": "Предложения",
+      "page_subtitle": "Routing-очередь: задания обзваниваются по рейтингу с эксклюзивным окном",
+      "breadcrumb_home": "Главная",
+      "breadcrumb_freelance": "Внештат",
+      "breadcrumb_offers": "Предложения",
+      "tabs": {
+        "active": "В работе",
+        "filled": "Приняты",
+        "expired": "Никто не взял",
+        "cancelled": "Отменены"
+      },
+      "candidates_count": "{n} кандидатов",
+      "empty_title": "Предложений нет",
+      "empty_desc": "Создайте предложение из списка исполнителей — выделите кандидатов и нажмите «Предложить выбранным»",
+      "status": {
+        "routing": "Идёт обзвон",
+        "filled": "Принято",
+        "expired_all": "Никто не взял",
+        "cancelled": "Отменено"
+      }
+    },
+    "offerDetail": {
+      "breadcrumb_home": "Главная",
+      "breadcrumb_freelance": "Внештат",
+      "breadcrumb_offers": "Предложения",
+      "back_to_list": "К списку предложений",
+      "not_found_title": "Предложение не найдено",
+      "not_found_desc": "Возможно ID неверен",
+      "error_load": "Не удалось загрузить",
+      "candidates": "{n, plural, one {{n} кандидат} few {{n} кандидата} other {{n} кандидатов}}",
+      "created": "Создано {ago}",
+      "cancel": "Отменить",
+      "tier_explanation": "Tier-окна: TOP 1-3 → 60 мин эксклюзив, TOP 4-5 → 30 мин, остальные → 15 мин. Кто откликнется поздно — попадёт в LATE_FALLBACK и получит задание если текущий откажется.",
+      "queue_title": "Очередь обзвона",
+      "expires_at": "до {time}",
+      "tier": {
+        "top_3": "TOP 3",
+        "top_5": "TOP 5",
+        "rest": "Остальные"
+      },
+      "attempt_status": {
+        "pending": "Ожидаем ответ",
+        "accepted": "Принял",
+        "declined": "Отказался",
+        "expired": "Окно истекло",
+        "waiting": "В очереди",
+        "late_fallback": "Поздний отклик · в fallback"
+      },
+      "status": {
+        "routing": "Идёт обзвон",
+        "filled": "Принято",
+        "expired_all": "Никто не взял",
+        "cancelled": "Отменено"
+      },
+      "sim": {
+        "accept": "Принял",
+        "decline": "Отказ",
+        "expire": "Таймаут",
+        "late": "Поздний отклик"
+      },
+      "toast": {
+        "accept": "Задание закреплено за фрилансером",
+        "decline": "Отказ записан, переходим к следующему",
+        "expire": "Окно закрыто, переходим к следующему",
+        "late_respond": "Фрилансер в LATE_FALLBACK queue",
+        "cancelled": "Предложение отменено"
+      },
+      "cancel_dialog_title": "Отменить предложение?",
+      "cancel_dialog_desc": "Очередь будет остановлена. Текущий PENDING кандидат больше не сможет принять.",
+      "cancel_dialog_back": "Назад",
+      "cancel_dialog_confirm": "Отменить предложение"
     },
     "freelanceAgents": {
       "page_title": "Справочник агентов",

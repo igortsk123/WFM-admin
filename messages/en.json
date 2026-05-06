@@ -169,6 +169,7 @@
     "freelance_budget_limits": "Freelance budget limits",
     "freelance_agents": "Agents",
     "freelance_freelancers": "Performers",
+    "freelance_offers": "Offers",
     "agent_dashboard": "Agent cabinet",
     "agent_freelancers": "My performers",
     "agent_earnings": "Agent earnings",
@@ -6287,6 +6288,14 @@
         "offer_task": "Offer task",
         "open_agent": "Open agent card"
       },
+      "bulk": {
+        "select_all": "Select all",
+        "select_row": "Select row",
+        "selected_count": "{count, plural, one {{count} performer selected} other {{count} performers selected}}",
+        "queue_hint": "Offer goes through queue starting with highest rating",
+        "clear": "Clear",
+        "offer_to_n": "Offer to selected ({count})"
+      },
       "card": {
         "completed_30d": "in 30 days",
         "active_now": "active now"
@@ -6312,7 +6321,16 @@
         "field_note": "Note (optional)",
         "field_note_placeholder": "Special conditions, instructions...",
         "submit": "Send offer",
-        "toast_sent": "Offer sent: {name}"
+        "submit_bulk": "Start queue",
+        "toast_sent": "Offer sent: {name}",
+        "toast_bulk_started": "Queue started ({count} candidates)",
+        "bulk_title": "Offer task to {count} candidates",
+        "bulk_description": "Sorted by rating; each gets an exclusive window per tier.",
+        "bulk_queue_title": "Send order",
+        "bulk_queue_and_more": "...and {count} more",
+        "tier_top_3": "TOP 3",
+        "tier_top_5": "TOP 5",
+        "tier_rest": "Others"
       }
     },
     "freelancerDetail": {
@@ -6349,6 +6367,79 @@
         "done": "Done",
         "no_show": "No-show"
       }
+    },
+    "offers": {
+      "page_title": "Offers",
+      "page_subtitle": "Routing queue: tasks are pushed by rating with exclusive windows",
+      "breadcrumb_home": "Home",
+      "breadcrumb_freelance": "Freelance",
+      "breadcrumb_offers": "Offers",
+      "tabs": {
+        "active": "Active",
+        "filled": "Filled",
+        "expired": "Nobody took",
+        "cancelled": "Cancelled"
+      },
+      "candidates_count": "{n} candidates",
+      "empty_title": "No offers",
+      "empty_desc": "Create an offer from performers list — select candidates and click 'Offer to selected'",
+      "status": {
+        "routing": "Routing",
+        "filled": "Filled",
+        "expired_all": "Nobody took",
+        "cancelled": "Cancelled"
+      }
+    },
+    "offerDetail": {
+      "breadcrumb_home": "Home",
+      "breadcrumb_freelance": "Freelance",
+      "breadcrumb_offers": "Offers",
+      "back_to_list": "Back to offers",
+      "not_found_title": "Offer not found",
+      "not_found_desc": "ID may be incorrect",
+      "error_load": "Failed to load",
+      "candidates": "{n, plural, one {{n} candidate} other {{n} candidates}}",
+      "created": "Created {ago}",
+      "cancel": "Cancel",
+      "tier_explanation": "Tier windows: TOP 1-3 → 60 min exclusive, TOP 4-5 → 30 min, rest → 15 min. Late responders go into LATE_FALLBACK and get the task if the active candidate declines.",
+      "queue_title": "Routing queue",
+      "expires_at": "until {time}",
+      "tier": {
+        "top_3": "TOP 3",
+        "top_5": "TOP 5",
+        "rest": "Others"
+      },
+      "attempt_status": {
+        "pending": "Awaiting reply",
+        "accepted": "Accepted",
+        "declined": "Declined",
+        "expired": "Window expired",
+        "waiting": "In queue",
+        "late_fallback": "Late · in fallback"
+      },
+      "status": {
+        "routing": "Routing",
+        "filled": "Filled",
+        "expired_all": "Nobody took",
+        "cancelled": "Cancelled"
+      },
+      "sim": {
+        "accept": "Accept",
+        "decline": "Decline",
+        "expire": "Timeout",
+        "late": "Late respond"
+      },
+      "toast": {
+        "accept": "Task assigned to performer",
+        "decline": "Decline recorded, moving to next",
+        "expire": "Window closed, moving to next",
+        "late_respond": "Performer in LATE_FALLBACK queue",
+        "cancelled": "Offer cancelled"
+      },
+      "cancel_dialog_title": "Cancel offer?",
+      "cancel_dialog_desc": "Queue will stop. Current PENDING candidate will no longer be able to accept.",
+      "cancel_dialog_back": "Back",
+      "cancel_dialog_confirm": "Cancel offer"
     },
     "freelanceAgents": {
       "page_title": "Agents directory",

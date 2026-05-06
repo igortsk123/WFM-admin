@@ -632,6 +632,18 @@ export {
   sendTaskOffer,
 } from "./freelance-freelancers";
 
+export {
+  type GetTaskOffersParams,
+  type CreateTaskOfferData,
+  type AttemptResponseAction,
+  getTierForRank,
+  getTaskOffers,
+  getTaskOfferById,
+  createTaskOffer,
+  simulateAttemptResponse,
+  cancelTaskOffer,
+} from "./freelance-offers";
+
 // ═══════════════════════════════════════════════════════════════════
 // Agent Cabinet API (AGENT role, NOMINAL_ACCOUNT mode only)
 // ═══════════════════════════════════════════════════════════════════

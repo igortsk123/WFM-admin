@@ -20,6 +20,7 @@ import { Switch } from "@/components/ui/switch"
 import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Dialog } from "@/components/ui/dialog"
 import {
   DropdownMenu,
@@ -80,6 +81,8 @@ export function FreelancersList() {
   const [agents, setAgents] = React.useState<Agent[]>([])
 
   const [offeringTo, setOfferingTo] = React.useState<FreelancerWithStats | null>(null)
+  const [bulkOfferOpen, setBulkOfferOpen] = React.useState(false)
+  const [selectedIds, setSelectedIds] = React.useState<Set<number>>(new Set())
 
   const fetchData = React.useCallback(async () => {
     setLoading(true)
@@ -122,9 +125,64 @@ export function FreelancersList() {
       .catch(() => undefined)
   }, [])
 
+  // ── Selection helpers ───────────────────────────────────────────────
+  const allVisibleIds = React.useMemo(() => data.map((f) => f.id), [data])
+  const allSelected = allVisibleIds.length > 0 && allVisibleIds.every((id) => selectedIds.has(id))
+  const someSelected = !allSelected && allVisibleIds.some((id) => selectedIds.has(id))
+
+  function toggleAll() {
+    if (allSelected) {
+      const next = new Set(selectedIds)
+      allVisibleIds.forEach((id) => next.delete(id))
+      setSelectedIds(next)
+    } else {
+      setSelectedIds(new Set([...selectedIds, ...allVisibleIds]))
+    }
+  }
+  function toggleOne(id: number) {
+    const next = new Set(selectedIds)
+    if (next.has(id)) next.delete(id)
+    else next.add(id)
+    setSelectedIds(next)
+  }
+
+  // Сбрасываем selection при смене таба/фильтра
+  React.useEffect(() => {
+    setSelectedIds(new Set())
+  }, [tab, agentParam, availableOnly, searchParam])
+
+  const selectedFreelancers = React.useMemo(
+    () => data.filter((f) => selectedIds.has(f.id) && f.freelancer_status === "ACTIVE"),
+    [data, selectedIds],
+  )
+
   // ── Columns ─────────────────────────────────────────────────────────
   const columns: ColumnDef<FreelancerWithStats>[] = React.useMemo(
     () => [
+      {
+        id: "select",
+        size: 32,
+        header: () => (
+          <Checkbox
+            checked={allSelected ? true : someSelected ? "indeterminate" : false}
+            onCheckedChange={toggleAll}
+            aria-label={t("bulk.select_all")}
+          />
+        ),
+        cell: ({ row }) => {
+          const f = row.original
+          const disabled = f.freelancer_status !== "ACTIVE"
+          return (
+            <Checkbox
+              checked={selectedIds.has(f.id)}
+              disabled={disabled}
+              onClick={(e) => e.stopPropagation()}
+              onCheckedChange={() => toggleOne(f.id)}
+              aria-label={t("bulk.select_row")}
+            />
+          )
+        },
+      },
       {
         id: "name",
         header: t("columns.name"),
@@ -265,7 +323,8 @@ export function FreelancersList() {
         },
       },
     ],
-    [t, locale],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [t, locale, selectedIds, allSelected, someSelected, router],
   )
 
   return (
@@ -356,6 +415,31 @@ export function FreelancersList() {
       </div>
 
       {/* Table */}
+      {/* Bulk action bar */}
+      {selectedFreelancers.length > 0 && (
+        <div className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-primary/30 bg-primary/5 p-3">
+          <div className="text-sm">
+            <span className="font-medium">
+              {t("bulk.selected_count", { count: selectedFreelancers.length })}
+            </span>
+            <span className="text-muted-foreground ml-2">{t("bulk.queue_hint")}</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setSelectedIds(new Set())}
+            >
+              {t("bulk.clear")}
+            </Button>
+            <Button size="sm" onClick={() => setBulkOfferOpen(true)}>
+              <Send className="size-4 mr-1.5" />
+              {t("bulk.offer_to_n", { count: selectedFreelancers.length })}
+            </Button>
+          </div>
+        </div>
+      )}
+
       {loading ? (
         <div className="space-y-2">
           {Array.from({ length: 6 }).map((_, i) => (
@@ -402,13 +486,29 @@ export function FreelancersList() {
         </div>
       )}
 
-      {/* Offer dialog */}
+      {/* Single offer dialog */}
       <Dialog open={offeringTo !== null} onOpenChange={(v) => !v && setOfferingTo(null)}>
         {offeringTo && (
           <OfferTaskDialogContent
             freelancer={offeringTo}
             onClose={() => setOfferingTo(null)}
             onSent={fetchData}
+          />
+        )}
+      </Dialog>
+
+      {/* Bulk offer dialog */}
+      <Dialog open={bulkOfferOpen} onOpenChange={setBulkOfferOpen}>
+        {bulkOfferOpen && (
+          <OfferTaskDialogContent
+            mode="bulk"
+            freelancers={selectedFreelancers}
+            onClose={() => setBulkOfferOpen(false)}
+            onSent={() => {
+              setBulkOfferOpen(false)
+              setSelectedIds(new Set())
+              fetchData()
+            }}
           />
         )}
       </Dialog>

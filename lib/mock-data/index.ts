@@ -34,3 +34,4 @@ export * from "./freelance-budget-usage";
 export * from "./freelance-service-norms";
 export * from "./freelance-no-shows";
 export * from "./freelance-external-sync-logs";
+export * from "./freelance-task-offers";
