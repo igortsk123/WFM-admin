@@ -486,6 +486,21 @@ export interface Task {
   service_id?: string | null;
   /** Server-computed: true if task passed its deadline without completion */
   is_overdue?: boolean;
+  /**
+   * Приоритет 1-100 (LAMA-стандарт):
+   *   1   — критичные операции (КСО, Касса, Менеджерские)
+   *   2-13 — выкладка/переоценка/инвентаризация по зонам
+   *   100 — другие работы
+   * UI distribution-page сортирует по этому полю по умолчанию.
+   */
+  priority?: number;
+  /**
+   * Может ли STORE_DIRECTOR редактировать эту задачу.
+   * false для задач спущенных сверху (создатель ≥ SUPERVISOR) — директор только распределяет.
+   * true для задач созданных самим директором.
+   * Подзадачи директор может ДОБАВЛЯТЬ всегда (см. canAddSubtask в task-detail).
+   */
+  editable_by_store?: boolean;
   created_at: string;
   updated_at: string;
 }
