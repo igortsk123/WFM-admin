@@ -775,7 +775,9 @@ interface TaskZoneGroupProps {
 }
 
 function TaskZoneGroup({ zoneName, tasks, plan, onDistribute, disabled, t }: TaskZoneGroupProps) {
-  const [open, setOpen] = React.useState(true)
+  // Collapsed by default — при 25+ задач на 11+ зон открытый список заваливает экран.
+  // User раскроет нужные зоны.
+  const [open, setOpen] = React.useState(false)
 
   const totalPlanned = tasks.reduce((s, tt) => s + tt.planned_minutes, 0)
   const totalDistributed = tasks.reduce((s, tt) => s + tt.distributed_minutes, 0)

@@ -38,166 +38,119 @@ export interface UnassignedTask extends Task {
 
 // ═══════════════════════════════════════════════════════════════════
 // MOCK DATA - Unassigned Tasks for Distribution
+// LAMA таксономия (zones 100-110), магазин SPAR Ленина 80 (id=1).
+// ~25 задач с разными приоритетами / типами / категориями для
+// реалистичного демо распределения.
 // ═══════════════════════════════════════════════════════════════════
 
-const UNASSIGNED_TASKS_OVERRIDE: Partial<Task>[] = [
-  {
-    id: "task-unassigned-001",
-    title: "Выкладка молочки в холодильники 1-4",
-    description: "Полная перевыкладка молочной продукции по новой планограмме от 30 апреля. Контроль сроков годности.",
-    type: "PLANNED",
-    kind: "SINGLE",
-    source: "PLANNED",
-    planned_minutes: 180,
-    store_id: 1,
-    store_name: "СПАР Томск, пр. Ленина 80",
-    zone_id: 6,
-    zone_name: "Холодильники",
-    work_type_id: 4,
-    work_type_name: "Выкладка",
-    product_category_id: 1,
-    product_category_name: "Молочка",
-    creator_id: 5,
-    creator_name: "Иванов Александр Сергеевич",
-    assignee_id: null,
-    assignee_name: null,
-    assigned_to_permission: null,
-    state: "NEW",
-    review_state: "NONE",
-    acceptance_policy: "MANUAL",
-    requires_photo: true,
-    time_start: "08:00:00",
-    time_end: "11:00:00",
-    archived: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: "task-unassigned-002",
-    title: "Уценка хлеба с истекающим сроком",
-    description: "Маркировка и переоценка хлебобулочных изделий со сроком годности < 2 дней. Перенос на стеллаж «Скидки».",
-    type: "PLANNED",
-    kind: "SINGLE",
-    source: "MANAGER",
-    planned_minutes: 90,
-    store_id: 1,
-    store_name: "СПАР Томск, пр. Ленина 80",
-    zone_id: 1,
-    zone_name: "Торговый зал",
-    work_type_id: 5,
-    work_type_name: "Переоценка",
-    product_category_id: 2,
-    product_category_name: "Хлебобулочка",
-    creator_id: 5,
-    creator_name: "Иванов Александр Сергеевич",
-    assignee_id: null,
-    assignee_name: null,
-    assigned_to_permission: null,
-    state: "NEW",
-    review_state: "NONE",
-    acceptance_policy: "MANUAL",
-    requires_photo: false,
-    time_start: "09:00:00",
-    time_end: "10:30:00",
-    archived: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: "task-unassigned-003",
-    title: "Инвентаризация консервов на складе",
-    description: "Полный пересчёт консервации в секторе Б. Сверка с остатками в 1С, оформление акта расхождений.",
-    type: "PLANNED",
-    kind: "SINGLE",
-    source: "PLANNED",
-    planned_minutes: 120,
-    store_id: 1,
-    store_name: "СПАР Томск, пр. Ленина 80",
-    zone_id: 2,
-    zone_name: "Склад",
-    work_type_id: 6,
-    work_type_name: "Инвентаризация",
-    product_category_id: 8,
-    product_category_name: "Консервация",
-    creator_id: 5,
-    creator_name: "Иванов Александр Сергеевич",
-    assignee_id: null,
-    assignee_name: null,
-    assigned_to_permission: null,
-    state: "NEW",
-    review_state: "NONE",
-    acceptance_policy: "MANUAL",
-    requires_photo: true,
-    time_start: "10:00:00",
-    time_end: "12:00:00",
-    archived: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: "task-unassigned-004",
-    title: "Ротация напитков и соков",
-    description: "Ротация по FIFO на стеллажах напитков 5-8. Проверка сроков, перестановка товара.",
-    type: "PLANNED",
-    kind: "SINGLE",
-    source: "AI",
-    ai_suggestion_id: "ai-sug-distribution-001",
-    planned_minutes: 60,
-    store_id: 1,
-    store_name: "СПАР Томск, пр. Ленина 80",
-    zone_id: 1,
-    zone_name: "Торговый зал",
-    work_type_id: 4,
-    work_type_name: "Выкладка",
-    product_category_id: 5,
-    product_category_name: "Напитки",
-    creator_id: 5,
-    creator_name: "Иванов Александр Сергеевич",
-    assignee_id: null,
-    assignee_name: null,
-    assigned_to_permission: null,
-    state: "NEW",
-    review_state: "NONE",
-    acceptance_policy: "AUTO",
-    requires_photo: false,
-    time_start: "11:00:00",
-    time_end: "12:00:00",
-    archived: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
-  {
-    id: "task-unassigned-005",
-    title: "Приёмка фруктов от поставщика",
-    description: "Приёмка партии фруктов от ООО «Свежесть». Контроль качества, температурного режима, сроков.",
-    type: "PLANNED",
-    kind: "SINGLE",
-    source: "PLANNED",
-    planned_minutes: 45,
-    store_id: 1,
-    store_name: "СПАР Томск, пр. Ленина 80",
-    zone_id: 2,
-    zone_name: "Склад",
-    work_type_id: 13,
-    work_type_name: "Складские работы",
-    product_category_id: 9,
-    product_category_name: "Фрукты и овощи",
-    creator_id: 5,
-    creator_name: "Иванов Александр Сергеевич",
-    assignee_id: null,
-    assignee_name: null,
-    assigned_to_permission: null,
-    state: "NEW",
-    review_state: "NONE",
-    acceptance_policy: "MANUAL",
-    requires_photo: true,
-    time_start: "07:00:00",
-    time_end: "07:45:00",
-    archived: false,
-    created_at: new Date().toISOString(),
-    updated_at: new Date().toISOString(),
-  },
+interface TaskDescriptor {
+  zoneId: number;
+  zoneName: string;
+  workTypeId: number;
+  workTypeName: string;
+  categoryId?: number;
+  categoryName?: string;
+  title: string;
+  description: string;
+  minutes: number;
+  priority: number;
+  source?: "PLANNED" | "MANAGER" | "AI";
+  requiresPhoto?: boolean;
+  timeStart: string;
+  timeEnd: string;
+  aiSugId?: string;
+}
+
+const TASK_DESCRIPTORS: TaskDescriptor[] = [
+  // ── Касса/КСО (общестор. zone_id=3,4 — приоритет 1) ──
+  { zoneId: 3, zoneName: "Касса", workTypeId: 2, workTypeName: "Касса", title: "Утренняя смена кассы №1-3", description: "Обслуживание покупателей с 09:00 до 14:00 в часы пиковой нагрузки.", minutes: 300, priority: 1, timeStart: "09:00:00", timeEnd: "14:00:00" },
+  { zoneId: 4, zoneName: "Самокассы", workTypeId: 3, workTypeName: "КСО (самокассы)", title: "Сопровождение зоны самокасс", description: "Помощь покупателям, фискализация, разрешение ошибок терминалов.", minutes: 180, priority: 1, timeStart: "10:00:00", timeEnd: "13:00:00" },
+
+  // ── Фреш 1 (zone 100) — мясо/рыба/овощи/хлеб ──
+  { zoneId: 100, zoneName: "Фреш 1", workTypeId: 4, workTypeName: "Выкладка", categoryId: 2, categoryName: "Хлебобулочка", title: "Утренняя выкладка хлеба", description: "Полная выкладка после ночной приёмки, по планограмме.", minutes: 90, priority: 3, requiresPhoto: true, timeStart: "07:00:00", timeEnd: "08:30:00" },
+  { zoneId: 100, zoneName: "Фреш 1", workTypeId: 5, workTypeName: "Переоценка", categoryId: 9, categoryName: "Овощи и фрукты", title: "Переоценка овощей с истекающим сроком", description: "Маркировка и перенос на стеллаж «Скидки», уценка 30%.", minutes: 60, priority: 3, timeStart: "09:00:00", timeEnd: "10:00:00" },
+  { zoneId: 100, zoneName: "Фреш 1", workTypeId: 11, workTypeName: "Контроль качества", categoryId: 12, categoryName: "Мясо охлаждённое", title: "Контроль качества мяса витрина", description: "Проверка сроков, температурного режима витрин, отбраковка.", minutes: 30, priority: 3, requiresPhoto: true, timeStart: "10:00:00", timeEnd: "10:30:00" },
+  { zoneId: 100, zoneName: "Фреш 1", workTypeId: 4, workTypeName: "Выкладка", categoryId: 18, categoryName: "Колбасы и деликатесы", title: "Выкладка колбас и деликатесов", description: "Дозаказ + ротация по FIFO, фотофиксация витрины.", minutes: 60, priority: 5, requiresPhoto: true, timeStart: "10:30:00", timeEnd: "11:30:00" },
+
+  // ── Фреш 2 (zone 101) — молочка/сыры ──
+  { zoneId: 101, zoneName: "Фреш 2", workTypeId: 4, workTypeName: "Выкладка", categoryId: 1, categoryName: "Молочка", title: "Выкладка молочки 1-4", description: "Перевыкладка по новой планограмме от 30 апреля. Контроль сроков.", minutes: 180, priority: 3, requiresPhoto: true, timeStart: "08:00:00", timeEnd: "11:00:00" },
+  { zoneId: 101, zoneName: "Фреш 2", workTypeId: 5, workTypeName: "Переоценка", categoryId: 1, categoryName: "Молочка", title: "Уценка молочки <2 дней до конца срока", description: "Маркировка стикерами, перенос на «горящий» стеллаж.", minutes: 60, priority: 3, timeStart: "09:30:00", timeEnd: "10:30:00" },
+  { zoneId: 101, zoneName: "Фреш 2", workTypeId: 4, workTypeName: "Выкладка", categoryId: 17, categoryName: "Сыры", title: "Выкладка сыров премиум-витрина", description: "Презентационная выкладка, сертификаты, ценники с описанием.", minutes: 60, priority: 5, requiresPhoto: true, timeStart: "10:00:00", timeEnd: "11:00:00" },
+
+  // ── Бакалея (zone 102) — крупы/консервы/масла ──
+  { zoneId: 102, zoneName: "Бакалея", workTypeId: 4, workTypeName: "Выкладка", categoryId: 35, categoryName: "Крупы", title: "Выкладка круп после приёмки", description: "Полное наполнение полок, ротация старого товара вперёд.", minutes: 120, priority: 5, requiresPhoto: true, timeStart: "08:00:00", timeEnd: "10:00:00" },
+  { zoneId: 102, zoneName: "Бакалея", workTypeId: 6, workTypeName: "Инвентаризация", categoryId: 37, categoryName: "Консервация", title: "Инвентаризация консервов", description: "Пересчёт сектор Б, сверка с 1С, акт расхождений.", minutes: 90, priority: 4, requiresPhoto: true, timeStart: "11:00:00", timeEnd: "12:30:00" },
+  { zoneId: 102, zoneName: "Бакалея", workTypeId: 4, workTypeName: "Выкладка", categoryId: 33, categoryName: "Соусы и приправы", title: "Выкладка соусов и приправ", description: "Выкладка по бренд-блокам.", minutes: 45, priority: 6, timeStart: "13:00:00", timeEnd: "13:45:00" },
+
+  // ── Заморозка (zone 103) ──
+  { zoneId: 103, zoneName: "Заморозка", workTypeId: 4, workTypeName: "Выкладка", categoryId: 15, categoryName: "Рыба замороженная", title: "Выкладка замороженной рыбы", description: "Загрузка ларя, контроль температуры, фото.", minutes: 60, priority: 4, requiresPhoto: true, timeStart: "09:00:00", timeEnd: "10:00:00" },
+  { zoneId: 103, zoneName: "Заморозка", workTypeId: 11, workTypeName: "Контроль качества", categoryId: 11, categoryName: "Заморозка", title: "Проверка температуры ларей", description: "Сверка с регламентом, лог в журнал.", minutes: 20, priority: 3, requiresPhoto: true, timeStart: "12:00:00", timeEnd: "12:20:00" },
+
+  // ── Бытовая химия (zone 104) ──
+  { zoneId: 104, zoneName: "Бытовая химия", workTypeId: 4, workTypeName: "Выкладка", categoryId: 39, categoryName: "Бытовая химия", title: "Выкладка моющих средств", description: "Полная выкладка после поставки.", minutes: 60, priority: 5, requiresPhoto: true, timeStart: "10:00:00", timeEnd: "11:00:00" },
+  { zoneId: 104, zoneName: "Бытовая химия", workTypeId: 10, workTypeName: "Ценообразование", categoryId: 42, categoryName: "Личная гигиена", title: "Обновление ценников гигиены", description: "По прайс-листу от 06.05.", minutes: 30, priority: 3, timeStart: "11:00:00", timeEnd: "11:30:00" },
+
+  // ── Non-Food (zone 105) ──
+  { zoneId: 105, zoneName: "Non-Food", workTypeId: 4, workTypeName: "Выкладка", categoryId: 49, categoryName: "Товары для дома", title: "Выкладка товаров для дома", description: "Сезонная выкладка к майским.", minutes: 90, priority: 6, source: "MANAGER", requiresPhoto: true, timeStart: "12:00:00", timeEnd: "13:30:00" },
+
+  // ── Алкоголь (zone 106) ──
+  { zoneId: 106, zoneName: "Алкоголь", workTypeId: 4, workTypeName: "Выкладка", categoryId: 5, categoryName: "Вино", title: "Выкладка вина к акции «Майские»", description: "Промо-зона у входа. ВЫСОКИЙ приоритет — акция стартует в 10:00.", minutes: 120, priority: 2, source: "MANAGER", requiresPhoto: true, timeStart: "08:00:00", timeEnd: "10:00:00" },
+  { zoneId: 106, zoneName: "Алкоголь", workTypeId: 5, workTypeName: "Переоценка", categoryId: 4, categoryName: "Алкоголь крепкий", title: "Переоценка крепкого алкоголя", description: "Новые ценники, акцизные марки.", minutes: 60, priority: 3, timeStart: "10:30:00", timeEnd: "11:30:00" },
+
+  // ── ЗОЖ (zone 107) ──
+  { zoneId: 107, zoneName: "ЗОЖ", workTypeId: 4, workTypeName: "Выкладка", categoryId: 32, categoryName: "Здоровое питание", title: "Выкладка ЗОЖ-продуктов", description: "Доукомплектование зоны.", minutes: 45, priority: 7, requiresPhoto: true, timeStart: "11:30:00", timeEnd: "12:15:00" },
+
+  // ── Кондитерка/чай/кофе (zone 108) ──
+  { zoneId: 108, zoneName: "Кондитерка, чай, кофе", workTypeId: 4, workTypeName: "Выкладка", categoryId: 8, categoryName: "Шоколад", title: "Выкладка шоколада", description: "Сезонная коллекция к майским, фото витрины.", minutes: 90, priority: 5, requiresPhoto: true, timeStart: "09:00:00", timeEnd: "10:30:00" },
+  { zoneId: 108, zoneName: "Кондитерка, чай, кофе", workTypeId: 5, workTypeName: "Переоценка", categoryId: 7, categoryName: "Кондитерка", title: "Переоценка кондитерки с истекающим", description: "Уценка 25-30%, перенос на «горящий» стеллаж.", minutes: 60, priority: 5, timeStart: "12:00:00", timeEnd: "13:00:00" },
+
+  // ── Пиво/чипсы (zone 109) ──
+  { zoneId: 109, zoneName: "Пиво, чипсы", workTypeId: 4, workTypeName: "Выкладка", categoryId: 6, categoryName: "Пиво", title: "Выкладка пива к выходным", description: "Промо-стеллаж + основные холодильники.", minutes: 90, priority: 4, source: "MANAGER", requiresPhoto: true, timeStart: "13:00:00", timeEnd: "14:30:00" },
+  { zoneId: 109, zoneName: "Пиво, чипсы", workTypeId: 4, workTypeName: "Выкладка", categoryId: 21, categoryName: "Чипсы", title: "Выкладка чипсов и снеков", description: "Полное наполнение, ротация FIFO.", minutes: 45, priority: 6, timeStart: "14:00:00", timeEnd: "14:45:00" },
+
+  // ── Напитки б/а (zone 110) ──
+  { zoneId: 110, zoneName: "Напитки б/а", workTypeId: 4, workTypeName: "Выкладка", categoryId: 24, categoryName: "Соки и нектары", title: "Ротация соков FIFO", description: "Проверка сроков, перестановка по дате производства.", minutes: 60, priority: 5, source: "AI", aiSugId: "ai-sug-distribution-001", timeStart: "11:00:00", timeEnd: "12:00:00" },
+  { zoneId: 110, zoneName: "Напитки б/а", workTypeId: 4, workTypeName: "Выкладка", categoryId: 25, categoryName: "Воды", title: "Доукомплектование вод", description: "Стеллажи 4-6, ротация.", minutes: 45, priority: 6, requiresPhoto: true, timeStart: "12:30:00", timeEnd: "13:15:00" },
+
+  // ── Уборка (общая, без зоны/категории) ──
+  { zoneId: 1, zoneName: "Торговый зал", workTypeId: 12, workTypeName: "Уборка", title: "Уборка торгового зала после акции", description: "Утренняя влажная уборка проходов.", minutes: 60, priority: 12, timeStart: "08:30:00", timeEnd: "09:30:00" },
 ];
+
+const UNASSIGNED_TASKS_OVERRIDE: Partial<Task>[] = TASK_DESCRIPTORS.map(
+  (d, idx) => ({
+    id: `task-unassigned-${String(idx + 1).padStart(3, "0")}`,
+    title: d.title,
+    description: d.description,
+    type: "PLANNED",
+    kind: "SINGLE",
+    source: d.source ?? "PLANNED",
+    priority: d.priority,
+    planned_minutes: d.minutes,
+    store_id: 1,
+    store_name: "СПАР Томск, пр. Ленина 80",
+    zone_id: d.zoneId,
+    zone_name: d.zoneName,
+    work_type_id: d.workTypeId,
+    work_type_name: d.workTypeName,
+    product_category_id: d.categoryId,
+    product_category_name: d.categoryName,
+    creator_id: 5,
+    creator_name: "Иванов Александр Сергеевич",
+    assignee_id: null,
+    assignee_name: null,
+    assigned_to_permission: null,
+    state: "NEW",
+    review_state: "NONE",
+    acceptance_policy: d.source === "AI" ? "AUTO" : "MANUAL",
+    requires_photo: d.requiresPhoto ?? false,
+    ai_suggestion_id: d.aiSugId,
+    time_start: d.timeStart,
+    time_end: d.timeEnd,
+    archived: false,
+    created_at: new Date().toISOString(),
+    updated_at: new Date().toISOString(),
+  })
+);
 
 // Track task allocations in memory for demo
 const taskAllocations: Map<string, TaskDistributionAllocation[]> = new Map();
