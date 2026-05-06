@@ -832,7 +832,10 @@
         "add_picker_search": "Search…",
         "add_picker_empty": "Not found",
         "add_picker_remaining": "{hours}h remaining",
-        "add_max_hint": "Maximum: {hours}h",
+        "add_free_hint": "Free for employee: {hours}h",
+        "over_shift_warning": "Over shift: +{hours}h (supervisor will be notified)",
+        "over_shift_warning_full": "Shift fully booked — assignment will be over plan",
+        "over_task_warning": "Over task plan: +{hours}h",
         "add_button": "Add to plan",
         "remove_aria": "Remove from plan",
         "close": "Close"
@@ -843,6 +846,7 @@
         "hours_input_label": "Hours",
         "distributed_summary": "Distributed: {distributed}h / {total}h",
         "remaining": "Remaining: {remaining}h",
+        "over_task": "Over task plan: +{over}h",
         "save": "Save distribution",
         "save_later": "Distribute later",
         "remaining_warning": "{remaining}h remaining",
@@ -878,7 +882,8 @@
         "added_to_plan": "Task \"{task}\" added to plan",
         "plan_reset": "Plan reset",
         "confirm_done": "Plan applied: {count, plural, one {# task distributed} other {# tasks distributed}}",
-        "confirm_partial": "Applied {ok}, errors: {err}"
+        "confirm_partial": "Applied {ok}, errors: {err}",
+        "confirm_over_shift": "Applied {count}, {over, plural, one {# employee} other {# employees}} over shift — supervisor notified"
       },
       "forbidden": {
         "tooltip": "Only store director and above can distribute tasks"

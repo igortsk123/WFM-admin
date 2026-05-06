@@ -31,6 +31,8 @@ import {
   getStoreEmployeesUtilization,
   assignTaskToUser,
   autoDistribute,
+  notifyOverShiftAssignment,
+  type OverShiftEntry,
 } from "@/lib/api/distribution"
 import { getStores } from "@/lib/api/stores"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
@@ -555,7 +557,9 @@ function DistributionSheet({
     onSave(allocationsList)
   }
 
-  const canSave = distributedMinutes > 0 && distributedMinutes <= totalTaskMinutes
+  // Cap removed: директор может назначить сверх плана задачи (warning UI ниже).
+  const canSave = distributedMinutes > 0
+  const overTaskMinutes = Math.max(0, distributedMinutes - totalTaskMinutes)
 
   return (
     <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
@@ -585,6 +589,11 @@ function DistributionSheet({
             {remainingMinutes > 0 && (
               <Badge variant="outline" className="text-xs">
                 {t("sheet.remaining", { remaining: minutesToHours(remainingMinutes) })}
+              </Badge>
+            )}
+            {overTaskMinutes > 0 && (
+              <Badge variant="destructive" className="text-xs">
+                {t("sheet.over_task", { over: minutesToHours(overTaskMinutes) })}
               </Badge>
             )}
           </div>
@@ -639,12 +648,15 @@ function DistributionSheet({
                             type="number"
                             step="0.25"
                             min="0"
-                            max={minutesToHours(freeMinutes + currentAllocation)}
                             value={currentHours || ""}
                             onChange={(e) => handleAllocationChange(emp.user.id, parseFloat(e.target.value) || 0)}
-                            className="w-20 h-8 text-sm text-center"
+                            className={cn(
+                              "w-20 h-8 text-sm text-center",
+                              currentAllocation > freeMinutes + 1 && "border-destructive focus-visible:ring-destructive"
+                            )}
                             placeholder="0"
                             disabled={!canEdit}
+                            aria-invalid={currentAllocation > freeMinutes + 1}
                           />
                           <span className="text-xs text-muted-foreground w-4">ч</span>
                         </div>
@@ -928,22 +940,22 @@ function EmployeeSheet({
     if (!addTaskId) return
     const task = tasks.find((tt) => tt.id === addTaskId)
     if (!task) return
-    const minutes = Math.min(addMinutes, task.remaining_minutes, freeMin)
-    if (minutes <= 0) return
+    // Не клампим: директор может назначить сверх плана (warning UI).
+    // Гарантируем только positive.
+    if (addMinutes <= 0) return
     const next = new Map(plan)
     const existing = next.get(addTaskId) ?? []
-    // Не должен дублироваться (availableTasks отфильтровал) — но guard
     const withoutMe = existing.filter((a) => a.userId !== userId)
-    next.set(addTaskId, [...withoutMe, { userId, minutes }])
+    next.set(addTaskId, [...withoutMe, { userId, minutes: addMinutes }])
     onPlanChange(next)
     setAddTaskId("")
     setAddMinutes(60)
   }
 
   const selectedTask = tasks.find((tt) => tt.id === addTaskId)
-  const maxAddMinutes = selectedTask
-    ? Math.min(selectedTask.remaining_minutes, freeMin)
-    : freeMin
+  // Hint только — не блокируем ввод. Реальная позитивная проверка на > 0.
+  const overShiftBy = Math.max(0, addMinutes - freeMin)
+  const overTaskBy = selectedTask ? Math.max(0, addMinutes - selectedTask.remaining_minutes) : 0
 
   return (
     <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
@@ -1047,12 +1059,14 @@ function EmployeeSheet({
               <p className="text-xs text-muted-foreground italic">
                 {t("employeeSheet.add_empty")}
               </p>
-            ) : freeMin === 0 ? (
-              <p className="text-xs text-warning italic">
-                {t("employeeSheet.add_no_time")}
-              </p>
             ) : (
               <div className="space-y-2">
+                {freeMin === 0 && (
+                  <p className="text-xs text-warning flex items-center gap-1">
+                    <Wand2 className="size-3 shrink-0" />
+                    {t("employeeSheet.over_shift_warning_full")}
+                  </p>
+                )}
                 <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
                   <PopoverTrigger asChild>
                     <Button
@@ -1083,7 +1097,9 @@ function EmployeeSheet({
                               value={`${task.title} ${task.zone_name ?? ""}`}
                               onSelect={() => {
                                 setAddTaskId(task.id)
-                                setAddMinutes(Math.min(60, task.remaining_minutes, freeMin))
+                                // Suggested: реалистичный default — task remaining
+                                // или 60 мин, что меньше. НЕ ограничиваем freeMin.
+                                setAddMinutes(Math.min(60, task.remaining_minutes))
                                 setPickerOpen(false)
                               }}
                             >
@@ -1108,12 +1124,14 @@ function EmployeeSheet({
                     type="number"
                     step="0.25"
                     min="0"
-                    max={minutesToHours(maxAddMinutes)}
                     value={addMinutes / 60 || ""}
                     onChange={(e) =>
                       setAddMinutes(hoursToMinutes(parseFloat(e.target.value) || 0))
                     }
-                    className="h-9 w-24 text-sm text-center"
+                    className={cn(
+                      "h-9 w-24 text-sm text-center",
+                      (overShiftBy > 0 || overTaskBy > 0) && "border-warning focus-visible:ring-warning"
+                    )}
                     placeholder="0"
                     disabled={!canEdit || !selectedTask}
                   />
@@ -1121,21 +1139,32 @@ function EmployeeSheet({
                   <Button
                     size="sm"
                     onClick={handleAddToPlan}
-                    disabled={
-                      !canEdit ||
-                      !addTaskId ||
-                      addMinutes <= 0 ||
-                      addMinutes > maxAddMinutes
-                    }
+                    disabled={!canEdit || !addTaskId || addMinutes <= 0}
                     className="ml-auto"
                   >
                     {t("employeeSheet.add_button")}
                   </Button>
                 </div>
-                {selectedTask && (
+                {selectedTask && overShiftBy === 0 && overTaskBy === 0 && (
                   <p className="text-xs text-muted-foreground">
-                    {t("employeeSheet.add_max_hint", {
-                      hours: minutesToHours(maxAddMinutes),
+                    {t("employeeSheet.add_free_hint", {
+                      hours: minutesToHours(freeMin),
+                    })}
+                  </p>
+                )}
+                {overShiftBy > 0 && (
+                  <p className="text-xs text-warning flex items-center gap-1">
+                    <Wand2 className="size-3 shrink-0" />
+                    {t("employeeSheet.over_shift_warning", {
+                      hours: minutesToHours(overShiftBy),
+                    })}
+                  </p>
+                )}
+                {overTaskBy > 0 && (
+                  <p className="text-xs text-warning flex items-center gap-1">
+                    <Wand2 className="size-3 shrink-0" />
+                    {t("employeeSheet.over_task_warning", {
+                      hours: minutesToHours(overTaskBy),
                     })}
                   </p>
                 )}
@@ -1491,13 +1520,38 @@ export function TaskDistribution() {
     toast.info(t("toast.plan_reset"))
   }
 
-  // Подтвердить план — применяем все allocations через assignTaskToUser
+  // Подтвердить план — применяем все allocations через assignTaskToUser.
+  // Дополнительно детектим over-shift и уведомляем supervisor+ если директор
+  // назначил сотруднику работы сверх его смены.
   const handleConfirmPlan = async () => {
     if (!selectedStoreId || !canEdit || plan.size === 0) return
     // Закрываем оба sheet'а — данные under них становятся stale после refresh
     setSheetOpen(false)
     setEmployeeSheetOpen(false)
     setIsConfirming(true)
+
+    // Детектим over-shift ДО применения (по текущему snapshot employees).
+    // Сумма plan-минут per user → emp.assigned_min + extra > shift_total_min.
+    const allocByUser = new Map<number, number>()
+    for (const allocs of plan.values()) {
+      for (const a of allocs) {
+        allocByUser.set(a.userId, (allocByUser.get(a.userId) ?? 0) + a.minutes)
+      }
+    }
+    const overShifts: OverShiftEntry[] = []
+    for (const emp of employees) {
+      const additional = allocByUser.get(emp.user.id) ?? 0
+      const totalAfter = emp.assigned_min + additional
+      if (totalAfter > emp.shift_total_min) {
+        overShifts.push({
+          userId: emp.user.id,
+          userName: getFullName(emp.user.first_name, emp.user.last_name, emp.user.middle_name),
+          shiftMin: emp.shift_total_min,
+          totalAfterMin: totalAfter,
+        })
+      }
+    }
+
     let okCount = 0
     let errCount = 0
     for (const [taskId, allocations] of plan) {
@@ -1509,6 +1563,21 @@ export function TaskDistribution() {
         errCount++
       }
     }
+
+    // Уведомляем supervisor+ если директор назначил сверх плана.
+    // Только для STORE_DIRECTOR — supervisor и выше сами не триггерят notification на себя.
+    if (overShifts.length > 0 && user?.role === "STORE_DIRECTOR") {
+      try {
+        await notifyOverShiftAssignment(selectedStoreId, overShifts, {
+          id: user.id,
+          name: getFullName(user.first_name, user.last_name, user.middle_name),
+          role: user.role,
+        })
+      } catch {
+        // notification не критична — toast информирует пользователя
+      }
+    }
+
     // Refresh из источника
     try {
       const [tasksRes, employeesRes] = await Promise.all([
@@ -1523,6 +1592,8 @@ export function TaskDistribution() {
     setPlan(new Map())
     if (errCount > 0) {
       toast.error(t("toast.confirm_partial", { ok: okCount, err: errCount }))
+    } else if (overShifts.length > 0) {
+      toast.warning(t("toast.confirm_over_shift", { count: okCount, over: overShifts.length }))
     } else {
       toast.success(t("toast.confirm_done", { count: okCount }))
     }

@@ -987,7 +987,10 @@
         "add_picker_search": "Поиск…",
         "add_picker_empty": "Не найдено",
         "add_picker_remaining": "Осталось {hours} ч",
-        "add_max_hint": "Максимум: {hours} ч",
+        "add_free_hint": "Свободно у сотрудника: {hours} ч",
+        "over_shift_warning": "Сверх смены: +{hours} ч (уведомим супервайзера)",
+        "over_shift_warning_full": "Смена полностью занята — назначение будет сверх плана",
+        "over_task_warning": "Сверх плана задачи: +{hours} ч",
         "add_button": "Добавить в план",
         "remove_aria": "Убрать из плана",
         "close": "Закрыть"
@@ -998,6 +1001,7 @@
         "hours_input_label": "Часов",
         "distributed_summary": "Распределено: {distributed} ч / {total} ч",
         "remaining": "Осталось: {remaining} ч",
+        "over_task": "Сверх плана задачи: +{over} ч",
         "save": "Сохранить распределение",
         "save_later": "Распределить позже",
         "remaining_warning": "Осталось {remaining} ч нераспределено",
@@ -1033,7 +1037,8 @@
         "added_to_plan": "Задача «{task}» добавлена в план",
         "plan_reset": "План сброшен",
         "confirm_done": "План применён: {count, plural, one {# задача распределена} few {# задачи распределено} many {# задач распределено} other {# задач распределено}}",
-        "confirm_partial": "Применено {ok}, ошибок: {err}"
+        "confirm_partial": "Применено {ok}, ошибок: {err}",
+        "confirm_over_shift": "Применено {count}, у {over, plural, one {# сотрудника} few {# сотрудников} many {# сотрудников} other {# сотрудников}} сверх смены — супервайзер уведомлён"
       },
       "forbidden": {
         "tooltip": "Распределять задачи может директор магазина и выше"

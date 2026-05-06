@@ -1,7 +1,8 @@
-import type { Task, Shift } from "@/lib/types";
+import type { FunctionalRole, Task, Shift } from "@/lib/types";
 import { MOCK_TASKS } from "@/lib/mock-data/tasks";
 import { MOCK_SHIFTS } from "@/lib/mock-data/shifts";
 import { MOCK_USERS } from "@/lib/mock-data/users";
+import { MOCK_NOTIFICATIONS } from "@/lib/mock-data/notifications";
 import type { ApiListResponse, ApiResponse, ApiMutationResponse } from "./types";
 
 // ═══════════════════════════════════════════════════════════════════
@@ -311,16 +312,10 @@ export async function assignTaskToUser(
     };
   }
 
-  const totalMinutes = assignments.reduce((sum, a) => sum + a.minutes, 0);
-  if (totalMinutes > task.planned_minutes) {
-    return {
-      success: false,
-      error: {
-        code: "VALIDATION_ERROR",
-        message: "Total assigned minutes exceeds planned minutes",
-      },
-    };
-  }
+  // Validation удалена: директор может назначить сверх плана задачи
+  // (сценарий «нужно больше работы по этой задаче чем изначально считали»).
+  // Над-шифтовое over-allocation детектится в компоненте через
+  // notifyOverShiftAssignment (нужны employees state и shift hours).
 
   // Store allocations (история распределения — для distribution-page state)
   taskAllocations.set(taskId, assignments);
@@ -380,6 +375,78 @@ export async function clearTaskAllocations(
   taskAllocations.delete(taskId);
 
   return { success: true };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// OVER-SHIFT NOTIFICATION
+// ═══════════════════════════════════════════════════════════════════
+
+export interface OverShiftEntry {
+  userId: number;
+  userName: string;
+  shiftMin: number;
+  /** Сколько в итоге назначено: server assigned + плановые allocations */
+  totalAfterMin: number;
+}
+
+/**
+ * Уведомить supervisor+ о том что директор назначил сотруднику работы
+ * сверх его плановой смены. Создаёт GENERIC-уведомления в MOCK_NOTIFICATIONS
+ * для каждого supervisor этого магазина.
+ *
+ * В моке использует hardcoded supervisor user_id=4 (Романов И. А.) — в живом
+ * backend будет резолвиться через store-supervisor mapping.
+ *
+ * @endpoint POST /api/distribution/notify-over-shift
+ */
+export async function notifyOverShiftAssignment(
+  storeId: number,
+  overShifts: OverShiftEntry[],
+  actor: { id: number; name: string; role: FunctionalRole }
+): Promise<ApiResponse<{ notified_count: number }>> {
+  await new Promise((r) => setTimeout(r, 100));
+
+  if (overShifts.length === 0) {
+    return { data: { notified_count: 0 } };
+  }
+
+  // Целевая аудитория — supervisor этого магазина и выше.
+  // Mock: hardcoded user_id=4 (Романов, SUPERVISOR в demo-данных).
+  const supervisorIds: number[] = [4];
+
+  let count = 0;
+  const bodyLines = overShifts
+    .map(
+      (os) =>
+        `${os.userName}: смена ${(os.shiftMin / 60).toFixed(1)} ч → назначено ${(
+          os.totalAfterMin / 60
+        ).toFixed(1)} ч (+${((os.totalAfterMin - os.shiftMin) / 60).toFixed(1)} ч)`
+    )
+    .join("; ");
+
+  for (const sup of supervisorIds) {
+    MOCK_NOTIFICATIONS.unshift({
+      id: `notif-overshift-${Date.now()}-${sup}`,
+      user_id: sup,
+      category: "GENERIC",
+      title: `${actor.name} назначил сверх плана часов`,
+      body: bodyLines,
+      data: {
+        store_id: storeId,
+        actor_id: actor.id,
+        actor_role: actor.role,
+        over_shift_count: overShifts.length,
+        over_shift_users: overShifts.map((o) => o.userId),
+      },
+      link: "/tasks/distribute",
+      is_read: false,
+      is_archived: false,
+      created_at: new Date().toISOString(),
+    });
+    count++;
+  }
+
+  return { data: { notified_count: count } };
 }
 
 // ═══════════════════════════════════════════════════════════════════
