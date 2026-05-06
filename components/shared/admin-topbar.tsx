@@ -37,6 +37,7 @@ import {
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { LanguageSwitcher } from "./language-switcher";
+import { FontScaleToggle } from "./font-scale-toggle";
 import { cn } from "@/lib/utils";
 
 // ═══════════════════════════════════════════════════════════════════
@@ -360,6 +361,9 @@ export function AdminTopBar() {
 
       {/* Right: Actions */}
       <div className="flex items-center gap-2 ml-auto">
+        {/* Font scale toggle (accessibility) */}
+        <FontScaleToggle />
+
         {/* Language switcher - compact on mobile, full on desktop */}
         <LanguageSwitcher variant="compact" className="sm:hidden" />
         <LanguageSwitcher variant="full" className="hidden sm:flex" />

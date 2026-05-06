@@ -250,4 +250,16 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     FONT SCALE — accessibility toggle (data-font-scale на <html>)
+     По стандарту WCAG 2.1 SC 1.4.4 — текст должен масштабироваться до 200%.
+     Default = 16px (стандарт админок shadcn/ui, MUI, GitHub).
+     ═══════════════════════════════════════════════════════════════════ */
+  html[data-font-scale="L"] {
+    font-size: 17.6px; /* +10% — комфортно для повседневной работы */
+  }
+  html[data-font-scale="XL"] {
+    font-size: 19.2px; /* +20% — для слабовидящих */
+  }
 }

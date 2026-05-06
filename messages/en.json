@@ -127,9 +127,10 @@
     "task_new": "New task",
     "task_detail_demo": "Example task (T-1042)",
     "tasks_review": "Under review",
-    "tasks_distribute": "Task Distribution",
+    "tasks_distribute": "Planning",
+    "tasks_all": "All tasks",
     "tasks_archive": "Tasks",
-    "subtasks_moderation": "Subtask suggestions",
+    "subtasks_moderation": "Suggestions",
     "goals": "Goals",
     "network_goals": "Network goals",
     "bonus_tasks": "Bonus tasks",
@@ -138,7 +139,9 @@
     "ai_chat": "AI chat",
     "schedule": "Schedule",
     "employees": "Employees",
-    "permissions": "Permissions",
+    "employees_all": "All employees",
+    "employees_new": "Add employee",
+    "permissions": "Work zones",
     "stores": "Stores",
     "store_detail_demo": "Store (demo)",
     "taxonomy": "Taxonomy",
@@ -189,7 +192,15 @@
     "freelance_application_detail_demo": "Application demo",
     "freelance_payouts_list": "Freelance payouts registry",
     "freelance_agent_detail_demo": "Agent demo",
-    "service_norms": "Service norms"
+    "service_norms": "Service norms",
+    "font_scale": {
+      "aria_label": "Font size",
+      "tooltip": "Font size",
+      "label": "Font size",
+      "m": "Standard",
+      "l": "Larger",
+      "xl": "Large (low-vision)"
+    }
   },
   "agent": {
     "nav": {

@@ -30,6 +30,7 @@ import {
   Wallet,
   UserCog,
   Send,
+  Plus,
   BarChart2,
   Bot,
   AlertTriangle,
@@ -148,21 +149,27 @@ const buildNavGroups = (pendingAISuggestionsCount: number): NavGroup[] => [
         visibleFor: OPS_ROLES,
         sub: [
           {
+            labelKey: "tasks_distribute",
+            icon: LayoutGrid,
+            href: ADMIN_ROUTES.tasksDistribute,
+            visibleFor: OPS_ROLES,
+          },
+          {
             labelKey: "tasks_review",
             icon: ClipboardCheck,
             href: ADMIN_ROUTES.tasksReview,
             visibleFor: OPS_ROLES,
           },
           {
-            labelKey: "subtasks_moderation",
-            icon: ListChecks,
-            href: ADMIN_ROUTES.subtasksModeration,
+            labelKey: "tasks_all",
+            icon: CheckSquare,
+            href: ADMIN_ROUTES.tasks,
             visibleFor: OPS_ROLES,
           },
           {
-            labelKey: "tasks_archive",
-            icon: Archive,
-            href: ADMIN_ROUTES.tasksArchive,
+            labelKey: "subtasks_moderation",
+            icon: ListChecks,
+            href: ADMIN_ROUTES.subtasksModeration,
             visibleFor: OPS_ROLES,
           },
         ],
@@ -179,6 +186,18 @@ const buildNavGroups = (pendingAISuggestionsCount: number): NavGroup[] => [
         href: ADMIN_ROUTES.employees,
         visibleFor: OPS_ROLES,
         sub: [
+          {
+            labelKey: "employees_all",
+            icon: Users,
+            href: ADMIN_ROUTES.employees,
+            visibleFor: OPS_ROLES,
+          },
+          {
+            labelKey: "employees_new",
+            icon: Plus,
+            href: ADMIN_ROUTES.employeeNew,
+            visibleFor: OPS_ROLES,
+          },
           {
             labelKey: "permissions",
             icon: Shield,

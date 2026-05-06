@@ -127,9 +127,10 @@
     "task_new": "Новая задача",
     "task_detail_demo": "Пример задачи (T-1042)",
     "tasks_review": "На проверке",
-    "tasks_distribute": "Распределение задач",
+    "tasks_distribute": "Планирование",
+    "tasks_all": "Все задачи",
     "tasks_archive": "Задачи",
-    "subtasks_moderation": "Предложения подзадач",
+    "subtasks_moderation": "Предложения",
     "goals": "Цели",
     "network_goals": "Цели сети",
     "bonus_tasks": "Бонусные задачи",
@@ -138,7 +139,9 @@
     "ai_chat": "ИИ-чат",
     "schedule": "Расписание",
     "employees": "Сотрудники",
-    "permissions": "Права доступа",
+    "employees_all": "Все сотрудники",
+    "employees_new": "Добавить сотрудника",
+    "permissions": "Зоны работ",
     "stores": "Магазины",
     "store_detail_demo": "Магазин (демо)",
     "taxonomy": "Таксономия",
@@ -189,7 +192,15 @@
     "freelance_application_detail_demo": "Заявка демо",
     "freelance_payouts_list": "Реестр выплат внештата",
     "freelance_agent_detail_demo": "Агент демо",
-    "service_norms": "Нормативы работ"
+    "service_norms": "Нормативы работ",
+    "font_scale": {
+      "aria_label": "Размер шрифта",
+      "tooltip": "Размер шрифта",
+      "label": "Размер шрифта",
+      "m": "Стандартный",
+      "l": "Крупнее",
+      "xl": "Крупный (для слабовидящих)"
+    }
   },
   "agent": {
     "nav": {
