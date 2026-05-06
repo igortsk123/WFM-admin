@@ -10,9 +10,11 @@ WORKDIR /app
 RUN apk add --no-cache libc6-compat
 
 COPY package.json package-lock.json* ./
-# npm install (а не ci) — package-lock иногда отстаёт от package.json
-# из-за peer-deps next.js 15 + react 19; install допускает синхронизацию.
-RUN npm install --no-audit --no-fund
+# npm install (а не ci) — package-lock иногда отстаёт из-за peer-deps next 15 + react 19.
+# BuildKit cache mount: npm cache переживает между билдами, экономит ~30s
+# когда package-lock не менялся (npm всё равно проверяет integrity).
+RUN --mount=type=cache,target=/root/.npm \
+    npm install --no-audit --no-fund
 
 # ─── Stage 2: build ────────────────────────────────────────────────
 FROM node:20-alpine AS builder
