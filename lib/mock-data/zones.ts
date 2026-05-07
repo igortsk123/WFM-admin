@@ -188,4 +188,21 @@ export const MOCK_ZONES: Zone[] = [
     approved: true,
     approved_by: 3,
   },
+
+  // ═════════════════════════════════════════════════════════════════
+  // ТехПродЗдрав — производственные этапы швейного цеха.
+  // 9 stages: Крой → Вышивка → Модули → Клеевая → Микросфера →
+  // Сборка → Окантовка → Закрепка → Финиш.
+  // Источник: Excel «Производственные задачи v1.3» (07.05.2026).
+  // IDs от 200 чтобы не конфликтовать с FMCG-зонами.
+  // ═════════════════════════════════════════════════════════════════
+  { id: 200, name: "Крой", code: "PROD_CUTTING", store_id: null, icon: "scissors", approved: true, approved_by: 3, org_id: "org-tehprod" },
+  { id: 201, name: "Вышивка", code: "PROD_EMBROIDERY", store_id: null, icon: "shapes", approved: true, approved_by: 3, org_id: "org-tehprod" },
+  { id: 202, name: "Модули", code: "PROD_MODULES", store_id: null, icon: "package-2", approved: true, approved_by: 3, org_id: "org-tehprod" },
+  { id: 203, name: "Клеевая", code: "PROD_GLUE", store_id: null, icon: "droplet", approved: true, approved_by: 3, org_id: "org-tehprod" },
+  { id: 204, name: "Микросфера", code: "PROD_MICROSPHERE", store_id: null, icon: "circle-dot", approved: true, approved_by: 3, org_id: "org-tehprod" },
+  { id: 205, name: "Сборка", code: "PROD_ASSEMBLY", store_id: null, icon: "blocks", approved: true, approved_by: 3, org_id: "org-tehprod" },
+  { id: 206, name: "Окантовка", code: "PROD_BINDING", store_id: null, icon: "frame", approved: true, approved_by: 3, org_id: "org-tehprod" },
+  { id: 207, name: "Закрепка", code: "PROD_FASTENING", store_id: null, icon: "anchor", approved: true, approved_by: 3, org_id: "org-tehprod" },
+  { id: 208, name: "Финиш", code: "PROD_FINISH", store_id: null, icon: "package-check", approved: true, approved_by: 3, org_id: "org-tehprod" },
 ];

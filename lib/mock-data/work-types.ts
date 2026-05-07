@@ -205,6 +205,7 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     allow_new_subtasks: true,
     hints_count: 0,
     default_priority: 11,
+    org_id: "org-tehprod",
   },
   {
     id: 22,
@@ -218,6 +219,7 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     acceptance_policy_default: "MANUAL",
     allow_new_subtasks: true,
     hints_count: 0,
+    org_id: "org-tehprod",
   },
   {
     id: 23,
@@ -231,6 +233,7 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     acceptance_policy_default: "MANUAL",
     allow_new_subtasks: true,
     hints_count: 0,
+    org_id: "org-tehprod",
   },
   {
     id: 24,
@@ -244,6 +247,7 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     acceptance_policy_default: "MANUAL",
     allow_new_subtasks: true,
     hints_count: 0,
+    org_id: "org-tehprod",
   },
   {
     id: 25,
@@ -257,5 +261,6 @@ export const MOCK_WORK_TYPES: WorkType[] = [
     acceptance_policy_default: "MANUAL",
     allow_new_subtasks: true,
     hints_count: 0,
+    org_id: "org-tehprod",
   },
 ];

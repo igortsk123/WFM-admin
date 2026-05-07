@@ -64,4 +64,7 @@ export const MOCK_PRODUCT_CATEGORIES: ProductCategory[] = [
   { id: 51, code: "SEASONAL",       name: "Сезонные товары",              zone_id: 105 },
   { id: 52, code: "HOLIDAY",        name: "Товары к праздникам",          zone_id: 105 },
   { id: 53, code: "NON_FOOD_OTHER", name: "Прочее non-food",              zone_id: 105 },
+
+  // ─── ТехПродЗдрав — производимые изделия. id 100+ чтобы не пересекаться с FMCG.
+  { id: 100, code: "PILLOW_12_MODULAR", name: "Подушка 12-модульная 40×50", org_id: "org-tehprod" },
 ];

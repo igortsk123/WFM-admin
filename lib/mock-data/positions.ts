@@ -76,4 +76,17 @@ export const MOCK_POSITIONS: PositionWithFunctionalRole[] = [
     functional_role_default: "SUPERVISOR",
     is_active: true,
   },
+
+  // ═════════════════════════════════════════════════════════════════
+  // ТехПродЗдрав — швейный цех. 9 production positions из Excel.
+  // ═════════════════════════════════════════════════════════════════
+  { id: 10, code: "POS-CUTTER", name: "Закройщик", description: "Раскрой ткани, осноровка деталей", role_id: 1, default_rank: 2, functional_role_default: "WORKER", is_active: true, org_id: "org-tehprod" },
+  { id: 11, code: "POS-EMBROIDERER", name: "Вышивальщица", description: "Машинная вышивка по разметке", role_id: 1, default_rank: 2, functional_role_default: "WORKER", is_active: true, org_id: "org-tehprod" },
+  { id: 12, code: "POS-COMPLECT", name: "Комплектовщица", description: "Сбор деталей по пачкам, маркировка", role_id: 1, default_rank: 1, functional_role_default: "WORKER", is_active: true, org_id: "org-tehprod" },
+  { id: 13, code: "POS-SEAMSTRESS", name: "Швея", description: "Машинная шитьё на промышленных машинах", role_id: 1, default_rank: 3, functional_role_default: "WORKER", is_active: true, org_id: "org-tehprod" },
+  { id: 14, code: "POS-HAND-SEWER", name: "Ручница", description: "Ручные операции: выворачивание, подрезка швов", role_id: 1, default_rank: 2, functional_role_default: "WORKER", is_active: true, org_id: "org-tehprod" },
+  { id: 15, code: "POS-GLUE-OP", name: "Оператор клеевого станка", description: "Проклейка швов на клеевом станке", role_id: 1, default_rank: 3, functional_role_default: "WORKER", is_active: true, org_id: "org-tehprod" },
+  { id: 16, code: "POS-DOSER-OP", name: "Оператор дозатора", description: "Наполнение модулей микросферой через дозатор", role_id: 1, default_rank: 3, functional_role_default: "WORKER", is_active: true, org_id: "org-tehprod" },
+  { id: 17, code: "POS-BINDER", name: "Швея-окантовщица", description: "Окантовка готовых изделий трикотажной тесьмой", role_id: 1, default_rank: 3, functional_role_default: "WORKER", is_active: true, org_id: "org-tehprod" },
+  { id: 18, code: "POS-PACKER", name: "Упаковщик", description: "Финальная проверка качества и упаковка готовых изделий", role_id: 1, default_rank: 1, functional_role_default: "WORKER", is_active: true, org_id: "org-tehprod" },
 ];
