@@ -40,6 +40,7 @@ import {
 import { getStores } from "@/lib/api/stores"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
 import { useAuth } from "@/lib/contexts/auth-context"
+import { useStoreContext } from "@/lib/hooks/use-store-context"
 import { cn } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button"
@@ -1561,9 +1562,17 @@ export function TaskDistribution() {
   const locale = useLocale()
   const { user } = useAuth()
 
+  // Store-context (URL ?store=N, persists across screens)
+  const { storeId: ctxStoreId, setStoreId: setCtxStoreId } = useStoreContext()
+
   // State
   const [stores, setStores] = React.useState<Store[]>([])
-  const [selectedStoreId, setSelectedStoreId] = React.useState<number | null>(null)
+  const [selectedStoreId, setSelectedStoreIdLocal] = React.useState<number | null>(null)
+  // Wrap setter — sync local + URL context
+  const setSelectedStoreId = React.useCallback((id: number | null) => {
+    setSelectedStoreIdLocal(id)
+    void setCtxStoreId(id === null ? "all" : String(id))
+  }, [setCtxStoreId])
   const [period, setPeriod] = React.useState<PeriodTab>("today")
   const [tasks, setTasks] = React.useState<UnassignedTask[]>([])
   const [employees, setEmployees] = React.useState<EmployeeUtilization[]>([])
@@ -1620,13 +1629,17 @@ export function TaskDistribution() {
       try {
         const response = await getStores({})
         setStores(response.data)
-        // Default = первый СПАР Томск (наш «хедлайн» магазин с реалистичными моками
-        // tasks и shifts). Если нет СПАР — берём первый.
+        // Default: URL ?store=N если он валидный для текущего org-scope, иначе
+        // первый магазин из загруженных (распределение «по сети» бессмысленно —
+        // распределяем задачи в один конкретный магазин).
         if (response.data.length > 0) {
-          const defaultStore = response.data.find(
-            (s) => /спар|spar/i.test(s.name) && /томск/i.test(s.name),
-          ) ?? response.data.find((s) => /спар|spar/i.test(s.name)) ?? response.data[0]
-          setSelectedStoreId(defaultStore.id)
+          const fromUrl = ctxStoreId !== null
+            ? response.data.find((s) => s.id === ctxStoreId) ?? null
+            : null
+          const defaultStore = fromUrl ?? response.data[0]
+          setSelectedStoreIdLocal(defaultStore.id)
+          // Persist в URL чтобы next-screen открылся на том же магазине
+          if (!fromUrl) void setCtxStoreId(String(defaultStore.id))
         }
       } catch (error) {
         console.error("Failed to load stores:", error)

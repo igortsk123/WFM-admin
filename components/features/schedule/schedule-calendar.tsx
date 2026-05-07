@@ -72,7 +72,8 @@ import {
   type ScheduleSlot,
   type ScheduleResponse,
 } from "@/lib/api/shifts";
-import { getStores, getZones } from "@/lib/api";
+import { getZones } from "@/lib/api";
+import { useStoreContext } from "@/lib/hooks/use-store-context";
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
 
 // ═══════════════════════════════════════════════════════════════════
@@ -87,7 +88,6 @@ interface ComboboxOption {
   label: string;
 }
 
-const ALL_STORES_OPTION: ComboboxOption = { value: "all", label: "Вся сеть" };
 
 const HOURS_RANGE = Array.from({ length: 15 }, (_, i) => i + 7); // 07:00–21:00
 
@@ -1125,11 +1125,21 @@ export function ScheduleCalendar() {
   const locale = useLocale();
   const dateFnsLocale = locale === "ru" ? ru : enUS;
 
+  // Store-context (URL ?store=N, persists across screens)
+  const {
+    storeIdParam: filterStore,
+    setStoreId: setFilterStoreRaw,
+    storeOptions: ctxStoreOptions,
+  } = useStoreContext();
+  const setFilterStore = React.useCallback(
+    (v: string) => { void setFilterStoreRaw(v); },
+    [setFilterStoreRaw],
+  );
+
   // State
   const [view, setView] = React.useState<ScheduleView>("week");
   const [currentDate, setCurrentDate] = React.useState<Date>(TODAY);
   const [selectedDay, setSelectedDay] = React.useState<Date>(TODAY); // mobile week sub-selection
-  const [filterStore, setFilterStore] = React.useState<string>("all");
   const [filterZones, setFilterZones] = React.useState<string[]>([]);
   const [, setFilterStatus] = React.useState<string[]>([]);
 
@@ -1144,23 +1154,15 @@ export function ScheduleCalendar() {
   } | null>(null);
   const [, setActionLoading] = React.useState(false);
 
-  // ─── Dynamic store/zone options (filtered by current org via taxonomy API) ───
-  const [storeOptions, setStoreOptions] = React.useState<ComboboxOption[]>([
-    ALL_STORES_OPTION,
-  ]);
+  // Store options берём из useStoreContext (filtered по auth.user.stores).
+  // Zone options всё ещё локальные через getZones API.
+  const storeOptions = ctxStoreOptions;
   const [zoneOptions, setZoneOptions] = React.useState<ComboboxOption[]>([]);
 
   React.useEffect(() => {
     let cancelled = false;
-    Promise.all([
-      getStores({ archived: false, page_size: 200 }),
-      getZones({ page_size: 100 }),
-    ]).then(([stores, zones]) => {
+    getZones({ page_size: 100 }).then((zones) => {
       if (cancelled) return;
-      setStoreOptions([
-        ALL_STORES_OPTION,
-        ...stores.data.map((s) => ({ value: String(s.id), label: s.name })),
-      ]);
       setZoneOptions(
         zones.data.map((z) => ({ value: String(z.id), label: z.name })),
       );
