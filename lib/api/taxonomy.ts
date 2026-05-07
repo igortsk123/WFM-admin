@@ -19,6 +19,7 @@ import { MOCK_PRODUCT_CATEGORIES } from "@/lib/mock-data/product-categories";
 import { MOCK_TASKS } from "@/lib/mock-data/tasks";
 import { MOCK_STORES } from "@/lib/mock-data/stores";
 import { MOCK_ASSIGNMENTS } from "@/lib/mock-data/assignments";
+import { isInCurrentOrg } from "./_org-context";
 
 const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
 
@@ -102,7 +103,8 @@ export async function getWorkTypes(
     sort_dir = "asc",
   } = params;
 
-  let filtered = [...MOCK_WORK_TYPES];
+  // Multi-tenant scope: только work types текущего org (untagged → org-lama)
+  let filtered = MOCK_WORK_TYPES.filter(isInCurrentOrg);
 
   if (search) {
     const q = search.toLowerCase();
@@ -212,7 +214,8 @@ export async function getZones(
 
   const { store_id, scope, search, approved, page = 1, page_size = 50 } = params;
 
-  let filtered = [...MOCK_ZONES];
+  // Multi-tenant scope: только zones текущего org
+  let filtered = MOCK_ZONES.filter(isInCurrentOrg);
 
   if (scope === "GLOBAL") filtered = filtered.filter((z) => !z.store_id);
   if (scope === "STORE") filtered = filtered.filter((z) => !!z.store_id);
@@ -299,7 +302,8 @@ export async function getPositions(
 
   const { search, role_id, page = 1, page_size = 50 } = params;
 
-  let filtered = [...MOCK_POSITIONS];
+  // Multi-tenant scope: только positions текущего org
+  let filtered = MOCK_POSITIONS.filter(isInCurrentOrg);
 
   if (search) {
     const q = search.toLowerCase();
@@ -385,10 +389,12 @@ export async function deletePosition(id: number): Promise<ApiMutationResponse> {
  */
 export async function getProductCategories(): Promise<ApiListResponse<ProductCategory>> {
   await delay(200);
+  // Multi-tenant scope: только product categories текущего org
+  const filtered = MOCK_PRODUCT_CATEGORIES.filter(isInCurrentOrg);
   return {
-    data: MOCK_PRODUCT_CATEGORIES,
-    total: MOCK_PRODUCT_CATEGORIES.length,
+    data: filtered,
+    total: filtered.length,
     page: 1,
-    page_size: MOCK_PRODUCT_CATEGORIES.length,
+    page_size: filtered.length,
   };
 }
