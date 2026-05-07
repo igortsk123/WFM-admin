@@ -5,6 +5,7 @@ import {
   useContext,
   useState,
   useCallback,
+  useEffect,
   type ReactNode,
 } from "react";
 import { useRouter } from "@/i18n/navigation";
@@ -14,6 +15,7 @@ import type {
   FunctionalRole,
   FunctionalRoleAssignment,
   Store,
+  EmployeeType,
 } from "@/lib/types";
 import { MOCK_USERS } from "@/lib/mock-data/users";
 import { MOCK_ORGANIZATIONS } from "@/lib/mock-data/organizations";
@@ -22,6 +24,10 @@ import { MOCK_STORES } from "@/lib/mock-data/stores";
 import { MOCK_ASSIGNMENTS } from "@/lib/mock-data/assignments";
 import { ADMIN_ROUTES, AGENT_ROUTES } from "@/lib/constants/routes";
 import { getCurrentOrgId, setCurrentOrgId } from "@/lib/api/_org-context";
+import { USE_REAL_API } from "@/lib/api/_config";
+import { getAuthToken } from "@/lib/api/_auth-token";
+import { getCurrentUserMe } from "@/lib/api/users";
+import type { BackendUserMe } from "@/lib/api/_backend-types";
 
 // ═══════════════════════════════════════════════════════════════════
 // TYPES
@@ -85,6 +91,85 @@ function buildAuthUser(
   return {
     ...user,
     role: roleAssignment.functional_role,
+    organization,
+    roleAssignment,
+    stores,
+  };
+}
+
+/**
+ * Адаптер: backend GET /users/me → admin AuthUser.
+ *
+ * Mapping:
+ *   - User поля: ID/sso/external_id/ФИО/email/phone напрямую из BackendUserMe
+ *   - FunctionalRole: backend role.code (worker | manager) → STORE_DIRECTOR / WORKER
+ *     (admin верхние роли SUPERVISOR/REGIONAL/etc. backend пока не различает)
+ *   - Stores: дёргаем из assignments[].store (admin shape Store)
+ *   - Organization: backend не отдаёт — берём из getCurrentOrgId() (admin invent)
+ *
+ * При смене org через topbar AuthProvider не пере-вызывает /users/me — backend
+ * не имеет понятия org-context, scope магазинов вычисляется из assignments.
+ */
+function backendUserMeToAuthUser(me: BackendUserMe): AuthUser {
+  // Role detection: проверяем role.code в первом ассайнменте
+  const firstPosition = me.assignments[0]?.position;
+  const roleCode = firstPosition?.role?.code?.toLowerCase() ?? "worker";
+  const functional_role: FunctionalRole =
+    roleCode === "manager" ? "STORE_DIRECTOR" : "WORKER";
+
+  // Adapt stores из assignments
+  const stores: Store[] = me.assignments
+    .map((a) => a.store)
+    .filter((s): s is NonNullable<typeof s> => s != null)
+    .map((bs) => ({
+      id: bs.id,
+      name: bs.name,
+      external_code: bs.external_code ?? "",
+      address: bs.address ?? "",
+      object_type: "STORE",
+      organization_id: getCurrentOrgId(),
+      legal_entity_id: 0,
+      active: true,
+      archived: false,
+    }));
+
+  // Synthetic FunctionalRoleAssignment (admin invent — backend не отдаёт)
+  const roleAssignment: FunctionalRoleAssignment = {
+    id: -me.id, // negative = synthetic from backend
+    user_id: me.id,
+    functional_role,
+    scope_type: stores.length > 0 ? "STORE_LIST" : "ORGANIZATION",
+    scope_ids: stores.length > 0
+      ? stores.map((s) => s.id)
+      : [getCurrentOrgId()],
+  };
+
+  // Organization из admin org-context (backend не отдаёт)
+  const organization =
+    MOCK_ORGANIZATIONS.find((o) => o.id === getCurrentOrgId()) ??
+    MOCK_ORGANIZATIONS[0];
+
+  // Build admin User (merge SSO + LAMA полей)
+  const user: User = {
+    id: me.id,
+    sso_id: me.sso_id,
+    external_id: me.external_id ?? undefined,
+    phone: me.phone ?? "",
+    email: me.email,
+    first_name: me.first_name ?? "",
+    last_name: me.last_name ?? "",
+    middle_name: me.middle_name ?? undefined,
+    avatar_url: me.photo_url ?? undefined,
+    type: "STAFF" as EmployeeType,
+    archived: false,
+    preferred_locale: "ru",
+    preferred_timezone: "Asia/Tomsk",
+    totp_enabled: false,
+  };
+
+  return {
+    ...user,
+    role: functional_role,
     organization,
     roleAssignment,
     stores,
@@ -211,10 +296,50 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const [impersonatingUser, setImpersonatingUser] = useState<AuthUser | null>(
     null
   );
+  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(false);
+  const [authMode, setAuthMode] = useState<"mock" | "backend">("mock");
 
   // Mock notification counts
   const unreadNotificationsCount = 5;
   const pendingAISuggestionsCount = 3;
+
+  // ── Real backend auth: при USE_REAL_API=true и наличии JWT ──
+  // загружаем текущего пользователя из /users/me. Если падает —
+  // продолжаем работать на mock-default'е (graceful degradation).
+  useEffect(() => {
+    if (!USE_REAL_API) return;
+    const token = getAuthToken();
+    if (!token) return;
+
+    let cancelled = false;
+    setIsAuthLoading(true);
+    getCurrentUserMe()
+      .then((me) => {
+        if (cancelled) return;
+        try {
+          const adapted = backendUserMeToAuthUser(me);
+          setUser(adapted);
+          setAuthMode("backend");
+        } catch (e) {
+          console.warn("[auth] failed to adapt /users/me response", e);
+        }
+      })
+      .catch((e) => {
+        if (!cancelled) {
+          console.warn(
+            "[auth] /users/me failed, продолжаем на mock-default:",
+            (e as Error).message,
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setIsAuthLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const switchRole = useCallback(
     (role: FunctionalRole) => {

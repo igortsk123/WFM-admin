@@ -1,42 +1,47 @@
 # CLAUDE.md — WFM Admin
 
-> Тонкий always-loaded entry point для Claude Code в этом репо. Подробности — в `.claude/rules/` (auto-load по paths).
+> Тонкий always-loaded entry point для Claude Code в этом репо.
+> Подробности — в `.memory_bank/_claude/` (полный manifest) и `.claude/rules/` (auto-load по paths).
+
+## Старт сессии
+
+**Всегда начинать с:** [.memory_bank/_claude/INDEX.md](.memory_bank/_claude/INDEX.md) — Tier 0 decision tree.
+
+Оттуда дальше в зависимости от задачи:
+- Текущее состояние → `_claude/PROJECT-STATE.md`
+- Foundation для нового экрана → `_claude/PATTERNS.md`
+- Новое API / меняешь моки → `_claude/SYNC-WITH-BACKEND.md` (сверять с `domain/` и `backend/apis/`)
+- Деплой / CI → `_claude/DEPLOY.md`
+- Терминология → `_claude/PREFERENCES.md`
 
 ## Что это
 
-Web-админка WFM (Workforce Management) для ритейла. Next.js 15 / React 19 / TypeScript strict / Tailwind v4 / shadcn-ui (new-york). Mobile-first responsive.
+Web-админка WFM (Workforce Management) для FMCG-ритейла. Прод: https://wfm.prodstor.com.
+
+Stack: Next.js 15 (App Router) / React 19 / TypeScript strict / Tailwind v4 / shadcn-ui (new-york). Mobile-first responsive. next-intl с `localePrefix='as-needed'` (RU default, `/en` для демо).
 
 ## Как устроен процесс генерации
 
-Репо в two-tool режиме:
-- **Claude** делает foundation (types / API / mocks / i18n / page-wrappers / fixes)
-- **V0** делает UI-компоненты в `components/features/<feature>/`
+Two-tool режим (зафиксирован с chat 22):
+- **Claude** — foundation (types / API / mocks / i18n / page-wrappers / fixes)
+- **V0** — UI-компоненты в `components/features/<feature>/`
 
-Подробности процесса (split workflow / patterns / chat audit / tech debt) — во внешнем playbook:
+Подробности split-workflow / patterns / monolith threshold / cleanup batch threshold — в `_claude/PROJECT-STATE.md` секция «Архитектурные policies».
 
-```
-C:/Users/SPECTRE/wfm/admin/V0/
-├── WORKFLOW.md                       — split-workflow Claude/V0
-├── TECH-DEBT.md                      — non-критичные warnings
-├── _claude-only/INDEX.md             — Tier 0 entry point для playbook
-├── _claude-only/CHAT-AUDIT.md        — статус всех 42 экранов
-├── _claude-only/PATTERNS.md          — 7 foundation patterns
-├── 00-system/project-instructions-*  — Project Instructions для V0 (НЕ для Claude)
-└── 06-screens-m0/, 07-..., 08-..., 09-...  — V0 промпты по экранам
-```
+## Memory bank
 
-При работе в новой сессии, начни с `_claude-only/INDEX.md`.
+Единая точка правды — `.memory_bank/` (под git вместе с репо). Shared между 3 продуктами WFM:
 
-## Где доменные модели
+- **WFM admin (этот репо, мой scope)** — мокированный, генерируется Claude+V0
+- **WFM mobile (живой)** — iOS+Android в production, описан в `.memory_bank/mobile/`
+- **WFM backend (живой)** — FastAPI микросервисы, описан в `.memory_bank/backend/`
 
-`C:/Users/SPECTRE/WFM/.memory_bank/` — общий memory bank всего проекта (web + mobile + backend). Для админки релевантно:
+`mobile/` и `backend/` — **живой справочник**, не моя область, но использую как референс чтобы admin не был оторван от реальности (правило в `_claude/SYNC-WITH-BACKEND.md`).
 
+Релевантное для admin:
 - `domain/task_model.md`, `task_states.md`, `user_roles.md`, `shift_model.md` — read-only бизнес-модели
-- `backend/api_tasks.md`, `api_users.md`, `api_shifts.md`, `api_notifications.md` — REST контракты (мы их моделируем в `lib/api/`)
-- `web/` — папка веб-специфичных требований
+- `backend/apis/api_*.md` — REST контракты (моделируем в `lib/api/`)
 - `product_brief.md` — общий бизнес-контекст
-
-**НЕ трогаем:** `mobile/`, `backend/patterns/` — чужая область.
 
 ## Команды
 
@@ -47,16 +52,17 @@ npx next build            # production build (полная проверка)
 pnpm run dev              # dev server
 ```
 
+Деплой автоматический — push в `main` → GitHub Actions → blue-green swap. Подробности в `_claude/DEPLOY.md`.
+
 ## Структура repo
 
 ```
 app/                          # Next.js App Router
   [locale]/                   # next-intl localePrefix='as-needed'
     (admin)/                  # admin-group (sidebar layout)
-      dashboard/, tasks/, employees/, stores/, ...
+      dashboard/, tasks/, employees/, stores/, schedule/, ...
     (auth)/                   # pre-auth (login)
     layout.tsx                # NuqsAdapter + NextIntl + Auth + Sidebar providers
-    page.tsx                  # redirect to /dashboard
   agent/                      # AGENT role isolated cabinet (отдельный layout)
 components/
   ui/                         # shadcn primitives — НЕ редактировать
@@ -70,21 +76,26 @@ lib/
 messages/
   ru.json + en.json           # next-intl translations
 i18n/                         # next-intl config (routing, navigation)
-middleware.ts                 # locale detection
+middleware.ts                 # locale detection + порт-strip
 ```
 
-## Critical rules (детали в `.claude/rules/`)
+## Critical rules (детали в `.claude/rules/` — auto-load по paths)
 
 - **TypeScript strict, no `any`** — `code-standards.md`
 - **Semantic Tailwind tokens only** — `ui-rules.md` (никаких `bg-white`, `text-gray-*`)
 - **t() БЕЗ defaultValue** — `i18n-rules.md` (это react-i18next API, не next-intl)
 - **mock-data только в lib/api/** — `api-rules.md`
 - **Verify shared-components props before use** — `shared-components.md` (TaskStateBadge.state vs ReviewStateBadge.reviewState и т.п.)
+- **Sync с domain/ и backend/apis/ перед новыми моками** — `_claude/SYNC-WITH-BACKEND.md`
+- **🔴 При ЛЮБОМ изменении model — синхронизировать backend wrappers** — `backend-sync.md`
+  (`lib/api/_backend-types.ts` + `lib/api/<feature>.ts` raw wrapper + `MIGRATION-NOTES.md`).
+  Иначе backend-разработчик получит неактуальную карту и swap сломается.
 
 ## Что НЕ делать
 
 - НЕ хардкодить русские строки в JSX — только через next-intl
 - НЕ импортировать `lib/mock-data/` напрямую в компоненты
 - НЕ редактировать `components/ui/` (shadcn — добавляй варианты в `components/shared/`)
-- НЕ менять `app/[locale]/page.tsx` — это redirect на dashboard, не nav-hub (nav-hub живёт в `(admin)/navigation/page.tsx`)
+- НЕ менять `app/[locale]/page.tsx` — это redirect на dashboard
 - НЕ создавать дубликаты API-функций — проверяй `lib/api/index.ts` перед добавлением
+- НЕ выдумывать новые статусы / поля / enum-values без проверки `.memory_bank/domain/`
