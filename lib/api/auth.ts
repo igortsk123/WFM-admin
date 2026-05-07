@@ -61,8 +61,8 @@ export async function getCurrentUser(): Promise<ApiResponse<CurrentUser>> {
     role: roleAssignment?.functional_role ?? "WORKER",
     organization_id:
       roleAssignment?.scope_type === "ORGANIZATION"
-        ? (roleAssignment.scope_ids[0] as string) ?? "org-spar"
-        : "org-spar",
+        ? (roleAssignment.scope_ids[0] as string) ?? "org-lama"
+        : "org-lama",
     preferred_locale: user.preferred_locale ?? "ru",
     totp_enabled: user.totp_enabled ?? false,
   };

@@ -33,7 +33,7 @@ const MOCK_DATA_CONNECTORS: DataConnector[] = [
       last_sync_at: hoursAgo(2),
       total_records: 1240,
     },
-    organization_id: "org-spar",
+    organization_id: "org-lama",
     scope: { store_ids: [1, 2, 3, 4, 5, 6] },
   },
   {
@@ -47,7 +47,7 @@ const MOCK_DATA_CONNECTORS: DataConnector[] = [
       last_sync_at: hoursAgo(0.25),
       total_records: 3_200_000,
     },
-    organization_id: "org-spar",
+    organization_id: "org-lama",
     scope: { store_ids: [1, 2, 3] },
   },
   {
@@ -61,7 +61,7 @@ const MOCK_DATA_CONNECTORS: DataConnector[] = [
       last_sync_at: daysAgo(2),
       total_records: 210000,
     },
-    organization_id: "org-spar",
+    organization_id: "org-lama",
   },
   {
     id: "dc-004",
@@ -73,7 +73,7 @@ const MOCK_DATA_CONNECTORS: DataConnector[] = [
       records_per_day: 0,
       last_sync_at: undefined,
     },
-    organization_id: "org-spar",
+    organization_id: "org-lama",
   },
   {
     id: "dc-005",
@@ -86,7 +86,7 @@ const MOCK_DATA_CONNECTORS: DataConnector[] = [
       last_sync_at: hoursAgo(1),
       total_records: 640,
     },
-    organization_id: "org-foodcity",
+    organization_id: "org-lama",
     scope: { store_ids: [7, 8] },
   },
   {
@@ -99,7 +99,7 @@ const MOCK_DATA_CONNECTORS: DataConnector[] = [
       records_per_day: 2,
       last_sync_at: hoursAgo(6),
     },
-    organization_id: "org-fashion-alfa",
+    organization_id: "org-levas",
   },
   {
     id: "dc-007",
@@ -107,7 +107,7 @@ const MOCK_DATA_CONNECTORS: DataConnector[] = [
     name: "Поставки — EDI Сибирский Гигант",
     status: "DISCONNECTED",
     config: { edi_format: "EANCOM", provider: "Сибирский Гигант" },
-    organization_id: "org-spar",
+    organization_id: "org-lama",
   },
 ];
 
@@ -146,7 +146,7 @@ export async function configureDataConnector(
     name: `${type} connector`,
     status: "CONFIGURED",
     config,
-    organization_id: "org-spar",
+    organization_id: "org-lama",
     scope,
   };
 

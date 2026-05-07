@@ -138,7 +138,7 @@ const defaultRoleAssignment = MOCK_FUNCTIONAL_ROLES.find(
   (ra) => ra.user_id === 3
 )!;
 const defaultOrganization = MOCK_ORGANIZATIONS.find(
-  (o) => o.id === "org-spar"
+  (o) => o.id === "org-lama"
 )!;
 const defaultAuthUser = buildAuthUser(
   defaultUser,

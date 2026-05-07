@@ -21,7 +21,7 @@ const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
 const rand = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
 
 function isClientDirect(): boolean {
-  const org = MOCK_ORGANIZATIONS.find((o) => o.id === "org-spar");
+  const org = MOCK_ORGANIZATIONS.find((o) => o.id === "org-lama");
   return org?.payment_mode === "CLIENT_DIRECT";
 }
 

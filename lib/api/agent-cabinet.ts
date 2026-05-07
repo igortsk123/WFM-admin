@@ -38,7 +38,7 @@ const rand = (min: number, max: number) =>
 const MOCK_AGENT_ID = "agent-001";
 
 function isClientDirect(): boolean {
-  const org = MOCK_ORGANIZATIONS.find((o) => o.id === "org-spar");
+  const org = MOCK_ORGANIZATIONS.find((o) => o.id === "org-lama");
   return org?.payment_mode === "CLIENT_DIRECT";
 }
 

@@ -22,7 +22,7 @@ export const MOCK_FUNCTIONAL_ROLES: FunctionalRoleAssignment[] = [
     user_id: 2,
     functional_role: "AGENT",
     scope_type: "ORGANIZATION",
-    scope_ids: ["org-spar"],
+    scope_ids: ["org-lama"],
   },
 
   // id=3 — NETWORK_OPS (Соколова А. В., org-spar)
@@ -31,7 +31,7 @@ export const MOCK_FUNCTIONAL_ROLES: FunctionalRoleAssignment[] = [
     user_id: 3,
     functional_role: "NETWORK_OPS",
     scope_type: "ORGANIZATION",
-    scope_ids: ["org-spar"],
+    scope_ids: ["org-lama"],
   },
 
   // id=4 — SUPERVISOR (Романов И. А., 5 магазинов СПАР ТОМ + НСК + КЕМ)
@@ -103,7 +103,7 @@ export const MOCK_FUNCTIONAL_ROLES: FunctionalRoleAssignment[] = [
     user_id: 11,
     functional_role: "NETWORK_OPS",
     scope_type: "ORGANIZATION",
-    scope_ids: ["org-fashion-alfa"],
+    scope_ids: ["org-levas"],
   },
 
   // id=12 — SUPERVISOR (Тарасова О. В., 3 магазина Food City)
@@ -121,7 +121,7 @@ export const MOCK_FUNCTIONAL_ROLES: FunctionalRoleAssignment[] = [
     user_id: 13,
     functional_role: "HR_MANAGER",
     scope_type: "ORGANIZATION",
-    scope_ids: ["org-spar"],
+    scope_ids: ["org-lama"],
   },
 
   // id=14 — OPERATOR (Кузнецов Н. П., org-spar)
@@ -130,7 +130,7 @@ export const MOCK_FUNCTIONAL_ROLES: FunctionalRoleAssignment[] = [
     user_id: 14,
     functional_role: "OPERATOR",
     scope_type: "ORGANIZATION",
-    scope_ids: ["org-spar"],
+    scope_ids: ["org-lama"],
   },
 
   // ── Extras (id 35-104) ───────────────────────────────────────

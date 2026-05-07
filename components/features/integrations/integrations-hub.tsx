@@ -96,7 +96,7 @@ import { ExternalHrCard } from "@/components/features/integrations/external-hr-c
 // ═══════════════════════════════════════════════════════════════════
 
 const MOCK_ORG = {
-  id: "org-spar",
+  id: "org-lama",
   business_vertical: "FMCG_RETAIL" as "FMCG_RETAIL" | "FASHION_RETAIL",
   payment_mode: "NOMINAL_ACCOUNT" as "NOMINAL_ACCOUNT" | "CLIENT_DIRECT",
   freelance_module_enabled: true,

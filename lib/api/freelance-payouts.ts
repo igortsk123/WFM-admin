@@ -32,7 +32,7 @@ const maybeError = () => Math.random() < 0.05;
 
 /** Demo: current org is SPAR which uses NOMINAL_ACCOUNT */
 function isClientDirect(): boolean {
-  const org = MOCK_ORGANIZATIONS.find((o) => o.id === "org-spar");
+  const org = MOCK_ORGANIZATIONS.find((o) => o.id === "org-lama");
   return org?.payment_mode === "CLIENT_DIRECT";
 }
 

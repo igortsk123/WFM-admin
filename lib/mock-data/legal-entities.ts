@@ -9,7 +9,7 @@ export const MOCK_LEGAL_ENTITIES: LegalEntity[] = [
   {
     id: 1,
     name: "ООО «СПАР Томск»",
-    organization_id: "org-spar",
+    organization_id: "org-lama",
     tax_jurisdiction: "RU",
     inn: "7017123456",
     kpp: "701701001",
@@ -18,7 +18,7 @@ export const MOCK_LEGAL_ENTITIES: LegalEntity[] = [
   {
     id: 2,
     name: "ООО «СПАР Новосибирск»",
-    organization_id: "org-spar",
+    organization_id: "org-lama",
     tax_jurisdiction: "RU",
     inn: "5407123456",
     kpp: "540701001",
@@ -27,7 +27,7 @@ export const MOCK_LEGAL_ENTITIES: LegalEntity[] = [
   {
     id: 3,
     name: "ООО «Глобал Маркет»",
-    organization_id: "org-foodcity",
+    organization_id: "org-lama",
     tax_jurisdiction: "RU",
     inn: "7019234567",
     kpp: "701901001",
@@ -37,7 +37,7 @@ export const MOCK_LEGAL_ENTITIES: LegalEntity[] = [
     /** ИП — малый бизнес fashion (нет KPP у ИП) */
     id: 4,
     name: "ИП Никитина А. Н.",
-    organization_id: "org-fashion-alfa",
+    organization_id: "org-levas",
     tax_jurisdiction: "RU",
     inn: "702401234567",
     ogrn: "316702400012345",

@@ -375,7 +375,7 @@ export const MOCK_AUDIT_ENTRIES: AuditEntry[] = [
     action: "settings.update",
     action_label: "Настройки организации обновлены",
     entity_type: "organization",
-    entity_id: "org-spar",
+    entity_id: "org-lama",
     entity_name: "СПАР Сибирь",
     payload: { section: "ai_standards" },
     diff: [
@@ -989,7 +989,7 @@ export const MOCK_AUDIT_ENTRIES: AuditEntry[] = [
     action: "payment_mode.update",
     action_label: "Режим выплат изменён",
     entity_type: "payment_mode",
-    entity_id: "org-spar",
+    entity_id: "org-lama",
     entity_name: "СПАР Сибирь",
     payload: { payment_mode_from: "CLIENT_DIRECT", payment_mode_to: "NOMINAL_ACCOUNT" },
     diff: [

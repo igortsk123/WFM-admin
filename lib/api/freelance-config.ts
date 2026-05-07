@@ -20,10 +20,10 @@ const rand = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
 
 // In-memory mutable org config (demo only; resets on refresh)
-let _orgConfig = { ...MOCK_ORGANIZATIONS.find((o) => o.id === "org-spar")! };
+let _orgConfig = { ...MOCK_ORGANIZATIONS.find((o) => o.id === "org-lama")! };
 
 export function _resetFreelanceConfigMock() {
-  _orgConfig = { ...MOCK_ORGANIZATIONS.find((o) => o.id === "org-spar")! };
+  _orgConfig = { ...MOCK_ORGANIZATIONS.find((o) => o.id === "org-lama")! };
 }
 
 // ═══════════════════════════════════════════════════════════════════
