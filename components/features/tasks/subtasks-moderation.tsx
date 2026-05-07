@@ -18,12 +18,12 @@ import {
 import { Link } from "@/i18n/navigation"
 import { useLocale } from "next-intl"
 
-import type { SubtaskWithTaskTitle } from "@/lib/api/tasks"
-import type { SubtaskSuggestionSource } from "@/lib/types"
+import type { OperationWithTaskTitle } from "@/lib/api/tasks"
+import type { OperationSuggestionSource } from "@/lib/types"
 import {
-  getSubtasksPending,
-  approveSubtask,
-  rejectSubtask,
+  getPendingOperations,
+  approveOperation,
+  rejectOperation,
 } from "@/lib/api/tasks"
 import { getStores } from "@/lib/api/stores"
 import { getWorkTypes, getZones } from "@/lib/api/taxonomy"
@@ -97,7 +97,7 @@ interface ComboOption {
 // ═══════════════════════════════════════════════════════════════════
 
 interface SourceBadgeProps {
-  source?: SubtaskSuggestionSource
+  source?: OperationSuggestionSource
 }
 
 function SourceBadge({ source }: SourceBadgeProps) {
@@ -248,7 +248,7 @@ function ComboboxFilter({ placeholder, options, value, onSelect, className }: Co
 // ═══════════════════════════════════════════════════════════════════
 
 interface ExpandedBodyProps {
-  subtask: SubtaskWithTaskTitle
+  subtask: OperationWithTaskTitle
   onApprove: (id: number) => void
   onReject: (id: number) => void
 }
@@ -327,7 +327,7 @@ function ExpandedBody({ subtask, onApprove, onReject }: ExpandedBodyProps) {
 // ═══════════════════════════════════════════════════════════════════
 
 interface SubtaskCardProps {
-  subtask: SubtaskWithTaskTitle
+  subtask: OperationWithTaskTitle
   isExpanded: boolean
   onToggle: () => void
   onApprove: (id: number) => void
@@ -465,7 +465,7 @@ export function SubtasksModeration() {
   const tc = useTranslations("common")
 
   // ── data state ──
-  const [rows, setRows] = React.useState<SubtaskWithTaskTitle[]>([])
+  const [rows, setRows] = React.useState<OperationWithTaskTitle[]>([])
   const [total, setTotal] = React.useState(0)
   const [isLoading, setIsLoading] = React.useState(true)
   const [isError, setIsError] = React.useState(false)
@@ -501,7 +501,7 @@ export function SubtasksModeration() {
     setIsLoading(true)
     setIsError(false)
     try {
-      const res = await getSubtasksPending({
+      const res = await getPendingOperations({
         search: search || undefined,
         store_id: storeId ? Number(storeId) : undefined,
         work_type_id: workTypeId ? Number(workTypeId) : undefined,
@@ -534,7 +534,7 @@ export function SubtasksModeration() {
     setRows((prev) => prev.filter((r) => r.id !== id))
     setTotal((prev) => prev - 1)
     if (expandedId === id) setExpandedId(null)
-    const res = await approveSubtask(String(id))
+    const res = await approveOperation(String(id))
     if (res.success) {
       toast.success(t("toast_approved"))
     } else {
@@ -550,7 +550,7 @@ export function SubtasksModeration() {
       setTotal((prev) => prev - 1)
       if (expandedId === id) setExpandedId(null)
       setRejectTarget(null)
-      const res = await rejectSubtask(String(id), reason)
+      const res = await rejectOperation(String(id), reason)
       if (res.success) {
         toast.success(t("toast_rejected"))
       } else {

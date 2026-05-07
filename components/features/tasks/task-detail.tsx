@@ -47,13 +47,13 @@ import {
   archiveTask,
   transferTask,
   updateTask,
-  addSubtaskToTask,
-  removeSubtask,
+  addOperationToTask,
+  removeOperation,
 } from "@/lib/api/tasks"
 import type { TaskDetail as TaskDetailType } from "@/lib/api/tasks"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
 import { useAuth } from "@/lib/contexts/auth-context"
-import type { ArchiveReason, TaskState, SubtaskReviewState, TaskEvent, Subtask } from "@/lib/types"
+import type { ArchiveReason, TaskState, OperationReviewState, TaskEvent, Operation } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { formatRelative } from "@/lib/utils/format"
 
@@ -112,13 +112,13 @@ const EVENT_DOT: Record<string, string> = {
 // ──────────────────────────────────────────────────────────────────
 // SubtaskReviewBadge
 // ──────────────────────────────────────────────────────────────────
-function SubtaskReviewBadge({ state }: { state: SubtaskReviewState }) {
-  const styles: Record<SubtaskReviewState, string> = {
+function SubtaskReviewBadge({ state }: { state: OperationReviewState }) {
+  const styles: Record<OperationReviewState, string> = {
     PENDING: "bg-warning/10 text-warning border-warning/20",
     ACCEPTED: "bg-success/10 text-success border-success/20",
     REJECTED: "bg-destructive/10 text-destructive border-destructive/20",
   }
-  const labels: Record<SubtaskReviewState, string> = {
+  const labels: Record<OperationReviewState, string> = {
     PENDING: "На проверке",
     ACCEPTED: "Принята",
     REJECTED: "Отклонена",
@@ -174,7 +174,7 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
   const [assignOpen, setAssignOpen] = useState(false)
   const [overrideOpen, setOverrideOpen] = useState(false)
   const [subtaskAddOpen, setSubtaskAddOpen] = useState(false)
-  const [subtaskSuggestEdit, setSubtaskSuggestEdit] = useState<Subtask | null>(null)
+  const [subtaskSuggestEdit, setSubtaskSuggestEdit] = useState<Operation | null>(null)
   const [lightboxOpen, setLightboxOpen] = useState(false)
 
   // Pending states
@@ -335,7 +335,7 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
   async function handleSubtaskAdd(name: string, hint?: string) {
     if (!task) return
     try {
-      const res = await addSubtaskToTask(task.id, name, hint)
+      const res = await addOperationToTask(task.id, name, hint)
       if (!res.success) throw new Error(res.error?.message)
       toast.success(t("subtask_toast_added"))
       await load()
@@ -344,7 +344,7 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
     }
   }
 
-  async function handleSubtaskSuggestEdit(_subtask: Subtask, _newText: string) {
+  async function handleSubtaskSuggestEdit(_subtask: Operation, _newText: string) {
     // Stub: отправить предложение в /subtasks/moderation очередь.
     // На MVP — просто показываем тост; реальная мутация добавится с API.
     toast.success(t("subtask_toast_suggested_edit"))
@@ -353,7 +353,7 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
 
   async function handleSubtaskDelete(id: number) {
     try {
-      await removeSubtask(String(id))
+      await removeOperation(String(id))
       toast.success(t("subtask_toast_deleted"))
       await load()
     } catch {
@@ -1349,15 +1349,15 @@ function TitleInlineEditButton({ title, onSave }: { title: string; onSave: (v: s
 // ──────────────────────────────────────────────────────────────────
 // SubtaskActionsMenu
 // ──────────────────────────────────────────────────────────────────
-interface SubtaskActionsMenuProps {
-  subtask: Subtask
+interface OperationActionsMenuProps {
+  subtask: Operation
   isStoreDirector: boolean
   isNetworkOps: boolean
   onSuggestEdit: () => void
   onDelete: () => void
 }
 
-function SubtaskActionsMenu({ subtask, isStoreDirector, isNetworkOps, onSuggestEdit, onDelete }: SubtaskActionsMenuProps) {
+function SubtaskActionsMenu({ subtask, isStoreDirector, isNetworkOps, onSuggestEdit, onDelete }: OperationActionsMenuProps) {
   const t = useTranslations("screen.taskDetail")
   return (
     <DropdownMenu>

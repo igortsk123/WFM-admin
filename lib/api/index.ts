@@ -96,6 +96,8 @@ export {
   type TaskDetail,
   type TaskListParams,
   type TaskFiltersResponse,
+  type OperationWithTaskTitle,
+  /** @deprecated alias to OperationWithTaskTitle (Subtask → Operation rename). */
   type SubtaskWithTaskTitle,
   // List & Get
   getTasks,
@@ -113,7 +115,13 @@ export {
   approveTask,
   rejectTask,
   bulkAssignTasks,
-  // Subtasks
+  // Operations (раньше Subtasks — переименовано под backend терминологию)
+  getPendingOperations,
+  approveOperation,
+  rejectOperation,
+  addOperationToTask,
+  removeOperation,
+  // Deprecated aliases (Subtask → Operation rename) — для обратной совместимости
   getSubtasksPending,
   approveSubtask,
   rejectSubtask,

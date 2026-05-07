@@ -1,15 +1,15 @@
 /**
- * Subtasks для REAL_LAMA_TASKS — сгенерированы из реальной operation_work_type_zone таблицы.
+ * Operations для REAL_LAMA_TASKS — сгенерированы из реальной
+ * operation_work_type_zone таблицы LAMA БД.
  *
- * Генерируется автоматически: для каждой задачи делается lookup в LAMA_OPERATIONS
- * по (work_type_id, lama_z_id зоны), и каждая операция становится отдельной подзадачей.
+ * Соответствует backend `OperationResponse` (svc_tasks/api/operations.py).
  *
- * 3053 подзадач для 498 задач, IDs от 10000.
+ * 3053 операции для 498 задач, IDs от 10000.
  * hints_count = реальное число подсказок в этой (wt, zone) — может быть 0 для редких комбо.
  */
-import type { Subtask } from "@/lib/types";
+import type { Operation } from "@/lib/types";
 
-export const REAL_LAMA_SUBTASKS: Subtask[] = [
+export const REAL_LAMA_OPERATIONS: Operation[] = [
   { id: 10000, task_id: "task-lama-276556", name: "Печать и замена ценников", review_state: "ACCEPTED", hints_count: 0, duration_min: 15, order: 1 },
   { id: 10001, task_id: "task-lama-276557", name: "Вывезти товар со склада", review_state: "ACCEPTED", hints_count: 6, duration_min: 80, order: 1 },
   { id: 10002, task_id: "task-lama-276557", name: "Выкладка товара", review_state: "ACCEPTED", hints_count: 6, duration_min: 80, order: 2 },
@@ -3064,3 +3064,5 @@ export const REAL_LAMA_SUBTASKS: Subtask[] = [
   { id: 13051, task_id: "task-lama-273934", name: "Установить или обновить промо-материалы", review_state: "ACCEPTED", hints_count: 6, duration_min: 1, order: 7 },
   { id: 13052, task_id: "task-lama-273934", name: "Подровнять товар на полке", review_state: "ACCEPTED", hints_count: 6, duration_min: 1, order: 8 },
 ];
+/** @deprecated Используй REAL_LAMA_OPERATIONS. */
+export const REAL_LAMA_SUBTASKS = REAL_LAMA_OPERATIONS;

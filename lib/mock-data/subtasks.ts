@@ -1,5 +1,5 @@
-import type { Subtask } from "@/lib/types";
-import { REAL_LAMA_SUBTASKS } from "./_lama-real-subtasks";
+import type { Operation } from "@/lib/types";
+import { REAL_LAMA_OPERATIONS } from "./_lama-real-subtasks";
 
 /**
  * @endpoint GET /api/subtasks?task_id=:id
@@ -33,7 +33,7 @@ const MERCH_TASK_ID = "task-006";
 const MERCH_TASK2_ID = "task-007";
 
 // ── task-006 subtasks ──
-const subtasksMerch1: Subtask[] = [
+const subtasksMerch1: Operation[] = [
   {
     id: 1,
     task_id: MERCH_TASK_ID,
@@ -82,7 +82,7 @@ const subtasksMerch1: Subtask[] = [
 ];
 
 // ── task-007 subtasks ──
-const subtasksMerch2: Subtask[] = [
+const subtasksMerch2: Operation[] = [
   {
     id: 6,
     task_id: MERCH_TASK2_ID,
@@ -141,7 +141,7 @@ const subtasksMerch2: Subtask[] = [
 const REPRICE_TASK_ID  = "task-008";
 const REPRICE_TASK2_ID = "task-009";
 
-const subtasksReprice1: Subtask[] = [
+const subtasksReprice1: Operation[] = [
   {
     id: 11,
     task_id: REPRICE_TASK_ID,
@@ -190,7 +190,7 @@ const subtasksReprice1: Subtask[] = [
   },
 ];
 
-const subtasksReprice2: Subtask[] = [
+const subtasksReprice2: Operation[] = [
   {
     id: 16,
     task_id: REPRICE_TASK2_ID,
@@ -236,7 +236,7 @@ const subtasksReprice2: Subtask[] = [
 const INVENTORY_TASK_ID  = "task-012";
 const INVENTORY_TASK2_ID = "task-016";
 
-const subtasksInventory1: Subtask[] = [
+const subtasksInventory1: Operation[] = [
   {
     id: 20,
     task_id: INVENTORY_TASK_ID,
@@ -284,7 +284,7 @@ const subtasksInventory1: Subtask[] = [
   },
 ];
 
-const subtasksInventory2: Subtask[] = [
+const subtasksInventory2: Operation[] = [
   {
     id: 25,
     task_id: INVENTORY_TASK2_ID,
@@ -340,7 +340,7 @@ const subtasksInventory2: Subtask[] = [
 const WAREHOUSE_TASK_ID  = "task-004";
 const WAREHOUSE_TASK2_ID = "task-014";
 
-const subtasksWarehouse1: Subtask[] = [
+const subtasksWarehouse1: Operation[] = [
   {
     id: 30,
     task_id: WAREHOUSE_TASK_ID,
@@ -388,7 +388,7 @@ const subtasksWarehouse1: Subtask[] = [
   },
 ];
 
-const subtasksWarehouse2: Subtask[] = [
+const subtasksWarehouse2: Operation[] = [
   {
     id: 35,
     task_id: WAREHOUSE_TASK2_ID,
@@ -434,7 +434,7 @@ const subtasksWarehouse2: Subtask[] = [
 const QUALITY_TASK_ID  = "task-005";
 const QUALITY_TASK2_ID = "task-017";
 
-const subtasksQuality1: Subtask[] = [
+const subtasksQuality1: Operation[] = [
   {
     id: 39,
     task_id: QUALITY_TASK_ID,
@@ -473,7 +473,7 @@ const subtasksQuality1: Subtask[] = [
   },
 ];
 
-const subtasksQuality2: Subtask[] = [
+const subtasksQuality2: Operation[] = [
   {
     id: 43,
     task_id: QUALITY_TASK2_ID,
@@ -519,7 +519,7 @@ const subtasksQuality2: Subtask[] = [
 
 const CLEANING_TASK_ID = "task-013";
 
-const subtasksCleaning: Subtask[] = [
+const subtasksCleaning: Operation[] = [
   {
     id: 47,
     task_id: CLEANING_TASK_ID,
@@ -564,7 +564,7 @@ const subtasksCleaning: Subtask[] = [
 
 const MERCH_PLAN_TASK_ID = "task-022";
 
-const subtasksMerchPlan: Subtask[] = [
+const subtasksMerchPlan: Operation[] = [
   {
     id: 51,
     task_id: MERCH_PLAN_TASK_ID,
@@ -609,7 +609,7 @@ const subtasksMerchPlan: Subtask[] = [
 
 const PRICING_TASK_ID = "task-009";
 
-const subtasksPricing: Subtask[] = [
+const subtasksPricing: Operation[] = [
   {
     id: 55,
     task_id: PRICING_TASK_ID,
@@ -655,7 +655,7 @@ const subtasksPricing: Subtask[] = [
 
 const CASHIER_TASK_ID = "task-001";
 
-const subtasksCashier: Subtask[] = [
+const subtasksCashier: Operation[] = [
   {
     id: 59,
     task_id: CASHIER_TASK_ID,
@@ -700,7 +700,7 @@ const subtasksCashier: Subtask[] = [
 
 const MGR_TASK_ID = "task-002";
 
-const subtasksMgr: Subtask[] = [
+const subtasksMgr: Operation[] = [
   {
     id: 63,
     task_id: MGR_TASK_ID,
@@ -745,7 +745,7 @@ const subtasksMgr: Subtask[] = [
 
 const SCO_TASK_ID = "task-010";
 
-const subtasksSco: Subtask[] = [
+const subtasksSco: Operation[] = [
   {
     id: 67,
     task_id: SCO_TASK_ID,
@@ -781,7 +781,7 @@ const subtasksSco: Subtask[] = [
 
 const DETAIL_DEMO_TASK_ID = "t-1042";
 
-const subtasksDetailDemo: Subtask[] = [
+const subtasksDetailDemo: Operation[] = [
   {
     id: 101,
     task_id: DETAIL_DEMO_TASK_ID,
@@ -846,7 +846,7 @@ const subtasksDetailDemo: Subtask[] = [
 // Task IDs ниже — существующие из MOCK_TASKS.
 // ══════════════════════════════════════════════════════════════════
 
-const subtasksModerationQueue: Subtask[] = [
+const subtasksModerationQueue: Operation[] = [
   // ── 8 от управляющих магазинов (любые типы работ) ──
   {
     id: 200,
@@ -996,7 +996,7 @@ const subtasksModerationQueue: Subtask[] = [
   },
 ];
 
-export const MOCK_SUBTASKS: Subtask[] = [
+export const MOCK_OPERATIONS: Operation[] = [
   ...subtasksDetailDemo,
   ...subtasksModerationQueue,
   ...subtasksMerch1,
@@ -1016,7 +1016,10 @@ export const MOCK_SUBTASKS: Subtask[] = [
   ...subtasksMgr,
   ...subtasksSco,
 
-  // ─── Подзадачи для 24 РЕАЛЬНЫХ LAMA-задач (auto-generated по
-  // work_type шаблонам, см. _lama-real-subtasks.ts).
-  ...REAL_LAMA_SUBTASKS,
+  // ─── Operations для 24 РЕАЛЬНЫХ LAMA-задач (auto-generated по
+  // work_type шаблонам, см. _lama-real-operations.ts).
+  ...REAL_LAMA_OPERATIONS,
 ];
+
+/** @deprecated Используй MOCK_OPERATIONS (совпадает с backend терминологией). */
+export const MOCK_SUBTASKS = MOCK_OPERATIONS;

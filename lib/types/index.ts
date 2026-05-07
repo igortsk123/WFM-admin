@@ -86,7 +86,10 @@ export type NotificationCategory =
   | "GENERIC";
 
 /** Подзадачи (ранее operations) — статус модерации */
-export type SubtaskReviewState = "PENDING" | "ACCEPTED" | "REJECTED";
+/** Совпадает с backend OperationReviewState. */
+export type OperationReviewState = "PENDING" | "ACCEPTED" | "REJECTED";
+/** @deprecated Используй OperationReviewState (совпадает с backend). */
+export type SubtaskReviewState = OperationReviewState;
 
 export type ArchiveReason =
   | "CLOSED"
@@ -566,22 +569,41 @@ export interface TaskEvent {
  *   - worker — сотрудник предложил при выполнении (только work_type='Другие работы')
  *   - store_director — управляющий магазина из task-detail предложил отредактировать
  */
-export type SubtaskSuggestionSource = "worker" | "store_director";
+/** Совпадает с backend (предлагает worker, утверждает store_director). */
+export type OperationSuggestionSource = "worker" | "store_director";
+/** @deprecated Используй OperationSuggestionSource. */
+export type SubtaskSuggestionSource = OperationSuggestionSource;
 
-/** Ранее Operation — это шаги выполнения внутри задачи */
-export interface Subtask {
+/**
+ * Operation — шаг выполнения внутри задачи.
+ * Совпадает с backend `Operation` (svc_tasks/api/operations.py).
+ *
+ * Admin-extensions поверх backend-полей:
+ *   - hints_count: int — UI badge (backend пока не отдаёт)
+ *   - duration_min: optional — оценка времени для UX
+ *   - order: int — UI sort
+ *   - suggestion_source/suggested_by_*: модерация PENDING (backend через
+ *     POST /tasks/{id}/complete + new_operations[])
+ */
+export interface Operation {
   id: number;
   task_id: string;
   name: string;
-  review_state: SubtaskReviewState;
+  review_state: OperationReviewState;
+  /** @admin-extension: счётчик подсказок для UI badge. */
   hints_count: number;
+  /** @admin-extension: оценка длительности (минуты). */
   duration_min?: number;
+  /** @admin-extension: порядок в UI. */
   order: number;
-  /** Только для review_state='PENDING': кто предложил эту подзадачу. */
-  suggestion_source?: SubtaskSuggestionSource;
+  /** @admin-extension: модерация PENDING — кто предложил. */
+  suggestion_source?: OperationSuggestionSource;
   suggested_by_user_id?: number;
   suggested_by_user_name?: string;
 }
+
+/** @deprecated Используй Operation (совпадает с backend терминологией). */
+export type Subtask = Operation;
 
 /**
  * Shift interface.

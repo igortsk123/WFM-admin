@@ -12,7 +12,7 @@ import type {
   TaskState,
   TaskReviewState,
   TaskEvent,
-  Subtask,
+  Operation,
   Hint,
   Zone,
   WorkType,
@@ -22,7 +22,7 @@ import type {
   Permission,
 } from "@/lib/types";
 import { MOCK_TASKS } from "@/lib/mock-data/tasks";
-import { MOCK_SUBTASKS } from "@/lib/mock-data/subtasks";
+import { MOCK_OPERATIONS } from "@/lib/mock-data/subtasks";
 import { MOCK_HINTS } from "@/lib/mock-data/hints";
 import { MOCK_ZONES } from "@/lib/mock-data/zones";
 import { MOCK_WORK_TYPES } from "@/lib/mock-data/work-types";
@@ -43,7 +43,7 @@ export interface TaskWithAvatar extends Task {
 /** Full task detail with history, subtasks, and hints */
 export interface TaskDetail extends Task {
   history: TaskEvent[];
-  subtasks: Subtask[];
+  subtasks: Operation[];
   hints: Hint[];
 }
 
@@ -71,8 +71,8 @@ export interface TaskFiltersResponse {
   assignees: User[];
 }
 
-/** Subtask with parent task title for pending lists */
-export interface SubtaskWithTaskTitle extends Subtask {
+/** Operation with parent task title for pending lists */
+export interface OperationWithTaskTitle extends Operation {
   task_title: string;
   task_id_display: string;
   store_id: number;
@@ -236,7 +236,7 @@ export async function getTaskById(id: string): Promise<ApiResponse<TaskDetail>> 
   }
 
   // Get subtasks for this task
-  const subtasks = MOCK_SUBTASKS.filter((s) => s.task_id === id);
+  const subtasks = MOCK_OPERATIONS.filter((s) => s.task_id === id);
 
   // Get hints for this task's work_type and zone
   const hints = MOCK_HINTS.filter(
@@ -774,19 +774,19 @@ export async function bulkAssignTasks(
  * @returns Paginated list of enriched pending subtasks
  * @endpoint GET /tasks/subtasks/pending
  */
-export async function getSubtasksPending(
+export async function getPendingOperations(
   params: ApiListParams & {
     store_id?: number;
     work_type_id?: number;
     zone_id?: number;
   } = {}
-): Promise<ApiListResponse<SubtaskWithTaskTitle>> {
+): Promise<ApiListResponse<OperationWithTaskTitle>> {
   await delay(300);
 
   const { store_id, work_type_id, zone_id, search, page = 1, page_size = 20 } = params;
 
   // Get pending subtasks
-  const pending = MOCK_SUBTASKS.filter((s) => s.review_state === "PENDING");
+  const pending = MOCK_OPERATIONS.filter((s) => s.review_state === "PENDING");
 
   // Enrich all pending with task/store/zone/work_type data first (needed for filtering)
   const nowIso = new Date("2026-05-01T10:00:00+07:00").toISOString();
@@ -823,7 +823,7 @@ export async function getSubtasksPending(
   };
 
   // Build enriched list
-  const enrichedAll: SubtaskWithTaskTitle[] = pending.map((subtask) => {
+  const enrichedAll: OperationWithTaskTitle[] = pending.map((subtask) => {
     const task = MOCK_TASKS.find((t) => t.id === subtask.task_id);
     return {
       ...subtask,
@@ -887,10 +887,10 @@ export async function getSubtasksPending(
  * @returns Success status
  * @endpoint POST /subtasks/:id/approve
  */
-export async function approveSubtask(id: string): Promise<ApiMutationResponse> {
+export async function approveOperation(id: string): Promise<ApiMutationResponse> {
   await delay(300);
 
-  const subtask = MOCK_SUBTASKS.find((s) => String(s.id) === id);
+  const subtask = MOCK_OPERATIONS.find((s) => String(s.id) === id);
   if (!subtask) {
     return {
       success: false,
@@ -922,13 +922,13 @@ export async function approveSubtask(id: string): Promise<ApiMutationResponse> {
  * @returns Success status
  * @endpoint POST /subtasks/:id/reject
  */
-export async function rejectSubtask(
+export async function rejectOperation(
   id: string,
   reason: string
 ): Promise<ApiMutationResponse> {
   await delay(300);
 
-  const subtask = MOCK_SUBTASKS.find((s) => String(s.id) === id);
+  const subtask = MOCK_OPERATIONS.find((s) => String(s.id) === id);
   if (!subtask) {
     return {
       success: false,
@@ -971,7 +971,7 @@ export async function rejectSubtask(
  * @returns Success status with new subtask ID
  * @endpoint POST /tasks/:id/subtasks
  */
-export async function addSubtaskToTask(
+export async function addOperationToTask(
   taskId: string,
   name: string,
   hint?: string
@@ -1011,7 +1011,7 @@ export async function addSubtaskToTask(
     };
   }
 
-  const newId = Math.max(...MOCK_SUBTASKS.map((s) => s.id)) + 1;
+  const newId = Math.max(...MOCK_OPERATIONS.map((s) => s.id)) + 1;
   console.log(`[v0] Added subtask ${newId} to task ${taskId}:`, name, hint);
 
   return {
@@ -1026,10 +1026,10 @@ export async function addSubtaskToTask(
  * @returns Success status
  * @endpoint DELETE /subtasks/:id
  */
-export async function removeSubtask(id: string): Promise<ApiMutationResponse> {
+export async function removeOperation(id: string): Promise<ApiMutationResponse> {
   await delay(300);
 
-  const subtask = MOCK_SUBTASKS.find((s) => String(s.id) === id);
+  const subtask = MOCK_OPERATIONS.find((s) => String(s.id) === id);
   if (!subtask) {
     return {
       success: false,
@@ -1289,3 +1289,19 @@ export async function getTaskEventsFromBackend(
 ): Promise<BackendTaskEventListData> {
   return _tGet<BackendTaskEventListData>(_tApiUrl("tasks", `/${id}/events`));
 }
+
+// ─── Deprecated aliases для обратной совместимости (Subtask → Operation rename) ───
+// Удалить когда все consumers мигрируют на новые имена.
+
+/** @deprecated Используй getPendingOperations. */
+export const getSubtasksPending = getPendingOperations;
+/** @deprecated Используй approveOperation. */
+export const approveSubtask = approveOperation;
+/** @deprecated Используй rejectOperation. */
+export const rejectSubtask = rejectOperation;
+/** @deprecated Используй addOperationToTask. */
+export const addSubtaskToTask = addOperationToTask;
+/** @deprecated Используй removeOperation. */
+export const removeSubtask = removeOperation;
+/** @deprecated Используй OperationWithTaskTitle. */
+export type SubtaskWithTaskTitle = OperationWithTaskTitle;
