@@ -75,7 +75,10 @@ function buildAuthUser(
   } else if (roleAssignment.scope_type === "REGION") {
     stores = MOCK_STORES.filter(
       (s) =>
-        roleAssignment.scope_ids.includes(s.region) && !s.archived && s.active
+        s.region != null &&
+        roleAssignment.scope_ids.includes(s.region) &&
+        !s.archived &&
+        s.active
     );
   }
 

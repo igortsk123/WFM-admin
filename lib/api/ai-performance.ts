@@ -120,7 +120,7 @@ export async function getNetworkGoals(
 
   let stores = MOCK_STORES.filter((s) => !s.archived);
 
-  if (region) stores = stores.filter((s) => s.region.includes(region));
+  if (region) stores = stores.filter((s) => (s.region ?? "").includes(region));
 
   const activeGoals = MOCK_GOALS.filter((g) => g.status === "ACTIVE");
 

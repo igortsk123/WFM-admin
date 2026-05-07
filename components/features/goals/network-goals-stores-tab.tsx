@@ -84,8 +84,8 @@ export function StoresTab() {
 
   // Get unique regions for filter
   const regions = React.useMemo(() => {
-    const unique = new Set(data.map((s) => s.region));
-    return Array.from(unique).filter(Boolean);
+    const unique = new Set(data.map((s) => s.region ?? ""));
+    return Array.from(unique).filter((r): r is string => Boolean(r));
   }, [data]);
 
   // Filter chips

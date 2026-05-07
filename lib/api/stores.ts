@@ -320,7 +320,7 @@ export async function getStores(
 
   // Region multi
   if (region && region.length > 0) {
-    filtered = filtered.filter((s) => region.includes(s.region));
+    filtered = filtered.filter((s) => s.region != null && region.includes(s.region));
   }
 
   // Supervisor single
@@ -341,7 +341,7 @@ export async function getStores(
         s.name.toLowerCase().includes(q) ||
         s.external_code.toLowerCase().includes(q) ||
         s.address.toLowerCase().includes(q) ||
-        s.city.toLowerCase().includes(q),
+        (s.city ?? "").toLowerCase().includes(q),
     );
   }
 

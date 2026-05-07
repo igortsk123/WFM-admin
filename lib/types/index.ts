@@ -360,16 +360,16 @@ export interface Store {
   name: string;
   external_code: string;
   address: string;
-  /** @deprecated Backend не возвращает; админ-only для UI отображения. */
-  city: string;
-  /** @deprecated Используй object_format / format_shop_name. */
-  store_type: string;
+  /** @deprecated Backend не возвращает; админ-only для UI отображения. Optional для бесшовного swap. */
+  city?: string;
+  /** @deprecated Используй object_format / format_shop_name. Optional для swap. */
+  store_type?: string;
   object_type: ObjectType;
   organization_id: string;
   manager_id?: number;
   supervisor_id?: number;
-  /** @deprecated Backend не возвращает; админ-only метаданные. */
-  region: string;
+  /** @deprecated Backend не возвращает; админ-only метаданные. Optional для swap. */
+  region?: string;
   legal_entity_id: number;
   /** Полный объект юрлица (зеркалит LAMA /shops/.internal_company). */
   internal_company?: LegalEntity;
