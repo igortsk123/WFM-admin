@@ -384,6 +384,8 @@ export interface Zone {
   approved_by?: number;
   /** Multi-tenant scope: организация-владелец. Опционально для backward compat. */
   org_id?: string;
+  /** ID зоны в реальной LAMA БД (1-32). Используется для матчинга operations/hints из LAMA. */
+  lama_z_id?: number;
 }
 
 /** group вместо category — НЕ путать с категорией товара */

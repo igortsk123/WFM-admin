@@ -23,9 +23,11 @@ import type { Hint } from "@/lib/types";
  *  13  = Складские работы (WAREHOUSE)
  */
 
+import { REAL_LAMA_HINTS } from "./_lama-hints";
+
 const BASE_DATE = "2026-01-15T08:00:00+07:00";
 
-export const MOCK_HINTS: Hint[] = [
+const BASE_HINTS: Hint[] = [
 
   // ══════════════════════════════════════════════════════════════
   // Выкладка (4) × Торговый зал (1)
@@ -327,3 +329,6 @@ export const MOCK_HINTS: Hint[] = [
     updated_at: BASE_DATE,
   },
 ];
+
+// 522 реальных LAMA-подсказок keyed by (wt_id, mock_zone_id) — id 1001-1522.
+export const MOCK_HINTS: Hint[] = [...BASE_HINTS, ...REAL_LAMA_HINTS];

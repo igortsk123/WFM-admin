@@ -15,7 +15,7 @@ export interface PositionWithFunctionalRole extends Position {
   is_active?: boolean;
 }
 
-export const MOCK_POSITIONS: PositionWithFunctionalRole[] = [
+const BASE_POSITIONS: PositionWithFunctionalRole[] = [
   {
     id: 1,
     code: "POS-UNIVERSAL",
@@ -89,4 +89,11 @@ export const MOCK_POSITIONS: PositionWithFunctionalRole[] = [
   { id: 16, code: "POS-DOSER-OP", name: "Оператор дозатора", description: "Наполнение модулей микросферой через дозатор", role_id: 1, default_rank: 3, functional_role_default: "WORKER", is_active: true, org_id: "org-tehprod" },
   { id: 17, code: "POS-BINDER", name: "Швея-окантовщица", description: "Окантовка готовых изделий трикотажной тесьмой", role_id: 1, default_rank: 3, functional_role_default: "WORKER", is_active: true, org_id: "org-tehprod" },
   { id: 18, code: "POS-PACKER", name: "Упаковщик", description: "Финальная проверка качества и упаковка готовых изделий", role_id: 1, default_rank: 1, functional_role_default: "WORKER", is_active: true, org_id: "org-tehprod" },
+];
+
+import { REAL_LAMA_POSITIONS } from "./_lama-real";
+
+export const MOCK_POSITIONS: PositionWithFunctionalRole[] = [
+  ...BASE_POSITIONS,
+  ...REAL_LAMA_POSITIONS,
 ];
