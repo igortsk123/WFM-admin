@@ -273,6 +273,8 @@ export interface Position {
   description?: string;
   role_id: DbRoleId;
   default_rank?: number;
+  /** Multi-tenant scope: организация-владелец. Опционально для backward compat. */
+  org_id?: string;
 }
 
 /**
@@ -380,6 +382,8 @@ export interface Zone {
   icon: string;
   approved: boolean;
   approved_by?: number;
+  /** Multi-tenant scope: организация-владелец. Опционально для backward compat. */
+  org_id?: string;
 }
 
 /** group вместо category — НЕ путать с категорией товара */
@@ -403,6 +407,8 @@ export interface WorkType {
    * Используется UI как стартовое значение в Task Form.
    */
   default_priority?: number;
+  /** Multi-tenant scope: организация-владелец. Опционально для backward compat. */
+  org_id?: string;
 }
 
 export interface Hint {
@@ -660,6 +666,8 @@ export interface ProductCategory {
   name: string;
   /** LAMA-зона (id из MOCK_ZONES, 100+). Optional — старые категории без привязки. */
   zone_id?: number;
+  /** Multi-tenant scope: организация-владелец. Опционально для backward compat. */
+  org_id?: string;
 }
 
 /** AI-Assistant цель + ручная */
