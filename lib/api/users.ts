@@ -859,3 +859,24 @@ export async function getPermissionsCoverage(
 
   return { data: rows };
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// REAL BACKEND: GET /users/me
+// ═══════════════════════════════════════════════════════════════════
+
+import { apiUrl } from "./_config";
+import { backendGet } from "./_client";
+import type { BackendUserMe } from "./_backend-types";
+
+/**
+ * Получить полную инфу о текущем пользователе из real backend.
+ * Backend склеивает локальные + SSO + LAMA данные.
+ *
+ * Использует JWT из _auth-token.ts. Падает с BackendApiError если токен
+ * отсутствует/невалидный (UNAUTHORIZED).
+ *
+ * @endpoint GET /users/me
+ */
+export async function getCurrentUserMe(): Promise<BackendUserMe> {
+  return backendGet<BackendUserMe>(apiUrl("users", "/me"));
+}

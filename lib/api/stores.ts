@@ -20,8 +20,73 @@ import { MOCK_TASKS } from "@/lib/mock-data/tasks";
 import { MOCK_ASSIGNMENTS } from "@/lib/mock-data/assignments";
 import { MOCK_PERMISSIONS } from "@/lib/mock-data/permissions";
 import { MOCK_ZONES } from "@/lib/mock-data/zones";
+import { USE_REAL_API, apiUrl } from "./_config";
+import { backendGet } from "./_client";
+import type { BackendStoreListData } from "./_backend-types";
 
 const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
+
+/**
+ * Real backend pilot: GET /users/stores → unwrap → adapt to StoreWithStats.
+ * Backend возвращает только {id, name, address, external_code, created_at}.
+ * Расширенные поля (city, region, format, manager_id, stats) не приходят —
+ * заполняются undefined / нулями. UI должен gracefully fall back.
+ *
+ * Backend пока не поддерживает фильтры/пагинацию для /stores — возвращает все.
+ * Pagination клиент-side для совместимости с admin signature.
+ */
+async function getStoresFromBackend(
+  params: StoreListParams,
+): Promise<ApiListResponse<StoreWithStats>> {
+  const data = await backendGet<BackendStoreListData>(
+    apiUrl("users", "/stores"),
+  );
+  const all = data.stores ?? [];
+
+  const adapted: StoreWithStats[] = all.map((b) => ({
+    id: b.id,
+    name: b.name,
+    external_code: b.external_code ?? "",
+    address: b.address ?? "",
+    object_type: "STORE",
+    organization_id: "",
+    legal_entity_id: 0,
+    active: true,
+    archived: false,
+    // Stats не приходят с backend /stores — заполняются нулями.
+    // TODO когда backend даст /stores/list/with-stats или отдельные endpoints — заполнить.
+    tasks_today_count: 0,
+    staff_count: 0,
+    current_shifts_open_count: 0,
+    current_shifts_total: 0,
+    permissions_coverage_pct: 0,
+    employees_count: 0,
+    active_shifts_count: 0,
+  }));
+
+  // Search фильтр клиент-side (backend не поддерживает)
+  let filtered = adapted;
+  if (params.search) {
+    const q = params.search.toLowerCase();
+    filtered = filtered.filter(
+      (s) =>
+        s.name.toLowerCase().includes(q) ||
+        s.external_code.toLowerCase().includes(q),
+    );
+  }
+
+  const page = params.page ?? 1;
+  const page_size = params.page_size ?? 20;
+  const start = (page - 1) * page_size;
+  const paginated = filtered.slice(start, start + page_size);
+
+  return {
+    data: paginated,
+    total: filtered.length,
+    page,
+    page_size,
+  };
+}
 
 /** Сегодняшняя дата в моках — синхронизируем с MOCK_SHIFTS / MOCK_TASKS. */
 const TODAY = "2026-05-01";
@@ -288,6 +353,12 @@ function computeStoreStats(store: Store): {
 export async function getStores(
   params: StoreListParams = {},
 ): Promise<ApiListResponse<StoreWithStats>> {
+  // Real backend swap: при NEXT_PUBLIC_USE_REAL_API=true идём в /users/stores
+  // и адаптируем под admin-shape (StoreWithStats). Иначе остаёмся на моках.
+  if (USE_REAL_API) {
+    return getStoresFromBackend(params);
+  }
+
   await delay(350);
 
   const {
