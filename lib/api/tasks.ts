@@ -1104,3 +1104,188 @@ export async function getTaskListFilterOptions(): Promise<TaskFiltersResponse> {
     assignees: assignees.slice(0, 30),
   };
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// REAL BACKEND wrappers — /tasks/* (svc_tasks)
+// ═══════════════════════════════════════════════════════════════════
+//
+// Сырые обёртки backend endpoints. Возвращают BackendTask/BackendTaskListData
+// как есть. Lossy dispatch (admin → backend с потерей admin-полей) НЕ делаем.
+// Consumers сами адаптируют BackendTask → admin Task через адаптер при свапе.
+//
+// Backend-контракт см. wfm-develop mobile/.../svc_tasks/app/api/tasks.py.
+
+import { apiUrl as _tApiUrl } from "./_config";
+import {
+  backendGet as _tGet,
+  backendPost as _tPost,
+  backendPatch as _tPatch,
+} from "./_client";
+import type {
+  BackendTask,
+  BackendTaskListData,
+  BackendTaskCreate,
+  BackendTaskUpdate,
+  BackendTaskState,
+  BackendTaskReviewState,
+  BackendTaskListFiltersData,
+  BackendTaskListUsersData,
+  BackendTaskEventListData,
+} from "./_backend-types";
+
+interface TaskListBackendParams {
+  assignment_id: number;
+  state?: BackendTaskState;
+  review_state?: BackendTaskReviewState;
+  assignee_ids?: number[];
+  zone_ids?: number[];
+  work_type_ids?: number[];
+}
+
+function _buildQuery(params: Record<string, unknown>): string {
+  const parts: string[] = [];
+  for (const [k, v] of Object.entries(params)) {
+    if (v === undefined || v === null) continue;
+    if (Array.isArray(v)) {
+      for (const item of v) parts.push(`${encodeURIComponent(k)}=${encodeURIComponent(String(item))}`);
+    } else {
+      parts.push(`${encodeURIComponent(k)}=${encodeURIComponent(String(v))}`);
+    }
+  }
+  return parts.length ? `?${parts.join("&")}` : "";
+}
+
+/** GET /tasks/list — задачи магазина (только MANAGER). */
+export async function getTasksFromBackend(
+  params: TaskListBackendParams,
+): Promise<BackendTaskListData> {
+  return _tGet<BackendTaskListData>(
+    _tApiUrl("tasks", `/list${_buildQuery({ ...params } as unknown as Record<string, unknown>)}`),
+  );
+}
+
+/** GET /tasks/list/v2 — то же что list, но zone+work_type фильтры применяются как AND. */
+export async function getTasksV2FromBackend(
+  params: TaskListBackendParams,
+): Promise<BackendTaskListData> {
+  return _tGet<BackendTaskListData>(
+    _tApiUrl("tasks", `/list/v2${_buildQuery({ ...params } as unknown as Record<string, unknown>)}`),
+  );
+}
+
+/** GET /tasks/list/filters — зоны+типы работ для фильтра задач сегодня. */
+export async function getTaskFiltersFromBackend(
+  assignmentId: number,
+): Promise<BackendTaskListFiltersData> {
+  return _tGet<BackendTaskListFiltersData>(
+    _tApiUrl("tasks", `/list/filters?assignment_id=${assignmentId}`),
+  );
+}
+
+/** GET /tasks/list/users — сотрудники с плановой сменой сегодня. */
+export async function getTaskListUsersFromBackend(
+  assignmentId: number,
+): Promise<BackendTaskListUsersData> {
+  return _tGet<BackendTaskListUsersData>(
+    _tApiUrl("tasks", `/list/users?assignment_id=${assignmentId}`),
+  );
+}
+
+/** GET /tasks/my — мои задачи (для WORKER) */
+export async function getMyTasksFromBackend(
+  assignmentId: number,
+  state?: BackendTaskState,
+): Promise<BackendTaskListData> {
+  const q = _buildQuery({ assignment_id: assignmentId, state });
+  return _tGet<BackendTaskListData>(_tApiUrl("tasks", `/my${q}`));
+}
+
+/** GET /tasks/{id} — детали задачи + history_brief + operations. */
+export async function getTaskByIdFromBackend(id: string): Promise<BackendTask> {
+  return _tGet<BackendTask>(_tApiUrl("tasks", `/${id}`));
+}
+
+/** POST /tasks — создание задачи (только MANAGER). */
+export async function createTaskOnBackend(
+  data: BackendTaskCreate,
+): Promise<BackendTask> {
+  return _tPost<BackendTask>(_tApiUrl("tasks", `/`), data);
+}
+
+/** PATCH /tasks/{id} — частичное обновление (только MANAGER). */
+export async function updateTaskOnBackend(
+  id: string,
+  data: BackendTaskUpdate,
+): Promise<BackendTask> {
+  return _tPatch<BackendTask>(_tApiUrl("tasks", `/${id}`), data);
+}
+
+// ── State transitions ────────────────────────────────────────────────
+
+/** POST /tasks/{id}/start — NEW → IN_PROGRESS. */
+export async function startTaskOnBackend(id: string): Promise<BackendTask> {
+  return _tPost<BackendTask>(_tApiUrl("tasks", `/${id}/start`));
+}
+
+/** POST /tasks/{id}/pause — IN_PROGRESS → PAUSED. */
+export async function pauseTaskOnBackend(id: string): Promise<BackendTask> {
+  return _tPost<BackendTask>(_tApiUrl("tasks", `/${id}/pause`));
+}
+
+/** POST /tasks/{id}/resume — PAUSED → IN_PROGRESS. */
+export async function resumeTaskOnBackend(id: string): Promise<BackendTask> {
+  return _tPost<BackendTask>(_tApiUrl("tasks", `/${id}/resume`));
+}
+
+interface CompleteTaskArgs {
+  /** Текстовый комментарий работника (опционально). */
+  reportText?: string;
+  /** Файл фото (jpeg/png/webp/heic). Обязателен если task.requires_photo=true. */
+  reportImage?: File | Blob;
+  /** id операций отмеченных работником (превратится в JSON-массив для backend). */
+  operationIds?: number[];
+  /** Названия новых операций (только если work_type.allow_new_operations=true). */
+  newOperations?: string[];
+}
+
+/**
+ * POST /tasks/{id}/complete — multipart/form-data.
+ * IN_PROGRESS|PAUSED → COMPLETED. acceptance_policy решает review_state.
+ */
+export async function completeTaskOnBackend(
+  id: string,
+  args: CompleteTaskArgs = {},
+): Promise<BackendTask> {
+  const fd = new FormData();
+  if (args.reportText !== undefined) fd.append("report_text", args.reportText);
+  if (args.reportImage) fd.append("report_image", args.reportImage);
+  if (args.operationIds && args.operationIds.length > 0) {
+    fd.append("operation_ids", JSON.stringify(args.operationIds));
+  }
+  if (args.newOperations && args.newOperations.length > 0) {
+    fd.append("new_operations", JSON.stringify(args.newOperations));
+  }
+  return _tPost<BackendTask>(_tApiUrl("tasks", `/${id}/complete`), fd);
+}
+
+// ── Review (только MANAGER) ──────────────────────────────────────────
+
+/** POST /tasks/{id}/approve — review_state → ACCEPTED. */
+export async function approveTaskOnBackend(id: string): Promise<BackendTask> {
+  return _tPost<BackendTask>(_tApiUrl("tasks", `/${id}/approve`));
+}
+
+/** POST /tasks/{id}/reject — review_state → REJECTED, task → PAUSED, причина обязательна. */
+export async function rejectTaskOnBackend(
+  id: string,
+  reason: string,
+): Promise<BackendTask> {
+  return _tPost<BackendTask>(_tApiUrl("tasks", `/${id}/reject`), { reason });
+}
+
+/** GET /tasks/{id}/events — полная история state-машины задачи. */
+export async function getTaskEventsFromBackend(
+  id: string,
+): Promise<BackendTaskEventListData> {
+  return _tGet<BackendTaskEventListData>(_tApiUrl("tasks", `/${id}/events`));
+}

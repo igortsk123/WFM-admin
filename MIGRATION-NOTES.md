@@ -15,12 +15,46 @@
 - **Config**: `NEXT_PUBLIC_API_BASE_URL` + `NEXT_PUBLIC_USE_REAL_API` флаг.
 - **Client**: `_client.ts` — обёртка fetch + распаковка backend envelope `{status, data}`.
 - **Backend types**: `_backend-types.ts` — TS-зеркала Pydantic schemas.
-- **Endpoints подключены**:
-  - `getCurrentUserMe()` → `GET /users/me`
-  - `getUserByIdFromBackend(id)` → `GET /users/{id}`
-  - `updateUserOnBackend(id, data)` → `PATCH /users/{id}`
-  - `updateUserPermissionsOnBackend(id, perms)` → `PATCH /users/{id}/permissions`
-  - `getStores()` (под флагом USE_REAL_API) → `GET /users/stores`
+- **Endpoints подключены** (raw wrappers, без lossy dispatch):
+  - **users** (`lib/api/users.ts`):
+    - `getCurrentUserMe()` → `GET /users/me`
+    - `getUserByIdFromBackend(id)` → `GET /users/{id}`
+    - `updateUserOnBackend(id, data)` → `PATCH /users/{id}`
+    - `updateUserPermissionsOnBackend(id, perms)` → `PATCH /users/{id}/permissions`
+  - **stores** (`lib/api/stores.ts`):
+    - `getStores()` под флагом `USE_REAL_API` → `GET /users/stores`
+  - **tasks** (`lib/api/tasks.ts`):
+    - `getTasksFromBackend(params)` → `GET /tasks/list`
+    - `getTasksV2FromBackend(params)` → `GET /tasks/list/v2` (AND-filter)
+    - `getTaskFiltersFromBackend(assignmentId)` → `GET /tasks/list/filters`
+    - `getTaskListUsersFromBackend(assignmentId)` → `GET /tasks/list/users`
+    - `getMyTasksFromBackend(assignmentId, state?)` → `GET /tasks/my`
+    - `getTaskByIdFromBackend(id)` → `GET /tasks/{id}`
+    - `createTaskOnBackend(data)` → `POST /tasks/`
+    - `updateTaskOnBackend(id, data)` → `PATCH /tasks/{id}`
+    - `startTaskOnBackend(id)` → `POST /tasks/{id}/start`
+    - `pauseTaskOnBackend(id)` → `POST /tasks/{id}/pause`
+    - `resumeTaskOnBackend(id)` → `POST /tasks/{id}/resume`
+    - `completeTaskOnBackend(id, {reportText?, reportImage?, operationIds?, newOperations?})` →
+      `POST /tasks/{id}/complete` (multipart/form-data)
+    - `approveTaskOnBackend(id)` → `POST /tasks/{id}/approve`
+    - `rejectTaskOnBackend(id, reason)` → `POST /tasks/{id}/reject`
+    - `getTaskEventsFromBackend(id)` → `GET /tasks/{id}/events`
+  - **shifts** (`lib/api/shifts.ts`):
+    - `openShiftOnBackend(planId)` → `POST /shifts/open`
+    - `closeShiftOnBackend(planId, force?)` → `POST /shifts/close`
+    - `getCurrentShiftFromBackend(assignmentId)` → `GET /shifts/current`
+    - `getShiftByIdFromBackend(id)` → `GET /shifts/{id}`
+  - **hints** (`lib/api/hints.ts`):
+    - `getHintsFromBackend(workTypeId, zoneId)` → `GET /tasks/hints`
+    - `createHintOnBackend(data)` → `POST /tasks/hints`
+    - `updateHintOnBackend(id, data)` → `PATCH /tasks/hints/{id}`
+    - `deleteHintOnBackend(id)` → `DELETE /tasks/hints/{id}`
+  - **operations** (`lib/api/operations.ts` — новый файл):
+    - `getOperationsFromBackend(workTypeId, zoneId)` → `GET /tasks/operations`
+    - `getPendingOperationsFromBackend()` → `GET /tasks/operations/pending`
+    - `approveOperationOnBackend(id)` → `POST /tasks/operations/{id}/approve`
+    - `rejectOperationOnBackend(id, reason?)` → `POST /tasks/operations/{id}/reject`
 
 Dev-страница: `/dev/api-token` — установить JWT, протестировать `/users/me`.
 

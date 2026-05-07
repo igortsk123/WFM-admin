@@ -293,3 +293,51 @@ export async function reorderHints(
   console.log(`[v0] Reordered hints for WT=${workTypeId} Zone=${zoneId}:`, hintIds);
   return { success: true };
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// REAL BACKEND wrappers — /tasks/hints/* (svc_tasks)
+// ═══════════════════════════════════════════════════════════════════
+
+import { apiUrl as _hApiUrl } from "./_config";
+import {
+  backendGet as _hGet,
+  backendPost as _hPost,
+  backendPatch as _hPatch,
+  backendDelete as _hDel,
+} from "./_client";
+import type {
+  BackendHint,
+  BackendHintListData,
+  BackendHintCreate,
+  BackendHintUpdate,
+} from "./_backend-types";
+
+/** GET /tasks/hints?work_type_id=&zone_id= — подсказки для пары. */
+export async function getHintsFromBackend(
+  workTypeId: number,
+  zoneId: number,
+): Promise<BackendHintListData> {
+  return _hGet<BackendHintListData>(
+    _hApiUrl("tasks", `/hints?work_type_id=${workTypeId}&zone_id=${zoneId}`),
+  );
+}
+
+/** POST /tasks/hints — создание подсказки (только MANAGER). */
+export async function createHintOnBackend(
+  data: BackendHintCreate,
+): Promise<BackendHint> {
+  return _hPost<BackendHint>(_hApiUrl("tasks", `/hints`), data);
+}
+
+/** PATCH /tasks/hints/{id} — обновление текста (только MANAGER). */
+export async function updateHintOnBackend(
+  id: number,
+  data: BackendHintUpdate,
+): Promise<BackendHint> {
+  return _hPatch<BackendHint>(_hApiUrl("tasks", `/hints/${id}`), data);
+}
+
+/** DELETE /tasks/hints/{id} — удалить подсказку (только MANAGER). */
+export async function deleteHintOnBackend(id: number): Promise<void> {
+  await _hDel(_hApiUrl("tasks", `/hints/${id}`));
+}

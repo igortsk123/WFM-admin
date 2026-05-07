@@ -606,3 +606,51 @@ export async function cancelShift(
   console.log(`[v0] Cancelled shift ${id}, reason: ${reason}`);
   return { success: true, id: String(id) };
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// REAL BACKEND wrappers — /shifts/* (svc_tasks port 8000)
+// ═══════════════════════════════════════════════════════════════════
+
+import { apiUrl as _shApiUrl } from "./_config";
+import { backendGet as _shGet, backendPost as _shPost } from "./_client";
+import type {
+  BackendCurrentShift,
+  BackendShiftOpenRequest,
+  BackendShiftCloseRequest,
+} from "./_backend-types";
+
+/** POST /shifts/open — открыть смену (по plan_id из shifts_plan). */
+export async function openShiftOnBackend(
+  planId: number,
+): Promise<BackendCurrentShift> {
+  const body: BackendShiftOpenRequest = { plan_id: planId };
+  return _shPost<BackendCurrentShift>(_shApiUrl("shifts", `/open`), body);
+}
+
+/** POST /shifts/close — закрыть смену; force=true игнорирует unfinished tasks. */
+export async function closeShiftOnBackend(
+  planId: number,
+  force = false,
+): Promise<BackendCurrentShift> {
+  const body: BackendShiftCloseRequest = { plan_id: planId, force };
+  return _shPost<BackendCurrentShift>(_shApiUrl("shifts", `/close`), body);
+}
+
+/**
+ * GET /shifts/current?assignment_id=N — текущая смена (приоритет fact → plan).
+ * Если у юзера сейчас нет смены — backend вернёт NOT_FOUND.
+ */
+export async function getCurrentShiftFromBackend(
+  assignmentId: number,
+): Promise<BackendCurrentShift> {
+  return _shGet<BackendCurrentShift>(
+    _shApiUrl("shifts", `/current?assignment_id=${assignmentId}`),
+  );
+}
+
+/** GET /shifts/{id} — смена по ID. */
+export async function getShiftByIdFromBackend(
+  id: number,
+): Promise<BackendCurrentShift> {
+  return _shGet<BackendCurrentShift>(_shApiUrl("shifts", `/${id}`));
+}
