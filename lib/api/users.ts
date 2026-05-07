@@ -879,7 +879,6 @@ export async function getCurrentUserMe(): Promise<BackendUserMe> {
 // ═══════════════════════════════════════════════════════════════════
 
 import { backendPatch } from "./_client";
-import { USE_REAL_API } from "./_config";
 import type {
   BackendUserResponse,
   BackendUserUpdate,

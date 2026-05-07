@@ -18,7 +18,6 @@ import { MOCK_USERS } from "@/lib/mock-data/users";
 import { MOCK_SHIFTS } from "@/lib/mock-data/shifts";
 import { MOCK_TASKS } from "@/lib/mock-data/tasks";
 import { MOCK_ASSIGNMENTS } from "@/lib/mock-data/assignments";
-import { MOCK_PERMISSIONS } from "@/lib/mock-data/permissions";
 import { MOCK_ZONES } from "@/lib/mock-data/zones";
 import {
   TASKS_BY_STORE,

@@ -1,6 +1,5 @@
 import type { FunctionalRole, Task, Shift } from "@/lib/types";
 import { MOCK_TASKS } from "@/lib/mock-data/tasks";
-import { MOCK_SHIFTS } from "@/lib/mock-data/shifts";
 import { MOCK_USERS } from "@/lib/mock-data/users";
 import { MOCK_NOTIFICATIONS } from "@/lib/mock-data/notifications";
 import {

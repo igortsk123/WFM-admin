@@ -4,7 +4,7 @@ import * as React from "react"
 import { useRouter } from "@/i18n/navigation"
 import { useTranslations, useLocale } from "next-intl"
 import { useQueryState, parseAsString } from "nuqs"
-import { Inbox, Send, Clock, CheckCircle2, XCircle, Ban } from "lucide-react"
+import { Inbox, Send, CheckCircle2, XCircle, Ban } from "lucide-react"
 
 import { getTaskOffers } from "@/lib/api"
 import type { TaskOffer, TaskOfferStatus } from "@/lib/types"

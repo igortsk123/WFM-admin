@@ -18,7 +18,6 @@ import {
   Search,
   SearchX,
   Store,
-  Upload,
   X,
 } from "lucide-react"
 import { toast } from "sonner"

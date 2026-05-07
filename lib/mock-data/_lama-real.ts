@@ -13,7 +13,7 @@
  */
 import type { Task, User, Store, Assignment } from "@/lib/types";
 import type { PositionWithFunctionalRole } from "./positions";
-import { REAL_LAMA_LEGAL_ENTITIES, LAMA_COMPANY_TO_MOCK_LE_ID } from "./_lama-legal-entities";
+import { REAL_LAMA_LEGAL_ENTITIES } from "./_lama-legal-entities";
 
 const ENTITIES_BY_ID = new Map(REAL_LAMA_LEGAL_ENTITIES.map((e) => [e.id, e]));
 
