@@ -1,0 +1,11 @@
+node_modules
+.next/
+tsconfig.tsbuildinfo
+.claude/settings.local.json
+
+# Temp scratch files (LAMA fetch snapshots, generators)
+.tmp_*
+
+# Local-only directories
+"wfm-develop mobile *"/
+Производство*/
