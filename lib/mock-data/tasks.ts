@@ -1,4 +1,5 @@
 import type { Task } from "@/lib/types";
+import { TPZ_TASKS } from "./_tpz-tasks";
 
 /**
  * @endpoint GET /api/tasks
@@ -1530,4 +1531,8 @@ export const MOCK_TASKS: Task[] = [
     created_at: hoursAgo(30),
     updated_at: hoursAgo(10),
   },
+
+  // ─── ТехПродЗдрав — 32 task-операции конвейера для производства
+  // «Подушка 12-модульная 40×50». См. _tpz-tasks.ts.
+  ...TPZ_TASKS,
 ];

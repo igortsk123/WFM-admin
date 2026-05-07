@@ -64,11 +64,12 @@ function buildAuthUser(
         roleAssignment.scope_ids.includes(s.id) && !s.archived && s.active
     );
   } else if (roleAssignment.scope_type === "ORGANIZATION") {
+    // Multi-tenant: override scope_ids текущим org из OrgSwitcher.
+    // Иначе после смены org user.scope продолжает указывать на исходный
+    // (например LAMA) → сторы не переключаются вместе с контекстом.
     stores = MOCK_STORES.filter(
       (s) =>
-        roleAssignment.scope_ids.includes(s.organization_id) &&
-        !s.archived &&
-        s.active
+        s.organization_id === organization.id && !s.archived && s.active
     );
   } else if (roleAssignment.scope_type === "REGION") {
     stores = MOCK_STORES.filter(
