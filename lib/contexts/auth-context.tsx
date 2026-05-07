@@ -19,6 +19,7 @@ import { MOCK_USERS } from "@/lib/mock-data/users";
 import { MOCK_ORGANIZATIONS } from "@/lib/mock-data/organizations";
 import { MOCK_FUNCTIONAL_ROLES } from "@/lib/mock-data/functional-roles";
 import { MOCK_STORES } from "@/lib/mock-data/stores";
+import { MOCK_ASSIGNMENTS } from "@/lib/mock-data/assignments";
 import { ADMIN_ROUTES, AGENT_ROUTES } from "@/lib/constants/routes";
 import { getCurrentOrgId, setCurrentOrgId } from "@/lib/api/_org-context";
 
@@ -93,6 +94,32 @@ function findRoleAssignmentForRole(
   return (
     MOCK_FUNCTIONAL_ROLES.find((ra) => ra.functional_role === role) || null
   );
+}
+
+/**
+ * Возвращает FunctionalRoleAssignment пользователя.
+ * Если запись отсутствует (актуально для свежезалитых LAMA-юзеров без явных
+ * назначений ролей), синтезируем WORKER в scope их первого Assignment'а
+ * — чтоб impersonation/builAuthUser не падал.
+ */
+function resolveRoleAssignmentForUser(
+  user: User
+): FunctionalRoleAssignment | null {
+  const explicit = MOCK_FUNCTIONAL_ROLES.find((ra) => ra.user_id === user.id);
+  if (explicit) return explicit;
+
+  const assignment =
+    MOCK_ASSIGNMENTS.find((a) => a.user_id === user.id && a.active) ??
+    MOCK_ASSIGNMENTS.find((a) => a.user_id === user.id);
+  if (!assignment) return null;
+
+  return {
+    id: -user.id, // negative = synthetic
+    user_id: user.id,
+    functional_role: "WORKER",
+    scope_type: "STORE",
+    scope_ids: [assignment.store_id],
+  };
 }
 
 function findUserForRoleAssignment(
@@ -233,12 +260,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   const startImpersonation = useCallback(
     (targetUser: User) => {
-      const roleAssignment = MOCK_FUNCTIONAL_ROLES.find(
-        (ra) => ra.user_id === targetUser.id
-      );
+      const roleAssignment = resolveRoleAssignmentForUser(targetUser);
       if (!roleAssignment) {
         console.warn(
-          `[v0] Cannot impersonate user ${targetUser.id} — no role assignment`
+          `[v0] Cannot impersonate user ${targetUser.id} — no assignment in MOCK_ASSIGNMENTS`
         );
         return;
       }

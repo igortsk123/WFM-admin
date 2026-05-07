@@ -72,6 +72,7 @@ import {
   type ScheduleSlot,
   type ScheduleResponse,
 } from "@/lib/api/shifts";
+import { getStores, getZones } from "@/lib/api";
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
 
 // ═══════════════════════════════════════════════════════════════════
@@ -81,22 +82,12 @@ import { ADMIN_ROUTES } from "@/lib/constants/routes";
 const TODAY_STR = "2026-05-01"; // Mock TODAY
 const TODAY = new Date(TODAY_STR);
 
-const STORE_OPTIONS = [
-  { value: "all", label: "Вся сеть" },
-  { value: "1", label: "СПАР Томск, пр. Ленина 80" },
-  { value: "2", label: "СПАР Томск, ул. Красноармейская 99" },
-  { value: "4", label: "СПАР Новосибирск, ул. Ленина 55" },
-  { value: "7", label: "Food City Томск Global Market, пр. Ленина 217" },
-];
+interface ComboboxOption {
+  value: string;
+  label: string;
+}
 
-const ZONE_OPTIONS = [
-  { value: "1", label: "Торговый зал" },
-  { value: "2", label: "Склад" },
-  { value: "3", label: "Касса" },
-  { value: "4", label: "Самокассы" },
-  { value: "5", label: "Прикассовая зона" },
-  { value: "6", label: "Холодильники" },
-];
+const ALL_STORES_OPTION: ComboboxOption = { value: "all", label: "Вся сеть" };
 
 const HOURS_RANGE = Array.from({ length: 15 }, (_, i) => i + 7); // 07:00–21:00
 
@@ -1133,6 +1124,32 @@ export function ScheduleCalendar() {
   } | null>(null);
   const [, setActionLoading] = React.useState(false);
 
+  // ─── Dynamic store/zone options (filtered by current org via taxonomy API) ───
+  const [storeOptions, setStoreOptions] = React.useState<ComboboxOption[]>([
+    ALL_STORES_OPTION,
+  ]);
+  const [zoneOptions, setZoneOptions] = React.useState<ComboboxOption[]>([]);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    Promise.all([
+      getStores({ archived: false, page_size: 200 }),
+      getZones({ page_size: 100 }),
+    ]).then(([stores, zones]) => {
+      if (cancelled) return;
+      setStoreOptions([
+        ALL_STORES_OPTION,
+        ...stores.data.map((s) => ({ value: String(s.id), label: s.name })),
+      ]);
+      setZoneOptions(
+        zones.data.map((z) => ({ value: String(z.id), label: z.name })),
+      );
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   // ─── Date range ────────────────────────────────────────────────
   const dateRange = React.useMemo(() => {
     if (view === "day") {
@@ -1295,7 +1312,7 @@ export function ScheduleCalendar() {
 
   if (filterStore !== "all") {
     const storeLabel =
-      STORE_OPTIONS.find((o) => o.value === filterStore)?.label ?? filterStore;
+      storeOptions.find((o) => o.value === filterStore)?.label ?? filterStore;
     activeFilters.push({
       key: "store",
       label: t("filters.store"),
@@ -1304,7 +1321,7 @@ export function ScheduleCalendar() {
     });
   }
   filterZones.forEach((z) => {
-    const zoneLabel = ZONE_OPTIONS.find((o) => o.value === z)?.label ?? z;
+    const zoneLabel = zoneOptions.find((o) => o.value === z)?.label ?? z;
     activeFilters.push({
       key: `zone_${z}`,
       label: t("filters.zone"),
@@ -1489,14 +1506,14 @@ export function ScheduleCalendar() {
             {/* Row 2: Desktop filters */}
             <div className="hidden md:flex flex-wrap items-center gap-2">
               <Combobox
-                options={STORE_OPTIONS}
+                options={storeOptions}
                 value={filterStore}
                 onValueChange={setFilterStore}
                 placeholder={t("filters.store")}
                 className="w-56 h-9"
               />
               <Combobox
-                options={ZONE_OPTIONS}
+                options={zoneOptions}
                 value={filterZones[0] ?? ""}
                 onValueChange={(v) => {
                   setFilterZones(v ? [v] : []);
@@ -1517,7 +1534,7 @@ export function ScheduleCalendar() {
                 <div className="space-y-1.5">
                   <label className="text-sm font-medium">{t("filters.store")}</label>
                   <Combobox
-                    options={STORE_OPTIONS}
+                    options={storeOptions}
                     value={filterStore}
                     onValueChange={setFilterStore}
                     placeholder={t("filters.store")}
@@ -1526,7 +1543,7 @@ export function ScheduleCalendar() {
                 <div className="space-y-1.5">
                   <label className="text-sm font-medium">{t("filters.zone")}</label>
                   <Combobox
-                    options={ZONE_OPTIONS}
+                    options={zoneOptions}
                     value={filterZones[0] ?? ""}
                     onValueChange={(v) => {
                       setFilterZones(v ? [v] : []);
