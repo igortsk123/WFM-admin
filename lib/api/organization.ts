@@ -172,7 +172,6 @@ export async function updateOrganizationConfig(
   if (data.contact_email && !data.contact_email.includes("@")) {
     return { success: false, error: { code: "INVALID_EMAIL", message: "Invalid contact email" } };
   }
-  console.log(`[v0] Updated org ${orgId} config:`, data);
   return { success: true };
 }
 
@@ -185,7 +184,6 @@ export async function updateFmcgGroupThreshold(
   data: FmcgGroupThreshold,
 ): Promise<ApiMutationResponse> {
   await delay(220);
-  console.log(`[v0] Updated FMCG threshold for org=${orgId}:`, data);
   return { success: true };
 }
 
@@ -198,7 +196,6 @@ export async function updateFmcgOpsThresholds(
   data: FmcgOpsThresholds,
 ): Promise<ApiMutationResponse> {
   await delay(220);
-  console.log(`[v0] Updated FMCG ops thresholds for org=${orgId}:`, data);
   return { success: true };
 }
 
@@ -211,7 +208,6 @@ export async function updateFashionSeason(
   data: FashionSeasonRow,
 ): Promise<ApiMutationResponse> {
   await delay(220);
-  console.log(`[v0] Updated fashion season for org=${orgId}:`, data);
   return { success: true };
 }
 
@@ -222,7 +218,6 @@ export async function updateFashionSeason(
 export async function getLegalEntities(orgId: string): Promise<ApiResponse<LegalEntity[]>> {
   await delay(200);
   const entities = MOCK_LEGAL_ENTITIES.filter((e) => e.organization_id === orgId);
-  console.log(`[v0] getLegalEntities org=${orgId}: ${entities.length} entities`);
   return { data: entities };
 }
 
@@ -237,7 +232,6 @@ export async function addLegalEntity(
   await delay(280);
   if (!data.name) return { success: false, error: { code: "EMPTY_NAME", message: "Name required" } };
   const newId = Date.now();
-  console.log(`[v0] Added legal entity ${newId} to org ${orgId}:`, data);
   return { success: true, id: String(newId) };
 }
 
@@ -251,7 +245,6 @@ export async function updateLegalEntity(
   data: Partial<LegalEntity>,
 ): Promise<ApiMutationResponse> {
   await delay(280);
-  console.log(`[v0] Updated legal ${legalId} in org ${orgId}:`, data);
   return { success: true };
 }
 
@@ -264,7 +257,6 @@ export async function removeLegalEntity(
   legalId: number,
 ): Promise<ApiMutationResponse> {
   await delay(280);
-  console.log(`[v0] Removed legal ${legalId} from org ${orgId}`);
   return { success: true };
 }
 
@@ -332,7 +324,6 @@ const MOCK_API_KEYS: ApiKey[] = [
  */
 export async function getApiKeys(orgId: string): Promise<ApiResponse<ApiKey[]>> {
   await delay(250);
-  console.log(`[v0] getApiKeys org=${orgId}`);
   return { data: MOCK_API_KEYS };
 }
 
@@ -356,7 +347,6 @@ export async function createApiKey(
     created_by_user_id: 3,
   };
   MOCK_API_KEYS.unshift(newKey);
-  console.log(`[v0] Created API key for org=${orgId}:`, newKey.name);
   return { success: true, key: rawKey, apiKey: newKey };
 }
 
@@ -371,7 +361,6 @@ export async function revokeApiKey(
   await delay(280);
   const idx = MOCK_API_KEYS.findIndex((k) => k.id === keyId);
   if (idx !== -1) MOCK_API_KEYS.splice(idx, 1);
-  console.log(`[v0] Revoked key ${keyId} in org ${orgId}`);
   return { success: true };
 }
 
@@ -387,7 +376,6 @@ export async function renameApiKey(
   await delay(220);
   const key = MOCK_API_KEYS.find((k) => k.id === keyId);
   if (key) key.name = name;
-  console.log(`[v0] Renamed key ${keyId} → "${name}" in org ${orgId}`);
   return { success: true };
 }
 
@@ -445,7 +433,6 @@ const MOCK_BILLING: BillingConfig = {
  */
 export async function getBillingConfig(orgId: string): Promise<ApiResponse<BillingConfig>> {
   await delay(280);
-  console.log(`[v0] getBillingConfig org=${orgId}`);
   return { data: MOCK_BILLING };
 }
 
@@ -490,7 +477,6 @@ export async function updateTaskPolicies(
 ): Promise<ApiMutationResponse> {
   await delay(300);
   Object.assign(MOCK_TASK_POLICIES, data);
-  console.log(`[v0] Updated task policies org=${orgId}:`, data);
   return { success: true };
 }
 
@@ -531,7 +517,6 @@ export async function updateTimezoneConfig(
 ): Promise<ApiMutationResponse> {
   await delay(280);
   Object.assign(MOCK_TIMEZONE_CONFIG, data);
-  console.log(`[v0] Updated timezone config org=${orgId}:`, data);
   return { success: true };
 }
 
@@ -569,6 +554,5 @@ export async function updateBrandingConfig(
 ): Promise<ApiMutationResponse> {
   await delay(280);
   Object.assign(MOCK_BRANDING, data);
-  console.log(`[v0] Updated branding org=${orgId}:`, data);
   return { success: true };
 }

@@ -139,7 +139,6 @@ export async function updateExternalHrConfig(data: {
     };
   }
 
-  console.log("[v0] External HR config updated:", data);
 
   return { success: true };
 }

@@ -210,7 +210,6 @@ export async function uploadRegulation(
   }
 
   const newId = `reg-${Date.now()}`;
-  console.log("[v0] Uploaded regulation:", newId, file.name, meta);
   return { success: true, id: newId };
 }
 
@@ -225,7 +224,6 @@ export async function updateRegulation(
   await delay(350);
   const reg = MOCK_REGULATIONS.find((r) => r.id === id);
   if (!reg) return { success: false, error: { code: "NOT_FOUND", message: `Regulation ${id} not found` } };
-  console.log("[v0] Updated regulation:", id, data);
   return { success: true };
 }
 
@@ -238,7 +236,6 @@ export async function archiveRegulation(id: string): Promise<ApiMutationResponse
   const reg = MOCK_REGULATIONS.find((r) => r.id === id);
   if (!reg) return { success: false, error: { code: "NOT_FOUND", message: `Regulation ${id} not found` } };
   if (reg.is_archived) return { success: false, error: { code: "ALREADY_ARCHIVED", message: "Already archived" } };
-  console.log("[v0] Archived regulation:", id);
   return { success: true };
 }
 
@@ -252,7 +249,6 @@ export async function downloadRegulation(id: string): Promise<Blob> {
   if (!reg) throw new Error(`Regulation ${id} not found`);
 
   const mimeType = reg.file_type === "PDF" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-  console.log("[v0] Downloading regulation:", id, reg.name);
   return new Blob(
     [`Mock file content for: ${reg.name}`],
     { type: mimeType }

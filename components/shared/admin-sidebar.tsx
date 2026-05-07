@@ -169,7 +169,7 @@ const buildNavGroups = (pendingAISuggestionsCount: number): NavGroup[] => [
           {
             labelKey: "subtasks_moderation",
             icon: ListChecks,
-            href: ADMIN_ROUTES.subtasksModeration,
+            href: ADMIN_ROUTES.operationsModeration,
             visibleFor: OPS_ROLES,
           },
         ],

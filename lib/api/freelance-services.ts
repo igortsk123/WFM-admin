@@ -324,7 +324,6 @@ export async function adjustServiceAmount(
       : s
   );
 
-  console.log(`[v0] audit: service.amount_adjust service=${id} from=${fromAmount} to=${newAmount} reason="${reason}"`);
 
   return { success: true };
 }

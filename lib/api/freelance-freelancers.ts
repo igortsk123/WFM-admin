@@ -248,6 +248,5 @@ export async function sendTaskOffer(
     return { success: false, error: { code: "VALIDATION_ERROR", message: "Длительность и цена должны быть положительными" } };
   }
 
-  console.log("[v0] Task offer sent to freelancer", freelancer_id, data);
   return { success: true, id: `offer-${Date.now()}` };
 }

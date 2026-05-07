@@ -660,7 +660,6 @@ export async function createStore(data: Partial<Store>): Promise<ApiMutationResp
     return { success: false, error: { code: "VALIDATION_ERROR", message: "Name and city are required" } };
   }
   const newId = Date.now();
-  console.log("[v0] Created store:", newId, data);
   return { success: true, id: String(newId) };
 }
 
@@ -677,7 +676,6 @@ export async function updateStore(
   if (!store) {
     return { success: false, error: { code: "NOT_FOUND", message: `Store ${id} not found` } };
   }
-  console.log("[v0] Updated store:", id, patch);
   return { success: true };
 }
 
@@ -697,7 +695,6 @@ export async function archiveStore(
   if (store.archived) {
     return { success: false, error: { code: "ALREADY_ARCHIVED", message: "Store is already archived" } };
   }
-  console.log("[v0] Archived store:", id, "reason:", reason);
   return { success: true };
 }
 
@@ -714,7 +711,6 @@ export async function bulkArchiveStores(ids: number[]): Promise<ApiMutationRespo
   if (missing.length > 0) {
     return { success: false, error: { code: "NOT_FOUND", message: `Stores not found: ${missing.join(", ")}` } };
   }
-  console.log("[v0] Bulk-archived stores:", ids);
   return { success: true };
 }
 
@@ -731,7 +727,6 @@ export async function restoreStore(id: number): Promise<ApiMutationResponse> {
   if (!store.archived) {
     return { success: false, error: { code: "NOT_ARCHIVED", message: "Store is not archived" } };
   }
-  console.log("[v0] Restored store:", id);
   return { success: true };
 }
 
@@ -745,7 +740,6 @@ export async function syncLamaForStore(id: number): Promise<ApiMutationResponse>
   if (!store) {
     return { success: false, error: { code: "NOT_FOUND", message: `Store ${id} not found` } };
   }
-  console.log("[v0] LAMA sync triggered for store:", id);
   return { success: true };
 }
 
@@ -767,7 +761,6 @@ export async function createStoreZone(
   if (!data.name?.trim()) {
     return { success: false, error: { code: "VALIDATION_ERROR", message: "Name is required" } };
   }
-  console.log("[v0] Created zone for store", storeId, data);
   return { success: true, id: String(Date.now()) };
 }
 
@@ -778,7 +771,6 @@ export async function updateStoreZone(
   patch: { name?: string; code?: string },
 ): Promise<ApiMutationResponse> {
   await delay(300);
-  console.log("[v0] Updated zone", zoneId, "for store", storeId, patch);
   return { success: true };
 }
 
@@ -788,6 +780,5 @@ export async function deleteStoreZone(
   zoneId: number,
 ): Promise<ApiMutationResponse> {
   await delay(300);
-  console.log("[v0] Deleted zone", zoneId, "from store", storeId);
   return { success: true };
 }

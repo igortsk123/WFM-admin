@@ -17,7 +17,9 @@ export const ADMIN_ROUTES = {
   tasksReview: "/tasks/review",
   tasksDistribute: "/tasks/distribute",
   tasksArchive: "/tasks?archived=true",
-  subtasksModeration: "/subtasks/moderation",
+  operationsModeration: "/operations/moderation",
+  /** @deprecated Используй operationsModeration. */
+  subtasksModeration: "/operations/moderation",
 
   // Goals
   goals: "/goals",

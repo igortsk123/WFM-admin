@@ -381,7 +381,6 @@ export async function getTaskFilters(
 
   // For now, return all options (in real app, would scope by assignment)
   // Using assignmentId to log — will be used for scoping when connected to backend
-  console.log(`[v0] Getting filters for assignment ${assignmentId}`);
   const assignees = MOCK_USERS.filter((u) => !u.archived && u.type === "STAFF");
 
   return {
@@ -422,7 +421,6 @@ export async function createTask(
   }
 
   const newId = `task-${Date.now()}`;
-  console.log(`[v0] Created task ${newId}:`, data);
 
   return {
     success: true,
@@ -464,7 +462,6 @@ export async function updateTask(
     };
   }
 
-  console.log(`[v0] Updated task ${id}:`, data);
   return { success: true };
 }
 
@@ -508,7 +505,6 @@ export async function archiveTask(
     };
   }
 
-  console.log(`[v0] Archived task ${id} with reason: ${reason}`, comment);
   return { success: true };
 }
 
@@ -542,7 +538,6 @@ export async function restoreTask(id: string): Promise<ApiMutationResponse> {
     };
   }
 
-  console.log(`[v0] Restored task ${id} from archive`);
   return { success: true };
 }
 
@@ -581,7 +576,6 @@ export async function bulkArchiveTasks(
     };
   }
 
-  console.log(`[v0] Bulk archived ${taskIds.length} tasks with reason: ${reason}`);
   return { success: true };
 }
 
@@ -630,9 +624,7 @@ export async function transferTask(
       `[v0] Transferred task ${id} to ${assignee.first_name} ${assignee.last_name}`
     );
   } else if (nextPermission) {
-    console.log(`[v0] Transferred task ${id} to permission: ${nextPermission}`);
   } else {
-    console.log(`[v0] Unassigned task ${id}`);
   }
 
   return { success: true };
@@ -672,7 +664,6 @@ export async function approveTask(
     };
   }
 
-  console.log(`[v0] Approved task ${id}`, comment);
   return { success: true };
 }
 
@@ -720,7 +711,6 @@ export async function rejectTask(
     };
   }
 
-  console.log(`[v0] Rejected task ${id}: ${reason}`);
   return { success: true };
 }
 
@@ -911,7 +901,6 @@ export async function approveOperation(id: string): Promise<ApiMutationResponse>
     };
   }
 
-  console.log(`[v0] Approved subtask ${id}`);
   return { success: true };
 }
 
@@ -959,7 +948,6 @@ export async function rejectOperation(
     };
   }
 
-  console.log(`[v0] Rejected subtask ${id}: ${reason}`);
   return { success: true };
 }
 
@@ -1012,7 +1000,6 @@ export async function addOperationToTask(
   }
 
   const newId = Math.max(...MOCK_OPERATIONS.map((s) => s.id)) + 1;
-  console.log(`[v0] Added subtask ${newId} to task ${taskId}:`, name, hint);
 
   return {
     success: true,
@@ -1040,7 +1027,6 @@ export async function removeOperation(id: string): Promise<ApiMutationResponse> 
     };
   }
 
-  console.log(`[v0] Removed subtask ${id}`);
   return { success: true };
 }
 

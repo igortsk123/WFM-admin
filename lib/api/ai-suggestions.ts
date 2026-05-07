@@ -136,7 +136,6 @@ export async function acceptAiSuggestion(
   };
 
   const createdId = `${entityTypeMap[suggestion.type]}-from-ai-${Date.now()}`;
-  console.log("[v0] Accepted AI suggestion:", id, "edits:", edits, "created:", createdId);
 
   return {
     data: {
@@ -168,7 +167,6 @@ export async function rejectAiSuggestion(
     return { success: false, error: { code: "INVALID_STATUS", message: `Suggestion is already ${suggestion.status}` } };
   }
 
-  console.log("[v0] Rejected AI suggestion:", id, "reason:", reason, "comment:", comment);
   return { success: true };
 }
 
@@ -185,7 +183,6 @@ export async function editAiSuggestion(
   const suggestion = MOCK_AI_SUGGESTIONS.find((s) => s.id === id);
   if (!suggestion) return { success: false, error: { code: "NOT_FOUND", message: `Suggestion ${id} not found` } };
 
-  console.log("[v0] Edited AI suggestion:", id, edits);
   return { success: true };
 }
 
@@ -204,6 +201,5 @@ export async function reportAiIssue(
   if (!comment.trim()) {
     return { success: false, error: { code: "COMMENT_REQUIRED", message: "Comment is required for AI issue report" } };
   }
-  console.log("[v0] AI issue reported:", { scope, issue_type, period, comment });
   return { success: true };
 }

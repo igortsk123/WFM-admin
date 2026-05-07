@@ -86,21 +86,18 @@ export async function getRiskRules(): Promise<ApiListResponse<RiskRuleConfig>> {
 /** @endpoint PATCH /risk/rules/:id */
 export async function updateRiskRule(id: string, data: Partial<RiskRuleConfig>): Promise<ApiMutationResponse> {
   await delay(280);
-  console.log(`[v0] Updated risk rule ${id}:`, data);
   return { success: true };
 }
 
 /** @endpoint POST /risk/rules */
 export async function createRiskRule(data: Omit<RiskRuleConfig, "id">): Promise<ApiMutationResponse> {
   await delay(320);
-  console.log("[v0] Created risk rule:", data);
   return { success: true, id: `rule-${Date.now()}` };
 }
 
 /** @endpoint DELETE /risk/rules/:id */
 export async function deleteRiskRule(id: string): Promise<ApiMutationResponse> {
   await delay(220);
-  console.log(`[v0] Deleted risk rule ${id}`);
   return { success: true };
 }
 
@@ -141,7 +138,6 @@ export async function getRiskMetrics(): Promise<ApiResponse<RiskMetrics>> {
 /** @endpoint POST /risk/simulate */
 export async function simulateRisk(params: RiskSimulationParams): Promise<ApiResponse<RiskSimulationResult>> {
   await delay(1500);
-  console.log("[v0] Simulating risk:", params);
   return {
     data: {
       tasks_total: 1240,

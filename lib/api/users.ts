@@ -524,7 +524,6 @@ export async function updateUser(
     };
   }
 
-  console.log(`[v0] Updated user ${id}:`, data);
   return { success: true };
 }
 
@@ -558,7 +557,6 @@ export async function archiveUser(id: number): Promise<ApiMutationResponse> {
     };
   }
 
-  console.log(`[v0] Archived user ${id}`);
   return { success: true };
 }
 
@@ -609,7 +607,6 @@ export async function updateUserPermissions(
     };
   }
 
-  console.log(`[v0] Updated permissions for user ${id}:`, permissions);
   return { success: true };
 }
 
@@ -648,7 +645,6 @@ export async function bulkAssignPermission(
     };
   }
 
-  console.log(`[v0] Bulk assigned ${permission} to users:`, userIds);
   return { success: true };
 }
 
@@ -687,7 +683,6 @@ export async function bulkRevokePermission(
     };
   }
 
-  console.log(`[v0] Bulk revoked ${permission} from users:`, userIds);
   return { success: true };
 }
 
@@ -723,7 +718,6 @@ export async function bulkUpdateRole(
     };
   }
 
-  console.log(`[v0] Bulk role update ${role} for users:`, userIds);
   return { success: true };
 }
 
@@ -758,7 +752,6 @@ export async function bulkUpdateStore(
     };
   }
 
-  console.log(`[v0] Bulk transferred users ${userIds.join(",")} to store ${storeId}`);
   return { success: true };
 }
 

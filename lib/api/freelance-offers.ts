@@ -230,7 +230,6 @@ export async function createTaskOffer(
   _offers = [newOffer, ..._offers];
   _attempts = [..._attempts, ...newAttempts];
 
-  console.log("[v0] Created TaskOffer", offerId, "with", candidates.length, "candidates");
   return { success: true, id: offerId };
 }
 

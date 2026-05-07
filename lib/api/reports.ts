@@ -149,7 +149,6 @@ export async function getStoreCompareReport(
   params: Omit<ReportParams, "store_id">
 ): Promise<ApiResponse<StoreCompareReport>> {
   await delay(400);
-  console.log("[v0] Store compare report params:", params);
   return { data: MOCK_STORE_COMPARE };
 }
 
@@ -171,7 +170,6 @@ export async function exportReport(
     format === "xlsx"
       ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       : "text/csv";
-  console.log("[v0] Exporting report:", type, format);
   return new Blob(
     [`Mock export: ${type} - ${format} - ${new Date().toISOString()}`],
     { type: mimeType }

@@ -81,7 +81,6 @@ export function mockSwitchRole(role: FunctionalRole): void {
     return;
   }
   // In real implementation, this would update React context
-  console.log(`[v0] Switched to role: ${role}`);
 }
 
 /**
@@ -117,7 +116,6 @@ export async function impersonateUser(
     };
   }
 
-  console.log(`[v0] Impersonating user: ${targetUser.first_name} ${targetUser.last_name}`);
   return { success: true };
 }
 
@@ -128,7 +126,6 @@ export async function impersonateUser(
  */
 export async function exitImpersonation(): Promise<ApiMutationResponse> {
   await delay(200);
-  console.log("[v0] Exited impersonation mode");
   return { success: true };
 }
 
@@ -161,7 +158,6 @@ export async function requestPhoneCode(
     };
   }
 
-  console.log(`[v0] Verification code sent via ${channel} to ${phone}`);
   return { success: true };
 }
 
@@ -222,7 +218,6 @@ export async function requestEmailMagicLink(
     };
   }
 
-  console.log(`[v0] Magic link sent to ${email}`);
   return { success: true };
 }
 
@@ -335,7 +330,6 @@ export async function disableTotp(code: string): Promise<ApiMutationResponse> {
     };
   }
 
-  console.log("[v0] TOTP disabled for current user");
   return { success: true };
 }
 
@@ -364,7 +358,6 @@ export async function updateUserLocale(
     };
   }
 
-  console.log(`[v0] User locale updated to: ${locale}`);
   return { success: true };
 }
 
@@ -433,7 +426,6 @@ export async function terminateSession(
     };
   }
 
-  console.log(`[v0] Terminated session: ${sessionId}`);
   return { success: true };
 }
 
@@ -444,7 +436,6 @@ export async function terminateSession(
  */
 export async function terminateAllOtherSessions(): Promise<ApiMutationResponse> {
   await delay(400);
-  console.log("[v0] Terminated all other sessions");
   return { success: true };
 }
 
@@ -479,7 +470,6 @@ export async function updateProfile(
     };
   }
 
-  console.log("[v0] Profile updated:", data);
   return { success: true };
 }
 
@@ -498,7 +488,6 @@ export async function uploadAvatar(
   }
 
   const url = `/avatars/${Date.now()}-${fileName}`;
-  console.log(`[v0] Avatar uploaded: ${url}`);
   return { data: { url } };
 }
 
@@ -508,7 +497,6 @@ export async function uploadAvatar(
  */
 export async function removeAvatar(): Promise<ApiMutationResponse> {
   await delay(250);
-  console.log("[v0] Avatar removed");
   return { success: true };
 }
 
@@ -524,6 +512,5 @@ export async function changePassword(
 
   if (!currentPassword) return { success: false, error: { code: "EMPTY_CURRENT", message: "Current password required" } };
   if (newPassword.length < 8) return { success: false, error: { code: "WEAK_PASSWORD", message: "Password must be at least 8 characters" } };
-  console.log("[v0] Password changed");
   return { success: true };
 }

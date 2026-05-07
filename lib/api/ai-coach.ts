@@ -57,21 +57,18 @@ export async function getAiHints(params?: { work_type_id?: number }): Promise<Ap
 /** @endpoint POST /ai-coach/hints */
 export async function createAiHint(data: Omit<AIHint, "id" | "created_at" | "stats">): Promise<ApiMutationResponse> {
   await delay(320);
-  console.log("[v0] Created AI hint:", data);
   return { success: true, id: `hint-ai-${Date.now()}` };
 }
 
 /** @endpoint PATCH /ai-coach/hints/:id */
 export async function updateAiHint(id: string, data: Partial<AIHint>): Promise<ApiMutationResponse> {
   await delay(280);
-  console.log(`[v0] Updated AI hint ${id}:`, data);
   return { success: true };
 }
 
 /** @endpoint POST /ai-coach/hints/:id/activate */
 export async function activateAiHint(id: string): Promise<ApiMutationResponse> {
   await delay(320);
-  console.log(`[v0] Activated AI hint ${id}`);
   return { success: true };
 }
 
@@ -126,6 +123,5 @@ export interface CreateAbTestParams {
 /** @endpoint POST /ai-coach/ab-tests */
 export async function createAbTest(params: CreateAbTestParams): Promise<ApiMutationResponse> {
   await delay(380);
-  console.log("[v0] Created A/B test:", params);
   return { success: true, id: `ab-${Date.now()}` };
 }

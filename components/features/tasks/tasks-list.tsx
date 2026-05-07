@@ -522,7 +522,6 @@ export function TasksList() {
   // ── Row click ──────────────────────────────────────────────────────────────
   const handleRowClick = (task: TaskWithAvatar, e: React.MouseEvent) => {
     if (e.metaKey || e.ctrlKey) {
-      console.log("[v0] Cmd/Ctrl+Click — open in new tab:", ADMIN_ROUTES.taskDetail(task.id))
       return
     }
     router.push(ADMIN_ROUTES.taskDetail(task.id) as Parameters<typeof router.push>[0])

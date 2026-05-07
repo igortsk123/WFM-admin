@@ -86,7 +86,6 @@ export async function getGoalProposals(
   // Fake AI analysis delay
   await delay(1500);
 
-  console.log("[v0] AI goal proposals requested for scope:", scope);
 
   const proposals: GoalProposal[] = MOCK_GOALS.filter(
     (g) => g.status === "PROPOSED"
@@ -124,7 +123,6 @@ export async function selectGoal(goalId: string): Promise<ApiMutationResponse> {
   const goal = MOCK_GOALS.find((g) => g.id === goalId);
   if (!goal) return { success: false, error: { code: "NOT_FOUND", message: `Goal ${goalId} not found` } };
   if (goal.status === "ACTIVE") return { success: false, error: { code: "ALREADY_ACTIVE", message: "Goal is already active" } };
-  console.log("[v0] Selected goal:", goalId);
   return { success: true };
 }
 
@@ -139,7 +137,6 @@ export async function removeGoal(goalId: string, reason: string): Promise<ApiMut
   }
   const goal = MOCK_GOALS.find((g) => g.id === goalId);
   if (!goal) return { success: false, error: { code: "NOT_FOUND", message: `Goal ${goalId} not found` } };
-  console.log("[v0] Removed goal:", goalId, "reason:", reason);
   return { success: true };
 }
 
@@ -153,7 +150,6 @@ export async function createManualGoal(data: Partial<Goal>): Promise<ApiMutation
     return { success: false, error: { code: "VALIDATION_ERROR", message: "Title and category are required" } };
   }
   const newId = `goal-manual-${Date.now()}`;
-  console.log("[v0] Created manual goal:", newId, data);
   return { success: true, id: newId };
 }
 

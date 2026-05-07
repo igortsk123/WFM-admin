@@ -44,7 +44,6 @@ export interface HintsParseResult {
  */
 export async function downloadHintsTemplate(): Promise<Blob> {
   await delay(400);
-  console.log("[v0] Downloading hints Excel template");
   return new Blob(
     ["Mock XLSX template: work_type | zone | text | priority"],
     { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }
@@ -60,7 +59,6 @@ export async function parseHintsTemplate(
 ): Promise<ApiResponse<HintsParseResult>> {
   await delay(600);
 
-  console.log("[v0] Parsing hints template:", file.name, "size:", file.size);
 
   // Static mock preview result
   const rows: HintTemplateRow[] = [
@@ -122,6 +120,5 @@ export async function parseHintsTemplate(
  */
 export async function applyHintsTemplate(file: File): Promise<ApiMutationResponse> {
   await delay(800);
-  console.log("[v0] Applying hints template:", file.name);
   return { success: true };
 }

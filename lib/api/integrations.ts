@@ -250,7 +250,6 @@ export async function connectNominalAccount(
   if (!config.endpoint_url || !config.api_key || !config.client_id) {
     return { success: false, error: { code: "VALIDATION_ERROR", message: "Все поля обязательны" } };
   }
-  console.log("[v0] Connected NominalAccount:", config.endpoint_url, config.client_id);
   return { success: true };
 }
 
@@ -260,7 +259,6 @@ export async function connectNominalAccount(
  */
 export async function disconnectNominalAccount(): Promise<ApiMutationResponse> {
   await delay(400);
-  console.log("[v0] Disconnected NominalAccount");
   return { success: true };
 }
 
@@ -270,7 +268,6 @@ export async function disconnectNominalAccount(): Promise<ApiMutationResponse> {
  */
 export async function syncLamaForce(): Promise<ApiMutationResponse> {
   await delay(600);
-  console.log("[v0] Triggered force LAMA sync");
   return { success: true };
 }
 
@@ -287,7 +284,6 @@ export async function uploadExcel(
   type: "EMPLOYEES" | "SCHEDULE" | "STORES"
 ): Promise<ApiMutationResponse> {
   await delay(800);
-  console.log("[v0] Uploaded Excel:", file.name, "type:", type, "size:", file.size);
   return { success: true, id: `import-${Date.now()}` };
 }
 
@@ -347,7 +343,6 @@ export async function createWebhook(data: Omit<Webhook, "id" | "created_at" | "f
     return { success: false, error: { code: "VALIDATION_ERROR", message: "URL and at least one event are required" } };
   }
   const newId = `wh-${Date.now()}`;
-  console.log("[v0] Created webhook:", newId, data);
   return { success: true, id: newId };
 }
 
@@ -359,7 +354,6 @@ export async function updateWebhook(id: string, data: Partial<Webhook>): Promise
   await delay(350);
   const wh = MOCK_WEBHOOKS.find((w) => w.id === id);
   if (!wh) return { success: false, error: { code: "NOT_FOUND", message: `Webhook ${id} not found` } };
-  console.log("[v0] Updated webhook:", id, data);
   return { success: true };
 }
 
@@ -369,7 +363,6 @@ export async function updateWebhook(id: string, data: Partial<Webhook>): Promise
  */
 export async function deleteWebhook(id: string): Promise<ApiMutationResponse> {
   await delay(350);
-  console.log("[v0] Deleted webhook:", id);
   return { success: true };
 }
 
@@ -435,7 +428,6 @@ export async function getLamaConnection(): Promise<ApiResponse<LamaConnection>> 
  */
 export async function testLamaConnection(): Promise<ApiMutationResponse> {
   await delay(1400);
-  console.log("[v0] Tested LAMA connection");
   return { success: true };
 }
 
@@ -445,7 +437,6 @@ export async function testLamaConnection(): Promise<ApiMutationResponse> {
  */
 export async function updateLamaConnection(data: Partial<LamaConnection>): Promise<ApiMutationResponse> {
   await delay(400);
-  console.log("[v0] Updated LAMA connection:", data);
   return { success: true };
 }
 
@@ -480,7 +471,6 @@ export async function getLamaMapping(entity: "users" | "stores" | "positions"): 
  */
 export async function saveLamaMapping(entity: string, rows: LamaMappingRow[]): Promise<ApiMutationResponse> {
   await delay(400);
-  console.log("[v0] Saved LAMA mapping:", entity, rows.length, "rows");
   return { success: true };
 }
 
@@ -509,7 +499,6 @@ export async function getLamaSchedule(): Promise<ApiResponse<LamaScheduleConfig>
  */
 export async function saveLamaSchedule(config: LamaScheduleConfig): Promise<ApiMutationResponse> {
   await delay(350);
-  console.log("[v0] Saved LAMA schedule:", config);
   return { success: true };
 }
 

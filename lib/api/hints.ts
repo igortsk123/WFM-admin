@@ -91,7 +91,6 @@ export async function createHint(
   }
 
   const newId = Math.max(...MOCK_HINTS.map((h) => h.id)) + 1;
-  console.log(`[v0] Created hint ${newId}:`, data);
 
   return {
     success: true,
@@ -133,7 +132,6 @@ export async function updateHint(
     };
   }
 
-  console.log(`[v0] Updated hint ${id}:`, data);
   return { success: true };
 }
 
@@ -157,7 +155,6 @@ export async function deleteHint(id: string): Promise<ApiMutationResponse> {
     };
   }
 
-  console.log(`[v0] Deleted hint ${id}`);
   return { success: true };
 }
 
@@ -291,7 +288,6 @@ export async function reorderHints(
   hintIds: number[],
 ): Promise<ApiMutationResponse> {
   await delay(220);
-  console.log(`[v0] Reordered hints for WT=${workTypeId} Zone=${zoneId}:`, hintIds);
   return { success: true };
 }
 

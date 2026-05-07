@@ -14,8 +14,7 @@
 ```
 .memory_bank/
 ├── README.md              ← вы здесь
-├── CLAUDE.md              — корневой manifest всего проекта (web + mobile + backend)
-├── INDEX-WEB.md           — entry point для admin/web работы
+├── CLAUDE.md              — корневой manifest всего проекта (web + mobile + backend, для контекста других команд)
 │
 ├── domain/                — модели не зависящие от платформы (task, user, shift, auth)
 ├── backend/               — API contracts + guides + patterns + services

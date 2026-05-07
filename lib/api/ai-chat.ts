@@ -104,7 +104,6 @@ export async function createAiChatThread(data: {
     created_at: now,
   };
 
-  console.log("[v0] Created AI chat thread:", newThread.id);
   return { data: newThread };
 }
 
@@ -154,7 +153,6 @@ export async function sendAiChatMessage(
     created_at: new Date(Date.now() + 100).toISOString(),
   };
 
-  console.log("[v0] Chat message in thread:", threadId, "user:", content.slice(0, 50));
   return { data: { user_message, assistant_message } };
 }
 
@@ -168,7 +166,6 @@ export async function sendAiFeedback(
   helpful: boolean
 ): Promise<ApiMutationResponse> {
   await delay(200);
-  console.log("[v0] AI feedback:", messageId, helpful ? "👍" : "👎");
   return { success: true };
 }
 
@@ -180,6 +177,5 @@ export async function archiveAiChatThread(threadId: string): Promise<ApiMutation
   await delay(300);
   const thread = MOCK_AI_CHAT_THREADS.find((t) => t.id === threadId);
   if (!thread) return { success: false, error: { code: "NOT_FOUND", message: `Thread ${threadId} not found` } };
-  console.log("[v0] Archived AI chat thread:", threadId);
   return { success: true };
 }

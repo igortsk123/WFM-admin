@@ -311,7 +311,6 @@ export async function getShiftById(id: string): Promise<ApiResponse<ShiftDetail>
  */
 export async function syncLamaShifts(): Promise<ApiMutationResponse> {
   await delay(500);
-  console.log("[v0] Triggered LAMA shifts sync");
   return { success: true };
 }
 
@@ -448,7 +447,6 @@ export async function reopenShift(id: number): Promise<ApiMutationResponse> {
       },
     };
   }
-  console.log(`[v0] Reopened shift ${id}`);
   return { success: true, id: String(id) };
 }
 
@@ -478,7 +476,6 @@ export async function forceCloseShift(
       },
     };
   }
-  console.log(`[v0] Force-closed shift ${id}`);
   return { success: true, id: String(id) };
 }
 
@@ -565,7 +562,6 @@ export async function markShiftLate(
   const shift = MOCK_SHIFTS.find((s) => s.id === id);
   if (!shift) return { success: false, error: { code: "NOT_FOUND", message: `Shift ${id} not found` } };
   if (!reason.trim()) return { success: false, error: { code: "REASON_REQUIRED", message: "Late reason is required" } };
-  console.log(`[v0] Marked shift ${id} late, reason: ${reason}`);
   return { success: true, id: String(id) };
 }
 
@@ -581,7 +577,6 @@ export async function markShiftOvertime(
   const shift = MOCK_SHIFTS.find((s) => s.id === id);
   if (!shift) return { success: false, error: { code: "NOT_FOUND", message: `Shift ${id} not found` } };
   if (!reason.trim()) return { success: false, error: { code: "REASON_REQUIRED", message: "Overtime reason is required" } };
-  console.log(`[v0] Marked shift ${id} overtime, reason: ${reason}`);
   return { success: true, id: String(id) };
 }
 
@@ -603,7 +598,6 @@ export async function cancelShift(
     };
   }
   if (!reason.trim()) return { success: false, error: { code: "REASON_REQUIRED", message: "Cancel reason is required" } };
-  console.log(`[v0] Cancelled shift ${id}, reason: ${reason}`);
   return { success: true, id: String(id) };
 }
 

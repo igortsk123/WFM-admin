@@ -150,7 +150,6 @@ export async function configureDataConnector(
     scope,
   };
 
-  console.log("[v0] Configured data connector:", newConnector.id, type);
   return { data: newConnector };
 }
 
@@ -185,7 +184,6 @@ export async function testDataConnector(
     };
   }
 
-  console.log("[v0] Testing data connector:", id);
   return {
     data: {
       success: true,
@@ -206,6 +204,5 @@ export async function removeDataConnector(id: string): Promise<ApiMutationRespon
   await delay(400);
   const connector = MOCK_DATA_CONNECTORS.find((c) => c.id === id);
   if (!connector) return { success: false, error: { code: "NOT_FOUND", message: `Connector ${id} not found` } };
-  console.log("[v0] Removed data connector:", id);
   return { success: true };
 }

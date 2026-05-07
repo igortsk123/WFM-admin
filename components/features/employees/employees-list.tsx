@@ -914,7 +914,6 @@ export function EmployeesList() {
 
   function handleRowClick(row: UserWithAssignment, e: React.MouseEvent) {
     if (e.metaKey || e.ctrlKey) {
-      console.log("[v0] New tab:", ADMIN_ROUTES.employeeDetail(String(row.id)))
       return
     }
     router.push(ADMIN_ROUTES.employeeDetail(String(row.id)))
@@ -1206,7 +1205,6 @@ export function EmployeesList() {
                   <DropdownMenuItem
                     onClick={(e) => {
                       e.stopPropagation()
-                      console.log("[v0] Impersonate user:", u.id)
                     }}
                   >
                     {t("row_actions.impersonate")}

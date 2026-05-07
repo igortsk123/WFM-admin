@@ -77,7 +77,6 @@ export async function updateSupervisorBudget(
   if (totalPoints < 0) {
     return { success: false, error: { code: "VALIDATION_ERROR", message: "Total points must be non-negative" } };
   }
-  console.log("[v0] Updated bonus budget for store:", storeId, { totalPoints, periodStart, periodEnd });
   return { success: true };
 }
 
@@ -127,7 +126,6 @@ export async function getBonusProposals(
   // Fake AI analysis delay
   await delay(1500);
 
-  console.log("[v0] AI bonus proposals requested for goal:", goalId);
 
   const proposals = MOCK_TASKS.filter((t) => t.type === "BONUS")
     .slice(0, 3)
@@ -155,7 +153,6 @@ export async function createBonusTask(
     return { success: false, error: { code: "VALIDATION_ERROR", message: "Bonus points must be positive" } };
   }
   const newId = `bonus-task-${Date.now()}`;
-  console.log("[v0] Created bonus task:", newId, data);
   return { success: true, id: newId };
 }
 
@@ -168,7 +165,6 @@ export async function removeBonusTask(id: string, reason: string): Promise<ApiMu
   if (!reason.trim()) {
     return { success: false, error: { code: "REASON_REQUIRED", message: "Reason is required" } };
   }
-  console.log("[v0] Removed bonus task:", id, "reason:", reason);
   return { success: true };
 }
 
@@ -307,7 +303,6 @@ export async function getEmployeeBonusPreview(
   // Mock: exclude tasks with assignee already set (not available to this user)
   const available_tasks = data.filter((t) => !t.assignee_id || t.assignee_id === userId);
 
-  console.log(`[v0] Bonus preview for user ${userId}, store ${storeId}: ${available_tasks.length} tasks, ${visible_now_sum} ₽ total`);
 
   return { data: { visible_now_sum, available_tasks } };
 }
@@ -320,7 +315,6 @@ export async function updateBonusVisibilitySetting(
   mode: "SUMMARY_ONLY" | "ALWAYS_LIST"
 ): Promise<ApiMutationResponse> {
   await delay(300);
-  console.log("[v0] Bonus visibility setting updated:", mode);
   return { success: true };
 }
 
@@ -337,7 +331,6 @@ export async function getBonusMetrics(
 ): Promise<ApiResponse<BonusMetrics>> {
   await delay(400);
 
-  console.log("[v0] Bonus metrics scope:", scope);
 
   const topPerformers = MOCK_USERS.filter((u) => !u.archived && u.type === "STAFF").slice(0, 3);
   const byStore = MOCK_STORES.filter((s) => !s.archived).slice(0, 5).map((s) => ({

@@ -1335,7 +1335,6 @@ function OrganizationsSection({ user }: { user: CurrentUser }) {
   function handleSwitchOrg(orgId: string) {
     const orgName = orgs.find((o) => o.id === orgId)?.name ?? orgId;
     toast.success(`${t("toasts.org_switched")} — ${orgName}`);
-    console.log(`[v0] PLATFORM_ADMIN switching to org: ${orgId}`);
   }
 
   return (

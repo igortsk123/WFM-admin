@@ -44,8 +44,7 @@
 
 ## Соседние папки в `.memory_bank/`
 
-- `../CLAUDE.md` — root manifest всего проекта WFM (web + mobile + backend)
-- `../INDEX-WEB.md` — entry для admin/web work
+- `../CLAUDE.md` — root manifest всего проекта WFM (web + mobile + backend, контекст для других команд)
 - `../README.md` — обзор всего memory bank, куда что класть
 - `../domain/` — модели не зависящие от платформы (task, user, shift, auth)
 - `../backend/apis/` — **живые API contracts** ⚠ используются другими командами, синхронизируй admin под них

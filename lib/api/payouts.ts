@@ -95,7 +95,6 @@ export async function createPayoutPeriod(data: {
     return { success: false, error: { code: "VALIDATION_ERROR", message: "Rate must be positive" } };
   }
   const newId = `payout-period-${Date.now()}`;
-  console.log("[v0] Created payout period:", newId, data);
   return { success: true, id: newId };
 }
 
@@ -107,7 +106,6 @@ export async function calculatePayout(id: string): Promise<ApiMutationResponse> 
   await delay(800);
   const period = MOCK_PAYOUT_PERIODS.find((p) => p.id === id);
   if (!period) return { success: false, error: { code: "NOT_FOUND", message: `Payout period ${id} not found` } };
-  console.log("[v0] Triggered calculation for payout period:", id);
   return { success: true };
 }
 
@@ -131,7 +129,6 @@ export async function finalizePayout(
   if (period.status !== "READY") {
     return { success: false, error: { code: "NOT_READY", message: "Period must be in READY status before finalization" } };
   }
-  console.log("[v0] Finalized payout period:", id);
   return { success: true };
 }
 
@@ -149,7 +146,6 @@ export async function exportPayout(id: string, format: "xlsx" | "csv"): Promise<
     format === "xlsx"
       ? "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
       : "text/csv";
-  console.log("[v0] Exporting payout:", id, format);
   return new Blob(
     [`Mock payout export: ${id} - ${format} - ${new Date().toISOString()}`],
     { type: mimeType }

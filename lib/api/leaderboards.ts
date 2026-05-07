@@ -87,7 +87,6 @@ export interface LeaderboardParams {
 /** @endpoint GET /leaderboards/users */
 export async function getLeaderboardUsers(params?: LeaderboardParams): Promise<ApiListResponse<LeaderboardEntry>> {
   await delay(280);
-  console.log("[v0] getLeaderboardUsers params:", params);
   const data = MOCK_LEADERBOARD_USERS;
   return { data, total: data.length, page: 1, page_size: data.length };
 }
@@ -95,7 +94,6 @@ export async function getLeaderboardUsers(params?: LeaderboardParams): Promise<A
 /** @endpoint GET /leaderboards/stores */
 export async function getLeaderboardStores(params?: LeaderboardParams): Promise<ApiListResponse<LeaderboardEntry>> {
   await delay(280);
-  console.log("[v0] getLeaderboardStores params:", params);
   const data = MOCK_LEADERBOARD_STORES;
   return { data, total: data.length, page: 1, page_size: data.length };
 }
@@ -142,7 +140,6 @@ const MOCK_TEAMS: Team[] = [
 /** @endpoint GET /leaderboards/teams */
 export async function getTeams(params?: LeaderboardParams): Promise<ApiListResponse<Team>> {
   await delay(260);
-  console.log("[v0] getTeams params:", params);
   const data = MOCK_TEAMS;
   return { data, total: data.length, page: 1, page_size: data.length };
 }
@@ -258,20 +255,17 @@ export async function getChallengeById(id: string): Promise<ApiResponse<Challeng
 /** @endpoint POST /challenges */
 export async function createChallenge(data: CreateChallengeData): Promise<ApiMutationResponse> {
   await delay(360);
-  console.log("[v0] Created challenge:", data);
   return { success: true, id: `ch-${Date.now()}` };
 }
 
 /** @endpoint PATCH /challenges/:id */
 export async function updateChallenge(id: string, data: Partial<Challenge>): Promise<ApiMutationResponse> {
   await delay(280);
-  console.log(`[v0] Updated challenge ${id}:`, data);
   return { success: true };
 }
 
 /** @endpoint POST /challenges/:id/cancel */
 export async function cancelChallenge(id: string): Promise<ApiMutationResponse> {
   await delay(280);
-  console.log(`[v0] Cancelled challenge ${id}`);
   return { success: true };
 }

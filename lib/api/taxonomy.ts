@@ -166,7 +166,6 @@ export async function createWorkType(data: Partial<WorkType>): Promise<ApiMutati
     return { success: false, error: { code: "VALIDATION_ERROR", message: "Name and code are required" } };
   }
   const newId = Date.now();
-  console.log("[v0] Created work type:", newId, data);
   return { success: true, id: String(newId) };
 }
 
@@ -178,7 +177,6 @@ export async function updateWorkType(id: number, data: Partial<WorkType>): Promi
   await delay(350);
   const wt = MOCK_WORK_TYPES.find((w) => w.id === id);
   if (!wt) return { success: false, error: { code: "NOT_FOUND", message: `WorkType ${id} not found` } };
-  console.log("[v0] Updated work type:", id, data);
   return { success: true };
 }
 
@@ -195,7 +193,6 @@ export async function deleteWorkType(id: number): Promise<ApiMutationResponse> {
       error: { code: "HAS_DEPENDENCIES", message: `Cannot delete: ${activeTasks} active tasks use this work type` },
     };
   }
-  console.log("[v0] Deleted work type:", id);
   return { success: true };
 }
 
@@ -254,7 +251,6 @@ export async function createZone(data: Partial<Zone>): Promise<ApiMutationRespon
     return { success: false, error: { code: "VALIDATION_ERROR", message: "Name and code are required" } };
   }
   const newId = Date.now();
-  console.log("[v0] Created zone:", newId, data);
   return { success: true, id: String(newId) };
 }
 
@@ -266,7 +262,6 @@ export async function updateZone(id: number, data: Partial<Zone>): Promise<ApiMu
   await delay(350);
   const zone = MOCK_ZONES.find((z) => z.id === id);
   if (!zone) return { success: false, error: { code: "NOT_FOUND", message: `Zone ${id} not found` } };
-  console.log("[v0] Updated zone:", id, data);
   return { success: true };
 }
 
@@ -283,7 +278,6 @@ export async function deleteZone(id: number): Promise<ApiMutationResponse> {
       error: { code: "HAS_DEPENDENCIES", message: `Cannot delete: ${activeTasks} active tasks use this zone` },
     };
   }
-  console.log("[v0] Deleted zone:", id);
   return { success: true };
 }
 
@@ -353,7 +347,6 @@ export async function createPosition(data: Partial<Position>): Promise<ApiMutati
     return { success: false, error: { code: "VALIDATION_ERROR", message: "Name and code are required" } };
   }
   const newId = Date.now();
-  console.log("[v0] Created position:", newId, data);
   return { success: true, id: String(newId) };
 }
 
@@ -365,7 +358,6 @@ export async function updatePosition(id: number, data: Partial<Position>): Promi
   await delay(350);
   const pos = MOCK_POSITIONS.find((p) => p.id === id);
   if (!pos) return { success: false, error: { code: "NOT_FOUND", message: `Position ${id} not found` } };
-  console.log("[v0] Updated position:", id, data);
   return { success: true };
 }
 
@@ -375,7 +367,6 @@ export async function updatePosition(id: number, data: Partial<Position>): Promi
  */
 export async function deletePosition(id: number): Promise<ApiMutationResponse> {
   await delay(350);
-  console.log("[v0] Deleted position:", id);
   return { success: true };
 }
 
