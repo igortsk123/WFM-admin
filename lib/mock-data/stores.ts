@@ -1,4 +1,5 @@
 import type { Store } from "@/lib/types";
+import { REAL_LAMA_STORES } from "./_lama-real";
 
 /**
  * @endpoint GET /api/stores
@@ -388,4 +389,8 @@ export const MOCK_STORES: Store[] = [
     archived: false,
     geo: { lat: 56.4842, lng: 84.9711 },
   },
+
+  // ─── ЛАМА реальный магазин (id 200) — fetched через GET
+  // /api/employee/?shop_code=0120 — «С-12 Некрасова, 41 (ИР)», Томск.
+  ...REAL_LAMA_STORES,
 ];

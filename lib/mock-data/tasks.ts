@@ -1,5 +1,6 @@
 import type { Task } from "@/lib/types";
 import { TPZ_TASKS } from "./_tpz-tasks";
+import { REAL_LAMA_TASKS } from "./_lama-real";
 
 /**
  * @endpoint GET /api/tasks
@@ -1531,6 +1532,11 @@ export const MOCK_TASKS: Task[] = [
     created_at: hoursAgo(30),
     updated_at: hoursAgo(10),
   },
+
+  // ─── ЛАМА — 24 РЕАЛЬНЫЕ задачи дня (live API
+  // https://wfm-smart.lama70.ru/api fetched 2026-05-07 для shop 0120
+  // «С-12 Некрасова, 41 (ИР)»). См. _lama-real.ts.
+  ...REAL_LAMA_TASKS,
 
   // ─── ТехПродЗдрав — 32 task-операции конвейера для производства
   // «Подушка 12-модульная 40×50». См. _tpz-tasks.ts.

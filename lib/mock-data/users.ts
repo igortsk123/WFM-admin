@@ -1,4 +1,5 @@
 import type { User } from "@/lib/types";
+import { REAL_LAMA_USERS } from "./_lama-real";
 
 /**
  * @endpoint GET /api/users
@@ -1651,4 +1652,9 @@ export const MOCK_USERS: User[] = [
   { id: 206, sso_id: "sso-tpz-doserop", phone: "+7 (952) 063-16-53", first_name: "Екатерина", last_name: "Иванова", middle_name: "Михайловна", type: "STAFF", hired_at: "2025-02-20", archived: false, preferred_locale: "ru", preferred_timezone: "Asia/Tomsk", totp_enabled: false, rating: 4.4 },
   { id: 207, sso_id: "sso-tpz-binder", phone: "+7 (903) 034-27-43", first_name: "Александра", last_name: "Леднёва", middle_name: "Дмитриевна", type: "STAFF", hired_at: "2024-04-15", archived: false, preferred_locale: "ru", preferred_timezone: "Asia/Tomsk", totp_enabled: false, rating: 4.8 },
   { id: 208, sso_id: "sso-tpz-packer", phone: "+7 (904) 025-04-23", first_name: "Людмила", last_name: "Насурова", middle_name: "Олеговна", type: "STAFF", hired_at: "2025-05-01", archived: false, preferred_locale: "ru", preferred_timezone: "Asia/Tomsk", totp_enabled: false, rating: 4.3 },
+
+  // ─── ЛАМА реальные сотрудники (id 300-314) — fetched из live API
+  // GET https://wfm-smart.lama70.ru/api/employee/?shop_code=0120 (07.05.2026).
+  // 15 человек магазина «С-12 Некрасова, 41 (ИР)», Томск.
+  ...REAL_LAMA_USERS,
 ];

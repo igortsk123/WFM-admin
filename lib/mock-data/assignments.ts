@@ -1,4 +1,5 @@
 import type { Assignment } from "@/lib/types";
+import { REAL_LAMA_ASSIGNMENTS } from "./_lama-real";
 
 /**
  * @endpoint GET /api/assignments
@@ -141,4 +142,7 @@ export const MOCK_ASSIGNMENTS: Assignment[] = [
   { id: 206, user_id: 206, position_id: 16, position_name: "Оператор дозатора", store_id: 100, store_name: "ТехПродЗдрав, швейный цех", rank: { id: 3, code: "RANK-3", name: "Бригадир" }, active: true },
   { id: 207, user_id: 207, position_id: 17, position_name: "Швея-окантовщица", store_id: 100, store_name: "ТехПродЗдрав, швейный цех", rank: { id: 3, code: "RANK-3", name: "Бригадир" }, active: true },
   { id: 208, user_id: 208, position_id: 18, position_name: "Упаковщик", store_id: 100, store_name: "ТехПродЗдрав, швейный цех", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: true },
+
+  // ─── ЛАМА реальные assignments (id 300-314) — 15 чел в магазине 200.
+  ...REAL_LAMA_ASSIGNMENTS,
 ];
