@@ -1,4 +1,5 @@
 import type { Subtask } from "@/lib/types";
+import { REAL_LAMA_SUBTASKS } from "./_lama-real-subtasks";
 
 /**
  * @endpoint GET /api/subtasks?task_id=:id
@@ -1014,4 +1015,8 @@ export const MOCK_SUBTASKS: Subtask[] = [
   ...subtasksCashier,
   ...subtasksMgr,
   ...subtasksSco,
+
+  // ─── Подзадачи для 24 РЕАЛЬНЫХ LAMA-задач (auto-generated по
+  // work_type шаблонам, см. _lama-real-subtasks.ts).
+  ...REAL_LAMA_SUBTASKS,
 ];
