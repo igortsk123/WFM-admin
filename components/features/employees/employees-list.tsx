@@ -4,6 +4,7 @@ import * as React from "react"
 import { useRouter } from "@/i18n/navigation"
 import { useTranslations, useLocale } from "next-intl"
 import { useQueryState, parseAsString, parseAsInteger } from "nuqs"
+import { DEMO_TOP_STORES } from "@/lib/api/_demo-stores"
 import { type ColumnDef } from "@tanstack/react-table"
 import {
   Archive,
@@ -111,16 +112,7 @@ const ALL_ROLES: FunctionalRole[] = [
   "OPERATOR",
 ]
 
-const STORE_OPTIONS = [
-  { id: 1, name: "СПАР Томск, пр. Ленина 80" },
-  { id: 2, name: "СПАР Томск, ул. Красноармейская 99" },
-  { id: 4, name: "СПАР Новосибирск, ул. Ленина 55" },
-  { id: 5, name: "СПАР Новосибирск, Красный пр. 200" },
-  { id: 6, name: "СПАР Кемерово, пр. Советский 50" },
-  { id: 7, name: "Food City Томск Global Market, пр. Ленина 217" },
-  { id: 8, name: "Food City Томск, ул. Учебная 39" },
-  { id: 10, name: "Магазин одежды Альфа, Томск, пр. Ленина 50" },
-]
+const STORE_OPTIONS = DEMO_TOP_STORES
 
 const POSITION_OPTIONS = [
   { id: 1, name: "Универсал" },

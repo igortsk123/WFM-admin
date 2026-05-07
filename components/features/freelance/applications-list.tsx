@@ -4,6 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import { useRouter } from "@/i18n/navigation"
 import { useTranslations } from "next-intl"
+import { DEMO_TOP_STORES } from "@/lib/api/_demo-stores"
 import {
   useQueryState,
   parseAsString,
@@ -84,16 +85,7 @@ import { ApplicationStatusBadge } from "@/components/shared/application-status-b
 // CONSTANTS
 // ─────────────────────────────────────────────────────────────────
 
-const STORE_OPTIONS = [
-  { id: "1",  name: "СПАР Томск, пр. Ленина 80" },
-  { id: "2",  name: "СПАР Томск, ул. Красноармейская 99" },
-  { id: "4",  name: "СПАР Новосибирск, ул. Ленина 55" },
-  { id: "5",  name: "СПАР Новосибирск, Красный пр. 200" },
-  { id: "6",  name: "СПАР Кемерово, пр. Советский 50" },
-  { id: "7",  name: "Food City Томск Global Market, пр. Ленина 217" },
-  { id: "8",  name: "Food City Томск, ул. Учебная 39" },
-  { id: "10", name: "Магазин одежды Альфа, Томск, пр. Ленина 50" },
-]
+const STORE_OPTIONS = DEMO_TOP_STORES.map((s) => ({ id: String(s.id), name: s.name }))
 
 const WORK_TYPE_OPTIONS = [
   { id: "2",  name: "Касса" },

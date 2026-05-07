@@ -13,6 +13,7 @@ import type {
 import { MOCK_HINTS } from "@/lib/mock-data/hints";
 import { MOCK_WORK_TYPES } from "@/lib/mock-data/work-types";
 import { MOCK_ZONES } from "@/lib/mock-data/zones";
+import { WORK_TYPES_BY_ID, ZONES_BY_ID } from "@/lib/mock-data/_indexes";
 
 // ═══════════════════════════════════════════════════════════════════
 // HELPERS
@@ -232,8 +233,8 @@ export async function getAllHints(
 
   const data: HintWithLabels[] = paginated.map((h) => ({
     ...h,
-    work_type_name: MOCK_WORK_TYPES.find((wt) => wt.id === h.work_type_id)?.name,
-    zone_name: MOCK_ZONES.find((z) => z.id === h.zone_id)?.name,
+    work_type_name: WORK_TYPES_BY_ID.get(h.work_type_id)?.name,
+    zone_name: ZONES_BY_ID.get(h.zone_id)?.name,
   }));
 
   return { data, total, page, page_size };

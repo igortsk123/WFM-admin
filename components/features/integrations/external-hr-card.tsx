@@ -8,6 +8,7 @@
 
 import * as React from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { DEMO_TOP_STORES } from "@/lib/api/_demo-stores";
 import { toast } from "sonner";
 import {
   LinkIcon,
@@ -97,11 +98,10 @@ const SCHEDULE_OPTIONS = [
 // MOCK STORE / WORK TYPE options for field mapping
 // ═══════════════════════════════════════════════════════════════════
 
-const MOCK_STORE_OPTIONS = [
-  { value: "1", label: "СПАР Томск, пр. Ленина 80" },
-  { value: "2", label: "СПАР Томск, ул. Вершинина 17" },
-  { value: "3", label: "СПАР Новосибирск, Красный пр. 200" },
-];
+const MOCK_STORE_OPTIONS = DEMO_TOP_STORES.slice(0, 3).map((s) => ({
+  value: String(s.id),
+  label: s.name,
+}));
 
 const MOCK_WORK_TYPE_OPTIONS = [
   { value: "4", label: "Выкладка" },

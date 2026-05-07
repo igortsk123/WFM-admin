@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { DEMO_TOP_STORES } from "@/lib/api/_demo-stores";
 import {
   Calendar,
   Plus,
@@ -490,9 +491,9 @@ export function PayoutsList() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("filters.all_stores")}</SelectItem>
-              <SelectItem value="1">СПАР Томск, пр. Ленина 80</SelectItem>
-              <SelectItem value="7">Food City Томск Global Market</SelectItem>
-              <SelectItem value="3">СПАР Новосибирск, ул. Ленина 55</SelectItem>
+              {DEMO_TOP_STORES.slice(0, 3).map((s) => (
+                <SelectItem key={s.id} value={String(s.id)}>{s.name}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>

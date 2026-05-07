@@ -8,6 +8,7 @@ import { z } from "zod";
 import { format, startOfMonth, endOfMonth } from "date-fns";
 import { ru } from "date-fns/locale";
 import { CalendarIcon, Loader2 } from "lucide-react";
+import { DEMO_TOP_STORES } from "@/lib/api/_demo-stores";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -206,9 +207,9 @@ export function CreatePeriodForm({
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">{t("stores_all")}</SelectItem>
-              <SelectItem value="1">СПАР Томск, пр. Ленина 80</SelectItem>
-              <SelectItem value="7">Food City Томск Global Market</SelectItem>
-              <SelectItem value="3">СПАР Новосибирск, ул. Ленина 55</SelectItem>
+              {DEMO_TOP_STORES.slice(0, 3).map((s) => (
+                <SelectItem key={s.id} value={String(s.id)}>{s.name}</SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>

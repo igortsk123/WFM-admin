@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { DEMO_TOP_STORES } from "@/lib/api/_demo-stores";
 import {
   Sparkles,
   Clock,
@@ -231,9 +232,7 @@ const CATALOG_GOALS = {
 // Mock stores for scope filter
 const MOCK_SCOPE_OPTIONS = [
   { id: "network", name: "Вся сеть" },
-  { id: "1", name: "СПАР Томск, пр. Ленина 80" },
-  { id: "7", name: "Food City Томск Global Market" },
-  { id: "4", name: "СПАР Новосибирск, ул. Ленина 55" },
+  ...DEMO_TOP_STORES.slice(0, 3).map((s) => ({ id: String(s.id), name: s.name })),
 ];
 
 // ═══════════════════════════════════════════════════════════════════

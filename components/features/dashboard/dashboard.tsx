@@ -3,6 +3,7 @@
 import { useState, useMemo, useEffect } from "react"
 import { useTranslations, useLocale } from "next-intl"
 import { Link } from "@/i18n/navigation"
+import { DEMO_TOP_STORES } from "@/lib/api/_demo-stores"
 import {
   Plus,
   CalendarPlus,
@@ -140,9 +141,9 @@ const REVIEW_QUEUE: ReviewQueueItem[] = [
 ]
 
 const ANOMALIES: AnomalyItem[] = [
-  { id: "1", store: "SPAR Томск", message: "OOS молочная группа +15% к норме", severity: "critical" },
-  { id: "2", store: "Food City", message: "3 невыхода за неделю", severity: "warning" },
-  { id: "3", store: "SPAR Новосибирск", message: "Списания хлеб +8%", severity: "warning" },
+  { id: "1", store: DEMO_TOP_STORES[0]?.name ?? "Магазин", message: "OOS молочная группа +15% к норме", severity: "critical" },
+  { id: "2", store: DEMO_TOP_STORES[1]?.name ?? "Магазин", message: "3 невыхода за неделю", severity: "warning" },
+  { id: "3", store: DEMO_TOP_STORES[2]?.name ?? "Магазин", message: "Списания хлеб +8%", severity: "warning" },
 ]
 
 const DAY_ALERTS: DayAlert[] = [
@@ -196,12 +197,12 @@ const MORNING_BRIEF_STORE_DIRECTOR = {
 const MORNING_BRIEF_SUPERVISOR = {
   anomalies: ANOMALIES,
   goalsProgress: [
-    { id: "g1", storeId: 1, storeName: "SPAR Томск", category: "OOS_REDUCTION" as GoalCategory, title: "Снижение OOS молочной группы", progress: 68 },
-    { id: "g2", storeId: 2, storeName: "Food City", category: "WRITE_OFFS" as GoalCategory, title: "Снижение списаний хлеб", progress: 45 },
+    { id: "g1", storeId: DEMO_TOP_STORES[0]?.id ?? 0, storeName: DEMO_TOP_STORES[0]?.name ?? "", category: "OOS_REDUCTION" as GoalCategory, title: "Снижение OOS молочной группы", progress: 68 },
+    { id: "g2", storeId: DEMO_TOP_STORES[1]?.id ?? 0, storeName: DEMO_TOP_STORES[1]?.name ?? "", category: "WRITE_OFFS" as GoalCategory, title: "Снижение списаний хлеб", progress: 45 },
   ] as GoalProgress[],
   urgentSuggestions: [
-    { id: "s1", title: "Переоценка скоропорта в SPAR Томск", storeName: "SPAR Томск", urgency: "high" as const },
-    { id: "s2", title: "Доп. смена на выкладку", storeName: "Food City", urgency: "medium" as const },
+    { id: "s1", title: `Переоценка скоропорта в ${DEMO_TOP_STORES[0]?.name ?? ""}`, storeName: DEMO_TOP_STORES[0]?.name ?? "", urgency: "high" as const },
+    { id: "s2", title: "Доп. смена на выкладку", storeName: DEMO_TOP_STORES[1]?.name ?? "", urgency: "medium" as const },
   ] as AISuggestion[],
   bonusTasksTomorrow: 12,
 }

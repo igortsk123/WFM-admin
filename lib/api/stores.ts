@@ -20,6 +20,14 @@ import { MOCK_TASKS } from "@/lib/mock-data/tasks";
 import { MOCK_ASSIGNMENTS } from "@/lib/mock-data/assignments";
 import { MOCK_PERMISSIONS } from "@/lib/mock-data/permissions";
 import { MOCK_ZONES } from "@/lib/mock-data/zones";
+import {
+  TASKS_BY_STORE,
+  SHIFTS_BY_STORE,
+  SHIFTS_BY_STORE_DATE,
+  ASSIGNMENTS_BY_STORE,
+  USERS_BY_ID,
+  PERMISSIONS_BY_USER,
+} from "@/lib/mock-data/_indexes";
 import { USE_REAL_API, apiUrl } from "./_config";
 import { backendGet } from "./_client";
 import type { BackendStoreListData } from "./_backend-types";
@@ -249,34 +257,45 @@ function buildStoreZones(storeId: number): StoreZoneWithCounts[] {
     (z) => z.store_id === null || z.store_id === undefined || z.store_id === storeId,
   );
 
-  return relevant.map((zone) => {
-    const tasks_today = MOCK_TASKS.filter(
-      (t) => t.store_id === storeId && t.zone_id === zone.id && !t.archived,
-    ).length;
-    const active_shifts_count = MOCK_SHIFTS.filter(
-      (s) => s.store_id === storeId && s.zone_id === zone.id && s.shift_date === TODAY,
-    ).length;
-    const employees_count = new Set(
-      MOCK_SHIFTS.filter(
-        (s) => s.store_id === storeId && s.zone_id === zone.id,
-      ).map((s) => s.user_id),
-    ).size;
+  // Pre-compute tasks/shifts per zone for this store (один проход на оба массива)
+  const storeTasks = TASKS_BY_STORE.get(storeId) ?? [];
+  const storeShifts = SHIFTS_BY_STORE.get(storeId) ?? [];
 
-    return {
-      ...zone,
-      employees_count,
-      tasks_today,
-      active_shifts_count,
-      is_global: zone.store_id === null || zone.store_id === undefined,
-    };
-  });
+  const tasksByZone = new Map<number, number>();
+  for (const t of storeTasks) {
+    if (t.archived || t.zone_id == null) continue;
+    tasksByZone.set(t.zone_id, (tasksByZone.get(t.zone_id) ?? 0) + 1);
+  }
+  const shiftsTodayByZone = new Map<number, number>();
+  const userIdsByZone = new Map<number, Set<number>>();
+  for (const s of storeShifts) {
+    if (s.zone_id == null) continue;
+    if (s.shift_date === TODAY) {
+      shiftsTodayByZone.set(s.zone_id, (shiftsTodayByZone.get(s.zone_id) ?? 0) + 1);
+    }
+    let set = userIdsByZone.get(s.zone_id);
+    if (!set) {
+      set = new Set();
+      userIdsByZone.set(s.zone_id, set);
+    }
+    set.add(s.user_id);
+  }
+
+  return relevant.map((zone) => ({
+    ...zone,
+    employees_count: userIdsByZone.get(zone.id)?.size ?? 0,
+    tasks_today: tasksByZone.get(zone.id) ?? 0,
+    active_shifts_count: shiftsTodayByZone.get(zone.id) ?? 0,
+    is_global: zone.store_id === null || zone.store_id === undefined,
+  }));
 }
 
 // ═══════════════════════════════════════════════════════════════════
 // HELPERS — store stats enrichment
 // ═══════════════════════════════════════════════════════════════════
 
-/** Считает stats для одного магазина по mock-данным. Pure function. */
+/** Считает stats для одного магазина по mock-данным. Pure function.
+ *  Использует pre-built indexes из lib/mock-data/_indexes.ts. */
 function computeStoreStats(store: Store): {
   tasks_today_count: number;
   staff_count: number;
@@ -284,45 +303,39 @@ function computeStoreStats(store: Store): {
   current_shifts_total: number;
   permissions_coverage_pct: number;
 } {
-  // Tasks today — created_at startsWith TODAY, не архивные.
-  const tasks_today_count = MOCK_TASKS.filter(
-    (t) =>
-      t.store_id === store.id &&
-      !t.archived &&
-      t.created_at.slice(0, 10) === TODAY,
+  // Tasks today — TASKS_BY_STORE дёргает O(1), потом мини-filter.
+  const storeTasks = TASKS_BY_STORE.get(store.id) ?? [];
+  const tasks_today_count = storeTasks.filter(
+    (t) => !t.archived && t.created_at.slice(0, 10) === TODAY,
   ).length;
 
-  // Staff — пользователи с активным assignment в этом магазине, не архивные.
-  const storeUserIds = new Set(
-    MOCK_ASSIGNMENTS.filter((a) => a.active && a.store_id === store.id).map(
-      (a) => a.user_id,
-    ),
-  );
-  const staffUsers = MOCK_USERS.filter(
-    (u) => !u.archived && storeUserIds.has(u.id),
-  );
-  const staff_count = staffUsers.length;
+  // Staff: ASSIGNMENTS_BY_STORE → user_ids → USERS_BY_ID lookup.
+  const storeAssigns = ASSIGNMENTS_BY_STORE.get(store.id) ?? [];
+  const storeUserIds = new Set<number>();
+  for (const a of storeAssigns) if (a.active) storeUserIds.add(a.user_id);
 
-  // Shifts today — все статусы.
-  const todayShifts = MOCK_SHIFTS.filter(
-    (s) => s.store_id === store.id && s.shift_date === TODAY,
-  );
+  let staff_count = 0;
+  let usersWithPerms = 0;
+  for (const uid of storeUserIds) {
+    const u = USERS_BY_ID.get(uid);
+    if (u && !u.archived) {
+      staff_count++;
+      const perms = PERMISSIONS_BY_USER.get(uid);
+      if (perms?.some((p) => !p.revoked_at)) usersWithPerms++;
+    }
+  }
+
+  // Shifts today — SHIFTS_BY_STORE_DATE прямой O(1).
+  const todayShifts = SHIFTS_BY_STORE_DATE.get(`${store.id}:${TODAY}`) ?? [];
   const current_shifts_total = todayShifts.length;
   const current_shifts_open_count = todayShifts.filter(
     (s) => s.status === "OPENED",
   ).length;
 
-  // Permissions coverage — % staff'а с хотя бы одной active permission.
-  const staffIds = staffUsers.map((u) => u.id);
-  const usersWithPerms = new Set(
-    MOCK_PERMISSIONS.filter(
-      (p) => !p.revoked_at && staffIds.includes(p.user_id),
-    ).map((p) => p.user_id),
-  );
   const permissions_coverage_pct =
     staff_count === 0
       ? 0
-      : Math.round((usersWithPerms.size / staff_count) * 100);
+      : Math.round((usersWithPerms / staff_count) * 100);
 
   return {
     tasks_today_count,

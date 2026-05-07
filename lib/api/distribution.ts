@@ -3,6 +3,11 @@ import { MOCK_TASKS } from "@/lib/mock-data/tasks";
 import { MOCK_SHIFTS } from "@/lib/mock-data/shifts";
 import { MOCK_USERS } from "@/lib/mock-data/users";
 import { MOCK_NOTIFICATIONS } from "@/lib/mock-data/notifications";
+import {
+  USERS_BY_ID,
+  SHIFTS_BY_STORE_DATE,
+  TASKS_BY_ASSIGNEE,
+} from "@/lib/mock-data/_indexes";
 import type { ApiListResponse, ApiResponse, ApiMutationResponse } from "./types";
 
 // ═══════════════════════════════════════════════════════════════════
@@ -113,10 +118,8 @@ export async function getStoreEmployeesUtilization(
 ): Promise<ApiResponse<EmployeeUtilization[]>> {
   await new Promise((r) => setTimeout(r, 350));
 
-  // Get shifts for this store and date
-  const shifts = MOCK_SHIFTS.filter(
-    (s) => s.store_id === storeId && s.shift_date === date
-  );
+  // Use indexed lookup: O(1) вместо O(n) фильтра.
+  const shifts = (SHIFTS_BY_STORE_DATE.get(`${storeId}:${date}`) ?? []);
 
   if (shifts.length === 0) {
     return { data: [] };
@@ -124,17 +127,17 @@ export async function getStoreEmployeesUtilization(
 
   // Calculate utilization for each employee on shift
   const utilizations: EmployeeUtilization[] = shifts.map((shift) => {
-    const user = MOCK_USERS.find((u) => u.id === shift.user_id);
+    const user = USERS_BY_ID.get(shift.user_id);
 
     // Calculate shift duration in minutes
     const shiftStart = new Date(shift.planned_start);
     const shiftEnd = new Date(shift.planned_end);
     const shiftTotalMin = Math.round((shiftEnd.getTime() - shiftStart.getTime()) / 60000);
 
-    // Get assigned tasks for this user on this date
-    const assignedTasks = MOCK_TASKS.filter(
+    // Tasks for this user — O(1) lookup, потом малый filter.
+    const userTasks = TASKS_BY_ASSIGNEE.get(shift.user_id) ?? [];
+    const assignedTasks = userTasks.filter(
       (t) =>
-        t.assignee_id === shift.user_id &&
         t.store_id === storeId &&
         !t.archived &&
         t.state !== "COMPLETED"
@@ -184,9 +187,7 @@ export async function getStoreShiftsToday(
 ): Promise<ApiListResponse<Shift>> {
   await new Promise((r) => setTimeout(r, 200));
 
-  const shifts = MOCK_SHIFTS.filter(
-    (s) => s.store_id === storeId && s.shift_date === date
-  );
+  const shifts = SHIFTS_BY_STORE_DATE.get(`${storeId}:${date}`) ?? [];
 
   return { data: shifts, total: shifts.length, page: 1, page_size: shifts.length };
 }
