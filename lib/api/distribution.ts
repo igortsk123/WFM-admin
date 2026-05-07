@@ -55,9 +55,13 @@ const taskAllocations: Map<string, TaskDistributionAllocation[]> = new Map();
 // API FUNCTIONS
 // ═══════════════════════════════════════════════════════════════════
 
+/** Hard cap чтоб даже на гипермаркете с 80+ unassigned задачами UI не лагал. */
+const UNASSIGNED_HARD_CAP = 100;
+
 /**
  * Get unassigned tasks for a store on a specific date.
  * Returns tasks where assignee_id is null and zone_id is set.
+ * Capped at UNASSIGNED_HARD_CAP — реалистично для одного дня одного магазина.
  */
 export async function getStoreUnassignedTasks(
   storeId: number,
@@ -76,8 +80,11 @@ export async function getStoreUnassignedTasks(
       !t.archived
   );
 
+  // Cap для предотвращения UI-лага на больших магазинах (Г-1 имеет 81 emp).
+  const capped = allUnassigned.slice(0, UNASSIGNED_HARD_CAP);
+
   // Calculate distribution status for each task
-  const unassignedTasks: UnassignedTask[] = allUnassigned.map((task) => {
+  const unassignedTasks: UnassignedTask[] = capped.map((task) => {
     const allocations = taskAllocations.get(task.id) || [];
     const distributedMinutes = allocations.reduce((sum, a) => sum + a.minutes, 0);
 
@@ -88,7 +95,12 @@ export async function getStoreUnassignedTasks(
     };
   });
 
-  return { data: unassignedTasks, total: unassignedTasks.length, page: 1, page_size: unassignedTasks.length };
+  return {
+    data: unassignedTasks,
+    total: allUnassigned.length,
+    page: 1,
+    page_size: UNASSIGNED_HARD_CAP,
+  };
 }
 
 /**

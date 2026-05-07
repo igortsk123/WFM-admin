@@ -10,10 +10,12 @@ import type {
   NetworkHealthSummary,
 } from "@/lib/types";
 import { MOCK_TASKS } from "@/lib/mock-data/tasks";
+import { MOCK_STORES } from "@/lib/mock-data/stores";
 import { MOCK_FREELANCE_SERVICES } from "@/lib/mock-data/freelance-services";
 import { MOCK_FREELANCE_APPLICATIONS } from "@/lib/mock-data/freelance-applications";
 import { MOCK_NETWORK_HEALTH } from "@/lib/mock-data/network-health";
 import { MOCK_NETWORK_BUDGET } from "@/lib/mock-data/network-budget";
+import { getCurrentOrgId } from "./_org-context";
 
 const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
 
@@ -58,11 +60,17 @@ export async function getDashboardResourceBalance(): Promise<
 > {
   await delay(350);
 
-  const TODAY = "2026-05-01"; // mirrors MOCK_TASKS "now" date
+  const TODAY = "2026-05-07"; // LAMA snapshot date
+
+  // Org scope: filter tasks by stores belonging to current org.
+  const orgId = getCurrentOrgId();
+  const orgStoreIds = new Set(
+    MOCK_STORES.filter((s) => s.organization_id === orgId).map((s) => s.id)
+  );
 
   // ── Staff tasks ──────────────────────────────────────────────────
   const todayTasks = MOCK_TASKS.filter(
-    (t) => !t.archived && t.type !== "BONUS"
+    (t) => !t.archived && t.type !== "BONUS" && orgStoreIds.has(t.store_id)
   );
   const completedStaffTasks = todayTasks.filter(
     (t) => t.state === "COMPLETED" && t.source !== "AI"
@@ -89,7 +97,11 @@ export async function getDashboardResourceBalance(): Promise<
 
   // ── Bonus tasks ──────────────────────────────────────────────────
   const completedBonusTasks = MOCK_TASKS.filter(
-    (t) => t.type === "BONUS" && !t.archived && t.state === "COMPLETED"
+    (t) =>
+      t.type === "BONUS" &&
+      !t.archived &&
+      t.state === "COMPLETED" &&
+      orgStoreIds.has(t.store_id)
   );
   const bonusHoursCompleted = Math.round(
     completedBonusTasks.reduce(
