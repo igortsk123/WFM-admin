@@ -126,60 +126,80 @@ function getShortName(name: string): string {
   return name;
 }
 
-/** Greedy interval-coloring: assigns each slot a column index within its
- *  overlap group so that no two overlapping slots share the same column. */
+/** Sweep-line interval coloring: O(n log n).
+ *  Assigns each slot a column index within its overlap group so no two
+ *  overlapping slots share the same column. totalCols = max simultaneous
+ *  overlap during the slot's lifetime. */
 function computeColumns(
   slots: ScheduleSlot[]
 ): Map<number, { col: number; totalCols: number }> {
   const result = new Map<number, { col: number; totalCols: number }>();
+  if (slots.length === 0) return result;
 
-  // Build overlap groups: for each slot, find all slots that overlap it
   const getMinutes = (iso: string) => {
     const d = new Date(iso);
     return d.getHours() * 60 + d.getMinutes();
   };
 
-  const intervals = slots.map((s) => ({
-    id: s.id,
-    start: getMinutes(s.planned_start),
-    end: getMinutes(s.planned_end),
-  }));
+  // Sort intervals by start time (stable)
+  const intervals = slots
+    .map((s) => ({
+      id: s.id,
+      start: getMinutes(s.planned_start),
+      end: getMinutes(s.planned_end),
+    }))
+    .sort((a, b) => a.start - b.start || a.end - b.end);
 
-  // Assign columns greedily
-  const colAssignments = new Map<number, number>(); // id → col
+  // Pass 1: assign cols via sweep with shrinking `active` list
+  const colById = new Map<number, number>();
+  type Active = { id: number; end: number; col: number };
+  let active: Active[] = [];
 
   for (const curr of intervals) {
-    // Find overlapping slots (already processed) and their columns
-    const usedCols = new Set<number>();
-    for (const other of intervals) {
-      if (other.id === curr.id) continue;
-      // Intervals overlap if start < other.end && end > other.start
-      if (curr.start < other.end && curr.end > other.start) {
-        if (colAssignments.has(other.id)) {
-          usedCols.add(colAssignments.get(other.id)!);
-        }
-      }
-    }
-    // Assign smallest unused column
+    // Remove intervals that ended before curr.start
+    active = active.filter((a) => a.end > curr.start);
+    // Smallest unused col among active
+    const used = new Set(active.map((a) => a.col));
     let col = 0;
-    while (usedCols.has(col)) col++;
-    colAssignments.set(curr.id, col);
+    while (used.has(col)) col++;
+    colById.set(curr.id, col);
+    active.push({ id: curr.id, end: curr.end, col });
   }
 
-  // Compute overlap groups to determine totalCols per slot
-  for (const curr of intervals) {
-    const group = intervals.filter(
-      (other) =>
-        curr.start < other.end && curr.end > other.start
-    );
-    // totalCols = 1 + max column index in the group
-    const maxCol = Math.max(...group.map((s) => colAssignments.get(s.id) ?? 0));
-    result.set(curr.id, {
-      col: colAssignments.get(curr.id) ?? 0,
-      totalCols: maxCol + 1,
+  // Pass 2: totalCols = max simultaneous overlap during each interval's
+  // lifetime, computed via event-sweep (O(n log n) sort + O(n*k) updates).
+  type Event = { time: number; type: 0 | 1; id: number }; // 0=end, 1=start
+  const events: Event[] = [];
+  for (const i of intervals) {
+    events.push({ time: i.start, type: 1, id: i.id });
+    events.push({ time: i.end, type: 0, id: i.id });
+  }
+  // Process ends BEFORE starts at same time (touching intervals don't overlap)
+  events.sort((a, b) => a.time - b.time || a.type - b.type);
+
+  const activeIds = new Set<number>();
+  const maxOverlap = new Map<number, number>();
+
+  for (const ev of events) {
+    if (ev.type === 1) {
+      activeIds.add(ev.id);
+      const size = activeIds.size;
+      // Bump max for all currently active intervals
+      for (const aid of activeIds) {
+        const prev = maxOverlap.get(aid) ?? 0;
+        if (size > prev) maxOverlap.set(aid, size);
+      }
+    } else {
+      activeIds.delete(ev.id);
+    }
+  }
+
+  for (const i of intervals) {
+    result.set(i.id, {
+      col: colById.get(i.id) ?? 0,
+      totalCols: maxOverlap.get(i.id) ?? 1,
     });
   }
-
   return result;
 }
 
