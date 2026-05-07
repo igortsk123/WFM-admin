@@ -92,3 +92,28 @@ export interface BackendUserMe {
   gender?: string | null;
   birth_date?: string | null;
 }
+
+/** Базовый user response (без SSO merge), возвращается /users/{id} и /users/{id}/permissions */
+export interface BackendUserResponse {
+  id: number;
+  sso_id: string;
+  external_id?: number | null;
+  employee_type?: BackendEmployeeType | null;
+  permissions: BackendPermission[];
+  assignments: BackendAssignment[];
+  updated_at: string;
+}
+
+/** PATCH /users/{id} body */
+export interface BackendUserUpdate {
+  external_id?: number | null;
+  type_id?: number | null;
+  first_name?: string | null;
+  last_name?: string | null;
+  middle_name?: string | null;
+}
+
+/** PATCH /users/{id}/permissions body */
+export interface BackendPermissionsUpdate {
+  permissions: BackendPermissionType[];
+}

@@ -880,3 +880,69 @@ import type { BackendUserMe } from "./_backend-types";
 export async function getCurrentUserMe(): Promise<BackendUserMe> {
   return backendGet<BackendUserMe>(apiUrl("users", "/me"));
 }
+
+// ═══════════════════════════════════════════════════════════════════
+// REAL BACKEND: GET /users/{id}, PATCH /users/{id}, PATCH /users/{id}/permissions
+// ═══════════════════════════════════════════════════════════════════
+
+import { backendPatch } from "./_client";
+import { USE_REAL_API } from "./_config";
+import type {
+  BackendUserResponse,
+  BackendUserUpdate,
+  BackendPermissionsUpdate,
+  BackendPermissionType,
+} from "./_backend-types";
+
+/**
+ * Сырой backend GET /users/{id} — возвращает BackendUserResponse как есть.
+ * Нужен для consumer'ов которые сами адаптируют под admin shape.
+ *
+ * Ограничение backend: только MANAGER может вызывать, и только на пользователей
+ * своего магазина. Иначе FORBIDDEN.
+ *
+ * @endpoint GET /users/{user_id}
+ */
+export async function getUserByIdFromBackend(
+  id: number,
+): Promise<BackendUserResponse> {
+  return backendGet<BackendUserResponse>(apiUrl("users", `/${id}`));
+}
+
+/**
+ * PATCH /users/{id}.
+ * @endpoint PATCH /users/{user_id}
+ */
+export async function updateUserOnBackend(
+  id: number,
+  data: BackendUserUpdate,
+): Promise<BackendUserResponse> {
+  return backendPatch<BackendUserResponse>(apiUrl("users", `/${id}`), data);
+}
+
+/**
+ * PATCH /users/{id}/permissions.
+ * Backend принимает полный список — добавляет новые, soft-удаляет отсутствующие.
+ * @endpoint PATCH /users/{user_id}/permissions
+ */
+export async function updateUserPermissionsOnBackend(
+  id: number,
+  permissions: BackendPermissionType[],
+): Promise<BackendUserResponse> {
+  const body: BackendPermissionsUpdate = { permissions };
+  return backendPatch<BackendUserResponse>(
+    apiUrl("users", `/${id}/permissions`),
+    body,
+  );
+}
+
+// ── Стратегия по mutations ──────────────────────────────────────────
+// Lossy dispatch (admin → backend с потерей admin-полей) НЕ делаем — admin
+// model богаче backend (см. MIGRATION-NOTES.md в корне репо).
+// Эти raw-обёртки expose-ят backend endpoint'ы как есть, чтобы:
+//   1. backend-dev мог использовать их сразу для интеграции
+//   2. UI-слои сами решали как смерджить ответ backend с admin-extras
+//
+// Полный swap состоится когда backend дотянет свои Pydantic schemas
+// до admin-уровня (region, manager_id, format_shop, internal_company,
+// stats, goals, freelance flow и т.д.)
