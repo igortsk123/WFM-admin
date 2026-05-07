@@ -62,7 +62,8 @@ async function getStoresFromBackend(
     active: true,
     archived: false,
     // Stats не приходят с backend /stores — заполняются нулями.
-    // TODO когда backend даст /stores/list/with-stats или отдельные endpoints — заполнить.
+    // Когда backend дотянет (см. MIGRATION-NOTES.md, request "GET /users/stores/list/with-stats")
+    // — заменить нули на response.stats.*.
     tasks_today_count: 0,
     staff_count: 0,
     current_shifts_open_count: 0,

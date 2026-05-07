@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import {
   Sparkles,
@@ -133,7 +133,7 @@ export function AISuggestionsInbox() {
   const [rejectReason, setRejectReason] = React.useState<string>("");
   const [rejectComment, setRejectComment] = React.useState("");
   const [bulkRejectDialogOpen, setBulkRejectDialogOpen] = React.useState(false);
-  const locale = "ru" as Locale; // TODO: get from next-intl
+  const locale = useLocale() as Locale;
 
   // ─── Fetch data ───────────────────────────────────────────────────
   const fetchSuggestions = React.useCallback(async () => {

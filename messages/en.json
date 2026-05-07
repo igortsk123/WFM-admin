@@ -2735,7 +2735,7 @@
         "created": "Zone created",
         "updated": "Zone updated",
         "deleted": "Zone deleted",
-        "in_use_warning": "Zone in use �� deletion blocked",
+        "in_use_warning": "Zone in use — deletion blocked",
         "error": "Operation failed"
       }
     },

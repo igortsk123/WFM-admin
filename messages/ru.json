@@ -181,7 +181,7 @@
     "ai": "ИИ-аналитика",
     "aiChat": "ИИ-чат",
     "aiSuggestions": "Предложения ИИ",
-    "documents": "Докуме����������ты",
+    "documents": "Документы",
     "help": "Помощь",
     "users": "Пользователи",
     "reports": "Отчёты",
@@ -337,7 +337,7 @@
     "production_line": "Производственная линия"
   },
   "role": {
-    "title": "Р��ль",
+    "title": "Роль",
     "titlePlural": "Роли",
     "STORE_DIRECTOR": "Директор магазина",
     "SUPERVISOR": "Супервайзер",
@@ -354,7 +354,7 @@
       "regional": "Региональный менеджер",
       "network_ops": "Операционный директор",
       "hr_manager": "HR-менеджер",
-      "operator": "Опера����ор",
+      "operator": "Оператор",
       "worker": "Работник",
       "agent": "Агент",
       "platform_admin": "Администратор платформы"
@@ -409,7 +409,7 @@
       "write_offs": "Списания",
       "promo_quality": "Качество промо",
       "price_accuracy": "Точность цен",
-      "impulse_zones": "��мпульсные зоны",
+      "impulse_zones": "Импульсные зоны",
       "productivity": "Производительность",
       "custom": "Произвольная"
     },
@@ -427,22 +427,22 @@
   "bonus": {
     "title": "Бонусная задача",
     "source": {
-      "YESTERDAY_INCOMPLETE": "Незав����ршённые вчера",
-      "SUPERVISOR_BUDGET": "Бюдж��т супервайзера",
+      "YESTERDAY_INCOMPLETE": "Незавершённые вчера",
+      "SUPERVISOR_BUDGET": "Бюджет супервайзера",
       "GOAL_LINKED": "Связана с целью"
     }
   },
   "notification": {
     "title": "Уведомление",
     "titlePlural": "Уведомления",
-    "markAsRead": "От��етить как прочитанное",
+    "markAsRead": "Отметить как прочитанное",
     "markAllAsRead": "Прочитать все",
     "unread": "Непрочитанные",
     "all": "Все",
     "category": {
       "TASK_REVIEW": "Проверка задачи",
       "TASK_REJECTED": "Задача отклонена",
-      "TASK_STATE_CHANGED": "Измене������ие статуса з��дачи",
+      "TASK_STATE_CHANGED": "Изменение статуса задачи",
       "BONUS_AVAILABLE": "Доступна бонусная задача",
       "GOAL_UPDATE": "Обновление цели",
       "AI_SUGGESTION_NEW": "Новое предложение ИИ",
@@ -608,9 +608,9 @@
   },
   "states": {
     "loading": "Загрузка...",
-    "empty_title": "��ет данных",
+    "empty_title": "Нет данных",
     "empty_description": "Здесь пока ничего нет",
-    "error_title": "��роизошл�� ошибка",
+    "error_title": "Произошла ошибка",
     "error_description": "Не удалось загрузить данные. Попробуйте ещё раз.",
     "retry": "Повторить",
     "conflict_message": "Данные изменились — обновите страницу",
@@ -640,7 +640,7 @@
     "middleName": "Отчество",
     "phone": "Телефон",
     "email": "Email",
-    "position": "Должно��ть",
+    "position": "Должность",
     "hireDate": "Дата приёма",
     "status": "Статус",
     "status_values": {
@@ -692,7 +692,7 @@
   "error": {
     "generic": "Произошла ошибка",
     "network": "Ошибка сети",
-    "notFound": "Не ��айдено",
+    "notFound": "Не найдено",
     "forbidden": "Доступ запрещён",
     "conflict": "Данные были изменены",
     "serverError": "Ошибка сервера",
@@ -758,7 +758,7 @@
       "override_section": "Переопределение настроек",
       "override_label": "Переопределить настройки типа работ",
       "override_hint_disabled": "Override доступен только региональному / директору сети / оператору",
-      "override_justification": "Обосн��вание изменений",
+      "override_justification": "Обоснование изменений",
       "override_justification_placeholder": "Укажите причину переопределения (минимум 10 символов)...",
       "field_manager_comment": "Комментарий менеджера",
       "field_manager_comment_placeholder": "Виден исполнителю...",
@@ -771,7 +771,7 @@
       "template_revaluation": "Переоценка",
       "template_cashier_clean": "Уборка кассы",
       "template_receiving": "Приёмка товара",
-      "template_inventory": "��нвентаризация бакалеи",
+      "template_inventory": "Инвентаризация бакалеи",
       "sidebar_summary": "Сводка",
       "summary_store": "Магазин:",
       "summary_zone": "Зона:",
@@ -780,13 +780,13 @@
       "summary_plan": "План:",
       "summary_scheduled": "Запланировано:",
       "summary_due": "Дедлайн:",
-      "summary_policy": "��о��и��ика:",
+      "summary_policy": "Политика:",
       "summary_photo": "Фото:",
       "summary_not_set": "—",
       "summary_minutes": "{min} мин",
       "summary_photo_yes": "Да",
       "summary_photo_no": "Нет",
-      "btn_save": "Сохрани��ь",
+      "btn_save": "Сохранить",
       "btn_save_add_another": "Сохранить и добавить ещё",
       "btn_cancel": "Отмена",
       "cancel_confirm_title": "Отменить создание задачи?",
@@ -893,7 +893,7 @@
         "dialog_reassign_title": "Переназначить задачи",
         "dialog_archive_title": "Архивировать задачи",
         "dialog_archive_desc": "Выберите причину архивации для {count} задач",
-        "assignee_placeholder": "Выберите исполнител��"
+        "assignee_placeholder": "Выберите исполнителя"
       },
       "table": {
         "name": "Название",
@@ -910,11 +910,11 @@
       "source": {
         "manager": "Менеджер",
         "planned": "Плановая",
-        "ai": "��И"
+        "ai": "ИИ"
       },
       "any_permission": "Любой {permission}",
       "empty_no_tasks_title": "Задач пока нет",
-      "empty_no_tasks_desc": "Со��д����йте первую задачу или дождитесь плано��ых задач из системы",
+      "empty_no_tasks_desc": "Создайте первую задачу или дождитесь плановых задач из системы",
       "empty_filtered_title": "Ничего не найдено",
       "empty_filtered_desc": "Попробуйте изменить параметры фильтрации",
       "error_title": "Не удалось загрузить задачи",
@@ -1105,7 +1105,7 @@
       "btn_reject": "Отклонить",
       "approve_dialog_title": "Принять задачу",
       "approve_dialog_desc": "После принятия задача будет закрыта. Комментарий необязателен.",
-      "approve_comment_label": "Комментарий (необязател��но)",
+      "approve_comment_label": "Комментарий (необязательно)",
       "approve_comment_placeholder": "Всё отлично, задача выполнена верно...",
       "approve_submit": "Принять задачу",
       "approve_toast": "Задача принята",
@@ -1175,13 +1175,13 @@
       "sidebar_status": "Статус",
       "sidebar_created": "Создано {date}",
       "sidebar_updated": "Обновлено {time}",
-      "sidebar_rejected_comment": "Причина откл��нения",
+      "sidebar_rejected_comment": "Причина отклонения",
       "sidebar_assignee": "Исполнитель",
       "sidebar_any_permission": "Любой {permission}",
       "sidebar_not_assigned": "Не назначен",
       "sidebar_assign_btn": "Назначить",
       "sidebar_elapsed": "На задаче {time}",
-      "sidebar_location": "Локаци��",
+      "sidebar_location": "Локация",
       "sidebar_timing": "Тайминг",
       "sidebar_timing_planned": "План:",
       "sidebar_timing_actual": "Факт:",
@@ -1192,13 +1192,13 @@
       "sidebar_task_type": "Тип задачи:",
       "sidebar_policy": "Политика:",
       "sidebar_policy_auto": "Автоматически",
-      "sidebar_policy_manual": "Ручн��я проверка",
+      "sidebar_policy_manual": "Ручная проверка",
       "sidebar_photo": "Фото:",
       "sidebar_photo_required": "Обязательно",
       "sidebar_photo_not_required": "Не требуется",
       "sidebar_edit_link": "Изменить",
       "transfer_dialog_title": "Передать задачу",
-      "transfer_dialog_desc": "Выберите нового исполнителя. Задача д��с��упна к передаче в статусах В работе и На ��аузе.",
+      "transfer_dialog_desc": "Выберите нового исполнителя. Задача доступна к передаче в статусах В работе и На паузе.",
       "transfer_assignee_label": "Новый исполнитель",
       "transfer_assignee_placeholder": "Поиск по ФИО...",
       "transfer_submit": "Передать задачу",
@@ -1216,7 +1216,7 @@
       "archive_submit": "Архивировать",
       "archive_toast": "Задача архивирована",
       "status_override_dialog_title": "Изменить статус задачи",
-      "status_override_dialog_desc": "Принудительное изменение статуса. Только для NETWORK_OPS. Действие б��дет записано в аудит.",
+      "status_override_dialog_desc": "Принудительное изменение статуса. Только для NETWORK_OPS. Действие будет записано в аудит.",
       "status_override_justification_label": "Обоснование",
       "status_override_justification_placeholder": "Укажите причину изменения статуса (минимум 10 символов)...",
       "status_override_submit": "Применить",
@@ -1224,7 +1224,7 @@
       "assign_dialog_title": "Назначить исполнителя",
       "assign_assignee_label": "Исполнитель",
       "assign_assignee_placeholder": "Поиск по ФИО...",
-      "assign_submit": "��азначить",
+      "assign_submit": "Назначить",
       "assign_toast": "Исполнитель назначен",
       "not_found_title": "Задача не найдена",
       "not_found_desc": "Задача T-{id} не существует или была удалена",
@@ -1320,7 +1320,7 @@
         "details_link": "Подробнее",
         "stat_staff_label": "Закрыто штатными",
         "stat_staff_subtext": "Основной ресурс",
-        "stat_bonus_label": "Закрыто бонуса��и",
+        "stat_bonus_label": "Закрыто бонусами",
         "stat_bonus_subtext": "Дешевле внештата примерно в 2 раза",
         "stat_freelance_label": "Требует внештат",
         "stat_freelance_subtext": "Когда своих ресурсов недостаточно",
@@ -1466,7 +1466,7 @@
       "col_subtask": "Подзадача",
       "col_task": "Задача",
       "col_store": "Магазин",
-      "col_proposed_by": "Пр��дл��жил",
+      "col_proposed_by": "Предложил",
       "col_duration": "Длительность",
       "col_hints": "Подсказок",
       "col_created": "Создано",
@@ -1474,10 +1474,10 @@
       "btn_approve": "Принять",
       "btn_reject": "Отклонить",
       "reject_dialog_title": "Отклонить подзадачу",
-      "reject_reason_label": "П��ичина отклонения",
+      "reject_reason_label": "Причина отклонения",
       "reject_reason_placeholder": "Опишите причину (минимум 10 символов)...",
       "reject_reason_hint": "Минимум 10 символов",
-      "bulk_selected": "{count, plural, one {��ыбрана # подзадача} few {Выбрано # подзадачи} other {Выбрано # подзадач}}",
+      "bulk_selected": "{count, plural, one {Выбрана # подзадача} few {Выбрано # подзадачи} other {Выбрано # подзадач}}",
       "bulk_approve_all": "Принять все",
       "bulk_reject_all": "Отклонить все",
       "bulk_clear": "Очистить",
@@ -1612,11 +1612,11 @@
         },
         "archived": {
           "title": "В архиве пусто",
-          "subtitle": "Архи��ированные сотрудники появятся зде��ь"
+          "subtitle": "Архивированные сотрудники появятся здесь"
         },
         "filtered": {
           "title": "Никого не найдено",
-          "subtitle": "Попробуйте изменить фильтры или сбр����ить их",
+          "subtitle": "Попробуйте изменить фильтры или сбросить их",
           "reset": "Сбросить фильтры"
         }
       },
@@ -1753,14 +1753,14 @@
         "col_hours": "Часы",
         "col_volume": "Объём",
         "col_amount": "Сумма",
-        "col_status": "С��атус",
+        "col_status": "Статус",
         "empty": "Услуги не найдены",
         "sheet_title": "Детали услуги"
       },
       "payouts_tab": {
         "col_date": "Дата",
         "col_gross": "Брутто",
-        "col_commission": "Ком��ссия",
+        "col_commission": "Комиссия",
         "col_net": "Нетто",
         "col_status": "Статус",
         "col_action": "Акт",
@@ -1775,25 +1775,25 @@
         "criteria_task_quality": "Качество работы",
         "criteria_rework": "Возвраты на доработку",
         "criteria_relative_speed": "Скорость относительно других",
-        "criteria_total_tasks": "В��его выполнено задач",
+        "criteria_total_tasks": "Всего выполнено задач",
         "criteria_experience": "Общий опыт работы",
         "no_data": "Рейтинг ещё не сформирован"
       },
       "documents": {
         "tab_optional": "Опционально",
-        "freelance_required_alert": "Документы обязательны для внештатного сотрудник��",
+        "freelance_required_alert": "Документы обязательны для внештатного сотрудника",
         "doc_passport": "Паспорт",
         "doc_inn": "ИНН",
         "doc_snils": "СНИЛС",
         "doc_contract": "Договор",
-        "uploaded_at": "За��ружено {date}",
+        "uploaded_at": "Загружено {date}",
         "not_uploaded": "Не загружено",
         "upload": "Загрузить",
         "replace": "Заменить",
         "download": "Скачать"
       },
       "dialogs": {
-        "edit_profile_title": "Редактировать ��рофиль",
+        "edit_profile_title": "Редактировать профиль",
         "edit_profile_name": "ФИО",
         "edit_profile_first_name": "Имя",
         "edit_profile_last_name": "Фамилия",
@@ -1805,8 +1805,8 @@
         "manage_permissions_save": "Сохранить",
         "change_position_title": "Сменить должность",
         "change_position_select": "Выберите должность",
-        "change_position_warning": "При смене должности может измениться функционал��ная роль",
-        "transfer_store_title": "Перевести в ��агаз��н",
+        "change_position_warning": "При смене должности может измениться функциональная роль",
+        "transfer_store_title": "Перевести в магазин",
         "transfer_store_select": "Выберите магазин",
         "archive_title": "Архивировать сотрудника?",
         "archive_description": "Сотрудник будет скрыт из списков задач и смен. Это действие обратимо."
@@ -1819,7 +1819,7 @@
         "error_retry": "Попробовать снова"
       },
       "toast": {
-        "profile_updated": "��рофиль обновлён",
+        "profile_updated": "профиль обновлён",
         "permissions_updated": "Привилегии обновлены",
         "position_changed": "Должность изменена",
         "store_transferred": "Сотрудник переведён",
@@ -1936,7 +1936,7 @@
         "lama_card": "Интеграция с LAMA",
         "lama_synced_at": "Последняя синхронизация: {date}",
         "danger_card": "Опасная зона",
-        "archive_hint": "Архивирование скры��ает магазин из списков задач, смен и отчётов. Действие обратимо."
+        "archive_hint": "Архивирование скрывает магазин из списков задач, смен и отчётов. Действие обратимо."
       },
       "dialogs": {
         "edit_title": "Редактировать магазин",
@@ -1958,7 +1958,7 @@
         "archive_reason_other": "Другое",
         "transfer_manager_title": "Сменить управляющего",
         "transfer_manager_select": "Выберите кандидата",
-        "transfer_manager_hint": "Теку��ий управляющий получит уведомление",
+        "transfer_manager_hint": "Текущий управляющий получит уведомление",
         "sync_lama_title": "Принудительная синхронизация LAMA",
         "sync_lama_description": "Запросить актуальное расписание из LAMA для этого магазина. Может занять до минуты."
       },
@@ -1991,7 +1991,7 @@
         "position": "Должность и магазин",
         "position_sub": "Где и кем работает",
         "permissions": "Привилегии",
-        "permissions_sub": "Компетенции работ��ика",
+        "permissions_sub": "Компетенции работника",
         "invite": "Приглашение",
         "invite_sub": "Способ отправки"
       },
@@ -2070,7 +2070,7 @@
         "summary_title": "Сводка"
       },
       "summary": {
-        "fio": "��ИО",
+        "fio": "ФИО",
         "phone": "Телефон",
         "email": "Email",
         "store": "Магазин",
@@ -2095,13 +2095,13 @@
       "validation": {
         "first_name_min": "Имя должно быть не короче 2 символов",
         "last_name_min": "Фамилия должна быть не короче 2 символов",
-        "phone_invalid": "Введите телефон в фор��ате +7 (XXX) XXX-XX-XX",
+        "phone_invalid": "Введите телефон в формате +7 (XXX) XXX-XX-XX",
         "phone_required": "Телефон обязателен",
         "email_invalid": "Некорректный email",
         "store_required": "Выберите магазин",
-        "position_required": "Выберите должност��",
+        "position_required": "Выберите должность",
         "hired_at_future": "Дата найма не может быть в будущем",
-        "invite_method_required": "Выберит�� способ приглашения"
+        "invite_method_required": "Выберите способ приглашения"
       },
       "dialogs": {
         "cancel_title": "Уйти без сохранения?",
@@ -2114,7 +2114,7 @@
         "created_no_invite": "Сотрудник создан",
         "duplicate_phone": "Сотрудник с таким телефоном уже существует",
         "duplicate_open_existing": "Открыть существующего",
-        "error": "Не удалось создат�� сотрудника",
+        "error": "Не удалось создать сотрудника",
         "freelance_created": "Сотрудник добавлен. Ссылка на оферту отправлена."
       }
     },
@@ -2202,7 +2202,7 @@
     "stores": {
       "page_title": "Магазины",
       "breadcrumbs": {
-        "home": "Г��авная",
+        "home": "Главная",
         "stores": "Магазины"
       },
       "counter": "{count, plural, one {# магазин} few {# магазина} many {# магазинов} other {# магазинов}}",
@@ -2231,7 +2231,7 @@
       "stats": {
         "total": "Всего магазинов",
         "active": "Активных",
-        "archived": "В арх��ве",
+        "archived": "В архиве",
         "no_director": "Без управляющего",
         "open_link": "Открыть"
       },
@@ -2373,7 +2373,7 @@
       "period": {
         "today": "Сегодня",
         "prev": "Предыдущий период",
-        "next": "Следующ��й период",
+        "next": "Следующий период",
         "datepicker_label": "Выбрать дату",
         "range_day": "{date}",
         "range_week": "{from} – {to}",
@@ -2389,7 +2389,7 @@
       "filters": {
         "store": "Магазин",
         "store_all": "Вся сеть",
-        "zone": "��она",
+        "zone": "Зона",
         "position": "Должность",
         "user": "Сотрудник",
         "status": "Статус",
@@ -2439,8 +2439,8 @@
       },
       "empty": {
         "no_shifts_title": "В выбранный период смен нет",
-        "no_shifts_subtitle": "LAMA не перед��ла ни од��ой смены — обратитесь в HR-отдел",
-        "no_results_title": "Ник��го не найд��но",
+        "no_shifts_subtitle": "LAMA не передала ни одной смены — обратитесь в HR-отдел",
+        "no_results_title": "Никого не найдено",
         "no_results_subtitle": "Попробуйте изменить фильтры",
         "no_results_reset": "Сбросить фильтры"
       },
@@ -2545,7 +2545,7 @@
       "actions": {
         "mark_late": "Зафиксировать опоздание",
         "mark_overtime": "Зафиксировать переработку",
-        "force_close": "Принудите��ьно закрыть",
+        "force_close": "Принудительно закрыть",
         "cancel_shift": "Отменить смену",
         "sync_lama": "Синхронизировать LAMA",
         "more": "Ещё"
@@ -2557,13 +2557,13 @@
         "mark_late_confirm": "Сохранить",
         "mark_overtime_title": "Зафиксировать переработку",
         "mark_overtime_label": "Причина переработки",
-        "mark_overtime_placeholder": "Напр��мер: дополнительная задача",
+        "mark_overtime_placeholder": "Например: дополнительная задача",
         "mark_overtime_confirm": "Сохранить",
         "force_close_title": "Закрыть смену принудительно?",
         "force_close_description": "Смена будет помечена как закрытая системой. Сотрудник получит уведомление.",
         "force_close_confirm": "Закрыть смену",
         "cancel_shift_title": "Отменить смену?",
-        "cancel_shift_label": "Причина ��тмены",
+        "cancel_shift_label": "Причина отмены",
         "cancel_shift_warning": "Действие необратимо. Смена не появится в расписании.",
         "cancel_shift_confirm": "Отменить смену"
       },
@@ -2577,7 +2577,7 @@
       "toast": {
         "marked_late": "Опоздание зафиксировано",
         "marked_overtime": "Переработка зафиксирована",
-        "force_closed": "Смена ��акрыта",
+        "force_closed": "Смена закрыта",
         "cancelled": "Смена отменена",
         "saved": "Сохранено",
         "error": "Не удалось выполнить операцию"
@@ -2588,7 +2588,7 @@
       "breadcrumbs": {
         "home": "Главная",
         "taxonomy": "Таксономия",
-        "work_types": "Типы р��бот"
+        "work_types": "Типы работ"
       },
       "actions": {
         "create": "Создать тип работы",
@@ -2725,7 +2725,7 @@
         "no_zones_global_title": "Глобальных зон пока нет",
         "no_zones_global_subtitle": "Создайте первую глобальную зону",
         "no_zones_store_title": "В этом магазине нет локальных зон",
-        "no_zones_store_subtitle": "Локальные зоны пере��пределяют глобальные",
+        "no_zones_store_subtitle": "Локальные зоны переопределяют глобальные",
         "no_store_selected_title": "Выберите магазин",
         "no_store_selected_subtitle": "Чтобы посмотреть его локальные зоны",
         "filtered_title": "Никого не найдено",
@@ -2735,7 +2735,7 @@
         "created": "Зона создана",
         "updated": "Зона обновлена",
         "deleted": "Зона удалена",
-        "in_use_warning": "Зона использу��тся — удаление заблокировано",
+        "in_use_warning": "Зона используется — удаление заблокировано",
         "error": "Не удалось выполнить операцию"
       }
     },
@@ -2750,7 +2750,7 @@
       "actions": {
         "create": "Добавить должность",
         "import": "Импорт",
-        "export": "Экс��орт",
+        "export": "Экспорт",
         "more": "Ещё"
       },
       "stats": {
@@ -2767,7 +2767,7 @@
         "clear_all": "Очистить все"
       },
       "columns": {
-        "code": "��од",
+        "code": "Код",
         "name": "Название",
         "role": "Роль",
         "description": "Описание",
@@ -2814,7 +2814,7 @@
         "no_positions_title": "Должностей пока нет",
         "no_positions_subtitle": "Создайте первую должность",
         "no_positions_cta": "Добавить должность",
-        "filtered_title": "Никого не ��айдено",
+        "filtered_title": "Никого не найдено",
         "filtered_reset": "Сбросить фильтры"
       },
       "toasts": {
@@ -2886,7 +2886,7 @@
       },
       "dialogs": {
         "create_title": "Новая подсказка",
-        "edit_title": "Редактирование подс��азки",
+        "edit_title": "Редактирование подсказки",
         "fields": {
           "text": "Текст подсказки",
           "text_placeholder": "Например: «Проверьте срок годности перед выкладкой»",
@@ -2902,7 +2902,7 @@
       "empty": {
         "no_hints_title": "Подсказок пока нет",
         "no_hints_subtitle": "Добавьте первую подсказку",
-        "no_hints_cta": "Создать по��сказку",
+        "no_hints_cta": "Создать подсказку",
         "filtered_title": "Никого не найдено",
         "filtered_reset": "Сбросить фильтры"
       },
@@ -2980,8 +2980,8 @@
         "validation_name_required": "Укажите название"
       },
       "detail_sheet": {
-        "info_section": "Сведе��ия",
-        "tags_section": "��еги",
+        "info_section": "Сведения",
+        "tags_section": "Теги",
         "ai_usage_section": "Использования ИИ",
         "history_section": "История",
         "no_tags": "Без тегов",
@@ -3004,7 +3004,7 @@
         "uploaded": "Документ загружен",
         "updated": "Документ обновлён",
         "archived": "Документ архивирован",
-        "restored": "Документ восстано��лен",
+        "restored": "Документ восстановлен",
         "downloaded": "Документ скачан",
         "error": "Не удалось выполнить операцию"
       }
@@ -3079,7 +3079,7 @@
         "filtered_reset": "Сбросить фильтры"
       },
       "preferences_sheet": {
-        "title": "Настро��ки уведомлений",
+        "title": "Настройки уведомлений",
         "push_enabled_label": "Push-уведомления",
         "push_enabled_hint": "Получать уведомления в мобильном приложении и браузере",
         "categories_section": "Категории",
@@ -3138,7 +3138,7 @@
           "password_sso_hint": "Аккаунт защищён через SMS-код Beyond Violet, пароль не используется",
           "totp_card": "Двухфакторная аутентификация (TOTP)",
           "totp_enabled": "Включена",
-          "totp_disabled": "Не настроен��",
+          "totp_disabled": "Не настроено",
           "totp_hint": "Работает офлайн с любым приложением (Yandex Key, Authy, FreeOTP)",
           "totp_setup": "Настроить",
           "totp_disable": "Отключить",
@@ -3147,15 +3147,15 @@
           "totp_setup_secret_hint": "Секрет для ручного ввода в приложение",
           "totp_setup_scan_hint": "Отсканируйте QR-код в Yandex Key, Authy или FreeOTP",
           "totp_setup_next": "Далее",
-          "totp_setup_enter_code": "Введите 6-зн��чный код из приложения",
+          "totp_setup_enter_code": "Введите 6-значный код из приложения",
           "totp_setup_confirm": "Подтвердить",
           "totp_backup_warning": "Сохраните резервные коды — они показываются только один раз",
           "totp_backup_done": "Готово",
-          "totp_disable_title": "Отключить двухфакторную аутентифик��цию?",
+          "totp_disable_title": "Отключить двухфакторную аутентификацию?",
           "totp_disable_description": "Введите текущий код из приложения для подтверждения",
           "sessions_card": "Активные сессии",
           "session_current": "Текущая сессия",
-          "session_revoke": "Завершит��",
+          "session_revoke": "Завершить",
           "session_revoke_all": "Завершить все остальные",
           "session_revoke_all_confirm_title": "Завершить все остальные сессии?",
           "session_revoke_all_confirm_message": "Все другие устройства будут выведены из аккаунта"
@@ -3218,7 +3218,7 @@
         "avatar_too_large": "Файл должен быть не больше 2 МБ"
       },
       "agent_specific": {
-        "simplified_hint": "Внештатный исполнитель — ��прощённый профиль",
+        "simplified_hint": "Внештатный исполнитель — Упрощённый профиль",
         "agent_notifications_hint": "Настроены только уведомления о выплатах и невыходах исполнителей"
       },
       "platform_admin": {
@@ -3275,13 +3275,13 @@
         "fmcg_baseline_hint": "Если порог не задан — ИИ использует среднее по сети как baseline.",
         "thresholds_section": "Пороги по группам товаров",
         "ops_section": "Пороги по операциям",
-        "col_group": "Груп��а",
+        "col_group": "Группа",
         "col_writeoff_norm": "Норма списаний %",
         "col_oos_norm": "Норма OOS %",
         "col_expiration_alert": "Скоропорт (часов)",
         "ops_cashier_avg": "Среднее время на кассе (мин)",
         "ops_shift_variance": "Отклонение план/факт смены (%)",
-        "ops_max_consecutive_rejections": "Максимум возвратов задач ��одряд",
+        "ops_max_consecutive_rejections": "Максимум возвратов задач подряд",
         "fashion_description": "Задайте сезонные периоды по типам товаров — это всё что нужно. Размеры скидок ИИ определяет сам.",
         "fashion_seasons_section": "Сезонные периоды по типам товаров",
         "fashion_baseline_hint": "Размеры скидок ИИ определяет автоматически — стартует со стандартной лесенки и адаптируется на основе результатов прошлых скидок в магазине.",
@@ -3297,7 +3297,7 @@
         "col_op_time": "Нормативное время операции (мин)"
       },
       "legal": {
-        "title": "��ридические лица",
+        "title": "Юридические лица",
         "description": "Несколько юридических лиц внутри одной организации (для retail-сетей с несколькими ИП)",
         "add_entity": "Добавить юр.лицо",
         "col_name": "Название",
@@ -3331,7 +3331,7 @@
       "policies": {
         "default_card": "По умолчанию",
         "acceptance_policy": "Acceptance policy default",
-        "acceptance_policy_desc": "Примен��ется к новым задачам, если не выбрано вручную",
+        "acceptance_policy_desc": "Применяется к новым задачам, если не выбрано вручную",
         "acceptance_MANUAL": "Ручная проверка",
         "acceptance_AUTO": "Автоматическое принятие",
         "requires_photo": "Требовать фото при завершении",
@@ -3346,7 +3346,7 @@
         "tz_card": "Часовой пояс организации",
         "tz_label": "Часовой пояс",
         "tz_hint": "Часовой пояс применяется ко всему UI и расчёту дедлайнов задач",
-        "format_card": "Ф��рмат отображения",
+        "format_card": "Формат отображения",
         "date_format": "Формат даты",
         "date_format_verbose": "28 апр 2026",
         "date_format_dot": "28.04.2026",
@@ -3395,7 +3395,7 @@
         "history_card": "История платежей",
         "col_date": "Дата",
         "col_amount": "Сумма",
-        "col_status": "��татус",
+        "col_status": "Статус",
         "col_invoice": "Счёт",
         "download_pdf": "Скачать PDF",
         "status_paid": "Оплачен",
@@ -3416,7 +3416,7 @@
         "saved": "Настройки сохранены",
         "threshold_updated": "Порог сохранён",
         "season_updated": "Сезон сохранён",
-        "key_created": "Ключ с��здан",
+        "key_created": "Ключ создан",
         "key_revoked": "Ключ отозван",
         "legal_added": "Юр.лицо добавлено",
         "legal_updated": "Юр.лицо обновлено",
@@ -3446,7 +3446,7 @@
       "platform_admin": {
         "edit_payment_mode": "Изменить режим оплаты",
         "edit_payment_mode_warning_title": "Изменить режим оплаты исполнителям?",
-        "edit_payment_mode_warning_description": "Изменение режима повлияет на финансовые операции. Открытые заявки могут потерять связь с актив��ыми выплатами.",
+        "edit_payment_mode_warning_description": "Изменение режима повлияет на финансовые операции. Открытые заявки могут потерять связь с активными выплатами.",
         "edit_payment_mode_confirm": "Изменить",
         "module_toggle": "Переключить модуль внештата"
       }
@@ -3534,9 +3534,9 @@
         "not_configured": "Не подключено"
       },
       "ai_sources": {
-        "section_title": "Ис��очники данных для ИИ-помощника",
+        "section_title": "Источники данных для ИИ-помощника",
         "section_subtitle": "Эти источники питают аналитический модуль ИИ. Без них предложения будут менее точными",
-        "hint_demo_alert": "ИИ-п��мощник работает в demo-режиме на статичных данных. Для реальных предложений подключите хотя бы Кассы и Остатки.",
+        "hint_demo_alert": "ИИ-помощник работает в demo-режиме на статичных данных. Для реальных предложений подключите хотя бы Кассы и Остатки.",
         "hint_demo_link": "Что подключать в первую очередь?",
         "connect": "Подключить",
         "configure": "Настроить",
@@ -3545,7 +3545,7 @@
         "connector_sheet_title_sftp": "По SFTP с CSV",
         "connector_sheet_sftp_recommended": "Рекомендуется",
         "connector_sftp_download_templates": "Скачать шаблоны CSV для программистов клиента",
-        "connector_sftp_hint": "Передайте этот архив программистам клиента. Они наполнят шабл��ны данными своей системы и выложат их по расписанию на этот SFTP. Наша система автоматически найдёт и подключит источники.",
+        "connector_sftp_hint": "Передайте этот архив программистам клиента. Они наполнят шаблоны данными своей системы и выложат их по расписанию на этот SFTP. Наша система автоматически найдёт и подключит источники.",
         "connector_sftp_check": "Проверить SFTP",
         "connector_sftp_found": "Найдено",
         "connector_sftp_not_found": "не найден",
@@ -3579,7 +3579,7 @@
         },
         "supply": {
           "title": "Поставки",
-          "description": "План поставок и факт прихода т��вара. Позволяет ИИ п��едсказывать риск OOS до того как полка опустеет.",
+          "description": "План поставок и факт прихода товара. Позволяет ИИ предсказывать риск OOS до того как полка опустеет.",
           "stat_suppliers": "Поставщиков",
           "stat_week": "Поставок за неделю",
           "stat_last": "Последняя поставка",
@@ -3589,13 +3589,13 @@
           "title": "Промо-активности",
           "description": "Календарь промо-акций, цены, планограммы. ИИ предлагает задачи по выкладке к старту промо.",
           "stat_active": "Активных промо",
-          "stat_tomorrow": "Стартует завт��а",
+          "stat_tomorrow": "Стартует завтра",
           "stat_today_end": "Заканчивается сегодня",
           "sheet_title": "Подключить промо"
         },
         "marketing_channel": {
           "title": "Маркетинг-канал",
-          "description": "Куда автоматически размещать согласованные акции на товары с фото после выполне��ия задач.",
+          "description": "Куда автоматически размещать согласованные акции на товары с фото после выполнения задач.",
           "note": "В админке видим только факт «отправлено в канал X». Сама публикация акции (формат поста, картинки, теги, цена со скидкой) — делает бэкенд / внешняя маркетинг-платформа.",
           "stat_posts": "Постов отправлено за период",
           "stat_last": "Последняя отправка",
@@ -3634,7 +3634,7 @@
         "force_sync_cancel": "Отмена",
         "force_sync_running": "Синхронизация: {entity} ({done}/{total})…",
         "mapping_desc": "Сопоставление полей LAMA → WFM",
-        "mapping_sub_users": "Пользоват��ли",
+        "mapping_sub_users": "Пользователи",
         "mapping_sub_stores": "Магазины",
         "mapping_sub_positions": "Должности",
         "mapping_col_lama": "Поле LAMA",
@@ -3775,7 +3775,7 @@
           "save": "Сохранить настройки",
           "test": "Тест подключения",
           "test_success": "Соединение установлено",
-          "test_error": "Не у��алось подключиться",
+          "test_error": "Не удалось подключиться",
           "trigger_sync": "Запустить синхронизацию вручную",
           "log_col_datetime": "Дата/время",
           "log_col_trigger": "Триггер",
@@ -3818,7 +3818,7 @@
       },
       "entity_type": {
         "task": "Задача",
-        "subtask": "Подзад��ча",
+        "subtask": "Подзадача",
         "user": "Сотрудник",
         "shift": "Смена",
         "store": "Магазин",
@@ -3883,7 +3883,7 @@
         "task.start": "Задача начата",
         "task.pause": "Задача приостановлена",
         "task.resume": "Задача возобновлена",
-        "task.complete": "��адача завершена",
+        "task.complete": "Задача завершена",
         "task.approve": "Задача принята",
         "task.reject": "Задача отклонена",
         "task.delete": "Задача удалена",
@@ -3901,8 +3901,8 @@
         "api_key.revoke": "API-ключ отозван",
         "webhook.create": "Webhook создан",
         "webhook.update": "Webhook обновлён",
-        "webhook.delete": "Webhook уд��лён",
-        "regulation.create": "��егламент создан",
+        "webhook.delete": "Webhook удалён",
+        "regulation.create": "Регламент создан",
         "regulation.publish": "Регламент опубликован",
         "regulation.archive": "Регламент в архив",
         "freelance.application.approve": "Заявка внештата принята",
@@ -3911,7 +3911,7 @@
         "freelance.payout.complete": "Выплата внештата выполнена",
         "application.create": "Заявка создана",
         "application.cancel": "Заявка отменена",
-        "application.approve_full": "��аявка полностью принята",
+        "application.approve_full": "Заявка полностью принята",
         "application.approve_partial": "Заявка принята частично",
         "application.reject": "Заявка отклонена",
         "application.replace_with_bonus": "Заменена на бонусную задачу",
@@ -3968,7 +3968,7 @@
         "last_name": "Фамилия",
         "middle_name": "Отчество",
         "position_id": "Должность",
-        "preferred_locale": "Язык интерфе��са",
+        "preferred_locale": "Язык интерфейса",
         "default_duration_min": "Длительность по умолчанию, мин",
         "dairy_writeoff_norm_pct": "Норма списаний (молочка), %",
         "oos_norm_pct": "Норма OOS, %",
@@ -4016,7 +4016,7 @@
     },
     "reportsKpi": {
       "page_title": "KPI отчёт",
-      "page_subtitle": "Эффективнос��ь сети и магаз��нов",
+      "page_subtitle": "Эффективность сети и магазинов",
       "breadcrumbs": {
         "home": "Главная",
         "reports": "Отчёты",
@@ -4140,7 +4140,7 @@
       "leaderboards": {
         "top_title": "Топ-10 по продуктивности",
         "support_title": "Нужна поддержка",
-        "support_hint": "Эти сотрудники могут вырасти при ��оддержке",
+        "support_hint": "Эти сотрудники могут вырасти при поддержке",
         "col_rank": "#",
         "col_employee": "Сотрудник",
         "col_store": "Магазин",
@@ -4401,7 +4401,7 @@
         "GROWING": "Растущие",
         "STABLE": "Стабильные",
         "DECLINING": "Падающие",
-        "leaders_subtitle": "Высокое выполнение и положит��льный тренд",
+        "leaders_subtitle": "Высокое выполнение и положительный тренд",
         "growing_subtitle": "Ниже медианы, но улучшаются",
         "stable_subtitle": "Около медианы, без существенных изменений",
         "declining_subtitle": "Ниже медианы и тренд ухудшается"
@@ -4416,7 +4416,7 @@
         "completion_rate": "Выполнение, %",
         "return_rate": "Возврат, %",
         "on_time_rate": "Вовремя, %",
-        "hours_diff_pct": "�� часов, %",
+        "hours_diff_pct": "Δ часов, %",
         "fot_diff_pct": "ФОТ план/факт, %",
         "avg_duration": "Ср. длительность"
       },
@@ -4463,7 +4463,7 @@
         "quadrant_leaders": "Лидеры",
         "quadrant_growing": "Растут",
         "quadrant_stable": "Стабильные",
-        "quadrant_declining": "Про��едают",
+        "quadrant_declining": "Проседают",
         "median_line_label": "Медиана сети"
       },
       "row_actions": {
@@ -4533,7 +4533,7 @@
         "stats": {
           "progress": "Прогресс",
           "current_value": "Текущее значение",
-          "days_left": "Д��ей до конца",
+          "days_left": "Дней до конца",
           "diff_better": "лучше за {days} дней"
         },
         "set_by_hint": "Установлена {date} {user}",
@@ -4553,7 +4553,7 @@
       "remove_dialog": {
         "title": "Снять активную цель?",
         "description": "Цель можно сменить в любой момент. История сохранится.",
-        "reason_label": "Комментарий (опционал��но)",
+        "reason_label": "Комментарий (опционально)",
         "reason_placeholder": "Например: цель достигнута раньше срока, либо появились более срочные задачи",
         "confirm": "Снять цель"
       },
@@ -4566,7 +4566,7 @@
         "create_task_from_recommendation": "Создать задачу"
       },
       "catalog": {
-        "section_title": "Каталог ц��лей по типу бизнеса",
+        "section_title": "Каталог целей по типу бизнеса",
         "tab_fmcg": "FMCG ритейл",
         "tab_fashion": "Fashion ритейл",
         "tab_production": "Производство",
@@ -4724,8 +4724,8 @@
         "ai_label": "ИИ",
         "ai_hint": "ИИ предлагает, нужно одобрение",
         "yesterday_label": "Невыполненные вчера",
-        "yesterday_hint": "Авто-перенос в бон��сный пул",
-        "footer_hint": "Мож��о комбинировать. ИИ работает поверх активной цели."
+        "yesterday_hint": "Авто-перенос в бонусный пул",
+        "footer_hint": "Можно комбинировать. ИИ работает поверх активной цели."
       },
       "yesterday_pool_card": {
         "title": "Пул незавершённых вчера",
@@ -4756,7 +4756,7 @@
         }
       },
       "ai_proposals": {
-        "section_description": "ИИ предлагает бонусные задачи н�� основе активной цели «{goal}». Можно скорректировать перед публикацией.",
+        "section_description": "ИИ предлагает бонусные задачи на основе активной цели «{goal}». Можно скорректировать перед публикацией.",
         "rationale_title": "Почему это предложено",
         "all_link": "Все предложения ИИ"
       },
@@ -4834,7 +4834,7 @@
       },
       "freelance_link": {
         "from_app_badge": "Из заявки на внештат №{id}",
-        "tooltip": "Этот бонусный пул создан как замена внештата. Полный внештат стоил бы {full} ���, бонус ≈{bonus} ₽ (∼50%). Экономия: {saved} ₽.",
+        "tooltip": "Этот бонусный пул создан как замена внештата. Полный внештат стоил бы {full} ₽, бонус ≈{bonus} ₽ (∼50%). Экономия: {saved} ₽.",
         "kpi_replaced_title": "Заменено бонусом",
         "kpi_replaced_value": "{hours}, экономия ≈{saved} ₽ vs полный внештат"
       },
@@ -4844,7 +4844,7 @@
         "select_employee_placeholder": "Выберите сотрудника",
         "visible_now_title": "Видит сейчас (до закрытия плановых задач)",
         "visible_now_summary": "{sum} ₽ доступных бонусов на сегодня",
-        "visible_now_hint": "Конкретные задачи откроютс�� после закрытия планового блока.",
+        "visible_now_hint": "Конкретные задачи откроются после закрытия планового блока.",
         "after_planned_title": "Откроется после планового блока",
         "empty_no_bonuses": "Нет доступных бонусов для этого сотрудника"
       },
@@ -4870,7 +4870,7 @@
         "paid": "Выплачены"
       },
       "filters": {
-        "store_label": "Магази��",
+        "store_label": "Магазин",
         "all_stores": "Все"
       },
       "actions": {
@@ -5050,7 +5050,7 @@
         "bulk_hint": "Массовое одобрение = принять без редактирования. Если нужны правки — открывайте по одному."
       },
       "detail_panel": {
-        "empty_title": "Выберите пр��дложение слева",
+        "empty_title": "Выберите предложение слева",
         "empty_subtitle": "Откроется подробная информация и возможность редактирования",
         "what_proposed_section": "Что предлагается",
         "rationale_section": "Почему ИИ это предложил",
@@ -5152,8 +5152,8 @@
         }
       },
       "context_banner": {
-        "general": "Общий чат с пом��щником",
-        "suggestion": "По пред��ожению: «{title}»",
+        "general": "Общий чат с помощником",
+        "suggestion": "По предложению: «{title}»",
         "goal": "По цели: «{title}»",
         "task": "По задаче: {id} «{title}»",
         "chart": "По графику «{title}»",
@@ -5166,7 +5166,7 @@
         "empty_thread_title": "Спросите что угодно про ваши данные",
         "empty_thread_subtitle": "ИИ читает данные из подключённых источников",
         "suggestion_chips": {
-          "worst_oos": "Какие магаз��ны с худшим OOS?",
+          "worst_oos": "Какие магазины с худшим OOS?",
           "explain_returns": "Объясни, почему вырос возврат задач",
           "today_priorities": "Что важно сделать сегодня?",
           "team_status": "Как дела у моих сотрудников?"
@@ -5494,7 +5494,7 @@
       "toasts": {
         "saved_draft": "Версия сохранена как черновик",
         "activated": "Версия активирована",
-        "rolled_back": "От��ат выполнен",
+        "rolled_back": "Откат выполнен",
         "generated": "Сгенерировано {count} вариантов",
         "ab_test_started": "A/B тест запущен",
         "ab_test_finished": "Тест завершён",
@@ -5518,7 +5518,7 @@
         "reviewed_share_title": "Доля проверяемых задач",
         "reviewed_share_value": "{percent}%",
         "reviewed_share_prev": "было {percent}%",
-        "reviewed_share_saved": "��бережено: {hours} ч/мес",
+        "reviewed_share_saved": "Сбережено: {hours} ч/мес",
         "defect_rate_title": "Defect rate",
         "defect_rate_value": "{percent}%",
         "defect_rate_hint": "Доля задач с проблемами, прошедших sampling"
@@ -5812,7 +5812,7 @@
     },
     "freelanceApplications": {
       "page_title": "Заявки на внештат",
-      "page_subtitle": "Список заявок, фильтр п�� статусу и источнику",
+      "page_subtitle": "Список заявок, фильтр по статусу и источнику",
       "breadcrumbs": {
         "home": "Главная",
         "freelance": "Внештат",
@@ -5957,7 +5957,7 @@
         "retroactive_alert_title": "Ретроактивная заявка",
         "retroactive_alert_desc": "Заявка зафиксирована задним числом для отчётности.",
         "external_alert_title": "Заявка из внешней HR-системы",
-        "external_alert_desc": "Заявка получена из HR-системы клиента ({ref}). Согласование пропускается, требуется только назначение испо��нителя."
+        "external_alert_desc": "Заявка получена из HR-системы клиента ({ref}). Согласование пропускается, требуется только назначение исполнителя."
       },
       "params_card": {
         "title": "Параметры заявки",
@@ -6087,7 +6087,7 @@
         "CANCELLED": "Отменена"
       },
       "toasts": {
-        "decision_saved": "Решение сохра��ено",
+        "decision_saved": "Решение сохранено",
         "bonus_pool_created": "Бонусный пул создан",
         "bonus_pool_link": "Перейти?",
         "assignment_created": "Исполнитель назначен",
@@ -6103,7 +6103,7 @@
         "not_found_cta": "К списку заявок",
         "error_title": "Ошибка загрузки",
         "error_desc": "Не удалось загрузить заявку. Попробуйте снова.",
-        "error_retry": "Повт��рить",
+        "error_retry": "Повторить",
         "forbidden_title": "Нет доступа",
         "forbidden_desc": "Эта заявка не входит в ваш рабочий периметр."
       }
@@ -6353,7 +6353,7 @@
     "filters": {
       "period": "Период",
       "status": "Статус",
-      "store": "Магаз��н"
+      "store": "Магазин"
     },
     "status": {
       "OPEN": "Открыт",
@@ -6889,7 +6889,7 @@
         "earnings_30d": "Доход за 30 дней",
         "earnings_7d": "Доход за 7 дней",
         "recent_payouts_count": "Свежих выплат",
-        "month_earnings": "До��од за месяц",
+        "month_earnings": "Доход за месяц",
         "pending_payouts": "Ожидают выплаты",
         "no_show_count": "Невыходов за месяц"
       },
@@ -6964,7 +6964,7 @@
         "no_results_description": "Попробуйте изменить условия поиска или фильтр."
       },
       "toasts": {
-        "created": "Исполнитель ��обавлен",
+        "created": "Исполнитель добавлен",
         "error": "Не удалось"
       },
       "menu": {
@@ -7247,7 +7247,7 @@
     "actions": {
       "pause": "На паузу",
       "block": "Заблокировать",
-      "edit": "Реда��тировать"
+      "edit": "Редактировать"
     },
     "block_dialog": {
       "title": "Заблокировать агента?",
@@ -7379,7 +7379,7 @@
     },
     "empty": {
       "no_documents": "Документов пока нет",
-      "no_documents_description": "Они появляются автоматич��ски после выплат на ваш счёт.",
+      "no_documents_description": "Они появляются автоматически после выплат на ваш счёт.",
       "no_results": "Ничего не найдено",
       "no_results_description": "Попробуйте изменить фильтры."
     },
@@ -7402,7 +7402,7 @@
     }
   },
   "filters": {
-    "type": "��ип",
+    "type": "Тип",
     "year": "Год"
   },
   "columns": {
@@ -7422,7 +7422,7 @@
   "status": {
     "SIGNED": "Подписан",
     "PENDING_SIGNATURE": "Ожидает подписи",
-    "DRAFT": "Черн��вик"
+    "DRAFT": "Черновик"
   },
   "empty": {
     "no_documents": "Документов пока нет"
