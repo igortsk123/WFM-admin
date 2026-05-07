@@ -14,6 +14,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
 import { MOCK_ORGANIZATIONS } from "@/lib/mock-data/organizations";
+import { switchOrganization, getCurrentOrgId } from "@/lib/api/_org-context";
 import type { FunctionalRole, Store, Organization } from "@/lib/types";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
@@ -53,6 +54,9 @@ interface ScopeSwitcherProps {
 function ScopeSwitcher({ role, stores, organization }: ScopeSwitcherProps) {
   const t = useTranslations("nav");
   const [open, setOpen] = useState(false);
+  // Org-type scope: текущий org читаем из единого источника правды
+  // (localStorage через _org-context). Store/region пока локальный селект.
+  const currentOrgId = getCurrentOrgId();
   const [selectedScope, setSelectedScope] = useState<string | null>(null);
 
   // Determine scope type based on role
@@ -148,26 +152,37 @@ function ScopeSwitcher({ role, stores, organization }: ScopeSwitcherProps) {
           <CommandList>
             <CommandEmpty>Nothing found.</CommandEmpty>
             <CommandGroup>
-              {scopeConfig.options.map((option) => (
-                <CommandItem
-                  key={option.value}
-                  value={option.value}
-                  onSelect={(value) => {
-                    setSelectedScope(value === selectedScope ? null : value);
-                    setOpen(false);
-                  }}
-                >
-                  <Check
-                    className={cn(
-                      "mr-2 size-4",
-                      selectedScope === option.value
-                        ? "opacity-100"
-                        : "opacity-0"
-                    )}
-                  />
-                  <span className="truncate">{option.label}</span>
-                </CommandItem>
-              ))}
+              {scopeConfig.options.map((option) => {
+                // Для organization scope текущий выбор берём из глобал-стейта
+                // (currentOrgId из localStorage), а не локального selectedScope.
+                const isActive =
+                  scopeConfig.type === "organization"
+                    ? option.value === currentOrgId
+                    : option.value === selectedScope;
+                return (
+                  <CommandItem
+                    key={option.value}
+                    value={option.value}
+                    onSelect={(value) => {
+                      if (scopeConfig.type === "organization") {
+                        // Полная смена org: persist + reload
+                        switchOrganization(value);
+                      } else {
+                        setSelectedScope(value === selectedScope ? null : value);
+                        setOpen(false);
+                      }
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        "mr-2 size-4",
+                        isActive ? "opacity-100" : "opacity-0"
+                      )}
+                    />
+                    <span className="truncate">{option.label}</span>
+                  </CommandItem>
+                );
+              })}
             </CommandGroup>
           </CommandList>
         </Command>

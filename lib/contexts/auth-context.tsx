@@ -20,6 +20,7 @@ import { MOCK_ORGANIZATIONS } from "@/lib/mock-data/organizations";
 import { MOCK_FUNCTIONAL_ROLES } from "@/lib/mock-data/functional-roles";
 import { MOCK_STORES } from "@/lib/mock-data/stores";
 import { ADMIN_ROUTES, AGENT_ROUTES } from "@/lib/constants/routes";
+import { getCurrentOrgId, setCurrentOrgId } from "@/lib/api/_org-context";
 
 // ═══════════════════════════════════════════════════════════════════
 // TYPES
@@ -130,16 +131,21 @@ function findOrganizationForRoleAssignment(
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// DEFAULT USER: Соколова А. В. (NETWORK_OPS, org-spar)
+// DEFAULT USER: Соколова А. В. (NETWORK_OPS).
+// Org берём из localStorage (через _org-context) чтобы переживал reload
+// после OrgSwitcher. Default org-lama если нет saved.
 // ═══════════════════════════════════════════════════════════════════
 
 const defaultUser = MOCK_USERS.find((u) => u.id === 3)!; // Соколова А. В.
 const defaultRoleAssignment = MOCK_FUNCTIONAL_ROLES.find(
   (ra) => ra.user_id === 3
 )!;
-const defaultOrganization = MOCK_ORGANIZATIONS.find(
-  (o) => o.id === "org-lama"
-)!;
+const defaultOrganization =
+  MOCK_ORGANIZATIONS.find((o) => o.id === getCurrentOrgId()) ??
+  MOCK_ORGANIZATIONS.find((o) => o.id === "org-lama")!;
+// Sync обратно — на случай если localStorage был с org'ом которого
+// больше нет в моках, fallback на org-lama.
+setCurrentOrgId(defaultOrganization.id);
 const defaultAuthUser = buildAuthUser(
   defaultUser,
   defaultRoleAssignment,
