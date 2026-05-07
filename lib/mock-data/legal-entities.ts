@@ -1,11 +1,11 @@
 import type { LegalEntity } from "@/lib/types";
+import { REAL_LAMA_LEGAL_ENTITIES } from "./_lama-legal-entities";
 
 /**
  * @endpoint GET /api/legal-entities
- * 4 legal entities, generic structure for RU + future UK support.
- * LegalEntity.id is number per the interface but referenced as string in Store; using sequential ints.
+ * 4 base legal entities (id 1-4) + 8 реальных ЛАМА юрлиц (id 100-107) из /shops/.
  */
-export const MOCK_LEGAL_ENTITIES: LegalEntity[] = [
+const BASE_LEGAL_ENTITIES: LegalEntity[] = [
   {
     id: 1,
     name: "ООО «СПАР Томск»",
@@ -42,4 +42,9 @@ export const MOCK_LEGAL_ENTITIES: LegalEntity[] = [
     inn: "702401234567",
     ogrn: "316702400012345",
   },
+];
+
+export const MOCK_LEGAL_ENTITIES: LegalEntity[] = [
+  ...BASE_LEGAL_ENTITIES,
+  ...REAL_LAMA_LEGAL_ENTITIES,
 ];

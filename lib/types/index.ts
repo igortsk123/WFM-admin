@@ -263,6 +263,8 @@ export interface User {
   oferta_accepted_at?: string | null;
   rating?: number;
   source?: "MANUAL" | "EXTERNAL_SYNC";
+  /** Внешний ID из LAMA (employee_id из их БД). Используется для sync с прод-источником. */
+  external_id?: number;
 }
 
 /** ФОРМАЛЬНАЯ должность из штатки */
@@ -327,10 +329,14 @@ export interface LegalEntity {
   organization_id: string;
   tax_jurisdiction: "RU" | "UK" | "OTHER";
   inn?: string;
-  kpp?: string;
+  kpp?: string | null;
   ogrn?: string;
   companies_house?: string;
   vat_number?: string;
+  /** LAMA: internal_company.code (часто = INN, но отдельный учётный код). */
+  code?: string;
+  /** ID в 1C ERP, null если не реплицируется. */
+  rec_id?: string | null;
 }
 
 export type ObjectFormat =
@@ -354,14 +360,30 @@ export interface Store {
   name: string;
   external_code: string;
   address: string;
+  /** @deprecated Backend не возвращает; админ-only для UI отображения. */
   city: string;
+  /** @deprecated Используй object_format / format_shop_name. */
   store_type: string;
   object_type: ObjectType;
   organization_id: string;
   manager_id?: number;
   supervisor_id?: number;
+  /** @deprecated Backend не возвращает; админ-only метаданные. */
   region: string;
   legal_entity_id: number;
+  /** Полный объект юрлица (зеркалит LAMA /shops/.internal_company). */
+  internal_company?: LegalEntity;
+  /** Сырое название формата как в LAMA: «Гипермаркет», «Универсам», «Дискаунтер». */
+  format_shop_name?: string;
+  /** Время работы магазина HH:MM:SS. */
+  time_start?: string;
+  time_end?: string;
+  /** Код склада в 1C (storage_code в LAMA). */
+  storage_code?: string;
+  /** Магазин в составе сети (in_group в LAMA). */
+  in_group?: boolean;
+  /** rec_id магазина в 1C ERP. */
+  lama_rec_id?: number;
   lama_synced_at?: string;
   active: boolean;
   archived: boolean;
@@ -509,6 +531,10 @@ export interface Task {
    * Подзадачи директор может ДОБАВЛЯТЬ всегда (см. canAddSubtask в task-detail).
    */
   editable_by_store?: boolean;
+  /** ID смены (FK на Shift.id), к которой задача привязана. LAMA возвращает per shift_id. */
+  shift_id?: number;
+  /** Внешний ID из LAMA (api task id). Используется для sync с прод-источником. */
+  external_id?: number;
   created_at: string;
   updated_at: string;
 }
