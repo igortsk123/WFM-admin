@@ -130,4 +130,15 @@ export const MOCK_ASSIGNMENTS: Assignment[] = [
   { id: 102, user_id: 102, position_id: 1, position_name: "Универсал", store_id: 1, store_name: "СПАР Томск, пр. Ленина 80", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: true },
   { id: 103, user_id: 103, position_id: 6, position_name: "Мерчендайзер", store_id: 13, store_name: "СПАР Северск, пр. Коммунистический 41", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: true },
   { id: 104, user_id: 104, position_id: 6, position_name: "Мерчендайзер", store_id: 3, store_name: "СПАР Томск, пр. Фрунзе 92а", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: true },
+
+  // ─── ТехПродЗдрав assignments (user 200-208 → store 100, position 10-18)
+  { id: 200, user_id: 200, position_id: 10, position_name: "Закройщик", store_id: 100, store_name: "ТехПродЗдрав, швейный цех", rank: { id: 2, code: "RANK-2", name: "Старший" }, active: true },
+  { id: 201, user_id: 201, position_id: 11, position_name: "Вышивальщица", store_id: 100, store_name: "ТехПродЗдрав, швейный цех", rank: { id: 2, code: "RANK-2", name: "Старший" }, active: true },
+  { id: 202, user_id: 202, position_id: 12, position_name: "Комплектовщица", store_id: 100, store_name: "ТехПродЗдрав, швейный цех", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: true },
+  { id: 203, user_id: 203, position_id: 13, position_name: "Швея", store_id: 100, store_name: "ТехПродЗдрав, швейный цех", rank: { id: 3, code: "RANK-3", name: "Бригадир" }, active: true },
+  { id: 204, user_id: 204, position_id: 14, position_name: "Ручница", store_id: 100, store_name: "ТехПродЗдрав, швейный цех", rank: { id: 2, code: "RANK-2", name: "Старший" }, active: true },
+  { id: 205, user_id: 205, position_id: 15, position_name: "Оператор клеевого станка", store_id: 100, store_name: "ТехПродЗдрав, швейный цех", rank: { id: 3, code: "RANK-3", name: "Бригадир" }, active: true },
+  { id: 206, user_id: 206, position_id: 16, position_name: "Оператор дозатора", store_id: 100, store_name: "ТехПродЗдрав, швейный цех", rank: { id: 3, code: "RANK-3", name: "Бригадир" }, active: true },
+  { id: 207, user_id: 207, position_id: 17, position_name: "Швея-окантовщица", store_id: 100, store_name: "ТехПродЗдрав, швейный цех", rank: { id: 3, code: "RANK-3", name: "Бригадир" }, active: true },
+  { id: 208, user_id: 208, position_id: 18, position_name: "Упаковщик", store_id: 100, store_name: "ТехПродЗдрав, швейный цех", rank: { id: 1, code: "RANK-1", name: "Стандарт" }, active: true },
 ];

@@ -1635,4 +1635,20 @@ export const MOCK_USERS: User[] = [
     totp_enabled: false,
     rating: 4.5,
   },
+
+  // ═════════════════════════════════════════════════════════════════
+  // ТехПродЗдрав — 9 сотрудников швейного цеха (источник: Excel,
+  // колонки ФИО + Тел). IDs 200+ чтобы не пересекаться с LAMA.
+  // Каждому ниже соответствует position 10-18 (см. positions.ts) и
+  // assignment в assignments.ts.
+  // ═════════════════════════════════════════════════════════════════
+  { id: 200, sso_id: "sso-tpz-cutter", phone: "+7 (904) 026-29-73", first_name: "Ольга", last_name: "Болтушкина", middle_name: "Викторовна", type: "STAFF", hired_at: "2024-03-15", archived: false, preferred_locale: "ru", preferred_timezone: "Asia/Tomsk", totp_enabled: false, rating: 4.7 },
+  { id: 201, sso_id: "sso-tpz-embroiderer", phone: "+7 (919) 059-52-52", first_name: "Зухра", last_name: "Сахибаева", middle_name: "Маратовна", type: "STAFF", hired_at: "2024-08-20", archived: false, preferred_locale: "ru", preferred_timezone: "Asia/Tomsk", totp_enabled: false, rating: 4.8 },
+  { id: 202, sso_id: "sso-tpz-complect", phone: "+7 (960) 718-72-17", first_name: "Алина", last_name: "Терещенко", middle_name: "Игоревна", type: "STAFF", hired_at: "2025-01-12", archived: false, preferred_locale: "ru", preferred_timezone: "Asia/Tomsk", totp_enabled: false, rating: 4.5 },
+  { id: 203, sso_id: "sso-tpz-seamstress", phone: "+7 (904) 027-37-12", first_name: "Анна", last_name: "Топоровски", middle_name: "Сергеевна", type: "STAFF", hired_at: "2023-11-05", archived: false, preferred_locale: "ru", preferred_timezone: "Asia/Tomsk", totp_enabled: false, rating: 4.9 },
+  { id: 204, sso_id: "sso-tpz-handsewer", phone: "+7 (904) 004-67-92", first_name: "Надежда", last_name: "Львова", middle_name: "Александровна", type: "STAFF", hired_at: "2024-06-01", archived: false, preferred_locale: "ru", preferred_timezone: "Asia/Tomsk", totp_enabled: false, rating: 4.6 },
+  { id: 205, sso_id: "sso-tpz-glueop", phone: "+7 (900) 017-04-09", first_name: "Юлия", last_name: "Новикова", middle_name: "Андреевна", type: "STAFF", hired_at: "2024-09-10", archived: false, preferred_locale: "ru", preferred_timezone: "Asia/Tomsk", totp_enabled: false, rating: 4.7 },
+  { id: 206, sso_id: "sso-tpz-doserop", phone: "+7 (952) 063-16-53", first_name: "Екатерина", last_name: "Иванова", middle_name: "Михайловна", type: "STAFF", hired_at: "2025-02-20", archived: false, preferred_locale: "ru", preferred_timezone: "Asia/Tomsk", totp_enabled: false, rating: 4.4 },
+  { id: 207, sso_id: "sso-tpz-binder", phone: "+7 (903) 034-27-43", first_name: "Александра", last_name: "Леднёва", middle_name: "Дмитриевна", type: "STAFF", hired_at: "2024-04-15", archived: false, preferred_locale: "ru", preferred_timezone: "Asia/Tomsk", totp_enabled: false, rating: 4.8 },
+  { id: 208, sso_id: "sso-tpz-packer", phone: "+7 (904) 025-04-23", first_name: "Людмила", last_name: "Насурова", middle_name: "Олеговна", type: "STAFF", hired_at: "2025-05-01", archived: false, preferred_locale: "ru", preferred_timezone: "Asia/Tomsk", totp_enabled: false, rating: 4.3 },
 ];

@@ -365,4 +365,27 @@ export const MOCK_STORES: Store[] = [
     archived: false,
     geo: { lat: 56.4634, lng: 84.9491 },
   },
+
+  // ═════════════════════════════════════════════════════════════════
+  // ТехПродЗдрав — швейный цех в Томске. Источник Excel.
+  // 1 объект type=WORKSHOP. 9 сотрудников из списка операций.
+  // ═════════════════════════════════════════════════════════════════
+  {
+    id: 100,
+    name: "ТехПродЗдрав, швейный цех",
+    external_code: "TPZ-WORKSHOP-001",
+    address: "пр. Кирова, 56",
+    city: "Томск",
+    store_type: "Швейный цех",
+    object_type: "WORKSHOP",
+    object_format: "SEWING_WORKSHOP",
+    organization_id: "org-tehprod",
+    legal_entity_id: 1,
+    region: "Томская обл.",
+    supervisor_id: 3,
+    lama_synced_at: daysAgo(0),
+    active: true,
+    archived: false,
+    geo: { lat: 56.4842, lng: 84.9711 },
+  },
 ];
