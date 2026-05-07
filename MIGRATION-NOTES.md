@@ -1,9 +1,22 @@
 # MIGRATION NOTES — admin ↔ backend
 
-> Документ для backend-разработчика. Сюда смотреть когда планируешь дотягивать
-> backend под admin model. Чтобы интеграция была бесшовной — admin сохраняет
-> весь свой богатый model, а backend постепенно расширяет Pydantic schemas
-> и добавляет endpoint'ы.
+> **Привет, backend-разработчик!** Этот документ — карта что у нас уже совпадает,
+> что у нас admin-only и просит твоей поддержки. Цель — сделать переключение
+> admin с моков на твой backend бесшовным, без переписывания UI.
+>
+> Принципы:
+> 1. Admin = source of truth по бизнес-модели (богаче backend ~3x)
+> 2. Имена в коде совпадают где возможно (`Operation`, `Task`, `assignee_id`)
+> 3. Каждое изменение admin model → синхронизируется в trio:
+>    `lib/api/_backend-types.ts` + `lib/api/<feature>.ts` + этот документ
+> 4. Никакого lossy dispatch — admin поля сохраняются, backend дотягивает
+>
+> Где смотреть:
+> - **Полный inventory endpoints** — `lib/api/README.md`
+> - **TS-зеркала твоих Pydantic schemas** — `lib/api/_backend-types.ts`
+> - **Raw wrappers** (готовые fetch'и к твоим endpoints) — `lib/api/<service>.ts` функции `*OnBackend()` / `*FromBackend()`
+> - **Dev-инструмент тестирования** — `/dev/api-token` (вставь JWT, нажми «Тест /users/me»)
+> - **Поля admin-extensions** — везде в `lib/types/index.ts` отмечены `@admin-extension`
 
 ---
 

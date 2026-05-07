@@ -30,11 +30,17 @@ export type ObjectType =
   | "OFFICE"
   | "WAREHOUSE_HUB";
 
+/**
+ * Privileges работника. Backend: CASHIER, SALES_FLOOR, SELF_CHECKOUT, WAREHOUSE.
+ * PRODUCTION_LINE — @admin-extension для multi-tenant ТехПродЗдрав (швейный цех).
+ * Backend дотянет когда добавится не-ритейл клиент.
+ */
 export type Permission =
   | "CASHIER"
   | "SALES_FLOOR"
   | "SELF_CHECKOUT"
   | "WAREHOUSE"
+  /** @admin-only — для производственных клиентов; backend пока не отдаёт. */
   | "PRODUCTION_LINE";
 
 /** 1=worker, 2=manager в БД */
@@ -245,6 +251,14 @@ export type BudgetPeriod = "DAY" | "WEEK" | "MONTH";
  * source — как заведён исполнитель (руками или из внешней HR)
  * rating — общий рейтинг (для STAFF и FREELANCE), агенту НЕ показывается
  */
+/**
+ * User. Совпадает с backend `UserResponse` по основным полям.
+ * Admin-extensions (помечены `@admin-extension`):
+ *  - phone/email/first_name/etc. — backend отдаёт в /users/me, в /users/{id} нет (надо дописать)
+ *  - type, freelancer_status, agent_id, oferta_accepted_at, rating, source — модуль внештата
+ *  - hired_at, archived/archive_reason — admin profile fields
+ *  - avatar_url — backend отдаёт photo_url в /users/me, в /users/{id} нет
+ */
 export interface User {
   id: number;
   sso_id: string;
@@ -253,32 +267,47 @@ export interface User {
   first_name: string;
   last_name: string;
   middle_name?: string;
+  /** @admin-extension: backend отдаёт photo_url только в /users/me. */
   avatar_url?: string;
+  /** @admin-extension: STAFF|FREELANCE — backend пока знает только employee_type. */
   type: EmployeeType;
+  /** @admin-extension: для счётчика стажа в карточке. */
   hired_at?: string;
+  /** @admin-extension: backend не различает archived. */
   archived: boolean;
   archive_reason?: ArchiveReason;
+  /** @admin-extension. */
   preferred_locale?: Locale;
   preferred_timezone?: string;
   totp_enabled?: boolean;
+  /** @admin-extension: модуль внештата. */
   freelancer_status?: FreelancerStatus;
+  /** @admin-extension: модуль внештата (агентство). */
   agent_id?: string | null;
+  /** @admin-extension: модуль внештата (оферта). */
   oferta_accepted_at?: string | null;
+  /** @admin-extension: рейтинг для распределения задач. */
   rating?: number;
+  /** @admin-extension: HR-sync source. */
   source?: "MANUAL" | "EXTERNAL_SYNC";
-  /** Внешний ID из LAMA (employee_id из их БД). Используется для sync с прод-источником. */
+  /** Внешний ID из LAMA (employee_id из их БД). Backend имеет (external_id в UserResponse). */
   external_id?: number;
 }
 
-/** ФОРМАЛЬНАЯ должность из штатки */
+/**
+ * ФОРМАЛЬНАЯ должность из штатки.
+ * Совпадает с backend `PositionResponse` (id, code, name, description, role).
+ * Admin-extensions: default_rank, org_id (multi-tenant).
+ */
 export interface Position {
   id: number;
   code: string;
   name: string;
   description?: string;
   role_id: DbRoleId;
+  /** @admin-extension: дефолтный разряд при создании сотрудника. */
   default_rank?: number;
-  /** Multi-tenant scope: организация-владелец. Опционально для backward compat. */
+  /** @admin-extension: multi-tenant scope. */
   org_id?: string;
 }
 
@@ -358,21 +387,34 @@ export type ObjectFormat =
  * чтобы фильтрация по тенанту не зависела от вычислений через legal_entity.
  * object_format — формат объекта (нужен для маппинга на ServiceNorm в модуле внештата)
  */
+/**
+ * Store. Backend отдаёт минимум {id, name, address, external_code, created_at}
+ * в /users/stores. Admin использует много extras — backend дотянет.
+ *
+ * Совпадение с backend StoreResponse: id, name, address, external_code.
+ * Admin-extensions: organization_id, legal_entity_id, manager_id, supervisor_id,
+ * object_type/object_format/format_shop_name, geo, lama_*, internal_company.
+ */
 export interface Store {
   id: number;
   name: string;
   external_code: string;
   address: string;
-  /** @deprecated Backend не возвращает; админ-only для UI отображения. Optional для бесшовного swap. */
+  /** @admin-extension: backend не возвращает (admin UI metadata). */
   city?: string;
-  /** @deprecated Используй object_format / format_shop_name. Optional для swap. */
+  /** @admin-extension: legacy. Используй object_format / format_shop_name. */
   store_type?: string;
+  /** @admin-extension: backend не различает (всегда STORE). */
   object_type: ObjectType;
+  /** @admin-extension: multi-tenant scoping (admin invent). */
   organization_id: string;
+  /** @admin-extension: FK на user (директор магазина). */
   manager_id?: number;
+  /** @admin-extension: FK на user (супервайзер). */
   supervisor_id?: number;
-  /** @deprecated Backend не возвращает; админ-only метаданные. Optional для swap. */
+  /** @admin-extension: для региональной отчётности. */
   region?: string;
+  /** @admin-extension: backend не имеет таблицы legal_entity. */
   legal_entity_id: number;
   /** Полный объект юрлица (зеркалит LAMA /shops/.internal_company). */
   internal_company?: LegalEntity;
@@ -461,20 +503,25 @@ export interface TaskHistoryBrief {
  * id — UUID (string).
  * assignee_id, creator_id, store_id, zone_id, work_type_id — internal int (number).
  *
- * ПОЛЯ В РАЗРАБОТКЕ (модуль внештата + AI extensions):
- * - goal_id — ссылка на Goal (модуль AI-целей)
- * - bonus_points — баллы премии (модуль бонусов)
- * - marketing_channel_target — название канала маркетинга для fashion-кейса
- * - freelance_application_id / freelance_assignment_id / service_id — связка с модулем внештата
- * - ai_suggestion_id — ссылка на исходное предложение AI если source='AI'
+ * Совпадает с backend `TaskResponse` (svc_tasks/api/tasks.py) по основным полям.
+ * Admin-extensions (помечены `@admin-extension` в JSDoc полей):
+ *  - goal_id, bonus_points, marketing_channel_target — модуль целей/бонусов
+ *  - freelance_application_id/assignment_id, service_id — модуль внештата
+ *  - ai_suggestion_id — модуль AI
+ *  - history_brief.transferred_* — admin transfer flow
+ *  - kind: CHAIN — admin цепочки задач (backend пока только SINGLE)
+ *  - is_overdue, editable_by_store — UI-helpers
  */
 export interface Task {
   id: string;
   title: string;
   description: string;
   type: TaskType;
+  /** @admin-extension: SINGLE|CHAIN. Backend пока только SINGLE. */
   kind: TaskKind;
+  /** @admin-extension: WFM|LAMA|MANAGER|AI|PLANNED. Backend пока возвращает строку source. */
   source: TaskSource;
+  /** @admin-extension: ссылка на AI suggestion если source=AI. */
   ai_suggestion_id?: string | null;
   planned_minutes: number;
   store_id: number;
@@ -491,13 +538,16 @@ export interface Task {
   assignee_name?: string | null;
   /** Задача может быть назначена на зону (permission) вместо конкретного исполнителя */
   assigned_to_permission?: Permission | null;
+  /** @admin-extension: следующий исполнитель в цепочке (kind=CHAIN). */
   next_assignee_id?: number | null;
   next_assignee_name?: string | null;
+  /** @admin-extension: позиция в цепочке (1, 2, 3...). */
   chain_position?: number;
   state: TaskState;
   review_state: TaskReviewState;
   acceptance_policy: AcceptancePolicy;
   requires_photo: boolean;
+  /** @admin-extension: override на уровне задачи. */
   requires_photo_override?: boolean;
   comment?: string;
   review_comment?: string;
@@ -505,19 +555,30 @@ export interface Task {
   report_image_url?: string;
   time_start?: string;
   time_end?: string;
+  /** @admin-extension: backend не различает archived. */
   archived: boolean;
+  /** @admin-extension: причина архивации. */
   archive_reason?: ArchiveReason;
+  /** @admin-extension. */
   archived_at?: string;
+  /** @admin-extension. */
   archived_by?: number;
-  /** Краткая история: когда открыта, интервалы пауз, когда завершена */
+  /** Краткая история: когда открыта, интервалы пауз, когда завершена.
+   *  Backend отдаёт похожую history_brief, но без transferred_*. */
   history_brief?: TaskHistoryBrief;
+  /** @admin-extension: модуль целей. */
   goal_id?: string | null;
+  /** @admin-extension: модуль бонусов. */
   bonus_points?: number | null;
+  /** @admin-extension: для fashion-сегмента. */
   marketing_channel_target?: string | null;
+  /** @admin-extension: модуль внештата. */
   freelance_application_id?: string | null;
+  /** @admin-extension: модуль внештата. */
   freelance_assignment_id?: string | null;
+  /** @admin-extension: модуль внештата (services). */
   service_id?: string | null;
-  /** Server-computed: true if task passed its deadline without completion */
+  /** @admin-extension: server-computed на нашей стороне (backend пока не считает). */
   is_overdue?: boolean;
   /**
    * Приоритет 1-100 (LAMA-стандарт):

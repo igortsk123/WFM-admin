@@ -67,6 +67,23 @@ export default function DevApiTokenPage() {
             </div>
           </div>
 
+          <div className="text-xs text-muted-foreground space-y-1 pt-2 border-t border-border">
+            <div className="font-medium text-foreground">Документация для backend-разработчика:</div>
+            <div>
+              📋 <code>lib/api/README.md</code> — полный inventory endpoints (backend-mirrored / admin-only)
+            </div>
+            <div>
+              📋 <code>MIGRATION-NOTES.md</code> (root) — что admin использует поверх backend, по сущностям
+            </div>
+            <div>
+              📋 <code>lib/api/_backend-types.ts</code> — TS-зеркала Pydantic schemas
+            </div>
+            <div>
+              📋 <code>lib/api/&lt;service&gt;.ts</code> — raw fetch wrappers c суффиксом{" "}
+              <code>*OnBackend</code> / <code>*FromBackend</code>
+            </div>
+          </div>
+
           <div className="space-y-2">
             <label className="text-sm font-medium">JWT (Bearer token)</label>
             <Input
