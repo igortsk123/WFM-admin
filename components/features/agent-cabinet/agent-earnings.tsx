@@ -10,7 +10,6 @@ import {
   AlertCircle,
   ArrowUpDown,
   BadgeCheck,
-  CalendarRange,
   ChevronLeft,
   ChevronRight,
   Clock,
@@ -25,6 +24,7 @@ import { getMyEarnings, getMyFreelancers, getMyPayoutById } from "@/lib/api/agen
 import { PageHeader } from "@/components/shared/page-header";
 import { KpiCard } from "@/components/shared/kpi-card";
 import { EmptyState } from "@/components/shared/empty-state";
+import { DateRangePicker } from "@/components/shared/date-range-picker";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -388,70 +388,15 @@ function EarningDetailSheet({
 // FILTER BAR
 // ═══════════════════════════════════════════════════════════════════
 
-function DateRangePicker({
-  from,
-  to,
-  onChange,
-  label,
-}: {
-  from: string;
-  to: string;
-  onChange: (from: string, to: string) => void;
-  label: string;
-}) {
-  const [open, setOpen] = useState(false);
-  const [localFrom, setLocalFrom] = useState(from);
-  const [localTo, setLocalTo] = useState(to);
+function parseIsoDate(s: string | null | undefined): Date | undefined {
+  if (!s) return undefined;
+  const d = new Date(s);
+  return isNaN(d.getTime()) ? undefined : d;
+}
 
-  function apply() {
-    onChange(localFrom, localTo);
-    setOpen(false);
-  }
-
-  const active = from !== defaultDateFrom() || to !== defaultDateTo();
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant={active ? "secondary" : "outline"}
-          size="sm"
-          className="h-8 gap-1.5 text-xs"
-          aria-expanded={open}
-        >
-          <CalendarRange className="size-3.5" aria-hidden="true" />
-          {label}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-72 p-4" align="start">
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-muted-foreground" htmlFor="date-from">С</label>
-            <input
-              id="date-from"
-              type="date"
-              value={localFrom}
-              onChange={(e) => setLocalFrom(e.target.value)}
-              className="h-8 rounded-md border border-border bg-background px-2 text-sm text-foreground"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-muted-foreground" htmlFor="date-to">По</label>
-            <input
-              id="date-to"
-              type="date"
-              value={localTo}
-              onChange={(e) => setLocalTo(e.target.value)}
-              className="h-8 rounded-md border border-border bg-background px-2 text-sm text-foreground"
-            />
-          </div>
-          <Button size="sm" className="w-full h-8 text-xs" onClick={apply}>
-            Применить
-          </Button>
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
+function toIsoDate(d: Date | undefined): string {
+  if (!d) return "";
+  return d.toISOString().slice(0, 10);
 }
 
 function FreelancerCombobox({
@@ -870,10 +815,16 @@ export function AgentEarnings() {
         aria-label="Filters"
       >
         <DateRangePicker
-          from={dateFrom}
-          to={dateTo}
-          onChange={(f, to) => setParams({ dateFrom: f, dateTo: to, page: "1" })}
-          label={t("filters.date_range")}
+          from={parseIsoDate(dateFrom)}
+          to={parseIsoDate(dateTo)}
+          onChange={(from, to) =>
+            setParams({
+              dateFrom: from ? toIsoDate(from) : defaultDateFrom(),
+              dateTo: to ? toIsoDate(to) : defaultDateTo(),
+              page: "1",
+            })
+          }
+          placeholder={t("filters.date_range")}
         />
         <FreelancerCombobox
           value={freelancerId}

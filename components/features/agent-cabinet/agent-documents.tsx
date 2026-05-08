@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import {
   AlertCircle,
-  CalendarRange,
   ChevronDown,
   Download,
   FileText,
@@ -16,6 +15,7 @@ import { getMyDocuments, type AgentDocument, type AgentDocumentType } from "@/li
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
 import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet";
+import { DateRangePicker } from "@/components/shared/date-range-picker";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -272,109 +272,19 @@ function TypeCombobox({
 }
 
 // ═══════════════════════════════════════════════════════════════════
-// FILTER — DATE RANGE PICKER
+// DATE STRING ↔ DATE ADAPTER (filters store ISO date strings;
+// shared DateRangePicker uses Date | undefined)
 // ═══════════════════════════════════════════════════════════════════
 
-function DateRangePicker({
-  from,
-  to,
-  onChange,
-  tLabel,
-  tFrom,
-  tTo,
-  tApply,
-}: {
-  from: string;
-  to: string;
-  onChange: (from: string, to: string) => void;
-  tLabel: string;
-  tFrom: string;
-  tTo: string;
-  tApply: string;
-}) {
-  const [open, setOpen] = useState(false);
-  const [localFrom, setLocalFrom] = useState(from);
-  const [localTo, setLocalTo] = useState(to);
+function parseIsoDate(s: string | null | undefined): Date | undefined {
+  if (!s) return undefined;
+  const d = new Date(s);
+  return isNaN(d.getTime()) ? undefined : d;
+}
 
-  const active = !!(from || to);
-
-  function apply() {
-    onChange(localFrom, localTo);
-    setOpen(false);
-  }
-
-  function clear() {
-    setLocalFrom("");
-    setLocalTo("");
-    onChange("", "");
-  }
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant={active ? "secondary" : "outline"}
-          size="sm"
-          className="h-9 gap-1.5 text-sm"
-          aria-expanded={open}
-        >
-          <CalendarRange className="size-3.5" aria-hidden="true" />
-          <span>{tLabel}</span>
-          {active && (
-            <span
-              role="button"
-              tabIndex={0}
-              aria-label="Clear"
-              className="ml-0.5 rounded-full hover:text-destructive p-0.5"
-              onClick={(e) => {
-                e.stopPropagation();
-                clear();
-              }}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") {
-                  e.stopPropagation();
-                  clear();
-                }
-              }}
-            >
-              <X className="size-3" />
-            </span>
-          )}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-72 p-4" align="start">
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-muted-foreground" htmlFor="doc-date-from">
-              {tFrom}
-            </label>
-            <input
-              id="doc-date-from"
-              type="date"
-              value={localFrom}
-              onChange={(e) => setLocalFrom(e.target.value)}
-              className="h-9 rounded-md border border-border bg-background px-2 text-sm text-foreground"
-            />
-          </div>
-          <div className="flex flex-col gap-1">
-            <label className="text-xs text-muted-foreground" htmlFor="doc-date-to">
-              {tTo}
-            </label>
-            <input
-              id="doc-date-to"
-              type="date"
-              value={localTo}
-              onChange={(e) => setLocalTo(e.target.value)}
-              className="h-9 rounded-md border border-border bg-background px-2 text-sm text-foreground"
-            />
-          </div>
-          <Button size="sm" className="w-full h-9 text-sm" onClick={apply}>
-            {tApply}
-          </Button>
-        </div>
-      </PopoverContent>
-    </Popover>
-  );
+function toIsoDate(d: Date | undefined): string {
+  if (!d) return "";
+  return d.toISOString().slice(0, 10);
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -644,13 +554,13 @@ export function AgentDocuments() {
         tAll={t("filters.type_all")}
       />
       <DateRangePicker
-        from={filters.dateFrom}
-        to={filters.dateTo}
-        onChange={(from, to) => setFilters((f) => ({ ...f, dateFrom: from, dateTo: to }))}
-        tLabel={t("filters.date_range")}
-        tFrom={t("filters.date_from")}
-        tTo={t("filters.date_to")}
-        tApply={t("filters.apply")}
+        from={parseIsoDate(filters.dateFrom)}
+        to={parseIsoDate(filters.dateTo)}
+        onChange={(from, to) =>
+          setFilters((f) => ({ ...f, dateFrom: toIsoDate(from), dateTo: toIsoDate(to) }))
+        }
+        placeholder={t("filters.date_range")}
+        clearLabel={tCommon("clearAll")}
       />
       {activeFilterCount > 0 && (
         <Button

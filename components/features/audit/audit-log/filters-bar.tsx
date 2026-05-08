@@ -18,7 +18,7 @@ import { FilterChip } from "@/components/shared/filter-chip";
 import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet";
 
 import type { FilterState } from "./_shared";
-import { DateRangePicker } from "./date-range-picker";
+import { DateRangePicker } from "@/components/shared/date-range-picker";
 import { MultiSelectCombobox } from "@/components/shared/multi-select-combobox";
 
 export interface ActiveFilterChip {

@@ -67,9 +67,8 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
-import { Calendar } from "@/components/ui/calendar"
 import { format } from "date-fns"
-import { CalendarIcon, ChevronsUpDown, Check } from "lucide-react"
+import { ChevronsUpDown, Check } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 import { PageHeader } from "@/components/shared/page-header"
@@ -79,6 +78,7 @@ import { ReviewStateBadge } from "@/components/shared/review-state-badge"
 import { UserCell } from "@/components/shared/user-cell"
 import { ResponsiveDataTable } from "@/components/shared/responsive-data-table"
 import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet"
+import { DateRangePicker } from "@/components/shared/date-range-picker"
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -193,72 +193,6 @@ function MultiCombobox({ options, value, onChange, placeholder, className }: Mul
             </CommandGroup>
           </CommandList>
         </Command>
-      </PopoverContent>
-    </Popover>
-  )
-}
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Date Range Picker
-// ─────────────────────────────────────────────────────────────────────────────
-
-interface DateRangePickerProps {
-  from?: Date
-  to?: Date
-  onFromChange: (d?: Date) => void
-  onToChange: (d?: Date) => void
-  placeholder: string
-}
-
-function DateRangePicker({ from, to, onFromChange, onToChange, placeholder }: DateRangePickerProps) {
-  const [open, setOpen] = React.useState(false)
-
-  const label = from && to
-    ? `${format(from, "dd.MM")} – ${format(to, "dd.MM")}`
-    : from
-    ? `с ${format(from, "dd.MM")}`
-    : to
-    ? `по ${format(to, "dd.MM")}`
-    : null
-
-  const hasValue = from || to
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={cn(
-            "h-9 justify-start font-normal",
-            hasValue ? "px-3" : "px-2.5",
-          )}
-          aria-label={placeholder}
-        >
-          <CalendarIcon className={cn("size-4 shrink-0 opacity-60", label && "mr-2")} />
-          {label && <span className="text-xs whitespace-nowrap">{label}</span>}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-3" align="start">
-        <div className="flex gap-3">
-          <div>
-            <p className="text-xs text-muted-foreground mb-1">От</p>
-            <Calendar mode="single" selected={from} onSelect={onFromChange} />
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground mb-1">До</p>
-            <Calendar mode="single" selected={to} onSelect={onToChange} />
-          </div>
-        </div>
-        {(from || to) && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="w-full mt-2"
-            onClick={() => { onFromChange(undefined); onToChange(undefined); setOpen(false) }}
-          >
-            Сбросить период
-          </Button>
-        )}
       </PopoverContent>
     </Popover>
   )
@@ -905,8 +839,7 @@ export function TasksList() {
       <DateRangePicker
         from={dateFrom}
         to={dateTo}
-        onFromChange={(d) => { setDateFrom(d); setPage(1) }}
-        onToChange={(d) => { setDateTo(d); setPage(1) }}
+        onChange={(from, to) => { setDateFrom(from); setDateTo(to); setPage(1) }}
         placeholder={t("filters.date_range")}
       />
     </div>
@@ -1050,8 +983,7 @@ export function TasksList() {
                 <DateRangePicker
                   from={dateFrom}
                   to={dateTo}
-                  onFromChange={setDateFrom}
-                  onToChange={setDateTo}
+                  onChange={(from, to) => { setDateFrom(from); setDateTo(to) }}
                   placeholder={t("filters.date_range")}
                 />
               </div>

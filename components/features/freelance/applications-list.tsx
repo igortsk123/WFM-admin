@@ -80,6 +80,7 @@ import { ResponsiveDataTable } from "@/components/shared/responsive-data-table"
 import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet"
 import { ConfirmDialog } from "@/components/shared/confirm-dialog"
 import { ApplicationStatusBadge } from "@/components/shared/application-status-badge"
+import { DateRangePicker } from "@/components/shared/date-range-picker"
 
 // ─────────────────────────────────────────────────────────────────
 // CONSTANTS
@@ -301,67 +302,20 @@ function SingleSelectCombobox({
 }
 
 // ─────────────────────────────────────────────────────────────────
-// DATE RANGE PICKER (simple two-input)
+// DATE STRING ↔ DATE ADAPTER (URL state stores ISO date strings;
+// shared DateRangePicker uses Date | undefined)
 // ─────────────────────────────────────────────────────────────────
 
-interface DateRangePickerProps {
-  from: string
-  to: string
-  onFromChange: (v: string) => void
-  onToChange: (v: string) => void
-  placeholder: string
+function parseIsoDate(s: string | null | undefined): Date | undefined {
+  if (!s) return undefined
+  const d = new Date(s)
+  return isNaN(d.getTime()) ? undefined : d
 }
 
-function DateRangePicker({ from, to, onFromChange, onToChange, placeholder }: DateRangePickerProps) {
-  const [open, setOpen] = React.useState(false)
-  const displayLabel = from || to
-    ? [from, to].filter(Boolean).join(" — ")
-    : placeholder
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          className={cn(
-            "h-9 justify-between font-normal text-sm min-w-[160px]",
-            (from || to) ? "text-foreground" : "text-muted-foreground"
-          )}
-        >
-          <Calendar className="mr-2 size-3.5 shrink-0 opacity-60" aria-hidden="true" />
-          <span className="truncate flex-1 text-left">{displayLabel}</span>
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-64 p-3 space-y-3" align="start">
-        <div className="space-y-1.5">
-          <label className="text-xs text-muted-foreground">От</label>
-          <input
-            type="date"
-            value={from}
-            onChange={(e) => onFromChange(e.target.value)}
-            className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-          />
-        </div>
-        <div className="space-y-1.5">
-          <label className="text-xs text-muted-foreground">До</label>
-          <input
-            type="date"
-            value={to}
-            onChange={(e) => onToChange(e.target.value)}
-            className="w-full h-9 rounded-md border border-input bg-background px-3 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-          />
-        </div>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="w-full h-8 text-xs"
-          onClick={() => { onFromChange(""); onToChange(""); setOpen(false) }}
-        >
-          Сбросить даты
-        </Button>
-      </PopoverContent>
-    </Popover>
-  )
+function toIsoDate(d: Date | undefined): string {
+  if (!d) return ""
+  // YYYY-MM-DD slice (matches existing nuqs URL state format)
+  return d.toISOString().slice(0, 10)
 }
 
 // ─────────────────────────────────────────────────────────────────
@@ -868,10 +822,13 @@ export function ApplicationsList() {
         placeholder="Тип работ"
       />
       <DateRangePicker
-        from={dateFromParam}
-        to={dateToParam}
-        onFromChange={(v) => { void setDateFromParam(v || null); void setPageParam(null) }}
-        onToChange={(v) => { void setDateToParam(v || null); void setPageParam(null) }}
+        from={parseIsoDate(dateFromParam)}
+        to={parseIsoDate(dateToParam)}
+        onChange={(from, to) => {
+          void setDateFromParam(from ? toIsoDate(from) : null)
+          void setDateToParam(to ? toIsoDate(to) : null)
+          void setPageParam(null)
+        }}
         placeholder="Дата выхода"
       />
       {externalHrEnabled && (
@@ -1001,10 +958,13 @@ export function ApplicationsList() {
               <div className="space-y-1.5">
                 <label className="text-sm font-medium">Дата выхода</label>
                 <DateRangePicker
-                  from={dateFromParam}
-                  to={dateToParam}
-                  onFromChange={(v) => { void setDateFromParam(v || null); void setPageParam(null) }}
-                  onToChange={(v) => { void setDateToParam(v || null); void setPageParam(null) }}
+                  from={parseIsoDate(dateFromParam)}
+                  to={parseIsoDate(dateToParam)}
+                  onChange={(from, to) => {
+                    void setDateFromParam(from ? toIsoDate(from) : null)
+                    void setDateToParam(to ? toIsoDate(to) : null)
+                    void setPageParam(null)
+                  }}
                   placeholder="Период"
                 />
               </div>
