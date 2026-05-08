@@ -691,6 +691,10 @@ function DistributionSheet({
   t,
 }: DistributionSheetProps) {
   const [allocations, setAllocations] = React.useState<AllocationState>({})
+  // Фильтр «только подходящие зоны» — показывать сотрудников у кого есть
+  // зона задачи в их zones (включая историю работы). По умолчанию включен
+  // если у задачи есть zone_name.
+  const [zoneFilterEnabled, setZoneFilterEnabled] = React.useState(true)
 
   // Заполняем sheet существующим планом для этой задачи (если есть).
   // Без этого user открыл бы пустой editor поверх уже наколдованного auto-плана.
@@ -701,6 +705,7 @@ function DistributionSheet({
         initial[a.userId] = a.minutes
       }
       setAllocations(initial)
+      setZoneFilterEnabled(true) // reset на каждый новый task
     }
   }, [task?.id, initialAllocations])
 
@@ -738,8 +743,8 @@ function DistributionSheet({
 
   return (
     <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
-      <SheetContent side="right" className="w-full sm:max-w-lg p-0 flex flex-col">
-        <SheetHeader className="px-4 pt-4 pb-3 border-b">
+      <SheetContent side="right" className="w-full sm:max-w-lg p-0 flex flex-col h-full max-h-screen">
+        <SheetHeader className="px-4 pt-4 pb-3 border-b shrink-0">
           <SheetTitle className="text-base text-left pr-8">
             {t("sheet.title", { taskTitle: task.title })}
           </SheetTitle>
@@ -753,7 +758,7 @@ function DistributionSheet({
         </SheetHeader>
 
         {/* Distribution summary */}
-        <div className="px-4 py-3 bg-muted/50 border-b">
+        <div className="px-4 py-3 bg-muted/50 border-b shrink-0">
           <div className="flex items-center justify-between gap-2 mb-2 flex-wrap">
             <span className="text-sm font-medium">
               {t("sheet.distributed_summary", {
@@ -783,13 +788,39 @@ function DistributionSheet({
           </div>
         </div>
 
+        {/* Zone filter toggle (если у task есть zone_name) */}
+        {task.zone_name && task.zone_name !== "Без зоны" && (() => {
+          const matched = employees.filter((e) => e.user.zones?.includes(task.zone_name))
+          return (
+            <div className="px-4 py-2 border-b shrink-0 flex items-center justify-between gap-2 text-xs">
+              <label className="flex items-center gap-2 cursor-pointer select-none">
+                <input
+                  type="checkbox"
+                  checked={zoneFilterEnabled}
+                  onChange={(e) => setZoneFilterEnabled(e.target.checked)}
+                  className="size-4"
+                />
+                <span>Только подходящие зоны</span>
+              </label>
+              <span className="text-muted-foreground">
+                {zoneFilterEnabled
+                  ? `${matched.length} из ${employees.length}`
+                  : `${employees.length} всего`}
+              </span>
+            </div>
+          )
+        })()}
+
         {/* Employee list */}
-        <ScrollArea className="flex-1 px-4 py-3">
+        <ScrollArea className="flex-1 min-h-0 px-4 py-3">
           <p className="text-xs font-medium text-muted-foreground mb-3">
             {t("sheet.employee_list_header")}
           </p>
           <div className="space-y-3">
-            {employees.map((emp) => {
+            {(zoneFilterEnabled && task.zone_name && task.zone_name !== "Без зоны"
+              ? employees.filter((e) => e.user.zones?.includes(task.zone_name))
+              : employees
+            ).map((emp) => {
               const currentAllocation = allocations[emp.user.id] || 0
               const fullName = getFullName(emp.user.first_name, emp.user.last_name)
               const freeMinutes = emp.shift_total_min - emp.assigned_min

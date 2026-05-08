@@ -29,6 +29,7 @@ import {
 } from "@/lib/mock-data/_indexes";
 import { USE_REAL_API, apiUrl } from "./_config";
 import { backendGet } from "./_client";
+import { getCurrentOrgId } from "./_org-context";
 import type { BackendStoreListData } from "./_backend-types";
 
 const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
@@ -394,6 +395,12 @@ export async function getStores(
   } = params;
 
   let filtered = [...MOCK_STORES];
+
+  // Org scope: магазины только текущей организации (org-context).
+  // Без этого в Combobox'ах при контексте «ЛАМА» появлялись магазины
+  // ТехПродЗдрав (швейный цех) и base-mock'и из других orgs.
+  const currentOrgId = getCurrentOrgId();
+  filtered = filtered.filter((s) => s.organization_id === currentOrgId);
 
   // Archived (default = false → только активные)
   filtered = filtered.filter((s) => s.archived === archived);

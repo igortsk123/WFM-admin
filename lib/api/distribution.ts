@@ -287,9 +287,22 @@ export async function getStoreEmployeesUtilization(
     const hasBonusTask = assignedTasks.some((t) => t.type === "BONUS");
 
     // Calculate utilization percentage
-    const utilizationPct = shiftTotalMin > 0 
-      ? Math.round((assignedMin / shiftTotalMin) * 100) 
+    const utilizationPct = shiftTotalMin > 0
+      ? Math.round((assignedMin / shiftTotalMin) * 100)
       : 0;
+
+    // Зоны сотрудника: собираем все unique zone_name из его исторических
+    // задач (TASKS_BY_ASSIGNEE — все его задачи во всех магазинах). Это
+    // даёт реалистичный набор зон где сотрудник работал, для фильтра
+    // «показать только подходящих» в DistributionSheet.
+    const zonesFromHistory = new Set<string>();
+    for (const t of userTasks) {
+      if (t.zone_name && t.zone_name !== "Без зоны") {
+        zonesFromHistory.add(t.zone_name);
+      }
+    }
+    // Также добавим зону текущей смены если есть.
+    if (shift.zone_name) zonesFromHistory.add(shift.zone_name);
 
     return {
       user: {
@@ -299,7 +312,7 @@ export async function getStoreEmployeesUtilization(
         middle_name: user?.middle_name,
         avatar_url: user?.avatar_url,
         position_name: shift.zone_name,
-        zones: shift.zone_name ? [shift.zone_name] : [],
+        zones: Array.from(zonesFromHistory),
       },
       shift_total_min: shiftTotalMin,
       assigned_min: assignedMin,
