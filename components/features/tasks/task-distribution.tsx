@@ -35,6 +35,7 @@ import {
   assignTaskToUser,
   autoDistribute,
   notifyOverShiftAssignment,
+  getActiveLamaStoreIds,
   type OverShiftEntry,
 } from "@/lib/api/distribution"
 import { getStores } from "@/lib/api/stores"
@@ -1658,17 +1659,19 @@ export function TaskDistribution() {
       setIsLoadingStores(true)
       try {
         const response = await getStores({})
-        setStores(response.data)
-        // Default: URL ?store=N если он валидный для текущего org-scope, иначе
-        // первый магазин из загруженных (распределение «по сети» бессмысленно —
-        // распределяем задачи в один конкретный магазин).
-        if (response.data.length > 0) {
+        // Фильтр /tasks/distribute: показываем только магазины у которых есть
+        // реальные LAMA-блоки (получены через snapshot fetch). Магазины без
+        // данных скрываем — они всё равно покажут только generated fallback,
+        // что менее интересно для оператора.
+        const activeIds = getActiveLamaStoreIds()
+        const lamaStores = response.data.filter((s) => activeIds.has(s.id))
+        setStores(lamaStores)
+        if (lamaStores.length > 0) {
           const fromUrl = ctxStoreId !== null
-            ? response.data.find((s) => s.id === ctxStoreId) ?? null
+            ? lamaStores.find((s) => s.id === ctxStoreId) ?? null
             : null
-          const defaultStore = fromUrl ?? response.data[0]
+          const defaultStore = fromUrl ?? lamaStores[0]
           setSelectedStoreIdLocal(defaultStore.id)
-          // Persist в URL чтобы next-screen открылся на том же магазине
           if (!fromUrl) void setCtxStoreId(String(defaultStore.id))
         }
       } catch (error) {

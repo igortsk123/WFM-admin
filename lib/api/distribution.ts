@@ -3,6 +3,7 @@ import { MOCK_TASKS } from "@/lib/mock-data/tasks";
 import { MOCK_USERS } from "@/lib/mock-data/users";
 import { MOCK_NOTIFICATIONS } from "@/lib/mock-data/notifications";
 import { MOCK_UNASSIGNED_BLOCKS } from "@/lib/mock-data/_lama-unassigned-blocks";
+import { LAMA_EMPLOYEE_ZONES } from "@/lib/mock-data/_lama-employee-zones";
 import {
   USERS_BY_ID,
   SHIFTS_BY_STORE_DATE,
@@ -314,20 +315,22 @@ export async function getStoreEmployeesUtilization(
       ? Math.round((assignedMin / shiftTotalMin) * 100)
       : 0;
 
-    // Зоны сотрудника: собираем все unique zone_name из его исторических
-    // задач (TASKS_BY_ASSIGNEE — все его задачи во всех магазинах).
+    // Зоны сотрудника — приоритет источников:
+    // 1. LAMA_EMPLOYEE_ZONES — реальные зоны из snapshot'ов (хоть 1 task в зоне → работает).
+    // 2. История admin-tasks (mock TASKS_BY_ASSIGNEE).
+    // 3. Зона текущей смены.
+    // 4. Fallback: все зоны магазина (чтобы DistributionSheet показывал хоть кого-то).
     const zonesFromHistory = new Set<string>();
+    const lamaZones = LAMA_EMPLOYEE_ZONES[shift.user_id];
+    if (lamaZones) {
+      for (const z of lamaZones) zonesFromHistory.add(z);
+    }
     for (const t of userTasks) {
       if (t.zone_name && t.zone_name !== "Без зоны") {
         zonesFromHistory.add(t.zone_name);
       }
     }
-    // Зону текущей смены — тоже.
     if (shift.zone_name) zonesFromHistory.add(shift.zone_name);
-    // Если у сотрудника пусто (например у LAMA новенький, или для блока
-    // «Выкладка ФРОВ» нет совпадений) — присваиваем все зоны магазина.
-    // Иначе фильтр «только подходящие зоны» в DistributionSheet даст
-    // пустой список и user не сможет распределить блок.
     if (zonesFromHistory.size === 0) {
       for (const z of storeZones) zonesFromHistory.add(z);
     }
@@ -386,6 +389,22 @@ export async function getStoreShiftsToday(
 const blockState: Map<string, UnassignedTaskBlock> = new Map(
   MOCK_UNASSIGNED_BLOCKS.map((b) => [b.id, { ...b }]),
 );
+
+/**
+ * Set магазинов у которых есть LAMA-данные (реальные блоки нераспределённых задач).
+ * Используется на /tasks/distribute чтобы скрывать из дропдауна магазины без данных
+ * (для них генерится fallback по медианам — но user'у это менее интересно, лучше
+ * показать только те где есть реальная картина).
+ *
+ * @endpoint GET /tasks/distribute/active-stores (admin-only — backend пока без блоков)
+ */
+const ACTIVE_LAMA_STORE_IDS_SET = new Set<number>(
+  MOCK_UNASSIGNED_BLOCKS.map((b) => b.store_id),
+);
+
+export function getActiveLamaStoreIds(): Set<number> {
+  return ACTIVE_LAMA_STORE_IDS_SET;
+}
 
 /**
  * Получить нераспределённые блоки для магазина на дату.
