@@ -6,7 +6,7 @@
  *
  * Текущие партнёры:
  *  - **Lama** (FMCG ритейл): orgs `org-spar`, `org-foodcity`. Бренды магазинов:
- *    SPAR, Abricos, Первоцвет, Food City. Города: Томск, Новосибирск, Северск, Кемерово.
+ *    SPAR, Abricos, Первоцвет. Города: Томск, Новосибирск, Северск, Кемерово.
  *  - **Левушка** (fashion ритейл): org `org-fashion-alfa`. Один бренд "Левушка".
  *  - **Техпроиздрав** (производство): org `org-fashion-alfa` (общий с fashion временно — есть workshop).
  *
@@ -37,7 +37,7 @@ export const MOCK_PARTNERS: Partner[] = [
     name: "Lama",
     business_vertical: "FMCG_RETAIL",
     organization_ids: ["org-lama", "org-lama"],
-    store_brands: ["SPAR", "Abricos", "Первоцвет", "Food City"],
+    store_brands: ["SPAR", "Abricos", "Первоцвет"],
     cities: ["Томск", "Новосибирск", "Северск", "Кемерово"],
     default_locale: "ru",
   },

@@ -7,7 +7,7 @@ void MOCK_TODAY; // imported for documentation / reference
  * @endpoint GET /api/freelance/applications
  * 14 applications covering all ApplicationStatus variants and both sources.
  * Created by / decided by references:
- *   - store directors: id 5 (SPAR-TOM-001), id 7 (SPAR-NSK-001), id 9 (SPAR-KEM-001), id 10 (FC-TOM-001)
+ *   - store directors: id 5 (SPAR-TOM-001), id 7 (SPAR-NSK-001), id 9 (SPAR-KEM-001), id 10 (LAMA-Г-1)
  *   - supervisor: id 4 (Романов И.А.)
  *   - regional: id 3 (Соколова А.В.) acting as regional
  */
@@ -35,8 +35,8 @@ export const MOCK_FREELANCE_APPLICATIONS: FreelanceApplication[] = [
     id: "app-002",
     source: "INTERNAL",
     status: "PENDING",
-    store_id: 7,
-    store_name: "Food City Томск Global Market, пр. Ленина 217",
+    store_id: 200,
+    store_name: "Г-1 Котовского 19/3 (ГМ)",
     planned_date: dateFromNow(3),
     requested_hours: 12,
     work_type_id: 6,
@@ -138,8 +138,8 @@ export const MOCK_FREELANCE_APPLICATIONS: FreelanceApplication[] = [
     id: "app-007",
     source: "INTERNAL",
     status: "APPROVED_FULL",
-    store_id: 7,
-    store_name: "Food City Томск Global Market, пр. Ленина 217",
+    store_id: 200,
+    store_name: "Г-1 Котовского 19/3 (ГМ)",
     planned_date: dateAgo(6),
     requested_hours: 6,
     approved_hours: 6,
@@ -238,8 +238,8 @@ export const MOCK_FREELANCE_APPLICATIONS: FreelanceApplication[] = [
     id: "app-011",
     source: "INTERNAL",
     status: "REPLACED_WITH_BONUS",
-    store_id: 7,
-    store_name: "Food City Томск Global Market, пр. Ленина 217",
+    store_id: 200,
+    store_name: "Г-1 Котовского 19/3 (ГМ)",
     planned_date: dateAgo(2),
     requested_hours: 10,
     work_type_id: 4,
@@ -263,8 +263,8 @@ export const MOCK_FREELANCE_APPLICATIONS: FreelanceApplication[] = [
     id: "app-012",
     source: "INTERNAL",
     status: "MIXED",
-    store_id: 8,
-    store_name: "Food City Томск, ул. Учебная 39",
+    store_id: 270,
+    store_name: "С-6 Мичурина 37 (П)",
     planned_date: dateFromNow(7),
     requested_hours: 8,
     approved_hours: 8,

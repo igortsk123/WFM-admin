@@ -31,13 +31,13 @@ export const MOCK_BUDGET_USAGES: BudgetUsage[] = [
   },
 
   /**
-   * Food City Томск — May, day 1 of 31.
+   * LAMA Г-1 Котовского — May, day 1 of 31.
    * Healthy budget: actual 0 on day 1 (month just started).
    * planned_amount = round(70000 * 1/31) = 2258.
    */
   {
-    store_id: 7,
-    store_name: "Food City Томск Global Market, пр. Ленина 217",
+    store_id: 200,
+    store_name: "Г-1 Котовского 19/3 (ГМ)",
     period: "MONTH",
     period_start: "2026-05-01",
     period_end: "2026-05-31",

@@ -12,8 +12,8 @@ import type { NetworkHealthSummary, StoreHealthRow, FormatHealthRow } from "@/li
 
 const STORES_HEALTH: StoreHealthRow[] = [
   {
-    store_id: 8,
-    store_name: "FC Томск, ул. Учебная 39",
+    store_id: 270,
+    store_name: "С-6 Мичурина 37 (П)",
     format: "SUPERMARKET",
     forecast_hours: 56,
     assigned_hours: 23,
@@ -62,8 +62,8 @@ const STORES_HEALTH: StoreHealthRow[] = [
     supervisor_avatar_url: null,
   },
   {
-    store_id: 7,
-    store_name: "FC Томск Global Market, пр. Ленина 217",
+    store_id: 200,
+    store_name: "Г-1 Котовского 19/3 (ГМ)",
     format: "HYPERMARKET",
     forecast_hours: 142,
     assigned_hours: 128,
@@ -74,8 +74,8 @@ const STORES_HEALTH: StoreHealthRow[] = [
     supervisor_avatar_url: null,
   },
   {
-    store_id: 9,
-    store_name: "FC Томск, ул. Иркутский тракт 122",
+    store_id: 206,
+    store_name: "У-21 Елизаровых 46/1 (ИР)",
     format: "CONVENIENCE",
     forecast_hours: 64,
     assigned_hours: 58,

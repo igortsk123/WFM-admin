@@ -48,11 +48,11 @@ export const MOCK_BUDGET_LIMITS: BudgetLimit[] = [
     set_at: "2025-12-01T09:00:00Z",
   },
 
-  // ── Food City Томск Global Market (store_id=7) ───────────────────
+  // ── LAMA Г-1 Котовского 19/3 (store_id=200) ──────────────────────
   {
     id: "bl-004",
-    store_id: 7,
-    store_name: "Food City Томск Global Market, пр. Ленина 217",
+    store_id: 200,
+    store_name: "Г-1 Котовского 19/3 (ГМ)",
     period: "DAY",
     amount: 3500,
     currency: "RUB",
@@ -64,8 +64,8 @@ export const MOCK_BUDGET_LIMITS: BudgetLimit[] = [
   },
   {
     id: "bl-005",
-    store_id: 7,
-    store_name: "Food City Томск Global Market, пр. Ленина 217",
+    store_id: 200,
+    store_name: "Г-1 Котовского 19/3 (ГМ)",
     period: "MONTH",
     amount: 70000,
     currency: "RUB",

@@ -81,7 +81,7 @@ export async function getKpiReport(params: ReportParams): Promise<ApiResponse<Kp
     report = MOCK_KPI_STORE_1;
   } else if (store_id === 4) {
     report = MOCK_KPI_STORE_4;
-  } else if (store_id === 7) {
+  } else if (store_id === 200) {
     report = MOCK_KPI_STORE_7;
   } else {
     // Derive a report for other stores based on network averages

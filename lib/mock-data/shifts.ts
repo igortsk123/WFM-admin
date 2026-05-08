@@ -18,7 +18,7 @@ import { REAL_LAMA_SHIFTS } from "./_lama-shifts";
  *   - One shift with has_conflict=true (overlapping with another)
  *
  * Users reference MOCK_USERS (ids 15–27 are WORKER, ids 5–10 are STORE_DIRECTOR).
- * Stores: 1=SPAR-TOM-001, 2=SPAR-TOM-002, 4=SPAR-NSK-001, 7=FC-TOM-001.
+ * Stores: 1=SPAR-TOM-001, 2=SPAR-TOM-002, 4=SPAR-NSK-001, 200=Г-1 Котовского 19/3 (ГМ).
  */
 
 // Dates (Asia/Tomsk UTC+7, so ISO dates are offset accordingly)
@@ -285,8 +285,8 @@ export const MOCK_SHIFTS: ShiftMock[] = [
     status: "CLOSED",
     user_id: 25,
     user_name: "Соловьева Ирина Дмитриевна",
-    store_id: 7,
-    store_name: "Food City Томск Global Market, пр. Ленина 217",
+    store_id: 200,
+    store_name: "Г-1 Котовского 19/3 (ГМ)",
     zone_id: 1,
     zone_name: "Торговый зал",
     shift_date: YESTERDAY,
@@ -303,8 +303,8 @@ export const MOCK_SHIFTS: ShiftMock[] = [
     status: "CLOSED",
     user_id: 26,
     user_name: "Гусев Павел Михайлович",
-    store_id: 7,
-    store_name: "Food City Томск Global Market, пр. Ленина 217",
+    store_id: 200,
+    store_name: "Г-1 Котовского 19/3 (ГМ)",
     zone_id: 3,
     zone_name: "Касса",
     shift_date: YESTERDAY,
@@ -321,8 +321,8 @@ export const MOCK_SHIFTS: ShiftMock[] = [
     status: "CLOSED",
     user_id: 27,
     user_name: "Белова Юлия Сергеевна",
-    store_id: 7,
-    store_name: "Food City Томск Global Market, пр. Ленина 217",
+    store_id: 200,
+    store_name: "Г-1 Котовского 19/3 (ГМ)",
     zone_id: 1,
     zone_name: "Торговый зал",
     shift_date: YESTERDAY,
@@ -412,8 +412,8 @@ export const MOCK_SHIFTS: ShiftMock[] = [
     status: "OPENED",
     user_id: 25,
     user_name: "Соловьева Ирина Дмитриевна",
-    store_id: 7,
-    store_name: "Food City Томск Global Market, пр. Ленина 217",
+    store_id: 200,
+    store_name: "Г-1 Котовского 19/3 (ГМ)",
     zone_id: 1,
     zone_name: "Торговый зал",
     shift_date: TODAY,
@@ -594,8 +594,8 @@ export const MOCK_SHIFTS: ShiftMock[] = [
     status: "NEW",
     user_id: 26,
     user_name: "Гусев Павел Михайлович",
-    store_id: 7,
-    store_name: "Food City Томск Global Market, пр. Ленина 217",
+    store_id: 200,
+    store_name: "Г-1 Котовского 19/3 (ГМ)",
     zone_id: 3,
     zone_name: "Касса",
     shift_date: TOMORROW,
@@ -610,8 +610,8 @@ export const MOCK_SHIFTS: ShiftMock[] = [
     status: "NEW",
     user_id: 27,
     user_name: "Белова Юлия Сергеевна",
-    store_id: 7,
-    store_name: "Food City Томск Global Market, пр. Ленина 217",
+    store_id: 200,
+    store_name: "Г-1 Котовского 19/3 (ГМ)",
     zone_id: 1,
     zone_name: "Торговый зал",
     shift_date: TOMORROW,
@@ -756,7 +756,7 @@ function generateMayShifts(): ShiftMock[] {
     { id: 4, name: "Abricos Томск, пр. Кирова 51" },
     { id: 5, name: "СПАР Новосибирск, ул. Кошурникова 22" },
     { id: 6, name: "Первоцвет Томск, пр. Мира 76" },
-    { id: 7, name: "Food City Томск Global Market, пр. Ленина 217" },
+    { id: 200, name: "Г-1 Котовского 19/3 (ГМ)" },
   ];
 
   const zones = [

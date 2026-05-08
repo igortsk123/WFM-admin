@@ -114,7 +114,7 @@ export const MOCK_KPI_NETWORK: KpiReport = {
     },
   ],
   top_performers: [
-    { user_id: 25, user_name: "Соловьева Ирина Дмитриевна", store_name: "Food City Томск Global Market", completion_rate: 98.1, tasks_completed: 53, on_time_rate: 97.8, rating: 4.9 },
+    { user_id: 25, user_name: "Соловьева Ирина Дмитриевна", store_name: "Г-1 Котовского 19/3 (ГМ)", completion_rate: 98.1, tasks_completed: 53, on_time_rate: 97.8, rating: 4.9 },
     { user_id: 23, user_name: "Волкова Марина Олеговна", store_name: "СПАР Новосибирск, ул. Ленина 55", completion_rate: 96.4, tasks_completed: 47, on_time_rate: 95.0, rating: 4.8 },
     { user_id: 19, user_name: "Захарова Наталья Петровна", store_name: "СПАР Томск, пр. Ленина 80", completion_rate: 95.7, tasks_completed: 51, on_time_rate: 94.5, rating: 4.7 },
     { user_id: 15, user_name: "Козлова Дарья Андреевна", store_name: "СПАР Томск, пр. Ленина 80", completion_rate: 94.2, tasks_completed: 49, on_time_rate: 93.1, rating: 4.6 },
@@ -122,7 +122,7 @@ export const MOCK_KPI_NETWORK: KpiReport = {
     { user_id: 21, user_name: "Кириллова Светлана Васильевна", store_name: "СПАР Новосибирск, ул. Ленина 55", completion_rate: 92.9, tasks_completed: 41, on_time_rate: 91.7, rating: 4.4 },
     { user_id: 18, user_name: "Федоров Алексей Николаевич", store_name: "СПАР Томск, пр. Ленина 80", completion_rate: 92.1, tasks_completed: 38, on_time_rate: 90.5, rating: 4.3 },
     { user_id: 24, user_name: "Лебедев Роман Александрович", store_name: "СПАР Томск, ул. Красноармейская 99", completion_rate: 91.5, tasks_completed: 42, on_time_rate: 90.1, rating: 4.2 },
-    { user_id: 27, user_name: "Белова Юлия Сергеевна", store_name: "Food City Томск Global Market", completion_rate: 90.8, tasks_completed: 36, on_time_rate: 89.3, rating: 4.1 },
+    { user_id: 27, user_name: "Белова Юлия Сергеевна", store_name: "Г-1 Котовского 19/3 (ГМ)", completion_rate: 90.8, tasks_completed: 36, on_time_rate: 89.3, rating: 4.1 },
     { user_id: 20, user_name: "Попов Владимир Сергеевич", store_name: "СПАР Томск, пр. Ленина 80", completion_rate: 89.7, tasks_completed: 34, on_time_rate: 88.7, rating: 4.0 },
   ],
   needs_support: [
@@ -201,12 +201,12 @@ export const MOCK_KPI_STORE_1: KpiReport = {
   })),
 };
 
-// ── Store KPI: FC-TOM-001 ─────────────────────────────────────────
+// ── Store KPI: LAMA Г-1 (ex FC-TOM-001) ───────────────────────────
 
 export const MOCK_KPI_STORE_7: KpiReport = {
   scope: "STORE",
-  store_id: 7,
-  store_name: "Food City Томск Global Market, пр. Ленина 217",
+  store_id: 200,
+  store_name: "Г-1 Котовского 19/3 (ГМ)",
   period_start: PERIOD_START,
   period_end: PERIOD_END,
   metrics: [
@@ -218,11 +218,11 @@ export const MOCK_KPI_STORE_7: KpiReport = {
     { key: "fot_ratio", label: "ФОТ факт / план", value: 97.7, unit: "%", change_pct: -2.3, sparkline: genSparkline(97.7, 1.5) },
   ],
   top_performers: [
-    { user_id: 25, user_name: "Соловьева Ирина Дмитриевна", store_name: "Food City Томск Global Market", completion_rate: 98.2, tasks_completed: 52, on_time_rate: 97.6, rating: 4.9 },
-    { user_id: 27, user_name: "Белова Юлия Сергеевна", store_name: "Food City Томск Global Market", completion_rate: 93.4, tasks_completed: 44, on_time_rate: 92.0, rating: 4.4 },
+    { user_id: 25, user_name: "Соловьева Ирина Дмитриевна", store_name: "Г-1 Котовского 19/3 (ГМ)", completion_rate: 98.2, tasks_completed: 52, on_time_rate: 97.6, rating: 4.9 },
+    { user_id: 27, user_name: "Белова Юлия Сергеевна", store_name: "Г-1 Котовского 19/3 (ГМ)", completion_rate: 93.4, tasks_completed: 44, on_time_rate: 92.0, rating: 4.4 },
   ],
   needs_support: [
-    { user_id: 26, user_name: "Гусев Павел Михайлович", store_name: "Food City Томск Global Market", completion_rate: 77.3, tasks_completed: 21, on_time_rate: 74.1, rating: 3.8 },
+    { user_id: 26, user_name: "Гусев Павел Михайлович", store_name: "Г-1 Котовского 19/3 (ГМ)", completion_rate: 77.3, tasks_completed: 21, on_time_rate: 74.1, rating: 3.8 },
   ],
   by_work_type: MOCK_KPI_NETWORK.by_work_type.map((d) => ({
     ...d,

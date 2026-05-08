@@ -45,9 +45,9 @@ const spark7 = (base: number, variance: number) =>
 const rows: Omit<StoreComparisonRow, "rank">[] = [
   // LEADERS (high completion + good trend)
   {
-    store_id: 7,
-    store_name: "Food City Томск Global Market, пр. Ленина 217",
-    store_external_code: "FC-TOM-001",
+    store_id: 200,
+    store_name: "Г-1 Котовского 19/3 (ГМ)",
+    store_external_code: "LAMA-200",
     completion_rate: 93.8,
     return_rate: 3.4,
     on_time_rate: 96.2,
@@ -72,9 +72,9 @@ const rows: Omit<StoreComparisonRow, "rank">[] = [
   },
   // GROWING (improving trend, below median)
   {
-    store_id: 8,
-    store_name: "Food City Томск, ул. Учебная 39",
-    store_external_code: "FC-TOM-002",
+    store_id: 270,
+    store_name: "С-6 Мичурина 37 (П)",
+    store_external_code: "LAMA-270",
     completion_rate: 88.7,
     return_rate: 5.2,
     on_time_rate: 90.4,

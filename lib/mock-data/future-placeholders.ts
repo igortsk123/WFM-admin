@@ -154,14 +154,14 @@ export const MOCK_GOALS: Goal[] = [
   {
     id: "goal-promo-1",
     category: "PROMO_QUALITY",
-    title: "Улучшить качество промо-выкладки Food City",
+    title: "Улучшить качество промо-выкладки Г-1 Котовского",
     description: "Проверки показали 42% несоответствий с промо-стандартом. Целевой уровень — 15% и ниже к концу мая.",
     target_value: 15,
     target_unit: "%",
     current_value: 42,
     status: "PROPOSED",
     scope: "STORE",
-    store_id: 7,
+    store_id: 200,
     proposed_by: "AI",
     period_start: "2026-05-01",
     period_end: "2026-05-31",
@@ -246,9 +246,9 @@ export const MOCK_LEADERBOARD_USERS: LeaderboardEntry[] = [
 ];
 
 export const MOCK_LEADERBOARD_STORES: LeaderboardEntry[] = [
-  { rank: 1, entity_type: "STORE", entity_id: 7, entity_name: "Food City Томск Global Market", points: 9840, tasks_completed: 412, bonus_tasks_completed: 28, trend: "up", trend_positions: 1 },
+  { rank: 1, entity_type: "STORE", entity_id: 200, entity_name: "Г-1 Котовского 19/3 (ГМ)", points: 9840, tasks_completed: 412, bonus_tasks_completed: 28, trend: "up", trend_positions: 1 },
   { rank: 2, entity_type: "STORE", entity_id: 1, entity_name: "СПАР Томск, пр. Ленина 80", points: 9620, tasks_completed: 398, bonus_tasks_completed: 24, trend: "stable", trend_positions: 0 },
-  { rank: 3, entity_type: "STORE", entity_id: 8, entity_name: "Food City Томск, ул. Учебная 39", points: 8940, tasks_completed: 361, bonus_tasks_completed: 18, trend: "up", trend_positions: 2 },
+  { rank: 3, entity_type: "STORE", entity_id: 270, entity_name: "С-6 Мичурина 37 (П)", points: 8940, tasks_completed: 361, bonus_tasks_completed: 18, trend: "up", trend_positions: 2 },
   { rank: 4, entity_type: "STORE", entity_id: 6, entity_name: "СПАР Кемерово, пр. Советский 50", points: 8510, tasks_completed: 344, bonus_tasks_completed: 15, trend: "up", trend_positions: 1 },
   { rank: 5, entity_type: "STORE", entity_id: 2, entity_name: "СПАР Томск, ул. Красноармейская 99", points: 8320, tasks_completed: 337, bonus_tasks_completed: 12, trend: "stable", trend_positions: 0 },
   { rank: 6, entity_type: "STORE", entity_id: 3, entity_name: "СПАР Томск, пр. Фрунзе 92а", points: 8170, tasks_completed: 328, bonus_tasks_completed: 11, trend: "down", trend_positions: 1 },
@@ -273,7 +273,7 @@ export const MOCK_BONUS_BUDGETS: BonusBudget[] = [
   },
   {
     id: "budget-002",
-    store_id: 7, // FC-TOM-001
+    store_id: 200, // LAMA Г-1 Котовского (ex FC-TOM-001)
     supervisor_id: 12,
     period_start: "2026-05-01",
     period_end: "2026-05-07",
@@ -338,8 +338,8 @@ export const MOCK_BONUS_TASKS: BonusTask[] = [
     id: "bonus-task-002",
     title: "Контроль скоропорта в молочном отделе",
     description: "Внеплановый обход холодильников 1–4, изъятие товаров с остатком срока ≤1 день, фотофиксация.",
-    store_id: 7,
-    store_name: "Food City Томск Global Market, пр. Ленина 217",
+    store_id: 200,
+    store_name: "Г-1 Котовского 19/3 (ГМ)",
     work_type_id: 11,
     work_type_name: "Контроль качества",
     assignee_id: 25,
@@ -373,8 +373,8 @@ export const MOCK_BONUS_TASKS: BonusTask[] = [
     id: "bonus-task-004",
     title: "Инвентаризация зоны Fresh по итогам дня",
     description: "Сверка остатков Fresh-зоны по системе после закрытия. Исправить расхождения до начала ночной приёмки.",
-    store_id: 7,
-    store_name: "Food City Томск Global Market, пр. Ленина 217",
+    store_id: 200,
+    store_name: "Г-1 Котовского 19/3 (ГМ)",
     work_type_id: 6,
     work_type_name: "Инвентаризация",
     assignee_id: 27,
@@ -471,7 +471,7 @@ export const MOCK_PAYOUT_PERIODS: BonusPayoutPeriod[] = [
 ];
 
 export const MOCK_PAYOUT_ROWS: BonusPayoutRow[] = [
-  { period_id: "payout-period-001", user_id: 25, user_name: "Соловьева Ирина Дмитриевна", store_name: "Food City Томск Global Market", tasks_completed: 53, bonus_tasks_completed: 8, points_earned: 1840, rub_amount: 1840, status: "READY" },
+  { period_id: "payout-period-001", user_id: 25, user_name: "Соловьева Ирина Дмитриевна", store_name: "Г-1 Котовского 19/3 (ГМ)", tasks_completed: 53, bonus_tasks_completed: 8, points_earned: 1840, rub_amount: 1840, status: "READY" },
   { period_id: "payout-period-001", user_id: 23, user_name: "Волкова Марина Олеговна", store_name: "СПАР Новосибирск, ул. Ленина 55", tasks_completed: 47, bonus_tasks_completed: 6, points_earned: 1720, rub_amount: 1720, status: "READY" },
   { period_id: "payout-period-001", user_id: 19, user_name: "Захарова Наталья Петровна", store_name: "СПАР Томск, пр. Ленина 80", tasks_completed: 51, bonus_tasks_completed: 5, points_earned: 1680, rub_amount: 1680, status: "READY" },
   { period_id: "payout-period-001", user_id: 15, user_name: "Козлова Дарья Андреевна", store_name: "СПАР Томск, пр. Ленина 80", tasks_completed: 49, bonus_tasks_completed: 7, points_earned: 1590, rub_amount: 1590, status: "READY" },
@@ -479,7 +479,7 @@ export const MOCK_PAYOUT_ROWS: BonusPayoutRow[] = [
   { period_id: "payout-period-001", user_id: 17, user_name: "Медведева Татьяна Ивановна", store_name: "СПАР Томск, пр. Ленина 80", tasks_completed: 44, bonus_tasks_completed: 3, points_earned: 1450, rub_amount: 1450, status: "READY" },
   { period_id: "payout-period-001", user_id: 18, user_name: "Федоров Алексей Николаевич", store_name: "СПАР Томск, пр. Ленина 80", tasks_completed: 38, bonus_tasks_completed: 2, points_earned: 1340, rub_amount: 1340, status: "READY" },
   { period_id: "payout-period-001", user_id: 24, user_name: "Лебедев Роман Александрович", store_name: "СПАР Томск, ул. Красноармейская 99", tasks_completed: 42, bonus_tasks_completed: 2, points_earned: 1280, rub_amount: 1280, status: "READY" },
-  { period_id: "payout-period-001", user_id: 27, user_name: "Белова Юлия Сергеевна", store_name: "Food City Томск Global Market", tasks_completed: 36, bonus_tasks_completed: 3, points_earned: 1230, rub_amount: 1230, status: "READY" },
+  { period_id: "payout-period-001", user_id: 27, user_name: "Белова Юлия Сергеевна", store_name: "Г-1 Котовского 19/3 (ГМ)", tasks_completed: 36, bonus_tasks_completed: 3, points_earned: 1230, rub_amount: 1230, status: "READY" },
   { period_id: "payout-period-001", user_id: 20, user_name: "Попов Владимир Сергеевич", store_name: "СПАР Томск, пр. Ленина 80", tasks_completed: 34, bonus_tasks_completed: 1, points_earned: 1190, rub_amount: 1190, status: "READY" },
   { period_id: "payout-period-001", user_id: 22, user_name: "Степанов Андрей Борисович", store_name: "СПАР Новосибирск, ул. Ленина 55", tasks_completed: 28, bonus_tasks_completed: 0, points_earned: 720, rub_amount: 720, status: "READY" },
   { period_id: "payout-period-001", user_id: 26, user_name: "Гусев Павел Михайлович", store_name: "СПАР Томск, пр. Ленина 80", tasks_completed: 31, bonus_tasks_completed: 0, points_earned: 650, rub_amount: 650, status: "READY" },

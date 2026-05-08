@@ -101,8 +101,8 @@ const storeConfigs = [
   { store_id: 4, store_name: "СПАР Новосибирск, ул. Ленина 55", city: "Новосибирск", weight: 1.3, employee_count: 52 },
   { store_id: 5, store_name: "СПАР Новосибирск, Красный пр. 200", city: "Новосибирск", weight: 1.0, employee_count: 41 },
   { store_id: 6, store_name: "СПАР Кемерово, пр. Советский 50", city: "Кемерово", weight: 0.9, employee_count: 35 },
-  { store_id: 7, store_name: "Food City Томск Global Market, пр. Ленина 217", city: "Томск", weight: 1.4, employee_count: 58 },
-  { store_id: 8, store_name: "Food City Томск, ул. Учебная 39", city: "Томск", weight: 0.8, employee_count: 30 },
+  { store_id: 200, store_name: "Г-1 Котовского 19/3 (ГМ)", city: "Томск", weight: 1.4, employee_count: 58 },
+  { store_id: 270, store_name: "С-6 Мичурина 37 (П)", city: "Томск", weight: 0.8, employee_count: 30 },
 ];
 
 const mkStoreDays = (weight: number, perfBias: number, idx: number): PlanFactDay[] =>
@@ -166,9 +166,9 @@ const userConfigs = [
   { user_id: 22, user_name: "Степанов Андрей Борисович", store_name: "СПАР Новосибирск, ул. Ленина 55", bias: -11, pos_idx: 1 },
   { user_id: 23, user_name: "Волкова Марина Олеговна", store_name: "СПАР Новосибирск, ул. Ленина 55", bias: 7, pos_idx: 3 },
   { user_id: 24, user_name: "Лебедев Роман Александрович", store_name: "СПАР Томск, ул. Красноармейская 99", bias: 1, pos_idx: 2 },
-  { user_id: 25, user_name: "Соловьева Ирина Дмитриевна", store_name: "Food City Томск Global Market", bias: 8, pos_idx: 5 },
+  { user_id: 25, user_name: "Соловьева Ирина Дмитриевна", store_name: "Г-1 Котовского 19/3 (ГМ)", bias: 8, pos_idx: 5 },
   { user_id: 26, user_name: "Гусев Павел Михайлович", store_name: "СПАР Томск, пр. Ленина 80", bias: -5, pos_idx: 1 },
-  { user_id: 27, user_name: "Белова Юлия Сергеевна", store_name: "Food City Томск Global Market", bias: 4, pos_idx: 0 },
+  { user_id: 27, user_name: "Белова Юлия Сергеевна", store_name: "Г-1 Котовского 19/3 (ГМ)", bias: 4, pos_idx: 0 },
   { user_id: 29, user_name: "Орлов Виктор Павлович", store_name: "СПАР Томск, пр. Ленина 80", bias: -3, pos_idx: 2 },
   { user_id: 31, user_name: "Мельников Евгений Игоревич", store_name: "СПАР Новосибирск, ул. Ленина 55", bias: -6, pos_idx: 4 },
 ];

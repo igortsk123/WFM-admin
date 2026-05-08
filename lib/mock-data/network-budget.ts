@@ -12,8 +12,8 @@ import type { BudgetSummary, StoreBudgetRow, FormatBudgetRow } from "@/lib/types
 
 const STORES_BUDGET: StoreBudgetRow[] = [
   {
-    store_id: 8,
-    store_name: "FC Томск, ул. Учебная 39",
+    store_id: 270,
+    store_name: "С-6 Мичурина 37 (П)",
     format: "SUPERMARKET",
     spent_rub: 27_500,
     total_rub: 50_000,
@@ -58,8 +58,8 @@ const STORES_BUDGET: StoreBudgetRow[] = [
     supervisor_avatar_url: null,
   },
   {
-    store_id: 7,
-    store_name: "FC Томск Global Market, пр. Ленина 217",
+    store_id: 200,
+    store_name: "Г-1 Котовского 19/3 (ГМ)",
     format: "HYPERMARKET",
     spent_rub: 320_000,
     total_rub: 500_000,
@@ -69,8 +69,8 @@ const STORES_BUDGET: StoreBudgetRow[] = [
     supervisor_avatar_url: null,
   },
   {
-    store_id: 9,
-    store_name: "FC Томск, ул. Иркутский тракт 122",
+    store_id: 206,
+    store_name: "У-21 Елизаровых 46/1 (ИР)",
     format: "CONVENIENCE",
     spent_rub: 56_000,
     total_rub: 60_000,
