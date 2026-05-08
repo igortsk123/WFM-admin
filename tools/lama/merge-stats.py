@@ -31,7 +31,7 @@ all_observations = defaultdict(list)  # (wt, zone) -> list of (snapshot_date, sh
 
 for path in snaps:
     snap_date = path.stem
-    snap = json.loads(path.read_text(encoding="utf-8"))
+    snap = json.loads(path.read_text(encoding="utf-8-sig"))
     shop_totals = defaultdict(lambda: defaultdict(int))
     for t in snap.get("tasks", []):
         sc = t.get("_shop_code")

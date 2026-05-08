@@ -77,36 +77,39 @@ const UNASSIGNED_HARD_CAP = 100;
 function generateDefaultBlocksForStore(storeId: number): UnassignedTaskBlock[] {
   const today = new Date().toISOString().slice(0, 10);
   const createdAt = new Date().toISOString();
-  // Median minutes из реальной выборки LAMA — 19 пар (work_type × zone).
+  // Median minutes из реальной выборки LAMA — 2 snapshot'а (40 shop-day обс.,
+  // 17 магазинов). Источник: tools/lama/merge-stats.py → _merged-stats.json.
   const TEMPLATE: Array<{
     wt_id: number; wt_name: string;
     zone_id: number; zone_name: string;
     minutes: number; priority: number;
   }> = [
-    // Касса (8 ч) — критично
-    { wt_id: 2, wt_name: "Касса", zone_id: 117, zone_name: "Кассовая зона", minutes: 747, priority: 1 },
-    // Менеджерские операции (~7 ч)
-    { wt_id: 1, wt_name: "Менеджерские операции", zone_id: 127, zone_name: "Торговый зал (общая)", minutes: 405, priority: 2 },
-    // КСО (8 ч) — критично если есть
-    { wt_id: 3, wt_name: "КСО", zone_id: 114, zone_name: "Зона КСО", minutes: 480, priority: 2 },
-    // Выкладка по зонам — медианы
-    { wt_id: 4, wt_name: "Выкладка", zone_id: 111, zone_name: "ФРОВ", minutes: 560, priority: 3 },
-    { wt_id: 4, wt_name: "Выкладка", zone_id: 100, zone_name: "Фреш 1", minutes: 290, priority: 3 },
-    { wt_id: 4, wt_name: "Выкладка", zone_id: 101, zone_name: "Фреш 2", minutes: 240, priority: 4 },
+    // Касса — медиана 990 (16.5 ч на смену по нескольким кассирам)
+    { wt_id: 2, wt_name: "Касса", zone_id: 117, zone_name: "Кассовая зона", minutes: 990, priority: 1 },
+    // Менеджерские операции — медиана 420
+    { wt_id: 1, wt_name: "Менеджерские операции", zone_id: 127, zone_name: "Торговый зал (общая)", minutes: 420, priority: 2 },
+    // КСО — медиана 515 (~8.5 ч)
+    { wt_id: 3, wt_name: "КСО", zone_id: 114, zone_name: "Зона КСО", minutes: 515, priority: 2 },
+    // Выкладка по зонам — медианы из 2-snapshot выборки
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 111, zone_name: "ФРОВ", minutes: 540, priority: 3 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 100, zone_name: "Фреш 1", minutes: 215, priority: 3 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 101, zone_name: "Фреш 2", minutes: 220, priority: 4 },
     { wt_id: 4, wt_name: "Выкладка", zone_id: 102, zone_name: "Бакалея", minutes: 150, priority: 5 },
     { wt_id: 4, wt_name: "Выкладка", zone_id: 108, zone_name: "Кондитерка, чай, кофе", minutes: 150, priority: 5 },
     { wt_id: 4, wt_name: "Выкладка", zone_id: 109, zone_name: "Пиво, чипсы", minutes: 150, priority: 6 },
-    { wt_id: 4, wt_name: "Выкладка", zone_id: 110, zone_name: "Напитки б/а", minutes: 140, priority: 6 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 110, zone_name: "Напитки б/а", minutes: 120, priority: 6 },
     { wt_id: 4, wt_name: "Выкладка", zone_id: 106, zone_name: "Алкоголь", minutes: 90, priority: 6 },
-    { wt_id: 4, wt_name: "Выкладка", zone_id: 104, zone_name: "Бытовая химия", minutes: 75, priority: 7 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 104, zone_name: "Бытовая химия", minutes: 60, priority: 7 },
     { wt_id: 4, wt_name: "Выкладка", zone_id: 103, zone_name: "Заморозка", minutes: 60, priority: 7 },
+    // Прикассовая зона — новая после 2-snapshot мерджа (12 магазинов, 20 обс.)
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 118, zone_name: "Прикассовая зона", minutes: 60, priority: 7 },
     { wt_id: 4, wt_name: "Выкладка", zone_id: 105, zone_name: "Non-Food", minutes: 30, priority: 8 },
-    { wt_id: 4, wt_name: "Выкладка", zone_id: 107, zone_name: "ЗОЖ", minutes: 27, priority: 8 },
-    // Инвентаризация (~3 ч)
-    { wt_id: 6, wt_name: "Инвентаризация", zone_id: 102, zone_name: "Бакалея", minutes: 165, priority: 7 },
-    // Переоценка (~1.5 ч)
-    { wt_id: 5, wt_name: "Переоценка", zone_id: 100, zone_name: "Фреш 1", minutes: 99, priority: 4 },
-    // Другие работы (~1.5 ч)
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 107, zone_name: "ЗОЖ", minutes: 30, priority: 8 },
+    // Инвентаризация — медиана 150
+    { wt_id: 6, wt_name: "Инвентаризация", zone_id: 102, zone_name: "Бакалея", minutes: 150, priority: 7 },
+    // Переоценка — медиана 87, округлено до 90
+    { wt_id: 5, wt_name: "Переоценка", zone_id: 100, zone_name: "Фреш 1", minutes: 90, priority: 4 },
+    // Другие работы — медиана 90
     { wt_id: 7, wt_name: "Другие работы", zone_id: 112, zone_name: "Без зоны", minutes: 90, priority: 7 },
   ];
 
