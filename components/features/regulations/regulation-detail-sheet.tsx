@@ -186,13 +186,13 @@ export function RegulationDetailSheet({
   // Resolve tag names
   const workTypeNames = React.useMemo(
     () => (data?.work_type_ids ?? []).map(
-      (id) => MOCK_WORK_TYPES.find((wt) => wt.id === id)?.name ?? `#${id}`,
+      (id) => ({ id, name: MOCK_WORK_TYPES.find((wt) => wt.id === id)?.name ?? `#${id}` }),
     ),
     [data],
   );
   const zoneNames = React.useMemo(
     () => (data?.zone_ids ?? []).map(
-      (id) => MOCK_ZONES.find((z) => z.id === id)?.name ?? `#${id}`,
+      (id) => ({ id, name: MOCK_ZONES.find((z) => z.id === id)?.name ?? `#${id}` }),
     ),
     [data],
   );
@@ -386,8 +386,8 @@ export function RegulationDetailSheet({
                       <div>
                         <SectionLabel icon={Tag} label="Типы работ" />
                         <div className="flex flex-wrap gap-2">
-                          {workTypeNames.map((name, i) => (
-                            <Badge key={i} variant="secondary">{name}</Badge>
+                          {workTypeNames.map((wt) => (
+                            <Badge key={wt.id} variant="secondary">{wt.name}</Badge>
                           ))}
                         </div>
                       </div>
@@ -396,8 +396,8 @@ export function RegulationDetailSheet({
                       <div>
                         <SectionLabel icon={Tag} label="Зоны" />
                         <div className="flex flex-wrap gap-2">
-                          {zoneNames.map((name, i) => (
-                            <Badge key={i} variant="outline">{name}</Badge>
+                          {zoneNames.map((zone) => (
+                            <Badge key={zone.id} variant="outline">{zone.name}</Badge>
                           ))}
                         </div>
                       </div>
