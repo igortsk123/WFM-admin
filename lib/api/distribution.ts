@@ -65,6 +65,53 @@ const taskAllocations: Map<string, TaskDistributionAllocation[]> = new Map();
 const UNASSIGNED_HARD_CAP = 100;
 
 /**
+ * Дефолтный шаблон блоков для магазина без LAMA-данных. Используется
+ * как fallback в getStoreUnassignedTasks чтобы экран не был пустым.
+ * Возвращает 10 блоков по типичным ритейл-зонам.
+ */
+function generateDefaultBlocksForStore(storeId: number): UnassignedTaskBlock[] {
+  const today = new Date().toISOString().slice(0, 10);
+  const createdAt = new Date().toISOString();
+  // Используем существующие mock zone IDs и work_type IDs.
+  const TEMPLATE: Array<{
+    wt_id: number; wt_name: string;
+    zone_id: number; zone_name: string;
+    minutes: number; priority: number;
+  }> = [
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 100, zone_name: "Фреш 1", minutes: 480, priority: 3 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 102, zone_name: "Бакалея", minutes: 360, priority: 5 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 106, zone_name: "Алкоголь", minutes: 240, priority: 5 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 109, zone_name: "Пиво, чипсы", minutes: 180, priority: 7 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 110, zone_name: "Напитки б/а", minutes: 180, priority: 7 },
+    { wt_id: 5, wt_name: "Переоценка", zone_id: 100, zone_name: "Фреш 1", minutes: 60, priority: 2 },
+    { wt_id: 5, wt_name: "Переоценка", zone_id: 102, zone_name: "Бакалея", minutes: 90, priority: 4 },
+    { wt_id: 6, wt_name: "Инвентаризация", zone_id: 102, zone_name: "Бакалея", minutes: 240, priority: 8 },
+    { wt_id: 2, wt_name: "Касса", zone_id: 117, zone_name: "Кассовая зона", minutes: 480, priority: 1 },
+    { wt_id: 1, wt_name: "Менеджерские операции", zone_id: 127, zone_name: "Торговый зал (общая)", minutes: 240, priority: 6 },
+  ];
+
+  return TEMPLATE.map((t, idx) => ({
+    id: `block-default-${storeId}-${idx}`,
+    store_id: storeId,
+    store_name: `Магазин #${storeId}`,
+    date: today,
+    work_type_id: t.wt_id,
+    work_type_name: t.wt_name,
+    zone_id: t.zone_id,
+    zone_name: t.zone_name,
+    title: `${t.wt_name}: ${t.zone_name}`,
+    total_minutes: t.minutes,
+    distributed_minutes: 0,
+    remaining_minutes: t.minutes,
+    priority: t.priority,
+    source: "LAMA" as const,
+    created_at: createdAt,
+    is_distributed: false,
+    spawned_task_ids: [],
+  }));
+}
+
+/**
  * Get unassigned tasks for a store on a specific date.
  * Returns tasks where assignee_id is null and zone_id is set,
  * PLUS LAMA blocks (UnassignedTaskBlock) сконвертированные в UnassignedTask
@@ -90,9 +137,17 @@ export async function getStoreUnassignedTasks(
   //    UI рендерил их как обычные карточки в TaskZoneGroup с пиккером.
   //    При assign блок будет распознан по id (начинается с "block-").
   //    Дату игнорируем — блоки актуальны на любую дату пока is_distributed=false.
-  const storeBlocks = MOCK_UNASSIGNED_BLOCKS.filter(
+  let storeBlocks = MOCK_UNASSIGNED_BLOCKS.filter(
     (b) => b.store_id === storeId && !b.is_distributed,
   );
+
+  // Fallback: если для магазина нет блоков (например base-моки Abricos/SPAR
+  // или LAMA-магазин без задач в snapshot'е) — генерируем дефолтный набор
+  // 10 блоков по типичным зонам/работам ритейла. Это даёт user'у
+  // непустой экран на ЛЮБОМ магазине.
+  if (storeBlocks.length === 0) {
+    storeBlocks = generateDefaultBlocksForStore(storeId);
+  }
   const blocksAsTasks: Task[] = storeBlocks.map((b) => ({
     id: b.id,
     title: b.title,
