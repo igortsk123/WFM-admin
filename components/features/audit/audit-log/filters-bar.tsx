@@ -19,7 +19,7 @@ import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet";
 
 import type { FilterState } from "./_shared";
 import { DateRangePicker } from "./date-range-picker";
-import { MultiCombobox } from "./multi-combobox";
+import { MultiSelectCombobox } from "@/components/shared/multi-select-combobox";
 
 export interface ActiveFilterChip {
   key: string;
@@ -63,22 +63,24 @@ export function FiltersBar({
         <p className="text-xs font-medium text-muted-foreground">
           {t("filters.entity_type")}
         </p>
-        <MultiCombobox
+        <MultiSelectCombobox
           options={entityTypeOptions}
           selected={filters.entityTypes}
-          onChange={(v) => onPatchFilters({ entityTypes: v })}
+          onSelectionChange={(v) => onPatchFilters({ entityTypes: v })}
           placeholder={t("filters.entity_type")}
+          multiLabel={(n) => `${t("filters.entity_type")} (${n})`}
         />
       </div>
       <div className="flex flex-col gap-1.5">
         <p className="text-xs font-medium text-muted-foreground">
           {t("filters.action")}
         </p>
-        <MultiCombobox
+        <MultiSelectCombobox
           options={actionOptions}
           selected={filters.actions}
-          onChange={(v) => onPatchFilters({ actions: v })}
+          onSelectionChange={(v) => onPatchFilters({ actions: v })}
           placeholder={t("filters.action")}
+          multiLabel={(n) => `${t("filters.action")} (${n})`}
         />
       </div>
       <div className="flex flex-col gap-1.5">
@@ -133,17 +135,19 @@ export function FiltersBar({
 
       {/* Desktop filters */}
       <div className="hidden md:flex flex-wrap items-center gap-2">
-        <MultiCombobox
+        <MultiSelectCombobox
           options={entityTypeOptions}
           selected={filters.entityTypes}
-          onChange={(v) => onPatchFilters({ entityTypes: v })}
+          onSelectionChange={(v) => onPatchFilters({ entityTypes: v })}
           placeholder={t("filters.entity_type")}
+          multiLabel={(n) => `${t("filters.entity_type")} (${n})`}
         />
-        <MultiCombobox
+        <MultiSelectCombobox
           options={actionOptions}
           selected={filters.actions}
-          onChange={(v) => onPatchFilters({ actions: v })}
+          onSelectionChange={(v) => onPatchFilters({ actions: v })}
           placeholder={t("filters.action")}
+          multiLabel={(n) => `${t("filters.action")} (${n})`}
         />
         <DateRangePicker
           from={filters.dateFrom}
