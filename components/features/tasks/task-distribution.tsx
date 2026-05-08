@@ -342,120 +342,118 @@ function StoreCombobox({ stores, value, onChange, placeholder, className }: Stor
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// TaskCard
+// TaskRow — компактная строка для задачи (визуальный близнец EmployeeUtilizationRow).
+// Используется во всех 4 квадрантах /tasks/distribute (LEFT кликабельная,
+// RIGHT read-only). Структура: иконка-индикатор · title+badges · progress+% · meta
 // ─────────────────────────────────────────────────────────────────────────────
 
-interface TaskCardProps {
+interface TaskRowProps {
   task: UnassignedTask
   planAllocations: TaskDistributionAllocation[]
-  onDistribute: () => void
-  disabled: boolean
+  onSelect?: () => void
+  disabled?: boolean
   t: ReturnType<typeof useTranslations>
 }
 
-function TaskCard({ task, planAllocations, onDistribute, disabled, t }: TaskCardProps) {
+function TaskRow({ task, planAllocations, onSelect, disabled, t }: TaskRowProps) {
   const totalLabel = formatHM(task.planned_minutes, t)
   const planMin = planAllocations.reduce((sum, a) => sum + a.minutes, 0)
   const effectiveDistributed = task.distributed_minutes + planMin
-  const effectiveRemaining = Math.max(0, task.planned_minutes - effectiveDistributed)
-  const remainingLabel = formatHM(effectiveRemaining, t)
-  const isFullyDistributed = effectiveRemaining === 0
-  const distributedPct = (task.distributed_minutes / task.planned_minutes) * 100
-  const planPct = (planMin / task.planned_minutes) * 100
+  const isFullyDistributed = effectiveDistributed >= task.planned_minutes
+  const distributedPct = task.planned_minutes > 0
+    ? (task.distributed_minutes / task.planned_minutes) * 100
+    : 0
+  const planPct = task.planned_minutes > 0
+    ? (planMin / task.planned_minutes) * 100
+    : 0
+  const totalPct = Math.min(100, Math.round(distributedPct + planPct))
 
-  const cardDisabled = disabled || (isFullyDistributed && planMin === 0)
-  const handleCardClick = () => {
-    if (!cardDisabled) onDistribute()
-  }
+  const interactive = !!onSelect
+  const rowDisabled = disabled || (isFullyDistributed && planMin === 0)
 
-  return (
-    <Card
-      role="button"
-      tabIndex={cardDisabled ? -1 : 0}
-      onClick={handleCardClick}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          e.preventDefault()
-          handleCardClick()
-        }
-      }}
-      aria-disabled={cardDisabled}
-      className={cn(
-        "transition-shadow",
-        cardDisabled
-          ? "cursor-not-allowed opacity-60"
-          : "cursor-pointer hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        planMin > 0 && "ring-1 ring-primary",
-      )}
-    >
-      <CardContent className="p-4">
-        {/* Title and source badge */}
-        <div className="flex items-start justify-between gap-2 mb-2">
-          <h3 className="text-sm font-medium line-clamp-2 text-foreground">{task.title}</h3>
-          <div className="flex items-center gap-1 shrink-0">
-            {task.source === "AI" && (
-              <Badge variant="secondary" className="text-xs gap-1">
-                <Sparkles className="size-3" />
-                ИИ
-              </Badge>
-            )}
-            {planMin > 0 && (
-              <Badge variant="outline" className="text-xs border-primary text-primary gap-1">
-                <Wand2 className="size-3" />
-                {t("taskCard.in_plan_badge", { time: formatHM(planMin, t) })}
-              </Badge>
-            )}
-          </div>
-        </div>
-
-        {/* Meta info */}
-        <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-muted-foreground mb-3">
-          <span className="flex items-center gap-1">
-            <MapPin className="size-3" />
-            {task.zone_name}
-          </span>
-          <span className="flex items-center gap-1">
-            <Briefcase className="size-3" />
-            {task.work_type_name}
-          </span>
-          <span className="flex items-center gap-1">
-            <Clock className="size-3" />
-            {totalLabel}
-          </span>
-        </div>
-
-        {/* Distribution progress — две полосы стэком: уже сохранено (primary)
-            + в плане (primary/40). Полная заливка = task будет полностью
-            разнесена после подтверждения плана. Под прогрессом — статусная
-            подпись + Check icon если 100%. Кнопки нет: вся карточка кликабельная,
-            это даёт паритет с by-employee представлением. */}
-        <div className="flex items-center justify-between text-xs mb-1.5">
-          <span className="text-muted-foreground">
-            {isFullyDistributed
-              ? planMin > 0
-                ? t("taskCard.full_after_confirm")
-                : t("taskCard.fully_distributed")
-              : t("taskCard.unassigned_hours", { remaining: remainingLabel, total: totalLabel })}
-          </span>
-          {isFullyDistributed && planMin === 0 && (
-            <span className="flex items-center gap-1 text-success font-medium">
-              <Check className="size-3" />
-            </span>
+  const content = (
+    <>
+      {/* Иконка-индикатор: ListChecks как универсальный «task» аналог Avatar */}
+      <div
+        className={cn(
+          "size-8 shrink-0 rounded-full flex items-center justify-center",
+          isFullyDistributed ? "bg-success/15 text-success" : "bg-accent text-accent-foreground",
+        )}
+      >
+        <ListChecks className="size-4" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-1.5">
+          <span className="text-sm font-medium truncate">{task.title}</span>
+          {task.source === "AI" && (
+            <Badge variant="secondary" className="text-[10px] px-1 py-0">
+              <Sparkles className="size-2.5 mr-0.5" />
+              ИИ
+            </Badge>
+          )}
+          {planMin > 0 && (
+            <Badge variant="outline" className="text-[10px] px-1 py-0 border-primary text-primary">
+              <Wand2 className="size-2.5 mr-0.5" />
+              +{formatHM(planMin, t)}
+            </Badge>
           )}
         </div>
-        <div className="h-1.5 bg-muted rounded-full overflow-hidden flex">
-          <div
-            className="h-full bg-primary transition-all"
-            style={{ width: `${distributedPct}%` }}
-          />
-          <div
-            className="h-full bg-primary/40 transition-all"
-            style={{ width: `${planPct}%` }}
-          />
+        {/* Stacked bar: saved (primary) + planned (primary/40) */}
+        <div className="flex items-center gap-2">
+          <div className="flex-1 h-1.5 bg-muted rounded-full overflow-hidden flex">
+            <div
+              className="h-full bg-primary transition-all"
+              style={{ width: `${distributedPct}%` }}
+            />
+            <div
+              className="h-full bg-primary/40 transition-all"
+              style={{ width: `${planPct}%` }}
+            />
+          </div>
+          <span
+            className={cn(
+              "text-xs font-medium shrink-0",
+              isFullyDistributed ? "text-success" : "text-muted-foreground",
+            )}
+          >
+            {totalPct}%
+          </span>
         </div>
-      </CardContent>
-    </Card>
+        <span className="text-xs text-muted-foreground truncate block">
+          {task.zone_name} · {formatHM(effectiveDistributed, t)} / {totalLabel}
+        </span>
+      </div>
+    </>
   )
+
+  if (interactive) {
+    return (
+      <button
+        type="button"
+        onClick={() => {
+          if (!rowDisabled && onSelect) onSelect()
+        }}
+        disabled={rowDisabled}
+        className={cn(
+          "group w-full flex items-center gap-3 py-2 px-1 -mx-1 rounded-md text-left transition-colors",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          rowDisabled
+            ? "cursor-not-allowed opacity-60"
+            : "cursor-pointer hover:bg-muted/50",
+        )}
+      >
+        {content}
+        <ChevronRight
+          className={cn(
+            "size-4 shrink-0 text-muted-foreground transition-all",
+            !rowDisabled && "group-hover:text-primary group-hover:translate-x-0.5",
+          )}
+        />
+      </button>
+    )
+  }
+
+  return <div className="flex items-center gap-3 py-2">{content}</div>
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -538,9 +536,10 @@ function EmployeeUtilizationRow({ employee, planMin = 0, onSelect, t }: Employee
       <button
         type="button"
         onClick={onSelect}
-        className="w-full flex items-center gap-3 py-2 px-1 -mx-1 rounded-md text-left transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        className="group w-full flex items-center gap-3 py-2 px-1 -mx-1 rounded-md text-left transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       >
         {content}
+        <ChevronRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:text-primary group-hover:translate-x-0.5" />
       </button>
     )
   }
@@ -559,6 +558,81 @@ interface TeamUtilizationPanelProps {
   date: string
   t: ReturnType<typeof useTranslations>
   locale: string
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TasksSummaryPanel — правая панель «Сводка по задачам» в by-employee режиме.
+// Симметричный близнец TeamUtilizationPanel — те же sticky/scroll, тот же
+// layout (header → scroll list of rows → footer summary).
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface TasksSummaryPanelProps {
+  tasks: UnassignedTask[]
+  plan: Map<string, TaskDistributionAllocation[]>
+  t: ReturnType<typeof useTranslations>
+}
+
+function TasksSummaryPanel({ tasks, plan, t }: TasksSummaryPanelProps) {
+  const totalPlanned = tasks.reduce((s, t) => s + t.planned_minutes, 0)
+  const totalDistributed = tasks.reduce((s, t) => s + t.distributed_minutes, 0)
+  const totalPlanMin = Array.from(plan.values()).reduce(
+    (sum, allocs) => sum + allocs.reduce((s, a) => s + a.minutes, 0),
+    0,
+  )
+  const totalCovered = totalDistributed + totalPlanMin
+  const remaining = Math.max(0, totalPlanned - totalCovered)
+
+  if (tasks.length === 0) {
+    return (
+      <Card className="lg:sticky lg:top-4">
+        <CardContent className="py-8">
+          <EmptyState
+            icon={ListChecks}
+            title={t("empty.no_tasks_title")}
+            description={t("empty.no_tasks_description")}
+            className="py-4"
+          />
+        </CardContent>
+      </Card>
+    )
+  }
+
+  return (
+    <Card className="lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:flex lg:flex-col overflow-hidden">
+      <CardHeader className="pb-2 shrink-0">
+        <CardTitle className="text-base flex items-center gap-2">
+          <ListChecks className="size-4" />
+          Сводка по задачам
+        </CardTitle>
+        <p className="text-xs text-muted-foreground">
+          {tasks.length} задач{tasks.length === 1 ? "а" : tasks.length < 5 ? "и" : ""}
+          {plan.size > 0 && ` · ${plan.size} в плане`}
+        </p>
+      </CardHeader>
+      <CardContent className="flex flex-col flex-1 min-h-0">
+        <ScrollArea className="flex-1 min-h-0 max-h-[400px] lg:max-h-none">
+          <div className="space-y-1 pr-2">
+            {tasks.map((task) => (
+              <TaskRow
+                key={task.id}
+                task={task}
+                planAllocations={plan.get(task.id) ?? []}
+                t={t}
+              />
+            ))}
+          </div>
+        </ScrollArea>
+        <div className="mt-4 pt-3 border-t shrink-0">
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">
+              Покрыто: {formatHM(totalCovered, t)} / {formatHM(totalPlanned, t)}
+              {remaining > 0 && ` · осталось ${formatHM(remaining, t)}`}
+            </span>
+          </div>
+        </div>
+      </CardContent>
+    </Card>
+  )
 }
 
 function TeamUtilizationPanel({ employees, planMinByUser, isLoading, date, t, locale }: TeamUtilizationPanelProps) {
@@ -618,8 +692,8 @@ function TeamUtilizationPanel({ employees, planMinByUser, isLoading, date, t, lo
   }
 
   return (
-    <Card className="lg:sticky lg:top-4">
-      <CardHeader className="pb-2">
+    <Card className="lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:flex lg:flex-col overflow-hidden">
+      <CardHeader className="pb-2 shrink-0">
         <CardTitle className="text-base flex items-center gap-2">
           <Users className="size-4" />
           {t("utilization.title")}
@@ -628,11 +702,11 @@ function TeamUtilizationPanel({ employees, planMinByUser, isLoading, date, t, lo
           {t("utilization.date_label", { date: formattedDate })} · {t("utilization.employees_count", { count: employees.length })}
         </p>
       </CardHeader>
-      <CardContent className="flex flex-col">
+      <CardContent className="flex flex-col flex-1 min-h-0">
         {/* Сводка по команде — read-only. Распределение делается через TaskCard
             в by-task или EmployeeUtilizationRow в by-employee. Здесь сотрудники
             некликабельны: панель показывает прогресс, не действие. */}
-        <ScrollArea className="max-h-[400px] lg:max-h-[calc(100vh-360px)] flex-1 min-h-0">
+        <ScrollArea className="flex-1 min-h-0 max-h-[400px] lg:max-h-none">
           <div className="space-y-1 pr-2">
             {employees.map((emp) => (
               <EmployeeUtilizationRow
@@ -1868,18 +1942,21 @@ export function TaskDistribution() {
             </h2>
 
             {isLoadingTasks ? (
-              <div className="grid gap-4 sm:grid-cols-2">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <Card key={i}>
-                    <CardContent className="p-4 space-y-3">
-                      <Skeleton className="h-4 w-3/4" />
-                      <Skeleton className="h-3 w-1/2" />
-                      <Skeleton className="h-1.5 w-full rounded-full" />
-                      <Skeleton className="h-9 w-full" />
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
+              <Card>
+                <CardContent className="p-2">
+                  <div className="space-y-1">
+                    {Array.from({ length: 8 }).map((_, i) => (
+                      <div key={i} className="flex items-center gap-3 py-2">
+                        <Skeleton className="size-8 rounded-full shrink-0" />
+                        <div className="flex-1 space-y-1.5">
+                          <Skeleton className="h-3 w-32" />
+                          <Skeleton className="h-1.5 w-full rounded-full" />
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             ) : tasks.length === 0 ? (
               <Card>
                 <CardContent className="py-12">
@@ -1891,31 +1968,35 @@ export function TaskDistribution() {
                 </CardContent>
               </Card>
             ) : (
-              // Плоский список задач — клик по карточке открывает DistributionSheet.
-              // Сортировка: сначала нераспределённые (remaining_minutes > 0),
-              // потом по приоритету (1 = критично), потом по зоне.
-              <div className="grid gap-3 sm:grid-cols-2">
-                {[...tasks]
-                  .sort((a, b) => {
-                    const ar = a.remaining_minutes > 0 ? 0 : 1
-                    const br = b.remaining_minutes > 0 ? 0 : 1
-                    if (ar !== br) return ar - br
-                    const ap = a.priority ?? 50
-                    const bp = b.priority ?? 50
-                    if (ap !== bp) return ap - bp
-                    return (a.zone_name ?? "").localeCompare(b.zone_name ?? "")
-                  })
-                  .map((task) => (
-                    <TaskCard
-                      key={task.id}
-                      task={task}
-                      planAllocations={plan.get(task.id) ?? []}
-                      onDistribute={() => handleDistribute(task)}
-                      disabled={!canEdit}
-                      t={t}
-                    />
-                  ))}
-              </div>
+              // Плоский список задач в одном Card (визуальный близнец
+              // by-employee LEFT). Клик по строке → DistributionSheet.
+              // Сортировка: сначала нераспределённые → по priority → по зоне.
+              <Card>
+                <CardContent className="p-2">
+                  <div className="space-y-1">
+                    {[...tasks]
+                      .sort((a, b) => {
+                        const ar = a.remaining_minutes > 0 ? 0 : 1
+                        const br = b.remaining_minutes > 0 ? 0 : 1
+                        if (ar !== br) return ar - br
+                        const ap = a.priority ?? 50
+                        const bp = b.priority ?? 50
+                        if (ap !== bp) return ap - bp
+                        return (a.zone_name ?? "").localeCompare(b.zone_name ?? "")
+                      })
+                      .map((task) => (
+                        <TaskRow
+                          key={task.id}
+                          task={task}
+                          planAllocations={plan.get(task.id) ?? []}
+                          onSelect={() => handleDistribute(task)}
+                          disabled={!canEdit}
+                          t={t}
+                        />
+                      ))}
+                  </div>
+                </CardContent>
+              </Card>
             )}
           </div>
 
@@ -1989,86 +2070,15 @@ export function TaskDistribution() {
             )}
           </div>
 
-          {/* Правая колонка: сводка задач — что распределено, на сколько часов */}
-          <div className="lg:sticky lg:top-4 lg:self-start">
-            <Card>
-              <CardHeader className="pb-2">
-                <CardTitle className="text-base flex items-center gap-2">
-                  <ListChecks className="size-4" />
-                  Сводка по задачам
-                </CardTitle>
-                <p className="text-xs text-muted-foreground">
-                  {tasks.length} задач{tasks.length === 1 ? "а" : tasks.length < 5 ? "и" : ""}
-                  {plan.size > 0 && ` · ${plan.size} в плане`}
-                </p>
-              </CardHeader>
-              <CardContent>
-                {tasks.length === 0 ? (
-                  <p className="text-xs text-muted-foreground py-4 text-center">
-                    Нет задач для распределения
-                  </p>
-                ) : (
-                  <ScrollArea className="max-h-[400px] lg:max-h-[calc(100vh-280px)]">
-                    <div className="space-y-2 pr-2">
-                      {tasks.map((task) => {
-                        const planAllocs = plan.get(task.id) ?? []
-                        const planMinutes = planAllocs.reduce((s, a) => s + a.minutes, 0)
-                        const totalCovered = task.distributed_minutes + planMinutes
-                        const pct = task.planned_minutes > 0
-                          ? Math.min(100, Math.round((totalCovered / task.planned_minutes) * 100))
-                          : 0
-                        const isFullyCovered = totalCovered >= task.planned_minutes
-                        return (
-                          <div
-                            key={task.id}
-                            className={cn(
-                              "rounded-md border p-2 text-xs",
-                              isFullyCovered ? "border-success/40 bg-success/5" : "bg-card",
-                            )}
-                          >
-                            <div className="flex items-start justify-between gap-2 mb-1">
-                              <div className="font-medium leading-tight truncate flex-1">
-                                {task.title}
-                              </div>
-                              <span
-                                className={cn(
-                                  "text-[10px] font-medium shrink-0",
-                                  isFullyCovered ? "text-success" : "text-muted-foreground",
-                                )}
-                              >
-                                {pct}%
-                              </span>
-                            </div>
-                            <div className="text-[10px] text-muted-foreground mb-1 flex items-center gap-1">
-                              <MapPin className="size-2.5" />
-                              <span className="truncate">{task.zone_name}</span>
-                              <span className="text-border">·</span>
-                              <span>
-                                {formatHM(totalCovered, t)} / {formatHM(task.planned_minutes, t)}
-                              </span>
-                            </div>
-                            <div className="h-1 bg-muted rounded-full overflow-hidden">
-                              <div
-                                className={cn(
-                                  "h-full transition-all",
-                                  isFullyCovered ? "bg-success" : "bg-primary",
-                                )}
-                                style={{ width: `${pct}%` }}
-                              />
-                            </div>
-                            {planAllocs.length > 0 && (
-                              <div className="mt-1.5 text-[10px] text-primary">
-                                В плане: {planAllocs.length} назначен{planAllocs.length === 1 ? "ие" : "ия"} (+{formatHM(planMinutes, t)})
-                              </div>
-                            )}
-                          </div>
-                        )
-                      })}
-                    </div>
-                  </ScrollArea>
-                )}
-              </CardContent>
-            </Card>
+          {/* Правая колонка: сводка задач — компактный read-only список,
+              визуально идентичный «Сводке по команде» (TeamUtilizationPanel).
+              Тот же flex-col + sticky max-h pattern, тот же row-format. */}
+          <div className="hidden lg:block">
+            <TasksSummaryPanel
+              tasks={tasks}
+              plan={plan}
+              t={t}
+            />
           </div>
         </div>
       )}
