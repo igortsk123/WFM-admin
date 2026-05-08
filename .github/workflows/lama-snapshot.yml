@@ -19,8 +19,9 @@ jobs:
   fetch:
     name: Fetch + regenerate
     runs-on: ubuntu-latest
-    # Fetch ~30 мин на 132 магазина с rate-limit. Запас до 60.
-    timeout-minutes: 60
+    # GitHub runners (US IP) получают более жёсткий rate-limit от LAMA чем
+    # локальный fetch. Первый run упёрся в 60 мин timeout. Запас до 90.
+    timeout-minutes: 90
 
     permissions:
       # Нужно для коммита и пуша обратно в main
