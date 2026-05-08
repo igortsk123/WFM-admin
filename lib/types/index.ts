@@ -636,6 +636,56 @@ export type OperationSuggestionSource = "worker" | "store_director";
 export type SubtaskSuggestionSource = OperationSuggestionSource;
 
 /**
+ * UnassignedTaskBlock — блок задач от LAMA, ожидающий распределения.
+ *
+ * Из LAMA приходит так: «Выкладка / Алкоголь / 8 часов на магазин».
+ * Это не одна задача на одного сотрудника, а сводка трудозатрат
+ * на пару (work_type, zone) которую директор/ИИ должен лопнуть на
+ * конкретные Task'и для конкретных сотрудников.
+ *
+ * После распределения:
+ *   - блок становится `is_distributed: true`
+ *   - в MOCK_TASKS появляются N новых Task с assignee_id'ами
+ *   - distributed_minutes растёт, remaining_minutes падает
+ *
+ * Backend пока не имеет такого endpoint'а. Admin-only концепция,
+ * нужно дописать на backend сервисе LAMA-sync чтобы возвращал
+ * блоки до их раскладки. См. MIGRATION-NOTES.md.
+ */
+export interface UnassignedTaskBlock {
+  id: string;
+  store_id: number;
+  store_name: string;
+  /** Дата на которую этот блок (yyyy-MM-dd). */
+  date: string;
+  work_type_id: number;
+  work_type_name: string;
+  zone_id: number;
+  zone_name: string;
+  /** Опционально — категория товара. */
+  product_category_id?: number | null;
+  product_category_name?: string | null;
+  /** Заголовок блока, например «Выкладка: Алкоголь». */
+  title: string;
+  /** Общее запланированное время в минутах (от LAMA). */
+  total_minutes: number;
+  /** Уже распределено (сумма minutes из всех allocations). */
+  distributed_minutes: number;
+  /** total_minutes - distributed_minutes. */
+  remaining_minutes: number;
+  /** Приоритет 1-100 (LAMA-стандарт). */
+  priority?: number;
+  /** Откуда блок: LAMA-выгрузка / директор вручную / ИИ-предложение. */
+  source: "LAMA" | "MANAGER" | "AI";
+  /** Время создания/прихода блока. */
+  created_at: string;
+  /** Все ли минуты распределены. */
+  is_distributed: boolean;
+  /** ID конкретных Task'ов которые получились после распределения этого блока. */
+  spawned_task_ids: string[];
+}
+
+/**
  * Operation — шаг выполнения внутри задачи.
  * Совпадает с backend `Operation` (svc_tasks/api/operations.py).
  *

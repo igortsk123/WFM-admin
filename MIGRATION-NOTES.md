@@ -1,5 +1,66 @@
 # MIGRATION NOTES — admin ↔ backend
 
+## 🆕 UnassignedTaskBlock — концепция распределения (HIGH)
+
+**Что это.** В реальности LAMA отдаёт сводки трудозатрат на магазин блоками,
+например:
+- «Выкладка ФРОВ — 480 мин на день»
+- «Переоценка молочной зоны — 180 мин»
+- «Инвентаризация бакалеи — 300 мин»
+
+Это **не** конкретные задачи на конкретного работника. Это **сводка** по
+паре `(work_type, zone)`. Директор магазина (или ИИ) **распределяет** этот
+блок на N задач конкретным сотрудникам.
+
+**Где это сейчас в admin.**
+- Тип: `lib/types/index.ts` — `interface UnassignedTaskBlock`
+- Mock-пул: `lib/mock-data/_lama-unassigned-blocks.ts` — 214 блоков по 21 ЛАМА-магазину
+  (сгенерированы группировкой реальных LAMA-задач по `(work_type, zone)` из live API)
+- API: `lib/api/distribution.ts` — `getStoreUnassignedBlocks()`, `distributeBlock()`
+- TS-зеркало: `lib/api/_backend-types.ts` — `BackendUnassignedTaskBlock`
+- UI: `components/features/tasks/task-distribution.tsx` — секция «Блоки от ЛАМА»
+  на /tasks/distribute
+
+**Что нужно от backend (когда дойдёт очередь).**
+Endpoint'ы которых сейчас нет, но мобайл и admin их ожидают:
+
+| Endpoint | Назначение |
+|---|---|
+| `POST /tasks/unassigned-blocks/sync` | LAMA n8n → backend: ежедневная заливка блоков на следующий день |
+| `GET /tasks/unassigned-blocks?store_id=&date=` | admin/mobile manager: список нераспределённых блоков |
+| `POST /tasks/unassigned-blocks/{id}/distribute` | директор/ИИ: лопает блок на N Task'ов (body: `{allocations: [{user_id, minutes}]}`) |
+| `GET /tasks/unassigned-blocks/{id}` | детали одного блока (опционально) |
+
+**Поведение `distribute`:**
+- Backend проверяет: сумма minutes ≤ remaining_minutes
+- Создаёт N task'ов в taskstable со shift_id, assignee_id из allocation
+- Помечает блок: `distributed_minutes += sum`, `is_distributed = (remaining=0)`
+- Возвращает массив task_id
+
+**Pydantic schema (предлагаемая):**
+```python
+class UnassignedTaskBlock(BaseModel):
+    id: UUID
+    store_id: int
+    date: date
+    work_type_id: int
+    zone_id: int
+    product_category_id: int | None
+    total_minutes: int
+    distributed_minutes: int
+    priority: int | None
+    source: Literal["LAMA", "MANAGER", "AI"]
+    created_at: datetime
+    is_distributed: bool
+    spawned_task_ids: list[UUID]
+```
+
+**До добавления endpoint'а** admin живёт на mock-блоках. После — переключим
+USE_REAL_API и admin начнёт грузить блоки из backend.
+
+---
+
+
 > **Привет, backend-разработчик!** Этот документ — карта что у нас уже совпадает,
 > что у нас admin-only и просит твоей поддержки. Цель — сделать переключение
 > admin с моков на твой backend бесшовным, без переписывания UI.

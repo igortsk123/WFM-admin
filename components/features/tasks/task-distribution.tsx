@@ -29,13 +29,17 @@ import {
 
 import type { FunctionalRole, Store } from "@/lib/types"
 import type { UnassignedTask, EmployeeUtilization, TaskDistributionAllocation } from "@/lib/api/distribution"
+import type { UnassignedTaskBlock } from "@/lib/types"
 import {
   getStoreUnassignedTasks,
   getStoreEmployeesUtilization,
+  getStoreUnassignedBlocks,
+  distributeBlock,
   assignTaskToUser,
   autoDistribute,
   notifyOverShiftAssignment,
   type OverShiftEntry,
+  type BlockAllocation,
 } from "@/lib/api/distribution"
 import { getStores } from "@/lib/api/stores"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
@@ -1575,6 +1579,9 @@ export function TaskDistribution() {
   const [period, setPeriod] = React.useState<PeriodTab>("today")
   const [tasks, setTasks] = React.useState<UnassignedTask[]>([])
   const [employees, setEmployees] = React.useState<EmployeeUtilization[]>([])
+  // Нераспределённые блоки задач из LAMA — основная сущность для распределения.
+  // Когда блок распределяется, он лопается на N Task'ов в MOCK_TASKS.
+  const [blocks, setBlocks] = React.useState<UnassignedTaskBlock[]>([])
   const [isLoadingStores, setIsLoadingStores] = React.useState(true)
   const [isLoadingTasks, setIsLoadingTasks] = React.useState(false)
   const [isLoadingEmployees, setIsLoadingEmployees] = React.useState(false)
@@ -1617,7 +1624,9 @@ export function TaskDistribution() {
 
   // Get current date based on period
   const currentDate = React.useMemo(() => {
-    const today = new Date("2026-05-01") // Mock date
+    // Mock TODAY синхронизируется с LAMA snapshot (2026-05-07).
+    // На «завтра» (2026-05-08) у нас лежат нераспределённые LAMA-блоки.
+    const today = new Date("2026-05-07")
     return period === "tomorrow" ? format(addDays(today, 1), "yyyy-MM-dd") : format(today, "yyyy-MM-dd")
   }, [period])
 
@@ -1660,13 +1669,15 @@ export function TaskDistribution() {
       setIsLoadingEmployees(true)
 
       try {
-        const [tasksRes, employeesRes] = await Promise.all([
+        const [tasksRes, employeesRes, blocksRes] = await Promise.all([
           getStoreUnassignedTasks(selectedStoreId, currentDate),
           getStoreEmployeesUtilization(selectedStoreId, currentDate),
+          getStoreUnassignedBlocks(selectedStoreId, currentDate),
         ])
 
         setTasks(tasksRes.data)
         setEmployees(employeesRes.data)
+        setBlocks(blocksRes.data)
       } catch (error) {
         console.error("Failed to load data:", error)
         toast.error(t("toast.distributed_error"))
@@ -1944,7 +1955,7 @@ export function TaskDistribution() {
                   </Card>
                 ))}
               </div>
-            ) : tasks.length === 0 ? (
+            ) : tasks.length === 0 && blocks.length === 0 ? (
               <Card>
                 <CardContent className="py-12">
                   <EmptyState
@@ -1955,7 +1966,59 @@ export function TaskDistribution() {
                 </CardContent>
               </Card>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-4">
+                {/* Нераспределённые блоки от LAMA — приходят сводками
+                    (например «Выкладка ФРОВ — 480 мин»). Директор/ИИ
+                    распределяет эти блоки на сотрудников. */}
+                {blocks.length > 0 && (
+                  <Card className="border-primary/30 bg-primary/5">
+                    <CardContent className="p-4 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="text-sm font-semibold flex items-center gap-2">
+                            <Wand2 className="size-4 text-primary" />
+                            Блоки от ЛАМА (нераспределённые)
+                          </div>
+                          <div className="text-xs text-muted-foreground mt-0.5">
+                            Сводка трудозатрат на день — нужно разбить на конкретные задачи сотрудникам
+                          </div>
+                        </div>
+                        <Badge variant="secondary">{blocks.length} блоков · {blocks.reduce((s, b) => s + b.remaining_minutes, 0)} мин</Badge>
+                      </div>
+                      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                        {blocks.slice(0, 12).map((block) => (
+                          <div
+                            key={block.id}
+                            className={cn(
+                              "rounded-md border bg-card p-3 text-sm transition hover:border-primary/50",
+                              block.priority && block.priority <= 3 && "border-destructive/40",
+                            )}
+                          >
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="font-medium leading-tight">{block.title}</div>
+                              {block.priority && block.priority <= 3 && (
+                                <Badge variant="destructive" className="shrink-0 text-[10px]">P{block.priority}</Badge>
+                              )}
+                            </div>
+                            <div className="text-xs text-muted-foreground mt-1">
+                              {Math.floor(block.remaining_minutes / 60)}ч {block.remaining_minutes % 60}мин
+                              {block.distributed_minutes > 0 && (
+                                <span className="text-primary"> · {block.distributed_minutes} мин уже разложено</span>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      {blocks.length > 12 && (
+                        <div className="text-xs text-muted-foreground text-center">
+                          и ещё {blocks.length - 12} блоков
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                )}
+
+                {/* Уже распределённые задачи (для редактирования назначений) */}
                 {Array.from(
                   tasks.reduce((acc, task) => {
                     const zone = task.zone_name ?? t("zone_group.no_zone")

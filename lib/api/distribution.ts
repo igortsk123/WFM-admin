@@ -1,7 +1,8 @@
-import type { FunctionalRole, Task, Shift } from "@/lib/types";
+import type { FunctionalRole, Task, Shift, UnassignedTaskBlock } from "@/lib/types";
 import { MOCK_TASKS } from "@/lib/mock-data/tasks";
 import { MOCK_USERS } from "@/lib/mock-data/users";
 import { MOCK_NOTIFICATIONS } from "@/lib/mock-data/notifications";
+import { MOCK_UNASSIGNED_BLOCKS } from "@/lib/mock-data/_lama-unassigned-blocks";
 import {
   USERS_BY_ID,
   SHIFTS_BY_STORE_DATE,
@@ -189,6 +190,145 @@ export async function getStoreShiftsToday(
   const shifts = SHIFTS_BY_STORE_DATE.get(`${storeId}:${date}`) ?? [];
 
   return { data: shifts, total: shifts.length, page: 1, page_size: shifts.length };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// UNASSIGNED TASK BLOCKS — главное API распределения задач
+// ═══════════════════════════════════════════════════════════════════
+//
+// Блоки приходят из LAMA как сводки трудозатрат на магазин:
+// «Выкладка ФРОВ — 480 минут на день». Директор/ИИ их распределяет
+// на конкретных сотрудников → блок «лопается» на N задач в MOCK_TASKS.
+//
+// Backend сейчас НЕ имеет endpoint'а для блоков (admin-only концепция).
+// Будем просить backend добавить /tasks/unassigned-blocks (см. MIGRATION-NOTES).
+
+/** In-memory state блоков (мутируем при распределении). */
+const blockState: Map<string, UnassignedTaskBlock> = new Map(
+  MOCK_UNASSIGNED_BLOCKS.map((b) => [b.id, { ...b }]),
+);
+
+/**
+ * Получить нераспределённые блоки для магазина на дату.
+ *
+ * @admin-only — backend пока не имеет эндпоинта для блоков.
+ *               См. MIGRATION-NOTES.md, request "GET /tasks/unassigned-blocks".
+ */
+export async function getStoreUnassignedBlocks(
+  storeId: number,
+  date: string,
+): Promise<ApiListResponse<UnassignedTaskBlock>> {
+  await new Promise((r) => setTimeout(r, 250));
+
+  const all = Array.from(blockState.values()).filter(
+    (b) =>
+      b.store_id === storeId &&
+      b.date === date &&
+      !b.is_distributed,
+  );
+
+  // Sort: priority (1 = critical) сверху, потом по time_total убыв.
+  all.sort((a, b) => {
+    const pa = a.priority ?? 50;
+    const pb = b.priority ?? 50;
+    if (pa !== pb) return pa - pb;
+    return b.total_minutes - a.total_minutes;
+  });
+
+  return { data: all, total: all.length, page: 1, page_size: all.length };
+}
+
+export interface BlockAllocation {
+  user_id: number;
+  user_name: string;
+  minutes: number;
+}
+
+/**
+ * Распределить блок на сотрудников. Лопает блок:
+ *   - в MOCK_TASKS добавляются N новых Task (по одной на каждого user_id)
+ *   - блок помечается is_distributed=true (или partial если minutes < total)
+ *   - возвращает spawned task IDs
+ *
+ * @admin-only — это admin distribute flow, backend получит уже готовые Task'и.
+ */
+export async function distributeBlock(
+  blockId: string,
+  allocations: BlockAllocation[],
+): Promise<ApiMutationResponse & { task_ids?: string[] }> {
+  await new Promise((r) => setTimeout(r, 350));
+
+  const block = blockState.get(blockId);
+  if (!block) {
+    return {
+      success: false,
+      error: { code: "BLOCK_NOT_FOUND", message: `Block ${blockId} not found` },
+    };
+  }
+  if (block.is_distributed) {
+    return {
+      success: false,
+      error: { code: "ALREADY_DISTRIBUTED", message: "Блок уже распределён" },
+    };
+  }
+
+  const totalAllocated = allocations.reduce((s, a) => s + a.minutes, 0);
+  if (totalAllocated > block.remaining_minutes) {
+    return {
+      success: false,
+      error: {
+        code: "EXCEEDS_REMAINING",
+        message: `Распределено ${totalAllocated} мин, но в блоке осталось ${block.remaining_minutes} мин`,
+      },
+    };
+  }
+
+  // Spawn N tasks (по одной на каждого user_id из allocations)
+  const today = new Date().toISOString();
+  const spawnedIds: string[] = [];
+  for (const alloc of allocations) {
+    const taskId = `task-from-${blockId}-${alloc.user_id}-${Date.now()}`;
+    const newTask: Task = {
+      id: taskId,
+      title: block.title,
+      description: `Распределено директором из блока «${block.title}» (${block.total_minutes} мин на ${block.zone_name})`,
+      type: "PLANNED",
+      kind: "SINGLE",
+      source: "PLANNED",
+      planned_minutes: alloc.minutes,
+      store_id: block.store_id,
+      store_name: block.store_name,
+      zone_id: block.zone_id,
+      zone_name: block.zone_name,
+      work_type_id: block.work_type_id,
+      work_type_name: block.work_type_name,
+      product_category_id: block.product_category_id ?? null,
+      product_category_name: block.product_category_name ?? null,
+      creator_id: 0, // будет установлен из контекста UI
+      creator_name: "Директор магазина",
+      assignee_id: alloc.user_id,
+      assignee_name: alloc.user_name,
+      assigned_to_permission: null,
+      state: "NEW",
+      review_state: "NONE",
+      acceptance_policy: "MANUAL",
+      requires_photo: false,
+      archived: false,
+      priority: block.priority,
+      created_at: today,
+      updated_at: today,
+    };
+    MOCK_TASKS.push(newTask);
+    spawnedIds.push(taskId);
+  }
+
+  // Update block state
+  block.distributed_minutes += totalAllocated;
+  block.remaining_minutes = block.total_minutes - block.distributed_minutes;
+  block.is_distributed = block.remaining_minutes <= 0;
+  block.spawned_task_ids = [...(block.spawned_task_ids ?? []), ...spawnedIds];
+
+  return { success: true, task_ids: spawnedIds };
 }
 
 /**

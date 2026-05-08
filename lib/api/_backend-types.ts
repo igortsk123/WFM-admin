@@ -369,6 +369,48 @@ export interface BackendShiftCloseRequest {
   force?: boolean;
 }
 
+// ── UnassignedTaskBlock (admin-only пока — backend нужно дотянуть) ──
+//
+// Концепция: LAMA каждый день выгружает блоки трудозатрат на магазин:
+//   POST /tasks/unassigned-blocks/sync (от LAMA в наш backend)
+//   GET /tasks/unassigned-blocks?store_id=&date=
+//   POST /tasks/unassigned-blocks/{id}/distribute (body: allocations[])
+//
+// Backend в текущем виде получает уже распределённые задачи (в /tasks/list).
+// Чтобы admin мог делать распределение через UI — backend нужно ввести
+// этот endpoint. См. MIGRATION-NOTES.md "Запрос: blocks API".
+
+export interface BackendUnassignedTaskBlock {
+  id: string;
+  store_id: number;
+  store_name: string;
+  date: string; // yyyy-MM-dd
+  work_type_id: number;
+  work_type_name: string;
+  zone_id: number;
+  zone_name: string;
+  product_category_id?: number | null;
+  product_category_name?: string | null;
+  title: string;
+  total_minutes: number;
+  distributed_minutes: number;
+  remaining_minutes: number;
+  priority?: number;
+  source: "LAMA" | "MANAGER" | "AI";
+  created_at: string;
+  is_distributed: boolean;
+  spawned_task_ids: string[];
+}
+
+export interface BackendBlockAllocation {
+  user_id: number;
+  minutes: number;
+}
+
+export interface BackendDistributeBlockRequest {
+  allocations: BackendBlockAllocation[];
+}
+
 export interface BackendCurrentShift {
   id: number;
   plan_id?: number | null;
