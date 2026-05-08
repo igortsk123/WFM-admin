@@ -65,29 +65,49 @@ const taskAllocations: Map<string, TaskDistributionAllocation[]> = new Map();
 const UNASSIGNED_HARD_CAP = 100;
 
 /**
- * Дефолтный шаблон блоков для магазина без LAMA-данных. Используется
- * как fallback в getStoreUnassignedTasks чтобы экран не был пустым.
- * Возвращает 10 блоков по типичным ритейл-зонам.
+ * Дефолтный шаблон блоков для магазина без LAMA-данных.
+ *
+ * Минуты — РЕАЛЬНЫЕ медианы из 498 LAMA-задач по 21 магазину live API
+ * (см. .tmp_lama_block_stats.json). Группировка по (work_type, zone),
+ * считается median minutes на магазин.
+ *
+ * Используется как fallback в getStoreUnassignedTasks чтобы экран
+ * не был пустым на не-LAMA магазинах (Abricos, СПАР, Foodcity и т.д.).
  */
 function generateDefaultBlocksForStore(storeId: number): UnassignedTaskBlock[] {
   const today = new Date().toISOString().slice(0, 10);
   const createdAt = new Date().toISOString();
-  // Используем существующие mock zone IDs и work_type IDs.
+  // Median minutes из реальной выборки LAMA — 19 пар (work_type × zone).
   const TEMPLATE: Array<{
     wt_id: number; wt_name: string;
     zone_id: number; zone_name: string;
     minutes: number; priority: number;
   }> = [
-    { wt_id: 4, wt_name: "Выкладка", zone_id: 100, zone_name: "Фреш 1", minutes: 480, priority: 3 },
-    { wt_id: 4, wt_name: "Выкладка", zone_id: 102, zone_name: "Бакалея", minutes: 360, priority: 5 },
-    { wt_id: 4, wt_name: "Выкладка", zone_id: 106, zone_name: "Алкоголь", minutes: 240, priority: 5 },
-    { wt_id: 4, wt_name: "Выкладка", zone_id: 109, zone_name: "Пиво, чипсы", minutes: 180, priority: 7 },
-    { wt_id: 4, wt_name: "Выкладка", zone_id: 110, zone_name: "Напитки б/а", minutes: 180, priority: 7 },
-    { wt_id: 5, wt_name: "Переоценка", zone_id: 100, zone_name: "Фреш 1", minutes: 60, priority: 2 },
-    { wt_id: 5, wt_name: "Переоценка", zone_id: 102, zone_name: "Бакалея", minutes: 90, priority: 4 },
-    { wt_id: 6, wt_name: "Инвентаризация", zone_id: 102, zone_name: "Бакалея", minutes: 240, priority: 8 },
-    { wt_id: 2, wt_name: "Касса", zone_id: 117, zone_name: "Кассовая зона", minutes: 480, priority: 1 },
-    { wt_id: 1, wt_name: "Менеджерские операции", zone_id: 127, zone_name: "Торговый зал (общая)", minutes: 240, priority: 6 },
+    // Касса (8 ч) — критично
+    { wt_id: 2, wt_name: "Касса", zone_id: 117, zone_name: "Кассовая зона", minutes: 747, priority: 1 },
+    // Менеджерские операции (~7 ч)
+    { wt_id: 1, wt_name: "Менеджерские операции", zone_id: 127, zone_name: "Торговый зал (общая)", minutes: 405, priority: 2 },
+    // КСО (8 ч) — критично если есть
+    { wt_id: 3, wt_name: "КСО", zone_id: 114, zone_name: "Зона КСО", minutes: 480, priority: 2 },
+    // Выкладка по зонам — медианы
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 111, zone_name: "ФРОВ", minutes: 560, priority: 3 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 100, zone_name: "Фреш 1", minutes: 290, priority: 3 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 101, zone_name: "Фреш 2", minutes: 240, priority: 4 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 102, zone_name: "Бакалея", minutes: 150, priority: 5 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 108, zone_name: "Кондитерка, чай, кофе", minutes: 150, priority: 5 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 109, zone_name: "Пиво, чипсы", minutes: 150, priority: 6 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 110, zone_name: "Напитки б/а", minutes: 140, priority: 6 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 106, zone_name: "Алкоголь", minutes: 90, priority: 6 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 104, zone_name: "Бытовая химия", minutes: 75, priority: 7 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 103, zone_name: "Заморозка", minutes: 60, priority: 7 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 105, zone_name: "Non-Food", minutes: 30, priority: 8 },
+    { wt_id: 4, wt_name: "Выкладка", zone_id: 107, zone_name: "ЗОЖ", minutes: 27, priority: 8 },
+    // Инвентаризация (~3 ч)
+    { wt_id: 6, wt_name: "Инвентаризация", zone_id: 102, zone_name: "Бакалея", minutes: 165, priority: 7 },
+    // Переоценка (~1.5 ч)
+    { wt_id: 5, wt_name: "Переоценка", zone_id: 100, zone_name: "Фреш 1", minutes: 99, priority: 4 },
+    // Другие работы (~1.5 ч)
+    { wt_id: 7, wt_name: "Другие работы", zone_id: 112, zone_name: "Без зоны", minutes: 90, priority: 7 },
   ];
 
   return TEMPLATE.map((t, idx) => ({
