@@ -52,13 +52,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog"
 import { AlertDialog } from "@/components/ui/alert-dialog"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import {
@@ -76,7 +69,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { Spinner } from "@/components/ui/spinner"
 import { cn } from "@/lib/utils"
 
 import { PageHeader } from "@/components/shared/page-header"
@@ -88,6 +80,8 @@ import { RoleBadge } from "@/components/shared/role-badge"
 import { ResponsiveDataTable } from "@/components/shared/responsive-data-table"
 import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet"
 import { ConfirmDialog } from "@/components/shared/confirm-dialog"
+import { BulkSelectDialog } from "@/components/shared/bulk-select-dialog"
+import { Spinner } from "@/components/ui/spinner"
 import { FreelancerStatusBadge } from "@/components/shared/freelancer-status-badge"
 
 // ─────────────────────────────────────────────────────────────────
@@ -367,33 +361,24 @@ function PermissionAssignDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-sm">
-        <DialogHeader>
-          <DialogTitle>{t("dialogs.permission_title")}</DialogTitle>
-        </DialogHeader>
-        <div className="py-2">
-          <SingleSelectCombobox
-            options={permOptions}
-            value={selectedPerm}
-            onValueChange={(v) => setSelectedPerm(v as Permission | "")}
-            placeholder={t("dialogs.permission_select")}
-            className="w-full"
-          />
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)}>
-            {t("bulk.cancel")}
-          </Button>
-          <Button
-            onClick={handleConfirm}
-            disabled={!selectedPerm || loading}
-          >
-            {loading ? "..." : t("bulk.assign_permission")}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <BulkSelectDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={t("dialogs.permission_title")}
+      cancelLabel={t("bulk.cancel")}
+      submitLabel={t("bulk.assign_permission")}
+      submitDisabled={!selectedPerm}
+      loading={loading}
+      onConfirm={handleConfirm}
+    >
+      <SingleSelectCombobox
+        options={permOptions}
+        value={selectedPerm}
+        onValueChange={(v) => setSelectedPerm(v as Permission | "")}
+        placeholder={t("dialogs.permission_select")}
+        className="w-full"
+      />
+    </BulkSelectDialog>
   )
 }
 
@@ -462,33 +447,24 @@ function BulkRoleDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-sm">
-        <DialogHeader>
-          <DialogTitle>
-            {t("bulk.dialog.assign_role_title", { count: selectedIds.length })}
-          </DialogTitle>
-        </DialogHeader>
-        <div className="py-2">
-          <SingleSelectCombobox
-            options={roleOptions}
-            value={selectedRole}
-            onValueChange={(v) => setSelectedRole(v as FunctionalRole | "")}
-            placeholder={t("bulk.dialog.assign_role_select")}
-            className="w-full"
-          />
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
-            {t("bulk.cancel")}
-          </Button>
-          <Button onClick={handleConfirm} disabled={!selectedRole || loading}>
-            {loading ? <Spinner className="size-4 mr-2" /> : null}
-            {t("bulk.dialog.submit")}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <BulkSelectDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={t("bulk.dialog.assign_role_title", { count: selectedIds.length })}
+      cancelLabel={t("bulk.cancel")}
+      submitLabel={t("bulk.dialog.submit")}
+      submitDisabled={!selectedRole}
+      loading={loading}
+      onConfirm={handleConfirm}
+    >
+      <SingleSelectCombobox
+        options={roleOptions}
+        value={selectedRole}
+        onValueChange={(v) => setSelectedRole(v as FunctionalRole | "")}
+        placeholder={t("bulk.dialog.assign_role_select")}
+        className="w-full"
+      />
+    </BulkSelectDialog>
   )
 }
 
@@ -539,34 +515,25 @@ function BulkStoreDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-sm">
-        <DialogHeader>
-          <DialogTitle>{t("bulk.dialog.change_store_title")}</DialogTitle>
-        </DialogHeader>
-        <div className="py-2 space-y-2">
-          <p className="text-sm text-muted-foreground">
-            {t("bulk.dialog.change_store_desc")}
-          </p>
-          <SingleSelectCombobox
-            options={storeOptions}
-            value={selectedStoreId}
-            onValueChange={setSelectedStoreId}
-            placeholder={t("bulk.dialog.change_store_select")}
-            className="w-full"
-          />
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
-            {t("bulk.cancel")}
-          </Button>
-          <Button onClick={handleConfirm} disabled={!selectedStoreId || loading}>
-            {loading ? <Spinner className="size-4 mr-2" /> : null}
-            {t("bulk.dialog.submit")}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <BulkSelectDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={t("bulk.dialog.change_store_title")}
+      description={t("bulk.dialog.change_store_desc")}
+      cancelLabel={t("bulk.cancel")}
+      submitLabel={t("bulk.dialog.submit")}
+      submitDisabled={!selectedStoreId}
+      loading={loading}
+      onConfirm={handleConfirm}
+    >
+      <SingleSelectCombobox
+        options={storeOptions}
+        value={selectedStoreId}
+        onValueChange={setSelectedStoreId}
+        placeholder={t("bulk.dialog.change_store_select")}
+        className="w-full"
+      />
+    </BulkSelectDialog>
   )
 }
 
@@ -631,37 +598,25 @@ function BulkZoneDialog({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-sm">
-        <DialogHeader>
-          <DialogTitle>
-            {mode === "assign" ? t("bulk.assign_zone") : t("bulk.revoke_zone")}
-          </DialogTitle>
-        </DialogHeader>
-        <div className="py-2">
-          <SingleSelectCombobox
-            options={permOptions}
-            value={selectedPerm}
-            onValueChange={(v) => setSelectedPerm(v as Permission | "")}
-            placeholder={t("dialogs.permission_select")}
-            className="w-full"
-          />
-        </div>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
-            {t("bulk.cancel")}
-          </Button>
-          <Button
-            onClick={handleConfirm}
-            disabled={!selectedPerm || loading}
-            variant={mode === "revoke" ? "destructive" : "default"}
-          >
-            {loading ? <Spinner className="size-4 mr-2" /> : null}
-            {t("bulk.dialog.submit")}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <BulkSelectDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={mode === "assign" ? t("bulk.assign_zone") : t("bulk.revoke_zone")}
+      cancelLabel={t("bulk.cancel")}
+      submitLabel={t("bulk.dialog.submit")}
+      submitDisabled={!selectedPerm}
+      submitVariant={mode === "revoke" ? "destructive" : "default"}
+      loading={loading}
+      onConfirm={handleConfirm}
+    >
+      <SingleSelectCombobox
+        options={permOptions}
+        value={selectedPerm}
+        onValueChange={(v) => setSelectedPerm(v as Permission | "")}
+        placeholder={t("dialogs.permission_select")}
+        className="w-full"
+      />
+    </BulkSelectDialog>
   )
 }
 
