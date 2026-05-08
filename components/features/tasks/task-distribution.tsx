@@ -642,9 +642,12 @@ function TasksSummaryPanel({ tasks, plan, date, locale, t }: TasksSummaryPanelPr
           {plan.size > 0 && ` · ${plan.size} в плане`}
         </p>
       </CardHeader>
-      <CardContent className="flex flex-col flex-1 min-h-0">
-        <ScrollArea className="flex-1 min-h-0 max-h-[400px] lg:max-h-none">
-          <div className="space-y-1 pr-2">
+      <CardContent className="flex flex-col flex-1 min-h-0 overflow-hidden">
+        {/* Native overflow вместо ScrollArea — Radix Viewport не всегда корректно
+            подхватывал flex-1 min-h-0, footer наслаивался на список.
+            Native div + overflow-y-auto работает в flex-контексте надёжно. */}
+        <div className="flex-1 min-h-0 overflow-y-auto pr-2 -mr-2">
+          <div className="space-y-1">
             {tasks.map((task) => (
               <TaskRow
                 key={task.id}
@@ -654,7 +657,7 @@ function TasksSummaryPanel({ tasks, plan, date, locale, t }: TasksSummaryPanelPr
               />
             ))}
           </div>
-        </ScrollArea>
+        </div>
         <div className="mt-4 pt-3 border-t shrink-0">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">
@@ -735,12 +738,12 @@ function TeamUtilizationPanel({ employees, planMinByUser, isLoading, date, t, lo
           {t("utilization.date_label", { date: formattedDate })} · {t("utilization.employees_count", { count: employees.length })}
         </p>
       </CardHeader>
-      <CardContent className="flex flex-col flex-1 min-h-0">
-        {/* Сводка по команде — read-only. Распределение делается через TaskCard
-            в by-task или EmployeeUtilizationRow в by-employee. Здесь сотрудники
-            некликабельны: панель показывает прогресс, не действие. */}
-        <ScrollArea className="flex-1 min-h-0 max-h-[400px] lg:max-h-none">
-          <div className="space-y-1 pr-2">
+      <CardContent className="flex flex-col flex-1 min-h-0 overflow-hidden">
+        {/* Сводка по команде — read-only. Distrib делается через TaskRow / EmployeeUtilizationRow.
+            Native overflow вместо ScrollArea (см. TasksSummaryPanel — ровно
+            та же причина: footer не наслаивается на скролл). */}
+        <div className="flex-1 min-h-0 overflow-y-auto pr-2 -mr-2">
+          <div className="space-y-1">
             {employees.map((emp) => (
               <EmployeeUtilizationRow
                 key={emp.user.id}
@@ -750,7 +753,7 @@ function TeamUtilizationPanel({ employees, planMinByUser, isLoading, date, t, lo
               />
             ))}
           </div>
-        </ScrollArea>
+        </div>
         {/* Summary — shrink-0 чтоб не наслаивалось на ScrollArea */}
         <div className="mt-4 pt-3 border-t shrink-0">
           <div className="flex justify-between text-sm">
