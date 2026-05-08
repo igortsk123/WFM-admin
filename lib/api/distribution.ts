@@ -6,6 +6,7 @@ import { MOCK_UNASSIGNED_BLOCKS } from "@/lib/mock-data/_lama-unassigned-blocks"
 import {
   USERS_BY_ID,
   SHIFTS_BY_STORE_DATE,
+  SHIFTS_BY_STORE,
   TASKS_BY_ASSIGNEE,
 } from "@/lib/mock-data/_indexes";
 import type { ApiListResponse, ApiResponse, ApiMutationResponse } from "./types";
@@ -65,8 +66,10 @@ const UNASSIGNED_HARD_CAP = 100;
 
 /**
  * Get unassigned tasks for a store on a specific date.
- * Returns tasks where assignee_id is null and zone_id is set.
- * Capped at UNASSIGNED_HARD_CAP — реалистично для одного дня одного магазина.
+ * Returns tasks where assignee_id is null and zone_id is set,
+ * PLUS LAMA blocks (UnassignedTaskBlock) сконвертированные в UnassignedTask
+ * чтобы UI отображал блоки как обычные задачи в TaskZoneGroup с пиккером.
+ * Capped at UNASSIGNED_HARD_CAP.
  */
 export async function getStoreUnassignedTasks(
   storeId: number,
@@ -74,9 +77,7 @@ export async function getStoreUnassignedTasks(
 ): Promise<ApiListResponse<UnassignedTask>> {
   await new Promise((r) => setTimeout(r, 300));
 
-  // Unassigned задачи берём напрямую из MOCK_TASKS — больше нет fake-override.
-  // Реальные LAMA-задачи в MOCK_TASKS (через _lama-real.ts) уже tagged
-  // правильным store_id.
+  // 1. Обычные нераспределённые task'и (assignee_id=null) из MOCK_TASKS.
   const allUnassigned = MOCK_TASKS.filter(
     (t) =>
       t.store_id === storeId &&
@@ -85,8 +86,48 @@ export async function getStoreUnassignedTasks(
       !t.archived
   );
 
-  // Cap для предотвращения UI-лага на больших магазинах (Г-1 имеет 81 emp).
-  const capped = allUnassigned.slice(0, UNASSIGNED_HARD_CAP);
+  // 2. LAMA-блоки этого магазина — конвертируем в UnassignedTask чтобы
+  //    UI рендерил их как обычные карточки в TaskZoneGroup с пиккером.
+  //    При assign блок будет распознан по id (начинается с "block-").
+  //    Дату игнорируем — блоки актуальны на любую дату пока is_distributed=false.
+  const storeBlocks = MOCK_UNASSIGNED_BLOCKS.filter(
+    (b) => b.store_id === storeId && !b.is_distributed,
+  );
+  const blocksAsTasks: Task[] = storeBlocks.map((b) => ({
+    id: b.id,
+    title: b.title,
+    description: `Блок ЛАМА: ${b.work_type_name} в зоне ${b.zone_name} (${b.total_minutes} мин на день)`,
+    type: "PLANNED",
+    kind: "SINGLE",
+    source: "PLANNED",
+    planned_minutes: b.remaining_minutes,
+    store_id: b.store_id,
+    store_name: b.store_name,
+    zone_id: b.zone_id,
+    zone_name: b.zone_name,
+    work_type_id: b.work_type_id,
+    work_type_name: b.work_type_name,
+    product_category_id: b.product_category_id ?? null,
+    product_category_name: b.product_category_name ?? null,
+    creator_id: 0,
+    creator_name: "ЛАМА",
+    assignee_id: null,
+    assignee_name: null,
+    assigned_to_permission: null,
+    state: "NEW",
+    review_state: "NONE",
+    acceptance_policy: "MANUAL",
+    requires_photo: false,
+    archived: false,
+    priority: b.priority,
+    created_at: b.created_at,
+    updated_at: b.created_at,
+  }));
+
+  const combined = [...allUnassigned, ...blocksAsTasks];
+
+  // Cap для предотвращения UI-лага на больших магазинах.
+  const capped = combined.slice(0, UNASSIGNED_HARD_CAP);
 
   // Calculate distribution status for each task
   const unassignedTasks: UnassignedTask[] = capped.map((task) => {
@@ -102,7 +143,7 @@ export async function getStoreUnassignedTasks(
 
   return {
     data: unassignedTasks,
-    total: allUnassigned.length,
+    total: combined.length,
     page: 1,
     page_size: UNASSIGNED_HARD_CAP,
   };
@@ -119,7 +160,29 @@ export async function getStoreEmployeesUtilization(
   await new Promise((r) => setTimeout(r, 350));
 
   // Use indexed lookup: O(1) вместо O(n) фильтра.
-  const shifts = (SHIFTS_BY_STORE_DATE.get(`${storeId}:${date}`) ?? []);
+  let shifts = SHIFTS_BY_STORE_DATE.get(`${storeId}:${date}`) ?? [];
+
+  // Fallback: если на запрошенную date нет смен — ищем ближайшую дату с данными
+  // в этом магазине (например на mock TODAY=2026-05-01 нет ЛАМА-смен,
+  // они на 2026-05-04..10 — берём ближайший).
+  if (shifts.length === 0) {
+    const allStoreShifts = SHIFTS_BY_STORE.get(storeId) ?? [];
+    if (allStoreShifts.length > 0) {
+      const targetTs = new Date(date).getTime();
+      const dateGroups = new Map<string, typeof allStoreShifts>();
+      for (const s of allStoreShifts) {
+        const arr = dateGroups.get(s.shift_date) ?? [];
+        arr.push(s);
+        dateGroups.set(s.shift_date, arr);
+      }
+      const closestDate = Array.from(dateGroups.keys()).sort(
+        (a, b) =>
+          Math.abs(new Date(a).getTime() - targetTs) -
+          Math.abs(new Date(b).getTime() - targetTs),
+      )[0];
+      shifts = dateGroups.get(closestDate) ?? [];
+    }
+  }
 
   if (shifts.length === 0) {
     return { data: [] };
@@ -340,6 +403,18 @@ export async function assignTaskToUser(
   assignments: TaskDistributionAllocation[]
 ): Promise<ApiMutationResponse> {
   await new Promise((r) => setTimeout(r, 400));
+
+  // Если taskId — это id блока ЛАМА (начинается с "block-"), то делегируем
+  // в distributeBlock: блок «лопается» на N конкретных Task'ов.
+  if (taskId.startsWith("block-")) {
+    const blockAllocs: BlockAllocation[] = assignments.map((a) => {
+      const user = MOCK_USERS.find((u) => u.id === a.userId);
+      const fullName = user ? `${user.last_name} ${user.first_name}` : `User #${a.userId}`;
+      return { user_id: a.userId, user_name: fullName, minutes: a.minutes };
+    });
+    const res = await distributeBlock(taskId, blockAllocs);
+    return res;
+  }
 
   // Validate task exists
   const task = MOCK_TASKS.find((t) => t.id === taskId);

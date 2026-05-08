@@ -385,7 +385,10 @@ export async function getStores(
     store_type,
     active,
     page = 1,
-    page_size = 20,
+    // Default подняли с 20 до 200 — у нас 133 LAMA-магазина, в большинстве
+    // экранов нужны все сразу (комбобоксы, dropdown'ы). На страницах со
+    // своей пагинацией всё равно явно передаётся page_size.
+    page_size = 200,
     sort_by = "name",
     sort_dir = "asc",
   } = params;
