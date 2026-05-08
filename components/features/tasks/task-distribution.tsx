@@ -427,32 +427,44 @@ function TaskRow({ task, planAllocations, onSelect, disabled, t }: TaskRowProps)
   )
 
   if (interactive) {
+    // Карточка во всю ширину — primary action в LEFT-панели.
+    // Border + hover ring + ChevronRight = сильный visual affordance.
     return (
-      <button
-        type="button"
+      <Card
+        role="button"
+        tabIndex={rowDisabled ? -1 : 0}
         onClick={() => {
           if (!rowDisabled && onSelect) onSelect()
         }}
-        disabled={rowDisabled}
+        onKeyDown={(e) => {
+          if ((e.key === "Enter" || e.key === " ") && !rowDisabled && onSelect) {
+            e.preventDefault()
+            onSelect()
+          }
+        }}
+        aria-disabled={rowDisabled}
         className={cn(
-          "group w-full flex items-center gap-3 py-2 px-1 -mx-1 rounded-md text-left transition-colors",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          "group transition-all",
           rowDisabled
             ? "cursor-not-allowed opacity-60"
-            : "cursor-pointer hover:bg-muted/50",
+            : "cursor-pointer hover:shadow-md hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          planMin > 0 && "ring-1 ring-primary",
         )}
       >
-        {content}
-        <ChevronRight
-          className={cn(
-            "size-4 shrink-0 text-muted-foreground transition-all",
-            !rowDisabled && "group-hover:text-primary group-hover:translate-x-0.5",
-          )}
-        />
-      </button>
+        <CardContent className="flex items-center gap-3 p-3">
+          {content}
+          <ChevronRight
+            className={cn(
+              "size-4 shrink-0 text-muted-foreground transition-all",
+              !rowDisabled && "group-hover:text-primary group-hover:translate-x-0.5",
+            )}
+          />
+        </CardContent>
+      </Card>
     )
   }
 
+  // Read-only — компактная строка для RIGHT-панели.
   return <div className="flex items-center gap-3 py-2">{content}</div>
 }
 
@@ -532,18 +544,33 @@ function EmployeeUtilizationRow({ employee, planMin = 0, onSelect, t }: Employee
   )
 
   if (onSelect) {
+    // Карточка во всю ширину — primary action в LEFT-панели.
     return (
-      <button
-        type="button"
+      <Card
+        role="button"
+        tabIndex={0}
         onClick={onSelect}
-        className="group w-full flex items-center gap-3 py-2 px-1 -mx-1 rounded-md text-left transition-colors hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault()
+            onSelect()
+          }
+        }}
+        className={cn(
+          "group cursor-pointer transition-all hover:shadow-md hover:border-primary/40",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          planMin > 0 && "ring-1 ring-primary",
+        )}
       >
-        {content}
-        <ChevronRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:text-primary group-hover:translate-x-0.5" />
-      </button>
+        <CardContent className="flex items-center gap-3 p-3">
+          {content}
+          <ChevronRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:text-primary group-hover:translate-x-0.5" />
+        </CardContent>
+      </Card>
     )
   }
 
+  // Read-only — компактная строка для RIGHT-панели.
   return <div className="flex items-center gap-3 py-2">{content}</div>
 }
 
@@ -1968,35 +1995,31 @@ export function TaskDistribution() {
                 </CardContent>
               </Card>
             ) : (
-              // Плоский список задач в одном Card (визуальный близнец
-              // by-employee LEFT). Клик по строке → DistributionSheet.
+              // Список full-width карточек — каждая TaskRow уже Card в interactive
+              // режиме. Клик по карточке → DistributionSheet.
               // Сортировка: сначала нераспределённые → по priority → по зоне.
-              <Card>
-                <CardContent className="p-2">
-                  <div className="space-y-1">
-                    {[...tasks]
-                      .sort((a, b) => {
-                        const ar = a.remaining_minutes > 0 ? 0 : 1
-                        const br = b.remaining_minutes > 0 ? 0 : 1
-                        if (ar !== br) return ar - br
-                        const ap = a.priority ?? 50
-                        const bp = b.priority ?? 50
-                        if (ap !== bp) return ap - bp
-                        return (a.zone_name ?? "").localeCompare(b.zone_name ?? "")
-                      })
-                      .map((task) => (
-                        <TaskRow
-                          key={task.id}
-                          task={task}
-                          planAllocations={plan.get(task.id) ?? []}
-                          onSelect={() => handleDistribute(task)}
-                          disabled={!canEdit}
-                          t={t}
-                        />
-                      ))}
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="space-y-2">
+                {[...tasks]
+                  .sort((a, b) => {
+                    const ar = a.remaining_minutes > 0 ? 0 : 1
+                    const br = b.remaining_minutes > 0 ? 0 : 1
+                    if (ar !== br) return ar - br
+                    const ap = a.priority ?? 50
+                    const bp = b.priority ?? 50
+                    if (ap !== bp) return ap - bp
+                    return (a.zone_name ?? "").localeCompare(b.zone_name ?? "")
+                  })
+                  .map((task) => (
+                    <TaskRow
+                      key={task.id}
+                      task={task}
+                      planAllocations={plan.get(task.id) ?? []}
+                      onSelect={() => handleDistribute(task)}
+                      disabled={!canEdit}
+                      t={t}
+                    />
+                  ))}
+              </div>
             )}
           </div>
 
@@ -2052,21 +2075,19 @@ export function TaskDistribution() {
                 </CardContent>
               </Card>
             ) : (
-              <Card>
-                <CardContent className="p-2">
-                  <div className="space-y-1">
-                    {employees.map((emp) => (
-                      <EmployeeUtilizationRow
-                        key={emp.user.id}
-                        employee={emp}
-                        planMin={planMinByUser.get(emp.user.id) ?? 0}
-                        onSelect={() => handleSelectEmployee(emp)}
-                        t={t}
-                      />
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+              // Список full-width карточек — каждая EmployeeUtilizationRow
+              // уже Card в interactive режиме. Клик → EmployeeSheet.
+              <div className="space-y-2">
+                {employees.map((emp) => (
+                  <EmployeeUtilizationRow
+                    key={emp.user.id}
+                    employee={emp}
+                    planMin={planMinByUser.get(emp.user.id) ?? 0}
+                    onSelect={() => handleSelectEmployee(emp)}
+                    t={t}
+                  />
+                ))}
+              </div>
             )}
           </div>
 
