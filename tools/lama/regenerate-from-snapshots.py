@@ -187,14 +187,16 @@ def ts_string_literal(s: str) -> str:
     return '"' + s.replace("\\", "\\\\").replace('"', '\\"') + '"'
 
 
-def write_blocks_file(blocks: list[dict], snapshot_date: str) -> None:
+def write_blocks_file(blocks: list[dict], snapshot_date: str, n_snaps: int) -> None:
     n_blocks = len(blocks)
     n_stores = len({b["store_id"] for b in blocks})
     header = f'''/**
- * Нераспределённые блоки задач из LAMA — суммарные трудозатраты
- * по (work_type, zone) на каждый магазин.
+ * Нераспределённые блоки задач из LAMA — типичная дневная нагрузка
+ * (work_type, zone) на каждый магазин (mean per-day across snapshots).
  *
- * Сгенерировано из snapshot {snapshot_date} (см. .lama_snapshots/).
+ * Источник: усреднение по {n_snaps} snapshot'ам в .lama_snapshots/.
+ * Date в записях — самый свежий snapshot ({snapshot_date}); если магазин
+ * имел tasks хотя бы в одном snapshot'e, он попадает в выборку.
  * Регенерация: python tools/lama/regenerate-from-snapshots.py
  *
  * {n_blocks} блоков по {n_stores} магазинам.
@@ -277,8 +279,8 @@ def main() -> None:
         sys.exit(1)
     print(f"Loaded {len(snaps)} snapshots: {[d for d, _ in snaps]}", file=sys.stderr)
 
-    latest_date, latest_snap = snaps[-1]
-    print(f"Latest snapshot for blocks: {latest_date}", file=sys.stderr)
+    latest_date = snaps[-1][0]
+    print(f"Aggregating blocks across all {len(snaps)} snapshots (avg per day)", file=sys.stderr)
 
     # 3. Подготовка reverse-словарей и счётчиков для новых ID
     work_to_id = {v: k for k, v in WORK_TYPES.items()}
@@ -287,63 +289,85 @@ def main() -> None:
     next_zone_id = [max(ZONES.keys()) + 1]
     new_entries_log: list[str] = []
 
-    # 4. Агрегация блоков из latest snapshot
-    # ключ: (store_id, wt_id, zone_id) → total_minutes
-    block_agg: dict[tuple[int, int, int], dict] = {}
+    # 4. Агрегация блоков по ВСЕМ snapshot'ам
+    # Стратегия: для каждого магазина усредняем минуты по дням, в которых
+    # этот магазин имел tasks. Шаги:
+    #   a) per-day sums: (date, store_id, wt_id, zone_id) → minutes
+    #   b) per-shop dates: store_id → set of dates shop had data
+    #   c) blocks: (store_id, wt_id, zone_id) → mean(per-day-sum) over distinct dates
+    # Это даёт типичную дневную нагрузку магазина, не зависит от попадания
+    # магазина в самый свежий fetch (выходной день / 404 от LAMA / etc).
+    per_day_minutes: dict[tuple[str, int, int, int], int] = defaultdict(int)
+    shop_dates: dict[int, set[str]] = defaultdict(set)
+    block_meta: dict[tuple[int, int, int], dict] = {}
     unmapped_shops: dict[str, int] = defaultdict(int)
     skipped_completed = 0
     total_tasks_seen = 0
 
-    for t in latest_snap.get("tasks", []):
-        total_tasks_seen += 1
-        status = t.get("status")
-        if status in COMPLETED_STATUSES:
-            skipped_completed += 1
-            continue
-        sc = t.get("_shop_code")
-        if not sc:
-            continue
-        if sc not in shop_map:
-            unmapped_shops[sc] += 1
-            continue
-        store_id, store_name = shop_map[sc]
+    for snap_date, snap in snaps:
+        for t in snap.get("tasks", []):
+            total_tasks_seen += 1
+            status = t.get("status")
+            if status in COMPLETED_STATUSES:
+                skipped_completed += 1
+                continue
+            sc = t.get("_shop_code")
+            if not sc:
+                continue
+            if sc not in shop_map:
+                unmapped_shops[sc] += 1
+                continue
+            store_id, store_name = shop_map[sc]
 
-        work = t.get("operation_work")
-        if not work:
-            continue
-        wt_id, wt_name = resolve_work_type(work, work_to_id, next_wt_id, new_entries_log)
+            work = t.get("operation_work")
+            if not work:
+                continue
+            wt_id, wt_name = resolve_work_type(work, work_to_id, next_wt_id, new_entries_log)
 
-        zone_raw = t.get("operation_zone")
-        z_id, z_name = resolve_zone(zone_raw, zone_to_id, next_zone_id, new_entries_log)
+            zone_raw = t.get("operation_zone")
+            z_id, z_name = resolve_zone(zone_raw, zone_to_id, next_zone_id, new_entries_log)
 
-        duration_sec = t.get("duration") or 0
-        minutes = duration_sec // 60
-        if minutes <= 0:
-            continue
+            duration_sec = t.get("duration") or 0
+            minutes = duration_sec // 60
+            if minutes <= 0:
+                continue
 
-        key = (store_id, wt_id, z_id)
-        if key not in block_agg:
-            block_agg[key] = {
+            shop_dates[store_id].add(snap_date)
+            per_day_minutes[(snap_date, store_id, wt_id, z_id)] += minutes
+
+            block_meta[(store_id, wt_id, z_id)] = {
                 "store_id": store_id,
                 "store_name": store_name,
-                "date": latest_date,
                 "work_type_id": wt_id,
                 "work_type_name": wt_name,
                 "zone_id": z_id,
                 "zone_name": z_name,
                 "title": f"{wt_name}: {z_name}",
-                "total_minutes": 0,
-                "created_at": f"{latest_date}T22:00:00+07:00",
             }
-        block_agg[key]["total_minutes"] += minutes
 
-    # 5. Сортируем блоки: store_id, wt_id, zone_id (стабильный детерминированный output)
-    blocks = sorted(
-        block_agg.values(),
-        key=lambda b: (b["store_id"], b["work_type_id"], b["zone_id"]),
-    )
-    for b in blocks:
-        b["priority"] = calc_priority(b["total_minutes"])
+    # Средние по дням для каждой пары
+    block_avg: dict[tuple[int, int, int], int] = defaultdict(int)
+    for (snap_date, store_id, wt_id, z_id), minutes in per_day_minutes.items():
+        block_avg[(store_id, wt_id, z_id)] += minutes
+    for key in block_avg:
+        store_id = key[0]
+        n_days = len(shop_dates[store_id]) or 1
+        block_avg[key] = round(block_avg[key] / n_days)
+
+    # 5. Сортируем блоки и собираем финальные записи. Date в карточке —
+    # самая свежая дата snapshot'а (это логически «блок на сегодня»).
+    blocks = []
+    for key, meta in sorted(block_meta.items()):
+        minutes = block_avg[key]
+        if minutes <= 0:
+            continue
+        blocks.append({
+            **meta,
+            "date": latest_date,
+            "total_minutes": minutes,
+            "created_at": f"{latest_date}T22:00:00+07:00",
+            "priority": calc_priority(minutes),
+        })
 
     # 6. Агрегация зон по сотрудникам — по ВСЕМ snapshot'ам
     zones_by_employee: dict[int, set[str]] = defaultdict(set)
@@ -367,12 +391,12 @@ def main() -> None:
     }
 
     # 7. Запись файлов
-    write_blocks_file(blocks, latest_date)
+    write_blocks_file(blocks, latest_date, len(snaps))
     write_zones_file(zones_by_user_sorted)
 
     # 8. Отчёт
     print("", file=sys.stderr)
-    print(f"Tasks in latest snapshot ({latest_date}): {total_tasks_seen}", file=sys.stderr)
+    print(f"Tasks across all snapshots: {total_tasks_seen}", file=sys.stderr)
     print(f"  Skipped (completed status): {skipped_completed}", file=sys.stderr)
     print(f"  Unmapped shop_codes: {dict(unmapped_shops) if unmapped_shops else 'none'}", file=sys.stderr)
     print(f"  Unmapped employee_ids: {len(unmapped_employees)} unique", file=sys.stderr)
