@@ -11,18 +11,11 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+import { AlertDialog } from "@/components/ui/alert-dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+
+import { ConfirmDialog } from "@/components/shared/confirm-dialog"
 
 export interface ZoneDialogState {
   mode: "add" | "edit"
@@ -101,21 +94,17 @@ export function ZoneDeleteDialog({ zoneId, onClose, onConfirm }: ZoneDeleteDialo
 
   return (
     <AlertDialog open={zoneId !== null} onOpenChange={(v) => !v && onClose()}>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>{t("zones.delete_dialog_title")}</AlertDialogTitle>
-          <AlertDialogDescription>{t("zones.delete_dialog_desc")}</AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>{tCommon("cancel")}</AlertDialogCancel>
-          <AlertDialogAction
-            onClick={() => zoneId !== null && onConfirm(zoneId)}
-            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-          >
-            {t("zones.delete")}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
+      <ConfirmDialog
+        title={t("zones.delete_dialog_title")}
+        message={t("zones.delete_dialog_desc")}
+        confirmLabel={t("zones.delete")}
+        cancelLabel={tCommon("cancel")}
+        variant="destructive"
+        onConfirm={() => {
+          if (zoneId !== null) onConfirm(zoneId)
+        }}
+        onOpenChange={(open) => !open && onClose()}
+      />
     </AlertDialog>
   )
 }

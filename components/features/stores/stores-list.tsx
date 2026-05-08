@@ -54,7 +54,6 @@ import { MapView } from "./stores-list/map-view"
 import { MobileCard } from "./stores-list/mobile-card"
 import { StatsRow } from "./stores-list/stats-row"
 import { StoreDialog } from "./stores-list/store-dialog"
-import { SyncConfirmDialog } from "./stores-list/sync-confirm-dialog"
 
 export function StoresList() {
   const t = useTranslations("screen.stores")
@@ -521,11 +520,18 @@ export function StoresList() {
       </AlertDialog>
 
       {/* Sync LAMA confirm */}
-      <SyncConfirmDialog
-        open={syncConfirmOpen}
-        onOpenChange={setSyncConfirmOpen}
-        onConfirm={() => syncingId !== null && handleSyncLama(syncingId)}
-      />
+      <AlertDialog open={syncConfirmOpen} onOpenChange={setSyncConfirmOpen}>
+        <ConfirmDialog
+          title={t("dialogs.sync_lama_title")}
+          message={t("dialogs.sync_lama_description")}
+          confirmLabel={t("dialogs.sync_lama_confirm")}
+          cancelLabel={t("dialogs.cancel")}
+          onConfirm={() => {
+            if (syncingId !== null) handleSyncLama(syncingId)
+          }}
+          onOpenChange={setSyncConfirmOpen}
+        />
+      </AlertDialog>
 
       {/* Add / Edit dialog */}
       <StoreDialog

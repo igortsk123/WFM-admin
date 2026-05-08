@@ -48,6 +48,7 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 
+import { ConfirmDialog } from "@/components/shared/confirm-dialog"
 import { EditProfileDialogContent } from "../edit-profile-dialog-content"
 import type { EditProfileData } from "../edit-profile-dialog-content"
 import { ManagePermissionsDialogContent } from "../manage-permissions-dialog-content"
@@ -264,23 +265,15 @@ export function HeroActions({
             </AlertDialogTrigger>
           </DropdownMenuContent>
         </DropdownMenu>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t("dialogs.archive_title")}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t("dialogs.archive_description")}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>{tCommon("cancel")}</AlertDialogCancel>
-            <AlertDialogAction
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              onClick={onArchive}
-            >
-              {tCommon("archive")}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
+        <ConfirmDialog
+          title={t("dialogs.archive_title")}
+          message={t("dialogs.archive_description")}
+          confirmLabel={tCommon("archive")}
+          cancelLabel={tCommon("cancel")}
+          variant="destructive"
+          onConfirm={onArchive}
+          onOpenChange={setArchiveOpen}
+        />
       </AlertDialog>
 
       {/* Block dialog (FREELANCE only) */}
