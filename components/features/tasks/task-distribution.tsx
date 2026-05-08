@@ -596,10 +596,16 @@ interface TeamUtilizationPanelProps {
 interface TasksSummaryPanelProps {
   tasks: UnassignedTask[]
   plan: Map<string, TaskDistributionAllocation[]>
+  date: string
+  locale: string
   t: ReturnType<typeof useTranslations>
 }
 
-function TasksSummaryPanel({ tasks, plan, t }: TasksSummaryPanelProps) {
+function TasksSummaryPanel({ tasks, plan, date, locale, t }: TasksSummaryPanelProps) {
+  const dateLocale = locale === "en" ? enUS : ru
+  const formattedDate = format(new Date(date), "d MMMM", { locale: dateLocale })
+  const taskNoun = (n: number) =>
+    n === 1 ? "задача" : n >= 2 && n <= 4 ? "задачи" : "задач"
   const totalPlanned = tasks.reduce((s, t) => s + t.planned_minutes, 0)
   const totalDistributed = tasks.reduce((s, t) => s + t.distributed_minutes, 0)
   const totalPlanMin = Array.from(plan.values()).reduce(
@@ -632,7 +638,7 @@ function TasksSummaryPanel({ tasks, plan, t }: TasksSummaryPanelProps) {
           Сводка по задачам
         </CardTitle>
         <p className="text-xs text-muted-foreground">
-          {tasks.length} задач{tasks.length === 1 ? "а" : tasks.length < 5 ? "и" : ""}
+          на {formattedDate} · {tasks.length} {taskNoun(tasks.length)} на сегодня
           {plan.size > 0 && ` · ${plan.size} в плане`}
         </p>
       </CardHeader>
@@ -1083,93 +1089,101 @@ interface EmployeeSheetProps {
 function EmployeeSheet({
   employee, tasks, plan, open, onClose, onPlanChange, canEdit, t,
 }: EmployeeSheetProps) {
-  const [addTaskId, setAddTaskId] = React.useState<string>("")
-  const [addMinutes, setAddMinutes] = React.useState<number>(60)
-  const [pickerOpen, setPickerOpen] = React.useState(false)
+  // Симметричный близнец DistributionSheet: список ВСЕХ задач со скроллом,
+  // на каждой — HoursMinutesInput для быстрого ввода часов сотруднику.
+  // Локальный state allocations: { taskId → minutes }; на Save обновляем
+  // общий plan Map<taskId, allocation[]> заменяя записи только этого user'а.
+  type EmployeeAllocations = Record<string, number>
+  const [allocations, setAllocations] = React.useState<EmployeeAllocations>({})
+  const [zoneFilterEnabled, setZoneFilterEnabled] = React.useState(true)
 
+  // При открытии (или смене сотрудника) — заполняем initial из plan.
   React.useEffect(() => {
     if (employee) {
-      setAddTaskId("")
-      setAddMinutes(60)
+      const init: EmployeeAllocations = {}
+      for (const [taskId, allocs] of plan) {
+        const my = allocs.find((a) => a.userId === employee.user.id)
+        if (my && my.minutes > 0) init[taskId] = my.minutes
+      }
+      setAllocations(init)
+      setZoneFilterEnabled(true)
     }
-  }, [employee?.user.id])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [employee?.user.id, open])
 
   if (!employee) return null
 
   const userId = employee.user.id
   const fullName = getFullName(employee.user.first_name, employee.user.last_name)
 
-  // Задачи в плане для этого сотрудника
-  const planItems: { task: UnassignedTask; minutes: number }[] = []
-  for (const [taskId, allocs] of plan) {
-    const myAlloc = allocs.find((a) => a.userId === userId)
-    if (myAlloc) {
-      const task = tasks.find((tt) => tt.id === taskId)
-      if (task) planItems.push({ task, minutes: myAlloc.minutes })
-    }
-  }
-  const planMin = planItems.reduce((sum, item) => sum + item.minutes, 0)
-
-  // Задачи доступные для picker'а: с остатком + не в плане сотрудника
-  // (исключение — текущая выбранная задача в edit-mode, чтоб combobox показал её)
-  const availableTasks = tasks.filter(
-    (task) =>
-      task.remaining_minutes > 0 &&
-      (!planItems.some((item) => item.task.id === task.id) || task.id === addTaskId)
-  )
-
-  // Free time с учётом плана (server assigned + plan)
-  const freeMin = Math.max(0, employee.shift_total_min - employee.assigned_min - planMin)
+  const planMin = Object.values(allocations).reduce((sum, m) => sum + m, 0)
   const previewUtilization = employee.shift_total_min > 0
     ? Math.round(((employee.assigned_min + planMin) / employee.shift_total_min) * 100)
     : 0
+  const freeMin = Math.max(0, employee.shift_total_min - employee.assigned_min - planMin)
+  const overShiftBy = Math.max(0, planMin - (employee.shift_total_min - employee.assigned_min))
 
-  const handleRemoveFromPlan = (taskId: string) => {
+  const handleAllocationChange = (taskId: string, minutes: number) => {
+    setAllocations((prev) => {
+      if (minutes <= 0) {
+        const next = { ...prev }
+        delete next[taskId]
+        return next
+      }
+      return { ...prev, [taskId]: minutes }
+    })
+  }
+
+  const handleSave = () => {
     const next = new Map(plan)
-    const allocs = next.get(taskId)
-    if (!allocs) return
-    const filtered = allocs.filter((a) => a.userId !== userId)
-    if (filtered.length === 0) {
-      next.delete(taskId)
-    } else {
-      next.set(taskId, filtered)
+    // Все задачи которые могли быть затронуты этим сотрудником: те что в state +
+    // те что были в plan (нужно убрать, если minutes=0).
+    const touchedTaskIds = new Set<string>([
+      ...Object.keys(allocations),
+      ...Array.from(next.keys()).filter((tid) =>
+        (next.get(tid) ?? []).some((a) => a.userId === userId),
+      ),
+    ])
+    for (const taskId of touchedTaskIds) {
+      const existing = next.get(taskId) ?? []
+      const withoutMe = existing.filter((a) => a.userId !== userId)
+      const minutes = allocations[taskId] ?? 0
+      const withMe = minutes > 0
+        ? [...withoutMe, { userId, minutes }]
+        : withoutMe
+      if (withMe.length === 0) next.delete(taskId)
+      else next.set(taskId, withMe)
     }
     onPlanChange(next)
+    onClose()
   }
 
-  const handleAddToPlan = () => {
-    if (!addTaskId) return
-    const task = tasks.find((tt) => tt.id === addTaskId)
-    if (!task) return
-    // Не клампим: директор может назначить сверх плана (warning UI).
-    // Гарантируем только positive.
-    if (addMinutes <= 0) return
-    const next = new Map(plan)
-    const existing = next.get(addTaskId) ?? []
-    const withoutMe = existing.filter((a) => a.userId !== userId)
-    next.set(addTaskId, [...withoutMe, { userId, minutes: addMinutes }])
-    onPlanChange(next)
-    setAddTaskId("")
-    setAddMinutes(60)
-  }
+  // Z-фильтр: задачи в зонах сотрудника. Если у сотрудника нет zones —
+  // показываем все (зон нет → matched.length=0 → бесполезно фильтровать).
+  const empZones = employee.user.zones ?? []
+  const matchedByZone = empZones.length > 0
+    ? tasks.filter((tt) => tt.zone_name && empZones.includes(tt.zone_name))
+    : tasks
+  const visibleTasks = zoneFilterEnabled && empZones.length > 0
+    ? matchedByZone
+    : tasks
 
-  const selectedTask = tasks.find((tt) => tt.id === addTaskId)
-  // Edit mode = выбранная в picker'е задача уже в плане сотрудника
-  const isEditMode = !!addTaskId && planItems.some((p) => p.task.id === addTaskId)
-  // Hint только — не блокируем ввод. Реальная позитивная проверка на > 0.
-  // freeMin для edit-режима учитывает что текущее значение уже включено
-  // в planMin → надо «вернуть» его обратно для корректного hint.
-  const editingItemMinutes = isEditMode
-    ? planItems.find((p) => p.task.id === addTaskId)?.minutes ?? 0
-    : 0
-  const adjustedFreeMin = freeMin + editingItemMinutes
-  const overShiftBy = Math.max(0, addMinutes - adjustedFreeMin)
-  const overTaskBy = selectedTask ? Math.max(0, addMinutes - selectedTask.remaining_minutes) : 0
+  // Sort: задачи где у этого сотрудника уже есть alloc — сверху, потом по
+  // priority, потом по zone alpha. Так его текущий план виден сразу.
+  const sortedVisible = [...visibleTasks].sort((a, b) => {
+    const ah = allocations[a.id] ? 0 : 1
+    const bh = allocations[b.id] ? 0 : 1
+    if (ah !== bh) return ah - bh
+    const ap = a.priority ?? 50
+    const bp = b.priority ?? 50
+    if (ap !== bp) return ap - bp
+    return (a.zone_name ?? "").localeCompare(b.zone_name ?? "")
+  })
 
   return (
     <Sheet open={open} onOpenChange={(v) => !v && onClose()}>
-      <SheetContent side="right" className="w-full sm:max-w-lg p-0 flex flex-col">
-        <SheetHeader className="px-4 pt-4 pb-3 border-b">
+      <SheetContent side="right" className="w-full sm:max-w-lg p-0 flex flex-col h-full max-h-screen">
+        <SheetHeader className="px-4 pt-4 pb-3 border-b shrink-0">
           <div className="flex items-center gap-3">
             <Avatar className="size-10">
               <AvatarImage src={employee.user.avatar_url} alt={fullName} />
@@ -1188,8 +1202,8 @@ function EmployeeSheet({
           </div>
         </SheetHeader>
 
-        {/* Utilization preview */}
-        <div className="px-4 py-3 bg-muted/50 border-b">
+        {/* Utilization preview — live, обновляется при редактировании */}
+        <div className="px-4 py-3 bg-muted/50 border-b shrink-0">
           <div className="flex items-center justify-between mb-2 text-sm">
             <span className="text-muted-foreground">
               {t("employeeSheet.utilization_label")}
@@ -1211,212 +1225,134 @@ function EmployeeSheet({
               total: formatHM(employee.shift_total_min, t),
             })}
           </p>
+          {overShiftBy > 0 && (
+            <p className="text-xs text-destructive flex items-center gap-1.5 mt-1.5">
+              <Wand2 className="size-3 shrink-0" />
+              {t("employeeSheet.over_shift_warning", {
+                time: formatHM(overShiftBy, t),
+              })}
+            </p>
+          )}
         </div>
 
-        <ScrollArea className="flex-1 px-4 py-3">
-          {/* Plan section */}
-          <p className="text-xs font-medium text-muted-foreground mb-2">
-            {t("employeeSheet.plan_section")}
+        {/* Zone filter toggle (если у сотрудника есть зоны) */}
+        {empZones.length > 0 && (
+          <div className="px-4 py-2 border-b shrink-0 flex items-center justify-between gap-2 text-xs">
+            <label className="flex items-center gap-2 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={zoneFilterEnabled}
+                onChange={(e) => setZoneFilterEnabled(e.target.checked)}
+                className="size-4"
+              />
+              <span>Только подходящие зоны</span>
+            </label>
+            <span className="text-muted-foreground">
+              {zoneFilterEnabled
+                ? `${matchedByZone.length} из ${tasks.length}`
+                : `${tasks.length} всего`}
+            </span>
+          </div>
+        )}
+
+        {/* Tasks list — ScrollArea с per-task input */}
+        <ScrollArea className="flex-1 min-h-0 px-4 py-3">
+          <p className="text-xs font-medium text-muted-foreground mb-3">
+            Назначить задачи сотруднику
           </p>
-          {planItems.length === 0 ? (
-            <p className="text-xs text-muted-foreground italic mb-4">
-              {t("employeeSheet.plan_empty")}
+          {sortedVisible.length === 0 ? (
+            <p className="text-xs text-muted-foreground italic">
+              Нет задач в подходящих зонах
             </p>
           ) : (
-            <div className="space-y-2 mb-4">
-              {planItems.map((item) => {
-                const isSelected = addTaskId === item.task.id
+            <div className="space-y-3">
+              {sortedVisible.map((task) => {
+                const currentAllocation = allocations[task.id] || 0
+                const taskOtherDistributed = task.distributed_minutes - (
+                  // если в server-state у этой пары уже было сохранение — учли
+                  plan.get(task.id)?.find((a) => a.userId === userId)?.minutes ?? 0
+                )
+                const taskRemainingForThis = Math.max(0, task.planned_minutes - taskOtherDistributed)
+                const overTaskBy = Math.max(0, currentAllocation - taskRemainingForThis)
+                const isInPlan = currentAllocation > 0
+
                 return (
                   <div
-                    key={item.task.id}
+                    key={task.id}
                     className={cn(
-                      "flex items-start gap-2 p-2 rounded-md border bg-primary/5 transition-colors",
-                      isSelected ? "border-primary ring-1 ring-primary/40" : "border-primary/30"
+                      "p-3 rounded-lg border transition-colors",
+                      isInPlan ? "border-primary ring-1 ring-primary/30 bg-primary/5" : "bg-card",
                     )}
                   >
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setAddTaskId(item.task.id)
-                        setAddMinutes(item.minutes)
-                      }}
-                      className="flex-1 flex items-start gap-2 min-w-0 text-left focus-visible:outline-none rounded -mx-1 -my-0.5 px-1 py-0.5 hover:bg-primary/10 focus-visible:bg-primary/10 transition-colors"
-                      aria-label={t("employeeSheet.edit_aria")}
-                    >
-                      <div className="flex items-center gap-1 shrink-0 mt-0.5">
-                        <Wand2 className="size-3.5 text-primary" />
-                        <Pencil className="size-3 text-primary/60" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium line-clamp-2">{item.task.title}</p>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
+                    <div className="flex items-start justify-between gap-2 mb-2">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-sm font-medium line-clamp-2">{task.title}</p>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground mt-0.5 flex-wrap">
                           <span className="flex items-center gap-1">
                             <MapPin className="size-3" />
-                            {item.task.zone_name}
+                            {task.zone_name}
                           </span>
                           <span className="text-border">·</span>
                           <span className="flex items-center gap-1">
                             <Clock className="size-3" />
-                            {formatHM(item.minutes, t)}
+                            {formatHM(task.planned_minutes, t)}
                           </span>
+                          {taskRemainingForThis !== task.planned_minutes && (
+                            <>
+                              <span className="text-border">·</span>
+                              <span>
+                                осталось {formatHM(taskRemainingForThis, t)}
+                              </span>
+                            </>
+                          )}
                         </div>
                       </div>
-                    </button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="size-7 shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleRemoveFromPlan(item.task.id)
-                      }}
-                      disabled={!canEdit}
-                      aria-label={t("employeeSheet.remove_aria")}
-                    >
-                      <X className="size-3.5" />
-                    </Button>
+                      <HoursMinutesInput
+                        value={currentAllocation}
+                        onChange={(min) => handleAllocationChange(task.id, min)}
+                        disabled={!canEdit}
+                        invalid={overTaskBy > 0}
+                        className="shrink-0"
+                        t={t}
+                      />
+                    </div>
+                    {overTaskBy > 0 && (
+                      <p className="text-xs text-destructive flex items-center gap-1.5">
+                        <Wand2 className="size-3 shrink-0" />
+                        {t("employeeSheet.over_task_warning", {
+                          time: formatHM(overTaskBy, t),
+                        })}
+                      </p>
+                    )}
                   </div>
                 )
               })}
             </div>
           )}
-
-          {/* Add / Edit task */}
-          <div className="border-t pt-3">
-            <p className="text-xs font-medium text-muted-foreground mb-2">
-              {isEditMode ? t("employeeSheet.edit_section") : t("employeeSheet.add_section")}
-            </p>
-            {availableTasks.length === 0 ? (
-              <p className="text-xs text-muted-foreground italic">
-                {t("employeeSheet.add_empty")}
-              </p>
-            ) : (
-              <div className="space-y-2">
-                {isEditMode && (
-                  <p className="text-xs text-primary flex items-center gap-1.5">
-                    <Pencil className="size-3 shrink-0" />
-                    {t("employeeSheet.edit_mode_hint")}
-                  </p>
-                )}
-                {freeMin === 0 && !isEditMode && (
-                  <p className="text-xs text-destructive flex items-center gap-1.5">
-                    <Wand2 className="size-3 shrink-0" />
-                    {t("employeeSheet.over_shift_warning_full")}
-                  </p>
-                )}
-                <Popover open={pickerOpen} onOpenChange={setPickerOpen}>
-                  <PopoverTrigger asChild>
-                    <Button
-                      variant="outline"
-                      role="combobox"
-                      className="w-full justify-between font-normal h-9"
-                      disabled={!canEdit}
-                    >
-                      <span className="truncate text-left text-sm">
-                        {selectedTask ? selectedTask.title : (
-                          <span className="text-muted-foreground">
-                            {t("employeeSheet.add_picker_placeholder")}
-                          </span>
-                        )}
-                      </span>
-                      <ChevronsUpDown className="ml-2 size-3.5 shrink-0 opacity-50" />
-                    </Button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0" align="start">
-                    <Command>
-                      <CommandInput placeholder={t("employeeSheet.add_picker_search")} className="h-8 text-sm" />
-                      <CommandList className="max-h-64">
-                        <CommandEmpty>{t("employeeSheet.add_picker_empty")}</CommandEmpty>
-                        <CommandGroup>
-                          {availableTasks.map((task) => (
-                            <CommandItem
-                              key={task.id}
-                              value={`${task.title} ${task.zone_name ?? ""}`}
-                              onSelect={() => {
-                                setAddTaskId(task.id)
-                                // Suggested: реалистичный default — task remaining
-                                // или 60 мин, что меньше. НЕ ограничиваем freeMin.
-                                setAddMinutes(Math.min(60, task.remaining_minutes))
-                                setPickerOpen(false)
-                              }}
-                            >
-                              <div className="flex flex-col gap-0.5 min-w-0">
-                                <span className="text-sm font-medium truncate">{task.title}</span>
-                                <span className="text-xs text-muted-foreground">
-                                  {task.zone_name} · {t("employeeSheet.add_picker_remaining", {
-                                    time: formatHM(task.remaining_minutes, t),
-                                  })}
-                                </span>
-                              </div>
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      </CommandList>
-                    </Command>
-                  </PopoverContent>
-                </Popover>
-
-                <div className="flex items-center gap-2 flex-wrap">
-                  <HoursMinutesInput
-                    value={addMinutes}
-                    onChange={setAddMinutes}
-                    disabled={!canEdit || !selectedTask}
-                    invalid={overShiftBy > 0 || overTaskBy > 0}
-                    t={t}
-                  />
-                  <Button
-                    size="sm"
-                    onClick={handleAddToPlan}
-                    disabled={!canEdit || !addTaskId || addMinutes <= 0}
-                    className="ml-auto"
-                  >
-                    {t(isEditMode ? "employeeSheet.update_button" : "employeeSheet.add_button")}
-                  </Button>
-                  {isEditMode && (
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setAddTaskId("")
-                        setAddMinutes(60)
-                      }}
-                    >
-                      {t("employeeSheet.cancel_edit")}
-                    </Button>
-                  )}
-                </div>
-                {selectedTask && overShiftBy === 0 && overTaskBy === 0 && (
-                  <p className="text-xs text-muted-foreground">
-                    {t("employeeSheet.add_free_hint", {
-                      time: formatHM(adjustedFreeMin, t),
-                    })}
-                  </p>
-                )}
-                {overShiftBy > 0 && (
-                  <p className="text-xs text-destructive flex items-center gap-1.5">
-                    <Wand2 className="size-3 shrink-0" />
-                    {t("employeeSheet.over_shift_warning", {
-                      time: formatHM(overShiftBy, t),
-                    })}
-                  </p>
-                )}
-                {overTaskBy > 0 && (
-                  <p className="text-xs text-destructive flex items-center gap-1.5">
-                    <Wand2 className="size-3 shrink-0" />
-                    {t("employeeSheet.over_task_warning", {
-                      time: formatHM(overTaskBy, t),
-                    })}
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
         </ScrollArea>
 
-        <SheetFooter className="border-t px-4 py-3">
-          <Button variant="outline" onClick={onClose} className="w-full">
-            {t("employeeSheet.close")}
+        <SheetFooter className="border-t px-4 py-3 gap-2 sm:gap-2 shrink-0">
+          <Button variant="outline" onClick={onClose} className="flex-1">
+            {t("sheet.save_later")}
           </Button>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <div className="flex-1">
+                  <Button
+                    onClick={handleSave}
+                    disabled={!canEdit}
+                    className="w-full"
+                  >
+                    {t("sheet.save")}
+                  </Button>
+                </div>
+              </TooltipTrigger>
+              {!canEdit && (
+                <TooltipContent>{t("forbidden.tooltip")}</TooltipContent>
+              )}
+            </Tooltip>
+          </TooltipProvider>
         </SheetFooter>
       </SheetContent>
     </Sheet>
@@ -2098,6 +2034,8 @@ export function TaskDistribution() {
             <TasksSummaryPanel
               tasks={tasks}
               plan={plan}
+              date={currentDate}
+              locale={locale}
               t={t}
             />
           </div>
