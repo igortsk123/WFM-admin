@@ -4,21 +4,7 @@ import * as React from "react"
 import { useRouter } from "@/i18n/navigation"
 import { useTranslations, useLocale } from "next-intl"
 import { useQueryState, parseAsString, parseAsInteger } from "nuqs"
-import { DEMO_TOP_STORES } from "@/lib/api/_demo-stores"
-import { type ColumnDef } from "@tanstack/react-table"
-import {
-  Archive,
-  Check,
-  ChevronsUpDown,
-  Download,
-  FileWarning,
-  MoreVertical,
-  Plus,
-  SearchX,
-  Upload,
-  Users,
-  X,
-} from "lucide-react"
+import { Archive, SearchX, Users } from "lucide-react"
 import { toast } from "sonner"
 
 import type {
@@ -28,61 +14,17 @@ import type {
   FreelancerStatus,
 } from "@/lib/types"
 import type { UserWithAssignment } from "@/lib/api/users"
-import {
-  getUsers,
-  archiveUser,
-  bulkAssignPermission,
-  bulkRevokePermission,
-  bulkUpdateRole,
-  bulkUpdateStore,
-} from "@/lib/api/users"
+import { getUsers, archiveUser } from "@/lib/api/users"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
 import { useAuth } from "@/lib/contexts/auth-context"
 
 import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Badge } from "@/components/ui/badge"
-import { Input } from "@/components/ui/input"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { AlertDialog } from "@/components/ui/alert-dialog"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { cn } from "@/lib/utils"
 
 import { PageHeader } from "@/components/shared/page-header"
-import { FilterChip } from "@/components/shared/filter-chip"
-import { UserCell } from "@/components/shared/user-cell"
-import { PermissionPill } from "@/components/shared/permission-pill"
-import { ShiftStateBadge } from "@/components/shared/shift-state-badge"
-import { RoleBadge } from "@/components/shared/role-badge"
 import { ResponsiveDataTable } from "@/components/shared/responsive-data-table"
-import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet"
 import { ConfirmDialog } from "@/components/shared/confirm-dialog"
-import { MultiSelectCombobox } from "@/components/shared/multi-select-combobox"
-import { SingleSelectCombobox } from "@/components/shared/single-select-combobox"
-import { Spinner } from "@/components/ui/spinner"
 
 import {
   PermissionAssignDialog,
@@ -90,83 +32,13 @@ import {
   BulkStoreDialog,
   BulkZoneDialog,
 } from "./bulk-dialogs"
-import { FreelancerStatusBadge } from "@/components/shared/freelancer-status-badge"
 
-// ─────────────────────────────────────────────────────────────────
-// CONSTANTS
-// ─────────────────────────────────────────────────────────────────
-
-const ALL_PERMISSIONS: Permission[] = [
-  "CASHIER",
-  "SALES_FLOOR",
-  "SELF_CHECKOUT",
-  "WAREHOUSE",
-  "PRODUCTION_LINE",
-]
-
-const ALL_ROLES: FunctionalRole[] = [
-  "WORKER",
-  "STORE_DIRECTOR",
-  "SUPERVISOR",
-  "REGIONAL",
-  "NETWORK_OPS",
-  "HR_MANAGER",
-  "OPERATOR",
-]
-
-const STORE_OPTIONS = DEMO_TOP_STORES
-
-const POSITION_OPTIONS = [
-  { id: 1, name: "Универсал" },
-  { id: 2, name: "Кассир" },
-  { id: 3, name: "Старший кассир" },
-  { id: 4, name: "Продавец-консультант" },
-  { id: 5, name: "Кладовщик" },
-  { id: 6, name: "Мерчендайзер" },
-  { id: 7, name: "Директор магазина" },
-  { id: 8, name: "Супервайзер" },
-]
-
-// Agents for filter — mirrors MOCK_FREELANCE_AGENTS (only ACTIVE)
-const AGENT_OPTIONS = [
-  { id: "agent-001", name: "ИП Захарова М. С." },
-  { id: "agent-002", name: 'ООО «Кадровый партнёр»' },
-  { id: "agent-003", name: "ИП Никитин А. И." },
-]
-
-const ALL_FREELANCER_STATUSES: FreelancerStatus[] = [
-  "NEW",
-  "VERIFICATION",
-  "ACTIVE",
-  "BLOCKED",
-  "ARCHIVED",
-]
-
-/** Statuses that block task assignment */
-const INACTIVE_FREELANCER_STATUSES: FreelancerStatus[] = [
-  "NEW",
-  "VERIFICATION",
-  "BLOCKED",
-]
-
-// ─────────────────────────────────────────────────────────────────
-// HELPERS
-// ─────────────────────────────────────────────────────────────────
-
-function formatHiredAt(isoDate: string | undefined, locale: string): string {
-  if (!isoDate) return "—"
-  return new Intl.DateTimeFormat(locale === "en" ? "en-GB" : "ru-RU", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  }).format(new Date(isoDate))
-}
-
-function formatShiftTime(timeStr: string | undefined): string {
-  if (!timeStr) return ""
-  // Extract HH:mm from ISO datetime "2026-05-01T09:00:00"
-  return timeStr.substring(11, 16)
-}
+import { BulkActionBar } from "./employees-list/bulk-action-bar"
+import { buildColumns } from "./employees-list/columns"
+import { FiltersBar } from "./employees-list/filters-bar"
+import { HeaderActions } from "./employees-list/header-actions"
+import { MobileCard } from "./employees-list/mobile-card"
+import { StatsRow } from "./employees-list/stats-row"
 
 // ─────────────────────────────────────────────────────────────────
 // MAIN COMPONENT
@@ -182,7 +54,8 @@ export function EmployeesList() {
 
   const currentRole = user.role
 
-  const canFullCRUD = currentRole === "HR_MANAGER" || currentRole === "NETWORK_OPS"
+  const canFullCRUD =
+    currentRole === "HR_MANAGER" || currentRole === "NETWORK_OPS"
   const canArchiveBulk = canFullCRUD
   const canImpersonate = canFullCRUD
   const hideStore = currentRole === "STORE_DIRECTOR"
@@ -233,9 +106,11 @@ export function EmployeesList() {
     React.useState(false)
   const [bulkRoleDialogOpen, setBulkRoleDialogOpen] = React.useState(false)
   const [bulkStoreDialogOpen, setBulkStoreDialogOpen] = React.useState(false)
-  const [bulkZoneMode, setBulkZoneMode] = React.useState<"assign" | "revoke">("assign")
+  const [bulkZoneMode, setBulkZoneMode] = React.useState<"assign" | "revoke">(
+    "assign"
+  )
   const [bulkZoneDialogOpen, setBulkZoneDialogOpen] = React.useState(false)
-  const [bulkBarLoading, setBulkBarLoading] = React.useState(false)
+  const [bulkBarLoading, _setBulkBarLoading] = React.useState(false)
 
   // ── Fetch ───────────────────────────────────────────────────────
   // refreshTick — bump-state для ручного re-fetch (после bulk-операций
@@ -261,14 +136,29 @@ export function EmployeesList() {
     getUsers({
       archived,
       search: searchParam || undefined,
-      store_ids: selectedStoreIds.length > 0 ? selectedStoreIds.map(Number) : undefined,
-      position_ids: selectedPositionIds.length > 0 ? selectedPositionIds.map(Number) : undefined,
-      permissions: selectedPermissions.length > 0 ? (selectedPermissions as Permission[]) : undefined,
+      store_ids:
+        selectedStoreIds.length > 0
+          ? selectedStoreIds.map(Number)
+          : undefined,
+      position_ids:
+        selectedPositionIds.length > 0
+          ? selectedPositionIds.map(Number)
+          : undefined,
+      permissions:
+        selectedPermissions.length > 0
+          ? (selectedPermissions as Permission[])
+          : undefined,
       role: selectedRole ? (selectedRole as FunctionalRole) : undefined,
-      employment_type: selectedEmploymentType ? (selectedEmploymentType as EmployeeType) : undefined,
-      freelancer_status: selectedFreelancerStatus ? (selectedFreelancerStatus as FreelancerStatus) : undefined,
+      employment_type: selectedEmploymentType
+        ? (selectedEmploymentType as EmployeeType)
+        : undefined,
+      freelancer_status: selectedFreelancerStatus
+        ? (selectedFreelancerStatus as FreelancerStatus)
+        : undefined,
       agent_ids: selectedAgentIds.length > 0 ? selectedAgentIds : undefined,
-      source: selectedSource ? (selectedSource as "MANUAL" | "EXTERNAL_SYNC") : undefined,
+      source: selectedSource
+        ? (selectedSource as "MANUAL" | "EXTERNAL_SYNC")
+        : undefined,
       page: pageParam,
       page_size: 20,
     })
@@ -369,7 +259,8 @@ export function EmployeesList() {
   }
 
   // ── Selection helpers ───────────────────────────────────────────
-  const allSelected = data.length > 0 && data.every((u) => selectedIds.has(u.id))
+  const allSelected =
+    data.length > 0 && data.every((u) => selectedIds.has(u.id))
   const someSelected = selectedIds.size > 0
 
   function toggleAll() {
@@ -440,344 +331,23 @@ export function EmployeesList() {
   }
 
   // ── Columns ─────────────────────────────────────────────────────
-  const columns: ColumnDef<UserWithAssignment>[] = [
-    {
-      id: "select",
-      header: () => (
-        <Checkbox
-          checked={allSelected}
-          onCheckedChange={toggleAll}
-          aria-label="Select all"
-          className="translate-y-[1px]"
-        />
-      ),
-      cell: ({ row }) => (
-        <Checkbox
-          checked={selectedIds.has(row.original.id)}
-          onCheckedChange={() => toggleRow(row.original.id)}
-          onClick={(e) => e.stopPropagation()}
-          aria-label="Select row"
-          className="translate-y-[1px]"
-        />
-      ),
-      enableSorting: false,
+  const columns = buildColumns({
+    t: t as (key: string, vars?: Record<string, unknown>) => string,
+    locale,
+    hideStore,
+    canFullCRUD,
+    canArchiveBulk,
+    canImpersonate,
+    selectedIds,
+    allSelected,
+    toggleAll,
+    toggleRow,
+    onOpenPermissions: (userId: number) => {
+      setSelectedIds(new Set([userId]))
+      setPermDialogOpen(true)
     },
-    {
-      id: "fio",
-      header: t("columns.fio"),
-      cell: ({ row }) => {
-        const u = row.original
-        const hasUnsignedOferta =
-          u.type === "FREELANCE" && !u.oferta_accepted_at
-        return (
-          <div className="flex items-center gap-1.5">
-            <UserCell
-              user={{
-                first_name: u.first_name,
-                last_name: u.last_name,
-                middle_name: u.middle_name,
-                avatar_url: u.avatar_url,
-                position_name: u.assignment?.position_name,
-              }}
-            />
-            {hasUnsignedOferta && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <FileWarning
-                      className="size-3.5 text-warning shrink-0"
-                      aria-label={t("employment.no_oferta")}
-                    />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    {t("employment.no_oferta")}
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
-          </div>
-        )
-      },
-    },
-    ...(!hideStore
-      ? [
-          {
-            id: "store",
-            header: t("columns.store"),
-            cell: ({ row }: { row: { original: UserWithAssignment } }) => (
-              <span className="text-sm text-muted-foreground truncate max-w-[180px] block">
-                {row.original.assignment?.store_name ?? "—"}
-              </span>
-            ),
-          } as ColumnDef<UserWithAssignment>,
-        ]
-      : []),
-    {
-      id: "position",
-      header: t("columns.position"),
-      cell: ({ row }) => (
-        <span className="text-sm">
-          {row.original.assignment?.position_name ?? "—"}
-        </span>
-      ),
-    },
-    {
-      id: "functional_role",
-      header: t("columns.functional_role"),
-      cell: ({ row }) =>
-        row.original.functional_role ? (
-          <RoleBadge role={row.original.functional_role} size="sm" />
-        ) : (
-          <span className="text-xs text-muted-foreground">—</span>
-        ),
-    },
-    {
-      id: "permissions",
-      header: t("columns.permissions"),
-      cell: ({ row }) => {
-        const perms = row.original.permissions ?? []
-        const visible = perms.slice(0, 3)
-        const extra = perms.length - 3
-        return (
-          <div className="flex flex-wrap items-center gap-1">
-            {visible.map((p) => (
-              <PermissionPill key={p} permission={p} />
-            ))}
-            {extra > 0 && (
-              <Badge variant="secondary" className="text-xs px-1.5">
-                {t("columns.more_permissions", { n: extra })}
-              </Badge>
-            )}
-            {perms.length === 0 && (
-              <span className="text-xs text-muted-foreground">—</span>
-            )}
-          </div>
-        )
-      },
-    },
-    {
-      id: "current_shift",
-      header: t("columns.current_shift"),
-      cell: ({ row }) => {
-        const shift = row.original.current_shift
-        if (!shift) {
-          return (
-            <span className="text-xs italic text-muted-foreground">
-              {t("shift.no_shift")}
-            </span>
-          )
-        }
-        const start = formatShiftTime(shift.actual_start ?? shift.planned_start)
-        const end = formatShiftTime(shift.actual_end ?? shift.planned_end)
-        return (
-          <div className="flex items-center gap-1.5">
-            <ShiftStateBadge status={shift.status} size="sm" />
-            {shift.status === "OPENED" && start && end && (
-              <span className="text-xs text-muted-foreground">
-                {t("shift.time_range", { start, end })}
-              </span>
-            )}
-          </div>
-        )
-      },
-    },
-    {
-      id: "employment",
-      header: t("columns.employment"),
-      cell: ({ row }) => {
-        const isFreelance = row.original.type === "FREELANCE"
-        const noDocs =
-          isFreelance &&
-          (row.original.freelance_documents_count ?? 0) === 0
-        return (
-          <div className="flex items-center gap-1.5">
-            <Badge
-              className={cn(
-                "text-xs",
-                isFreelance
-                  ? "bg-warning/10 text-warning border-warning/20"
-                  : "bg-muted text-muted-foreground border-transparent"
-              )}
-            >
-              {isFreelance
-                ? t("employment.freelance")
-                : t("employment.staff")}
-            </Badge>
-            {noDocs && (
-              <FileWarning
-                className="size-3.5 text-warning shrink-0"
-                aria-label={t("employment.no_documents")}
-              />
-            )}
-          </div>
-        )
-      },
-    },
-    {
-      id: "hired_at",
-      header: t("columns.hired_at"),
-      size: 110,
-      cell: ({ row }) => (
-        <span className="text-xs text-muted-foreground whitespace-nowrap">
-          {formatHiredAt(row.original.hired_at, locale)}
-        </span>
-      ),
-    },
-    // ── FREELANCE-only columns ──────────────────────────────────────
-    {
-      id: "freelancer_status",
-      header: t("columns.freelancer_status"),
-      cell: ({ row }) => {
-        const u = row.original
-        if (u.type !== "FREELANCE" || !u.freelancer_status) return null
-        return <FreelancerStatusBadge status={u.freelancer_status} size="sm" />
-      },
-    },
-    {
-      id: "actions",
-      header: "",
-      cell: ({ row }) => {
-        const u = row.original
-        return (
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="size-8"
-                onClick={(e) => e.stopPropagation()}
-                aria-label={t("row_actions.open")}
-              >
-                <MoreVertical className="size-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-52">
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation()
-                  router.push(ADMIN_ROUTES.employeeDetail(String(u.id)))
-                }}
-              >
-                {t("row_actions.open")}
-              </DropdownMenuItem>
-              {u.type === "FREELANCE" &&
-              u.freelancer_status &&
-              INACTIVE_FREELANCER_STATUSES.includes(u.freelancer_status) ? (
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <span className="relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none opacity-50">
-                        {t("row_actions.assign_task")}
-                      </span>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      {t("employment.not_activated_tooltip")}
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              ) : (
-                <DropdownMenuItem
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    router.push(`${ADMIN_ROUTES.taskNew}?assignee_id=${u.id}`)
-                  }}
-                >
-                  {t("row_actions.assign_task")}
-                </DropdownMenuItem>
-              )}
-              <DropdownMenuItem
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setSelectedIds(new Set([u.id]))
-                  setPermDialogOpen(true)
-                }}
-              >
-                {t("row_actions.permissions")}
-              </DropdownMenuItem>
-              {canFullCRUD && (
-                <DropdownMenuItem
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  {t("row_actions.change_position")}
-                </DropdownMenuItem>
-              )}
-              {canImpersonate &&
-                process.env.NODE_ENV === "development" && (
-                  <DropdownMenuItem
-                    onClick={(e) => {
-                      e.stopPropagation()
-                    }}
-                  >
-                    {t("row_actions.impersonate")}
-                  </DropdownMenuItem>
-                )}
-              {canArchiveBulk && (
-                <>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem
-                    className="text-destructive focus:text-destructive"
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      setArchivingId(u.id)
-                    }}
-                  >
-                    {t("row_actions.archive")}
-                  </DropdownMenuItem>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        )
-      },
-      enableSorting: false,
-    },
-  ]
-
-  // ── Filter options ───────────────────────────────────────────────
-  const storeOptions = STORE_OPTIONS.map((s) => ({
-    value: String(s.id),
-    label: s.name,
-  }))
-  const positionOptions = POSITION_OPTIONS.map((p) => ({
-    value: String(p.id),
-    label: p.name,
-  }))
-  const permOptions = ALL_PERMISSIONS.map((p) => ({
-    value: p,
-    label: permLabelMap[p],
-  }))
-  const roleOptions = ALL_ROLES.map((r) => ({
-    value: r,
-    label: roleLabelMap[r] ?? r,
-  }))
-  const employmentOptions = [
-    { value: "STAFF", label: t("employment.staff") },
-    { value: "FREELANCE", label: t("employment.freelance") },
-  ]
-
-  const agentOptions = AGENT_OPTIONS.map((a) => ({
-    value: a.id,
-    label: a.name,
-  }))
-
-  const freelancerStatusOptions = ALL_FREELANCER_STATUSES.map((s) => ({
-    value: s,
-    label:
-      s === "NEW"
-        ? "Новый"
-        : s === "VERIFICATION"
-        ? "Проверка"
-        : s === "ACTIVE"
-        ? "Активен"
-        : s === "BLOCKED"
-        ? "Заблокирован"
-        : "Архив",
-  }))
-
-  const sourceOptions = [
-    { value: "MANUAL", label: t("source.manual") },
-    { value: "EXTERNAL_SYNC", label: t("source.external") },
-  ]
+    onArchive: (userId: number) => setArchivingId(userId),
+  })
 
   // ── Empty state variants ─────────────────────────────────────────
   function getEmptyState() {
@@ -885,328 +455,6 @@ export function EmployeesList() {
     </>
   )
 
-  // ── Filter chips ─────────────────────────────────────────────────
-  const filterChips: React.ReactNode[] = []
-
-  selectedStoreIds.forEach((id) => {
-    const name =
-      STORE_OPTIONS.find((s) => String(s.id) === id)?.name ?? id
-    filterChips.push(
-      <FilterChip
-        key={`store-${id}`}
-        label={t("filters.store")}
-        value={name}
-        onRemove={() =>
-          setSelectedStoreIds((prev) => prev.filter((v) => v !== id))
-        }
-      />
-    )
-  })
-
-  selectedPositionIds.forEach((id) => {
-    const name =
-      POSITION_OPTIONS.find((p) => String(p.id) === id)?.name ?? id
-    filterChips.push(
-      <FilterChip
-        key={`pos-${id}`}
-        label={t("filters.position")}
-        value={name}
-        onRemove={() =>
-          setSelectedPositionIds((prev) => prev.filter((v) => v !== id))
-        }
-      />
-    )
-  })
-
-  selectedPermissions.forEach((p) => {
-    filterChips.push(
-      <FilterChip
-        key={`perm-${p}`}
-        label={t("filters.permission")}
-        value={permLabelMap[p as Permission] ?? p}
-        onRemove={() =>
-          setSelectedPermissions((prev) => prev.filter((v) => v !== p))
-        }
-      />
-    )
-  })
-
-  if (selectedRole) {
-    filterChips.push(
-      <FilterChip
-        key="role"
-        label={t("filters.functional_role")}
-        value={roleLabelMap[selectedRole] ?? selectedRole}
-        onRemove={() => setSelectedRole("")}
-      />
-    )
-  }
-
-  if (selectedEmploymentType) {
-    filterChips.push(
-      <FilterChip
-        key="emp"
-        label={t("filters.employment_type")}
-        value={
-          selectedEmploymentType === "STAFF"
-            ? t("employment.staff")
-            : t("employment.freelance")
-        }
-        onRemove={() => setSelectedEmploymentType("")}
-      />
-    )
-  }
-
-  selectedAgentIds.forEach((id) => {
-    const name = AGENT_OPTIONS.find((a) => a.id === id)?.name ?? id
-    filterChips.push(
-      <FilterChip
-        key={`agent-${id}`}
-        label={t("filters.agent")}
-        value={name}
-        onRemove={() =>
-          setSelectedAgentIds((prev) => prev.filter((v) => v !== id))
-        }
-      />
-    )
-  })
-
-  if (selectedFreelancerStatus) {
-    const statusLabel =
-      freelancerStatusOptions.find((o) => o.value === selectedFreelancerStatus)
-        ?.label ?? selectedFreelancerStatus
-    filterChips.push(
-      <FilterChip
-        key="fstatus"
-        label={t("filters.freelancer_status")}
-        value={statusLabel}
-        onRemove={() => setSelectedFreelancerStatus("")}
-      />
-    )
-  }
-
-  if (selectedSource) {
-    filterChips.push(
-      <FilterChip
-        key="source"
-        label={t("filters.source_creation")}
-        value={
-          selectedSource === "MANUAL"
-            ? t("source.manual")
-            : t("source.external")
-        }
-        onRemove={() => setSelectedSource("")}
-      />
-    )
-  }
-
-  // ── Mobile card render ────────────────────────────────────────────
-  function renderMobileCard(u: UserWithAssignment) {
-    const shift = u.current_shift
-    const isFreelance = u.type === "FREELANCE"
-    const noDocs = isFreelance && (u.freelance_documents_count ?? 0) === 0
-    const start = shift ? formatShiftTime(shift.actual_start ?? shift.planned_start) : ""
-    const end = shift ? formatShiftTime(shift.actual_end ?? shift.planned_end) : ""
-    const visiblePerms = (u.permissions ?? []).slice(0, 2)
-    const extraPerms = (u.permissions ?? []).length - 2
-
-    return (
-      <div className="flex flex-col gap-2">
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex items-center gap-2 min-w-0 flex-1">
-            <UserCell
-              user={{
-                first_name: u.first_name,
-                last_name: u.last_name,
-                middle_name: u.middle_name,
-                avatar_url: u.avatar_url,
-                position_name: u.assignment?.position_name,
-              }}
-              className="flex-1"
-            />
-            {noDocs && (
-              <FileWarning
-                className="size-4 text-warning shrink-0"
-                aria-label={t("employment.no_documents")}
-              />
-            )}
-          </div>
-          <div className="flex items-center gap-1 shrink-0">
-            <Checkbox
-              checked={selectedIds.has(u.id)}
-              onCheckedChange={() => toggleRow(u.id)}
-              onClick={(e) => e.stopPropagation()}
-              aria-label="Select"
-              className="size-5"
-            />
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="size-11"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <MoreVertical className="size-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-52">
-                <DropdownMenuItem
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    router.push(ADMIN_ROUTES.employeeDetail(String(u.id)))
-                  }}
-                >
-                  {t("row_actions.open")}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={(e) => {
-                    e.stopPropagation()
-                    router.push(`${ADMIN_ROUTES.taskNew}?assignee_id=${u.id}`)
-                  }}
-                >
-                  {t("row_actions.assign_task")}
-                </DropdownMenuItem>
-                {canArchiveBulk && !u.archived && (
-                  <>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      className="text-destructive focus:text-destructive"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setArchivingId(u.id)
-                      }}
-                    >
-                      {t("row_actions.archive")}
-                    </DropdownMenuItem>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
-        </div>
-
-        {!hideStore && u.assignment?.store_name && (
-          <p className="text-xs text-muted-foreground truncate pl-[42px]">
-            {u.assignment.store_name}
-          </p>
-        )}
-
-        <div className="flex items-center gap-2 pl-[42px] flex-wrap">
-          {u.functional_role && (
-            <RoleBadge role={u.functional_role} size="sm" />
-          )}
-          <Badge
-            className={cn(
-              "text-xs",
-              isFreelance
-                ? "bg-warning/10 text-warning border-warning/20"
-                : "bg-muted text-muted-foreground border-transparent"
-            )}
-          >
-            {isFreelance ? t("employment.freelance") : t("employment.staff")}
-          </Badge>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-1 pl-[42px]">
-          {visiblePerms.map((p) => (
-            <PermissionPill key={p} permission={p} />
-          ))}
-          {extraPerms > 0 && (
-            <Badge variant="secondary" className="text-xs px-1.5">
-              {t("columns.more_permissions", { n: extraPerms })}
-            </Badge>
-          )}
-        </div>
-
-        <div className="flex items-center gap-2 pl-[42px]">
-          {shift ? (
-            <>
-              <ShiftStateBadge status={shift.status} size="sm" />
-              {shift.status === "OPENED" && start && end && (
-                <span className="text-xs text-muted-foreground">
-                  {t("shift.time_range", { start, end })}
-                </span>
-              )}
-            </>
-          ) : (
-            <span className="text-xs italic text-muted-foreground">
-              {t("shift.no_shift")}
-            </span>
-          )}
-        </div>
-      </div>
-    )
-  }
-
-  // ── Filter panel (reused desktop + mobile sheet) ──────────────────
-  const _filterPanel = (
-    <div className="flex flex-col gap-3">
-      {!hideStore && (
-        <div className="space-y-1">
-          <p className="text-xs font-medium text-muted-foreground">
-            {t("filters.store")}
-          </p>
-          <MultiSelectCombobox
-            options={storeOptions}
-            selected={selectedStoreIds}
-            onSelectionChange={setSelectedStoreIds}
-            placeholder={t("filters.store")}
-            className="w-full"
-          />
-        </div>
-      )}
-      <div className="space-y-1">
-        <p className="text-xs font-medium text-muted-foreground">
-          {t("filters.position")}
-        </p>
-        <MultiSelectCombobox
-          options={positionOptions}
-          selected={selectedPositionIds}
-          onSelectionChange={setSelectedPositionIds}
-          placeholder={t("filters.position")}
-          className="w-full"
-        />
-      </div>
-      <div className="space-y-1">
-        <p className="text-xs font-medium text-muted-foreground">
-          {t("filters.permission")}
-        </p>
-        <MultiSelectCombobox
-          options={permOptions}
-          selected={selectedPermissions}
-          onSelectionChange={setSelectedPermissions}
-          placeholder={t("filters.permission")}
-          className="w-full"
-        />
-      </div>
-      <div className="space-y-1">
-        <p className="text-xs font-medium text-muted-foreground">
-          {t("filters.functional_role")}
-        </p>
-        <SingleSelectCombobox
-          options={roleOptions}
-          value={selectedRole}
-          onValueChange={setSelectedRole}
-          placeholder={t("filters.functional_role")}
-          className="w-full"
-        />
-      </div>
-      <div className="space-y-1">
-        <p className="text-xs font-medium text-muted-foreground">
-          {t("filters.employment_type")}
-        </p>
-        <SingleSelectCombobox
-          options={employmentOptions}
-          value={selectedEmploymentType}
-          onValueChange={setSelectedEmploymentType}
-          placeholder={t("filters.employment_type")}
-          className="w-full"
-        />
-      </div>
-    </div>
-  )
-
   // ── RENDER ────────────────────────────────────────────────────────
   return (
     <div className="flex flex-col gap-6">
@@ -1214,305 +462,79 @@ export function EmployeesList() {
       <PageHeader
         title={t("page_title")}
         subtitle={
-          isLoading
-            ? undefined
-            : t("counter", { count: displayTotal })
+          isLoading ? undefined : t("counter", { count: displayTotal })
         }
         actions={desktopActions}
       />
 
       {/* Tabs */}
-      <ScrollArea className="w-full">
-        <Tabs
-          value={statusParam}
-          onValueChange={(v) => {
-            setStatusParam(v === "active" ? null : v)
-            setPageParam(null)
-            setSelectedIds(new Set())
-          }}
-        >
-          <TabsList className="h-9">
-            <TabsTrigger value="active">
-              {t("tabs.employees")}
-              {activeCount > 0 && (
-                <Badge variant="secondary" className="ml-1.5 text-xs h-5 px-1.5">
-                  {activeCount}
-                </Badge>
-              )}
-            </TabsTrigger>
-            <TabsTrigger value="archived">
-              {t("tabs.archived")}
-              {archivedCount > 0 && (
-                <Badge variant="secondary" className="ml-1.5 text-xs h-5 px-1.5">
-                  {archivedCount}
-                </Badge>
-              )}
-            </TabsTrigger>
-          </TabsList>
-        </Tabs>
-        <ScrollBar orientation="horizontal" />
-      </ScrollArea>
+      <StatsRow
+        statusParam={statusParam}
+        activeCount={activeCount}
+        archivedCount={archivedCount}
+        onStatusChange={(v) => {
+          setStatusParam(v === "active" ? null : v)
+          setPageParam(null)
+          setSelectedIds(new Set())
+        }}
+      />
 
-      {/* Search + Desktop filters */}
-      <div className="flex flex-col gap-3">
-        <div className="flex items-center gap-2">
-          <Input
-            placeholder={t("filters.search_placeholder")}
-            value={searchParam ?? ""}
-            onChange={(e) => {
-              setSearchParam(e.target.value || null)
-              setPageParam(null)
-            }}
-            className="h-9 max-w-xs"
-          />
-
-          {/* Desktop filter comboboxes */}
-          <div className="hidden md:flex items-center gap-2 flex-wrap flex-1">
-            {!hideStore && (
-              <MultiSelectCombobox
-                options={storeOptions}
-                selected={selectedStoreIds}
-                onSelectionChange={(v) => {
-                  setSelectedStoreIds(v)
-                  setPageParam(null)
-                }}
-                placeholder={t("filters.store")}
-                className="w-44"
-              />
-            )}
-            <MultiSelectCombobox
-              options={positionOptions}
-              selected={selectedPositionIds}
-              onSelectionChange={(v) => {
-                setSelectedPositionIds(v)
-                setPageParam(null)
-              }}
-              placeholder={t("filters.position")}
-              className="w-44"
-            />
-            <MultiSelectCombobox
-              options={permOptions}
-              selected={selectedPermissions}
-              onSelectionChange={(v) => {
-                setSelectedPermissions(v)
-                setPageParam(null)
-              }}
-              placeholder={t("filters.permission")}
-              className="w-40"
-            />
-            <SingleSelectCombobox
-              options={roleOptions}
-              value={selectedRole}
-              onValueChange={(v) => {
-                setSelectedRole(v)
-                setPageParam(null)
-              }}
-              placeholder={t("filters.functional_role")}
-              className="w-44"
-            />
-            <SingleSelectCombobox
-              options={employmentOptions}
-              value={selectedEmploymentType}
-              onValueChange={(v) => {
-                setSelectedEmploymentType(v)
-                // Reset freelancer-specific filter if no longer FREELANCE
-                if (v !== "FREELANCE") setSelectedFreelancerStatus("")
-                setPageParam(null)
-              }}
-              placeholder={t("filters.employment_type")}
-              className="w-40"
-            />
-            {showFreelancerStatusFilter && (
-              <SingleSelectCombobox
-                options={freelancerStatusOptions}
-                value={selectedFreelancerStatus}
-                onValueChange={(v) => {
-                  setSelectedFreelancerStatus(v)
-                  setPageParam(null)
-                }}
-                placeholder={t("filters.freelancer_status")}
-                className="w-44"
-              />
-            )}
-            {showAgentFilter && (
-              <MultiSelectCombobox
-                options={agentOptions}
-                selected={selectedAgentIds}
-                onSelectionChange={(v) => {
-                  setSelectedAgentIds(v)
-                  setPageParam(null)
-                }}
-                placeholder={t("filters.agent")}
-                className="w-44"
-              />
-            )}
-            {showSourceFilter && (
-              <SingleSelectCombobox
-                options={sourceOptions}
-                value={selectedSource}
-                onValueChange={(v) => {
-                  setSelectedSource(v)
-                  setPageParam(null)
-                }}
-                placeholder={t("filters.source_creation")}
-                className="w-44"
-              />
-            )}
-          </div>
-
-          {/* Mobile filter sheet trigger */}
-          <div className="md:hidden flex-1">
-              <MobileFilterSheet
-                activeCount={activeFilterCount}
-                onClearAll={clearAllFilters}
-                onApply={() => { /* filters apply on change */ }}
-              >
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">
-                      {t("filters.store")}
-                    </p>
-                    <MultiSelectCombobox
-                      options={storeOptions}
-                      selected={selectedStoreIds}
-                      onSelectionChange={(v) => {
-                        setSelectedStoreIds(v)
-                        setPageParam(null)
-                      }}
-                      placeholder={t("filters.store")}
-                      className="w-full"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">
-                      {t("filters.position")}
-                    </p>
-                    <MultiSelectCombobox
-                      options={positionOptions}
-                      selected={selectedPositionIds}
-                      onSelectionChange={(v) => {
-                        setSelectedPositionIds(v)
-                        setPageParam(null)
-                      }}
-                      placeholder={t("filters.position")}
-                      className="w-full"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">
-                      {t("filters.functional_role")}
-                    </p>
-                    <SingleSelectCombobox
-                      options={roleOptions}
-                      value={selectedRole}
-                      onValueChange={(v) => {
-                        setSelectedRole(v)
-                        setPageParam(null)
-                      }}
-                      placeholder={t("filters.functional_role")}
-                      className="w-full"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">
-                      {t("filters.employment_type")}
-                    </p>
-                    <SingleSelectCombobox
-                      options={employmentOptions}
-                      value={selectedEmploymentType}
-                      onValueChange={(v) => {
-                        setSelectedEmploymentType(v)
-                        if (v !== "FREELANCE") setSelectedFreelancerStatus("")
-                        setPageParam(null)
-                      }}
-                      placeholder={t("filters.employment_type")}
-                      className="w-full"
-                    />
-                  </div>
-                  {showFreelancerStatusFilter && (
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium">
-                        {t("filters.freelancer_status")}
-                      </p>
-                      <SingleSelectCombobox
-                        options={freelancerStatusOptions}
-                        value={selectedFreelancerStatus}
-                        onValueChange={(v) => {
-                          setSelectedFreelancerStatus(v)
-                          setPageParam(null)
-                        }}
-                        placeholder={t("filters.freelancer_status")}
-                        className="w-full"
-                      />
-                    </div>
-                  )}
-                  {showAgentFilter && (
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium">
-                        {t("filters.agent")}
-                      </p>
-                      <MultiSelectCombobox
-                        options={agentOptions}
-                        selected={selectedAgentIds}
-                        onSelectionChange={(v) => {
-                          setSelectedAgentIds(v)
-                          setPageParam(null)
-                        }}
-                        placeholder={t("filters.agent")}
-                        className="w-full"
-                      />
-                    </div>
-                  )}
-                  {showSourceFilter && (
-                    <div className="space-y-2">
-                      <p className="text-sm font-medium">
-                        {t("filters.source_creation")}
-                      </p>
-                      <SingleSelectCombobox
-                        options={sourceOptions}
-                        value={selectedSource}
-                        onValueChange={(v) => {
-                          setSelectedSource(v)
-                          setPageParam(null)
-                        }}
-                        placeholder={t("filters.source_creation")}
-                        className="w-full"
-                      />
-                    </div>
-                  )}
-                  <div className="space-y-2">
-                    <p className="text-sm font-medium">
-                      {t("filters.permission")}
-                    </p>
-                    <MultiSelectCombobox
-                      options={permOptions}
-                      selected={selectedPermissions}
-                      onSelectionChange={(v) => {
-                        setSelectedPermissions(v)
-                        setPageParam(null)
-                      }}
-                      placeholder={t("filters.permission")}
-                      className="w-full"
-                    />
-                  </div>
-                </div>
-              </MobileFilterSheet>
-          </div>
-        </div>
-
-        {/* Active filter chips */}
-        {filterChips.length > 0 && (
-          <div className="flex items-center flex-wrap gap-2">
-            {filterChips}
-            <button
-              onClick={clearAllFilters}
-              className="text-xs text-muted-foreground underline hover:text-foreground transition-colors"
-            >
-              {t("filters.clear_all")}
-            </button>
-          </div>
-        )}
-      </div>
+      {/* Search + filters + chips */}
+      <FiltersBar
+        search={searchParam ?? ""}
+        onSearchChange={(v) => {
+          setSearchParam(v || null)
+          setPageParam(null)
+        }}
+        selectedStoreIds={selectedStoreIds}
+        onStoreIdsChange={(v) => {
+          setSelectedStoreIds(v)
+          setPageParam(null)
+        }}
+        selectedPositionIds={selectedPositionIds}
+        onPositionIdsChange={(v) => {
+          setSelectedPositionIds(v)
+          setPageParam(null)
+        }}
+        selectedPermissions={selectedPermissions}
+        onPermissionsChange={(v) => {
+          setSelectedPermissions(v)
+          setPageParam(null)
+        }}
+        selectedAgentIds={selectedAgentIds}
+        onAgentIdsChange={(v) => {
+          setSelectedAgentIds(v)
+          setPageParam(null)
+        }}
+        selectedRole={selectedRole}
+        onRoleChange={(v) => {
+          setSelectedRole(v)
+          setPageParam(null)
+        }}
+        selectedEmploymentType={selectedEmploymentType}
+        onEmploymentTypeChange={(v) => {
+          setSelectedEmploymentType(v)
+          setPageParam(null)
+        }}
+        selectedFreelancerStatus={selectedFreelancerStatus}
+        onFreelancerStatusChange={(v) => {
+          setSelectedFreelancerStatus(v)
+          setPageParam(null)
+        }}
+        selectedSource={selectedSource}
+        onSourceChange={(v) => {
+          setSelectedSource(v)
+          setPageParam(null)
+        }}
+        hideStore={hideStore}
+        showAgentFilter={showAgentFilter}
+        showSourceFilter={showSourceFilter}
+        showFreelancerStatusFilter={showFreelancerStatusFilter}
+        activeFilterCount={activeFilterCount}
+        clearAllFilters={clearAllFilters}
+        permLabelMap={permLabelMap}
+        roleLabelMap={roleLabelMap}
+      />
 
       {/* Error state */}
       {isError && (
@@ -1531,7 +553,22 @@ export function EmployeesList() {
         <ResponsiveDataTable
           columns={columns}
           data={data}
-          mobileCardRender={renderMobileCard}
+          mobileCardRender={(u) => (
+            <MobileCard
+              user={u}
+              hideStore={hideStore}
+              canFullCRUD={canFullCRUD}
+              canArchiveBulk={canArchiveBulk}
+              canImpersonate={canImpersonate}
+              selectedIds={selectedIds}
+              toggleRow={toggleRow}
+              onOpenPermissions={(userId) => {
+                setSelectedIds(new Set([userId]))
+                setPermDialogOpen(true)
+              }}
+              onArchive={(userId) => setArchivingId(userId)}
+            />
+          )}
           isLoading={isLoading}
           isEmpty={!isLoading && data.length === 0}
           emptyMessage={{
@@ -1550,146 +587,19 @@ export function EmployeesList() {
 
       {/* Bulk action bar */}
       {someSelected && (
-        <div
-          className={cn(
-            "fixed bottom-0 left-0 right-0 z-40 bg-card border-t border-border shadow-lg",
-            "flex items-center gap-3 px-4 py-3 md:px-6",
-            "md:left-[var(--sidebar-width,260px)]",
-            bulkBarLoading && "pointer-events-none opacity-70"
-          )}
-        >
-          {/* Left: count + deselect */}
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-sm font-medium text-foreground">
-              {t("bulk.selected", { count: selectedIds.size })}
-            </span>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 px-2 text-muted-foreground"
-              onClick={() => setSelectedIds(new Set())}
-            >
-              <X className="size-3.5 mr-1" />
-              <span className="hidden sm:inline">{t("bulk.clear_selection")}</span>
-            </Button>
-          </div>
-
-          {/* Right: action buttons */}
-          <div className="flex items-center gap-2 flex-1 justify-end flex-wrap">
-            {bulkBarLoading && <Spinner className="size-4 shrink-0" />}
-
-            {/* Assign role */}
-            <Button
-              size="sm"
-              variant="outline"
-              className="hidden sm:flex"
-              onClick={() => setBulkRoleDialogOpen(true)}
-              disabled={bulkBarLoading}
-            >
-              {t("bulk.assign_role")}
-            </Button>
-
-            {/* Change store */}
-            <Button
-              size="sm"
-              variant="outline"
-              className="hidden sm:flex"
-              onClick={() => setBulkStoreDialogOpen(true)}
-              disabled={bulkBarLoading}
-            >
-              {t("bulk.change_store")}
-            </Button>
-
-            {/* Zones dropdown */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  disabled={bulkBarLoading}
-                >
-                  {t("bulk.zones_menu")}
-                  <ChevronsUpDown className="ml-1.5 size-3.5" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem
-                  onClick={() => {
-                    setBulkZoneMode("assign")
-                    setBulkZoneDialogOpen(true)
-                  }}
-                >
-                  {t("bulk.assign_zone")}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  className="text-destructive focus:text-destructive"
-                  onClick={() => {
-                    setBulkZoneMode("revoke")
-                    setBulkZoneDialogOpen(true)
-                  }}
-                >
-                  {t("bulk.revoke_zone")}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Assign task */}
-            <Button
-              size="sm"
-              variant="outline"
-              className="hidden sm:flex"
-              disabled={bulkBarLoading}
-              onClick={() => {
-                const ids = Array.from(selectedIds).join(",")
-                router.push(`${ADMIN_ROUTES.taskNew}?bulk_employee_ids=${ids}`)
-              }}
-            >
-              {t("bulk.assign_task")}
-            </Button>
-
-            {/* Mobile: compact more menu for non-zone actions */}
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="sm:hidden size-8"
-                  disabled={bulkBarLoading}
-                >
-                  <MoreVertical className="size-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => setBulkRoleDialogOpen(true)}>
-                  {t("bulk.assign_role")}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setBulkStoreDialogOpen(true)}>
-                  {t("bulk.change_store")}
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={() => {
-                    const ids = Array.from(selectedIds).join(",")
-                    router.push(`${ADMIN_ROUTES.taskNew}?bulk_employee_ids=${ids}`)
-                  }}
-                >
-                  {t("bulk.assign_task")}
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            {/* Archive (HR/NETWORK_OPS only) */}
-            {canArchiveBulk && (
-              <Button
-                size="sm"
-                variant="destructive"
-                onClick={() => setBulkArchiveDialogOpen(true)}
-                disabled={bulkBarLoading}
-              >
-                {t("bulk.archive")}
-              </Button>
-            )}
-          </div>
-        </div>
+        <BulkActionBar
+          selectedIds={selectedIds}
+          onClearSelection={() => setSelectedIds(new Set())}
+          bulkBarLoading={bulkBarLoading}
+          canArchiveBulk={canArchiveBulk}
+          onAssignRole={() => setBulkRoleDialogOpen(true)}
+          onChangeStore={() => setBulkStoreDialogOpen(true)}
+          onZoneAction={(mode) => {
+            setBulkZoneMode(mode)
+            setBulkZoneDialogOpen(true)
+          }}
+          onArchive={() => setBulkArchiveDialogOpen(true)}
+        />
       )}
 
       {/* Dialogs */}
