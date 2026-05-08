@@ -53,6 +53,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
+import { Table, TableBody, TableHead, TableHeader, TableRow, TableCell } from "@/components/ui/table"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
@@ -942,6 +943,116 @@ function MobileUtilizationCollapsible(props: MobileUtilizationCollapsibleProps) 
           </div>
         </CollapsibleContent>
       </Card>
+    </Collapsible>
+  )
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// BlockZoneGroup — collapsible секция по зоне с блоками ЛАМА внутри
+// ─────────────────────────────────────────────────────────────────────────────
+
+interface BlockZoneGroupProps {
+  zoneName: string
+  blocks: UnassignedTaskBlock[]
+  onBlockClick: (block: UnassignedTaskBlock) => void
+  disabled: boolean
+}
+
+function BlockZoneGroup({ zoneName, blocks, onBlockClick, disabled }: BlockZoneGroupProps) {
+  // Свёрнуто по умолчанию — иначе UI заваливается при 19+ блоках на 10+ зон
+  const [open, setOpen] = React.useState(false)
+
+  const totalMin = blocks.reduce((s, b) => s + b.total_minutes, 0)
+  const distributedMin = blocks.reduce((s, b) => s + b.distributed_minutes, 0)
+  const fullyDistributed = distributedMin >= totalMin && totalMin > 0
+  const coveragePct = totalMin > 0 ? Math.round((distributedMin / totalMin) * 100) : 0
+  const hasCritical = blocks.some((b) => b.priority && b.priority <= 3)
+
+  return (
+    <Collapsible open={open} onOpenChange={setOpen} className="border rounded-lg overflow-hidden">
+      <CollapsibleTrigger asChild>
+        <button className="w-full flex items-center gap-3 px-3 py-2.5 bg-muted/30 hover:bg-muted/50 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+          {open ? (
+            <ChevronDown className="size-4 text-muted-foreground shrink-0" />
+          ) : (
+            <ChevronRight className="size-4 text-muted-foreground shrink-0" />
+          )}
+          <div className="flex items-center gap-2 min-w-0 flex-1">
+            <MapPin className="size-3.5 text-muted-foreground shrink-0" />
+            <span className="text-sm font-medium truncate">{zoneName}</span>
+            <Badge variant="secondary" className="text-xs shrink-0">
+              {blocks.length}
+            </Badge>
+            {hasCritical && (
+              <Badge variant="destructive" className="text-[10px] shrink-0">P1-P3</Badge>
+            )}
+          </div>
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-xs text-muted-foreground hidden sm:inline">
+              {Math.floor(distributedMin / 60)}ч / {Math.floor(totalMin / 60)}ч
+            </span>
+            <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+              <div
+                className={cn(
+                  "h-full transition-all",
+                  fullyDistributed ? "bg-success" : "bg-primary",
+                )}
+                style={{ width: `${coveragePct}%` }}
+              />
+            </div>
+            <span
+              className={cn(
+                "text-xs font-medium shrink-0 w-10 text-right",
+                fullyDistributed ? "text-success" : "text-muted-foreground",
+              )}
+            >
+              {coveragePct}%
+            </span>
+          </div>
+        </button>
+      </CollapsibleTrigger>
+      <CollapsibleContent>
+        <div className="grid gap-2 p-3 sm:grid-cols-2 lg:grid-cols-3">
+          {blocks.map((block) => {
+            const pct = block.total_minutes > 0
+              ? Math.round((block.distributed_minutes / block.total_minutes) * 100)
+              : 0
+            return (
+              <button
+                key={block.id}
+                type="button"
+                disabled={disabled}
+                onClick={() => onBlockClick(block)}
+                className={cn(
+                  "rounded-md border bg-card p-3 text-sm transition text-left",
+                  "hover:border-primary/50 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40",
+                  "disabled:opacity-60 disabled:cursor-not-allowed",
+                  block.priority && block.priority <= 3 && "border-destructive/40",
+                )}
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="font-medium leading-tight">{block.title}</div>
+                  {block.priority && block.priority <= 3 && (
+                    <Badge variant="destructive" className="shrink-0 text-[10px]">P{block.priority}</Badge>
+                  )}
+                </div>
+                <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                  <Clock className="size-3" />
+                  {Math.floor(block.remaining_minutes / 60)}ч {block.remaining_minutes % 60}мин
+                  {block.total_minutes !== block.remaining_minutes && (
+                    <span className="text-primary ml-1">
+                      · {block.distributed_minutes}/{block.total_minutes}
+                    </span>
+                  )}
+                </div>
+                <div className="mt-2 h-1 bg-muted rounded-full overflow-hidden">
+                  <div className="h-full bg-primary transition-all" style={{ width: `${pct}%` }} />
+                </div>
+              </button>
+            )
+          })}
+        </div>
+      </CollapsibleContent>
     </Collapsible>
   )
 }
@@ -1982,80 +2093,38 @@ export function TaskDistribution() {
                 </CardContent>
               </Card>
             ) : (
-              <div className="space-y-4">
-                {/* Нераспределённые блоки от LAMA — приходят сводками
-                    (например «Выкладка ФРОВ — 480 мин»). Директор/ИИ
-                    распределяет эти блоки на сотрудников. */}
-                {blocks.length > 0 && (
-                  <Card className="border-primary/30 bg-primary/5">
-                    <CardContent className="p-4 space-y-3">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <div className="text-sm font-semibold flex items-center gap-2">
-                            <Wand2 className="size-4 text-primary" />
-                            Блоки от ЛАМА (нераспределённые)
-                          </div>
-                          <div className="text-xs text-muted-foreground mt-0.5">
-                            Сводка трудозатрат на день — нужно разбить на конкретные задачи сотрудникам
-                          </div>
-                        </div>
-                        <Badge variant="secondary">{blocks.length} блоков · {blocks.reduce((s, b) => s + b.remaining_minutes, 0)} мин</Badge>
-                      </div>
-                      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                        {blocks.slice(0, 12).map((block) => {
-                          const pct = block.total_minutes > 0
-                            ? Math.round((block.distributed_minutes / block.total_minutes) * 100)
-                            : 0
-                          return (
-                            <button
-                              key={block.id}
-                              type="button"
-                              disabled={!canEdit}
-                              onClick={() => {
-                                setSelectedBlock(block)
-                                setBlockSheetOpen(true)
-                              }}
-                              className={cn(
-                                "rounded-md border bg-card p-3 text-sm transition text-left",
-                                "hover:border-primary/50 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40",
-                                "disabled:opacity-60 disabled:cursor-not-allowed",
-                                block.priority && block.priority <= 3 && "border-destructive/40",
-                              )}
-                            >
-                              <div className="flex items-start justify-between gap-2">
-                                <div className="font-medium leading-tight">{block.title}</div>
-                                {block.priority && block.priority <= 3 && (
-                                  <Badge variant="destructive" className="shrink-0 text-[10px]">P{block.priority}</Badge>
-                                )}
-                              </div>
-                              <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                                <Clock className="size-3" />
-                                {Math.floor(block.remaining_minutes / 60)}ч {block.remaining_minutes % 60}мин
-                                {block.total_minutes !== block.remaining_minutes && (
-                                  <span className="text-primary ml-1">· {block.distributed_minutes}/{block.total_minutes} мин</span>
-                                )}
-                              </div>
-                              {/* Progress bar */}
-                              <div className="mt-2 h-1 bg-muted rounded-full overflow-hidden">
-                                <div
-                                  className="h-full bg-primary transition-all"
-                                  style={{ width: `${pct}%` }}
-                                />
-                              </div>
-                            </button>
-                          )
-                        })}
-                      </div>
-                      {blocks.length > 12 && (
-                        <div className="text-xs text-muted-foreground text-center">
-                          и ещё {blocks.length - 12} блоков
-                        </div>
-                      )}
-                    </CardContent>
-                  </Card>
-                )}
+              <div className="space-y-3">
+                {/* Нераспределённые блоки от ЛАМА — группированные по зонам
+                    в свёрнутых аккордеонах (как обычные нераспределённые задачи). */}
+                {Array.from(
+                  blocks.reduce((acc, block) => {
+                    const zone = block.zone_name ?? t("zone_group.no_zone")
+                    if (!acc.has(zone)) acc.set(zone, [])
+                    acc.get(zone)!.push(block)
+                    return acc
+                  }, new Map<string, UnassignedTaskBlock[]>()),
+                )
+                  .sort(([za, ba], [zb, bb]) => {
+                    // Сначала зоны с критичными блоками (P1-P3)
+                    const ca = ba.some((b) => b.priority && b.priority <= 3)
+                    const cb = bb.some((b) => b.priority && b.priority <= 3)
+                    if (ca !== cb) return ca ? -1 : 1
+                    return za.localeCompare(zb)
+                  })
+                  .map(([zone, zoneBlocks]) => (
+                    <BlockZoneGroup
+                      key={`block-zone-${zone}`}
+                      zoneName={zone}
+                      blocks={zoneBlocks}
+                      onBlockClick={(block) => {
+                        setSelectedBlock(block)
+                        setBlockSheetOpen(true)
+                      }}
+                      disabled={!canEdit}
+                    />
+                  ))}
 
-                {/* Уже распределённые задачи (для редактирования назначений) */}
+                {/* Уже распределённые задачи (для редактирования назначений) — старые zone groups */}
                 {Array.from(
                   tasks.reduce((acc, task) => {
                     const zone = task.zone_name ?? t("zone_group.no_zone")
@@ -2135,33 +2204,82 @@ export function TaskDistribution() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-              {employees.map((emp) => {
-                const empPlanTasks: { taskId: string; title: string; minutes: number }[] = []
-                for (const [tid, allocs] of plan) {
-                  const myAlloc = allocs.find((a) => a.userId === emp.user.id)
-                  if (myAlloc) {
-                    const task = tasks.find((tt) => tt.id === tid)
-                    if (task) {
-                      empPlanTasks.push({
-                        taskId: tid,
-                        title: task.title,
-                        minutes: myAlloc.minutes,
-                      })
-                    }
-                  }
-                }
-                return (
-                  <EmployeeBigCard
-                    key={emp.user.id}
-                    employee={emp}
-                    planMin={planMinByUser.get(emp.user.id) ?? 0}
-                    planTasks={empPlanTasks}
-                    onClick={() => handleSelectEmployee(emp)}
-                    t={t}
-                  />
-                )
-              })}
+            <div className="rounded-lg border overflow-hidden">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead className="w-[40%]">Сотрудник</TableHead>
+                    <TableHead className="hidden sm:table-cell">Смена</TableHead>
+                    <TableHead>Загрузка</TableHead>
+                    <TableHead className="hidden lg:table-cell text-right">Свободно</TableHead>
+                    <TableHead className="text-right">План</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {employees.map((emp) => {
+                    const fullName = getFullName(emp.user.first_name, emp.user.last_name)
+                    const planMin = planMinByUser.get(emp.user.id) ?? 0
+                    const totalAssigned = emp.assigned_min + planMin
+                    const effectivePct = emp.shift_total_min > 0
+                      ? Math.round((totalAssigned / emp.shift_total_min) * 100)
+                      : 0
+                    const freeMin = Math.max(0, emp.shift_total_min - totalAssigned)
+                    const utilizationColor = getUtilizationColor(effectivePct)
+                    return (
+                      <TableRow
+                        key={emp.user.id}
+                        className="cursor-pointer hover:bg-muted/40"
+                        onClick={() => handleSelectEmployee(emp)}
+                      >
+                        <TableCell>
+                          <div className="flex items-center gap-2 min-w-0">
+                            <Avatar className="size-8 shrink-0">
+                              <AvatarImage src={emp.user.avatar_url} alt={fullName} />
+                              <AvatarFallback className="text-xs">
+                                {getInitials(emp.user.first_name, emp.user.last_name)}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="min-w-0">
+                              <div className="text-sm font-medium truncate">{fullName}</div>
+                              {emp.user.position_name && (
+                                <div className="text-xs text-muted-foreground truncate">
+                                  {emp.user.position_name}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell text-xs text-muted-foreground whitespace-nowrap">
+                          {formatShiftTime(emp.shift_start, emp.shift_end)}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 max-w-[100px] h-1.5 bg-muted rounded-full overflow-hidden">
+                              <div
+                                className={cn("h-full transition-all", utilizationColor)}
+                                style={{ width: `${Math.min(effectivePct, 100)}%` }}
+                              />
+                            </div>
+                            <span className="text-xs font-medium w-9 text-right">
+                              {effectivePct}%
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell className="hidden lg:table-cell text-right text-xs text-muted-foreground">
+                          {formatHM(freeMin, t)}
+                        </TableCell>
+                        <TableCell className="text-right text-xs">
+                          {planMin > 0 ? (
+                            <span className="text-primary font-medium">+{formatHM(planMin, t)}</span>
+                          ) : (
+                            <span className="text-muted-foreground">—</span>
+                          )}
+                        </TableCell>
+                      </TableRow>
+                    )
+                  })}
+                </TableBody>
+              </Table>
             </div>
           )}
         </div>
