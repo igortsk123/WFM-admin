@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { type ColumnDef } from "@tanstack/react-table";
 import {
@@ -12,9 +13,14 @@ import {
   Mail,
   Target,
 } from "lucide-react";
-import { LineChart, Line, ResponsiveContainer } from "recharts";
 
 import { getNetworkGoals, type NetworkGoalStore } from "@/lib/api/ai-performance";
+
+const NetworkGoalsSparkline = dynamic(
+  () =>
+    import("./network-goals-sparkline").then((m) => m.NetworkGoalsSparkline),
+  { ssr: false, loading: () => null }
+);
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -230,26 +236,10 @@ export function StoresTab() {
 
           const trend = goal.trend_7d;
           const isUp = trend[trend.length - 1] >= trend[0];
-          const sparkData = trend.map((v, i) => ({ i, v }));
 
           return (
             <div className="w-16 h-6" aria-hidden="true">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={sparkData}>
-                  <Line
-                    type="monotone"
-                    dataKey="v"
-                    stroke={
-                      isUp
-                        ? "var(--color-success)"
-                        : "var(--color-destructive)"
-                    }
-                    strokeWidth={1.5}
-                    dot={false}
-                    isAnimationActive={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              <NetworkGoalsSparkline data={trend} isUp={isUp} />
             </div>
           );
         },

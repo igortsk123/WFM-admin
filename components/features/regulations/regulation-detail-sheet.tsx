@@ -14,9 +14,15 @@ import {
   Info,
   BarChart2,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { AreaChart, Area, XAxis, Tooltip, ResponsiveContainer } from "recharts";
+
+const RegulationUsageChart = dynamic(
+  () =>
+    import("./regulation-usage-chart").then((m) => m.RegulationUsageChart),
+  { ssr: false, loading: () => null }
+);
 
 import {
   getRegulationById,
@@ -103,18 +109,6 @@ function MetaRow({ label, children }: { label: string; children: React.ReactNode
     <div className="flex items-start justify-between gap-3 py-2.5 border-b border-border/60 last:border-0">
       <span className="text-sm text-muted-foreground shrink-0">{label}</span>
       <span className="text-sm text-foreground text-right">{children}</span>
-    </div>
-  );
-}
-
-// ─── custom chart tooltip ────────────────────────────────────────────────────
-
-function ChartTooltip({ active, payload }: { active?: boolean; payload?: { value: number }[] }) {
-  if (!active || !payload?.length) return null;
-  return (
-    <div className="rounded-md border border-border bg-popover px-2.5 py-1.5 text-xs shadow-sm">
-      <span className="font-medium">{payload[0].value}</span>
-      <span className="text-muted-foreground"> использований</span>
     </div>
   );
 }
@@ -430,27 +424,7 @@ export function RegulationDetailSheet({
                 <div>
                   <p className="text-xs text-muted-foreground mb-2">{t("detail_sheet.ai_usage_period")}</p>
                   <div className="h-32 w-full" aria-hidden="true">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <AreaChart data={chartData}>
-                        <defs>
-                          <linearGradient id="usageGrad" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.2} />
-                            <stop offset="95%" stopColor="var(--color-primary)" stopOpacity={0} />
-                          </linearGradient>
-                        </defs>
-                        <XAxis dataKey="day" hide />
-                        <Tooltip content={<ChartTooltip />} />
-                        <Area
-                          type="monotone"
-                          dataKey="uses"
-                          stroke="var(--color-primary)"
-                          strokeWidth={1.5}
-                          fill="url(#usageGrad)"
-                          dot={false}
-                          isAnimationActive={false}
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
+                    <RegulationUsageChart data={chartData} />
                   </div>
                 </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
+import dynamic from "next/dynamic";
 import useSWR from "swr";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
@@ -8,6 +9,7 @@ import { toast } from "sonner";
 import { AlertTriangle, Lock, CalendarDays, RefreshCw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { useAuth } from "@/lib/contexts/auth-context";
@@ -28,10 +30,23 @@ import { PeriodBanner } from "./plan-fact-report/period-banner";
 import { AiBanner } from "./plan-fact-report/ai-banner";
 import { PlanFactToolbar } from "./plan-fact-report/toolbar";
 import { SummaryCards } from "./plan-fact-report/summary-cards";
-import { DaysTab } from "./plan-fact-report/tab-days";
-import { StoresTab } from "./plan-fact-report/tab-stores";
 import { UsersTab } from "./plan-fact-report/tab-users";
-import { WorkTypesTab } from "./plan-fact-report/tab-work-types";
+
+const TabFallback = () => <Skeleton className="h-[420px] w-full" />;
+
+const DaysTab = dynamic(
+  () => import("./plan-fact-report/tab-days").then((m) => m.DaysTab),
+  { ssr: false, loading: TabFallback }
+);
+const StoresTab = dynamic(
+  () => import("./plan-fact-report/tab-stores").then((m) => m.StoresTab),
+  { ssr: false, loading: TabFallback }
+);
+const WorkTypesTab = dynamic(
+  () =>
+    import("./plan-fact-report/tab-work-types").then((m) => m.WorkTypesTab),
+  { ssr: false, loading: TabFallback }
+);
 
 export function PlanFactReport() {
   const t = useTranslations("screen.reportsPlanFact");

@@ -15,10 +15,16 @@ import {
   Tag,
   Eye,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
-import { LineChart, Line, ResponsiveContainer } from "recharts";
 import type { ColumnDef } from "@tanstack/react-table";
+
+const RegulationsSparkline = dynamic(
+  () =>
+    import("./regulations-sparkline").then((m) => m.RegulationsSparkline),
+  { ssr: false, loading: () => null }
+);
 
 import {
   getRegulations,
@@ -149,18 +155,7 @@ function MiniSparkline({ value }: { value: number }) {
     <div className="flex items-center gap-2">
       <span className="font-mono text-sm tabular-nums">{value}</span>
       <div className="w-12 h-5 shrink-0" aria-hidden="true">
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data}>
-            <Line
-              type="monotone"
-              dataKey="v"
-              stroke="var(--color-primary)"
-              strokeWidth={1.5}
-              dot={false}
-              isAnimationActive={false}
-            />
-          </LineChart>
-        </ResponsiveContainer>
+        <RegulationsSparkline data={data} />
       </div>
     </div>
   );

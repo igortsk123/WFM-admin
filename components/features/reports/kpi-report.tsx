@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import dynamic from "next/dynamic";
 import useSWR from "swr";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
@@ -8,6 +9,7 @@ import { toast } from "sonner";
 import { Lock, AlertCircle, RefreshCw } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/lib/contexts/auth-context";
 import { PageHeader } from "@/components/shared/page-header";
@@ -24,12 +26,37 @@ import { PeriodBanner } from "./kpi-report/period-banner";
 import { AiBanner } from "./kpi-report/ai-banner";
 import { KpiToolbar } from "./kpi-report/toolbar";
 import { SummaryCards } from "./kpi-report/summary-cards";
-import { CompletionTrendChart } from "./kpi-report/charts/completion-trend-chart";
-import { HoursTrendChart } from "./kpi-report/charts/hours-trend-chart";
-import { WorkTypeBarChart } from "./kpi-report/charts/work-type-bar-chart";
-import { ZonePieChart } from "./kpi-report/charts/zone-pie-chart";
 import { LeaderboardsSection } from "./kpi-report/leaderboards-section";
 import { ALLOWED_ROLES, buildTrendData } from "./kpi-report/_shared";
+
+const ChartFallback = () => <Skeleton className="h-[300px] w-full" />;
+
+const CompletionTrendChart = dynamic(
+  () =>
+    import("./kpi-report/charts/completion-trend-chart").then(
+      (m) => m.CompletionTrendChart
+    ),
+  { ssr: false, loading: ChartFallback }
+);
+const HoursTrendChart = dynamic(
+  () =>
+    import("./kpi-report/charts/hours-trend-chart").then(
+      (m) => m.HoursTrendChart
+    ),
+  { ssr: false, loading: ChartFallback }
+);
+const WorkTypeBarChart = dynamic(
+  () =>
+    import("./kpi-report/charts/work-type-bar-chart").then(
+      (m) => m.WorkTypeBarChart
+    ),
+  { ssr: false, loading: ChartFallback }
+);
+const ZonePieChart = dynamic(
+  () =>
+    import("./kpi-report/charts/zone-pie-chart").then((m) => m.ZonePieChart),
+  { ssr: false, loading: ChartFallback }
+);
 
 export function KpiReport() {
   const t = useTranslations("screen.reportsKpi");

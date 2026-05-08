@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import dynamic from "next/dynamic"
 import { useTranslations } from "next-intl"
 import {
   MapPin,
@@ -11,7 +12,15 @@ import {
   Check,
   AlertCircle,
 } from "lucide-react"
-import { BarChart, Bar, XAxis, YAxis, ResponsiveContainer, Tooltip } from "recharts"
+import { Skeleton } from "@/components/ui/skeleton"
+
+const OverviewWeekChart = dynamic(
+  () => import("./overview-week-chart").then((m) => m.OverviewWeekChart),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-[200px] w-full" />,
+  }
+)
 
 import type { StoreDetail as StoreDetailData } from "@/lib/api"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
@@ -54,23 +63,7 @@ export function StoreOverviewTab({
             <CardTitle className="text-base">{t("overview.activity_title")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={200}>
-              <BarChart data={weekData} barGap={2} barCategoryGap="25%">
-                <XAxis dataKey="label" tick={{ fontSize: 12 }} axisLine={false} tickLine={false} />
-                <YAxis hide />
-                <Tooltip
-                  contentStyle={{
-                    background: "var(--color-card)",
-                    border: "1px solid var(--color-border)",
-                    borderRadius: 8,
-                    fontSize: 12,
-                  }}
-                  cursor={{ fill: "var(--color-muted)", radius: 4 }}
-                />
-                <Bar dataKey="plan" name="План" fill="var(--color-chart-2)" radius={[3, 3, 0, 0]} />
-                <Bar dataKey="fact" name="Факт" fill="var(--color-chart-1)" radius={[3, 3, 0, 0]} />
-              </BarChart>
-            </ResponsiveContainer>
+            <OverviewWeekChart data={weekData} />
             <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <span className="size-2.5 rounded-sm inline-block bg-[var(--color-chart-2)]" />

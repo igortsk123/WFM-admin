@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useMemo } from "react";
+import dynamic from "next/dynamic";
 import useSWR from "swr";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
@@ -30,8 +31,21 @@ import {
   ScatterSkeleton,
 } from "./store-compare-report/skeletons";
 import { TableView } from "./store-compare-report/table-view";
-import { HeatmapChart } from "./store-compare-report/charts/heatmap-chart";
-import { ScatterChartView } from "./store-compare-report/charts/scatter-chart";
+
+const HeatmapChart = dynamic(
+  () =>
+    import("./store-compare-report/charts/heatmap-chart").then(
+      (m) => m.HeatmapChart
+    ),
+  { ssr: false, loading: () => <HeatmapSkeleton /> }
+);
+const ScatterChartView = dynamic(
+  () =>
+    import("./store-compare-report/charts/scatter-chart").then(
+      (m) => m.ScatterChartView
+    ),
+  { ssr: false, loading: () => <ScatterSkeleton /> }
+);
 
 export function StoreCompareReport() {
   const t = useTranslations("screen.reportsCompare");

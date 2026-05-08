@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import {
   Sparkles,
@@ -10,6 +11,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Tooltip,
   TooltipContent,
@@ -19,15 +21,14 @@ import {
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import type { AIChatMessage } from "@/lib/types";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  ReferenceLine,
-  ResponsiveContainer,
-  Tooltip as RechartsTooltip,
-} from "recharts";
+
+const InlineChart = dynamic(
+  () => import("./inline-chart").then((m) => m.InlineChart),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="mt-3 h-[180px] w-full rounded-md" />,
+  }
+);
 
 interface ChatMessageProps {
   message: AIChatMessage;
@@ -76,58 +77,6 @@ function formatContent(text: string): React.ReactNode {
       </span>
     );
   });
-}
-
-// Inline chart renderer
-function InlineChart({
-  payload,
-}: {
-  payload: Record<string, unknown>;
-}) {
-  const chartData =
-    (payload.values as number[])?.map((value, idx) => ({
-      name: (payload.labels as string[])?.[idx] || `${idx + 1}`,
-      value,
-    })) || [];
-  const norm = payload.norm as number | undefined;
-  const title = payload.title as string | undefined;
-
-  return (
-    <div className="mt-3 rounded-md border bg-background p-3">
-      {title && (
-        <p className="mb-2 text-xs font-medium text-muted-foreground">{title}</p>
-      )}
-      <ResponsiveContainer width="100%" height={180}>
-        <BarChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-          <XAxis
-            dataKey="name"
-            tick={{ fontSize: 10 }}
-            tickLine={false}
-            axisLine={false}
-          />
-          <YAxis tick={{ fontSize: 10 }} tickLine={false} axisLine={false} width={30} />
-          <RechartsTooltip
-            contentStyle={{ fontSize: 12 }}
-            labelStyle={{ fontSize: 12 }}
-          />
-          <Bar dataKey="value" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-          {norm !== undefined && (
-            <ReferenceLine
-              y={norm}
-              stroke="hsl(var(--destructive))"
-              strokeDasharray="4 4"
-              label={{
-                value: payload.norm_label as string || `${norm}`,
-                position: "right",
-                fontSize: 10,
-                fill: "hsl(var(--destructive))",
-              }}
-            />
-          )}
-        </BarChart>
-      </ResponsiveContainer>
-    </div>
-  );
 }
 
 // Inline table renderer

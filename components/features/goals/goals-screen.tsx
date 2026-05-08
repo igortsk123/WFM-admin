@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import dynamic from "next/dynamic";
 import { useTranslations, useLocale } from "next-intl";
 import { AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 import { PageHeader } from "@/components/shared";
@@ -23,16 +25,31 @@ import {
 } from "@/lib/api/goals";
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
 
-import { ActiveGoalBanner } from "./goals-screen/active-goal-banner";
 import { AIProposalsSection } from "./goals-screen/ai-proposals-section";
 import { CatalogSection } from "./goals-screen/catalog-section";
 import { LoadingState } from "./goals-screen/loading-states";
-import { ProgressDashboard } from "./goals-screen/progress-dashboard";
 import { GoalsToolbar } from "./goals-screen/toolbar";
 import type {
   GoalWithUser,
   PeriodFilter,
 } from "./goals-screen/_shared";
+
+const ActiveGoalBanner = dynamic(
+  () =>
+    import("./goals-screen/active-goal-banner").then((m) => m.ActiveGoalBanner),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-[120px] w-full" />,
+  }
+);
+const ProgressDashboard = dynamic(
+  () =>
+    import("./goals-screen/progress-dashboard").then((m) => m.ProgressDashboard),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-[420px] w-full" />,
+  }
+);
 
 // ═══════════════════════════════════════════════════════════════════
 // MAIN COMPONENT

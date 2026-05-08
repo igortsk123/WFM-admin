@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { Clock, Filter, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
@@ -27,7 +28,14 @@ import { RuleEditorDrawer } from "./risk-rules/rule-editor-drawer";
 import { RulesTab } from "./risk-rules/tab-rules";
 import { SimulationTab } from "./risk-rules/tab-simulation";
 import { HistoryTab } from "./risk-rules/tab-history";
-import { MetricsTab } from "./risk-rules/tab-metrics";
+
+const MetricsTab = dynamic(
+  () => import("./risk-rules/tab-metrics").then((m) => m.MetricsTab),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-[420px] w-full" />,
+  }
+);
 
 export function RiskRules() {
   const t = useTranslations("screen.riskRules");

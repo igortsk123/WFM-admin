@@ -1,13 +1,19 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import { LineChart, Line, ResponsiveContainer } from "recharts";
 
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { PermissionPill } from "@/components/shared/permission-pill";
 
 import type { PermissionCoverageRow } from "@/lib/api/users";
+
+const StatCardSparkline = dynamic(
+  () =>
+    import("./stat-card-sparkline").then((m) => m.StatCardSparkline),
+  { ssr: false, loading: () => null }
+);
 
 export function StatCard({ row }: { row: PermissionCoverageRow }) {
   const t = useTranslations("screen.permissions.stats");
@@ -36,22 +42,7 @@ export function StatCard({ row }: { row: PermissionCoverageRow }) {
             <Progress value={row.coverage_pct} className="h-1.5" />
           </div>
           <div className="shrink-0 w-20 h-10" aria-hidden="true">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={sparkData}>
-                <Line
-                  type="monotone"
-                  dataKey="v"
-                  stroke={
-                    isPositive
-                      ? "var(--color-success)"
-                      : "var(--color-muted-foreground)"
-                  }
-                  strokeWidth={1.5}
-                  dot={false}
-                  isAnimationActive={false}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <StatCardSparkline data={sparkData} isPositive={isPositive} />
           </div>
         </div>
       </CardContent>

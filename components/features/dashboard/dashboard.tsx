@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo, useEffect } from "react"
+import dynamic from "next/dynamic"
 import { useTranslations, useLocale } from "next-intl"
 import {
   Plus,
@@ -25,6 +26,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Skeleton } from "@/components/ui/skeleton"
 
 import { PageHeader } from "@/components/shared/page-header"
 import { KpiCard } from "@/components/shared/kpi-card"
@@ -53,7 +55,14 @@ import { MorningBriefSupervisor } from "./dashboard/morning-brief-supervisor"
 import { ReviewQueueCard } from "./dashboard/review-queue-card"
 import { AnomaliesCard } from "./dashboard/anomalies-card"
 import { QuickActionsCard } from "./dashboard/quick-actions-card"
-import { PlanFactChart } from "./dashboard/plan-fact-chart"
+
+const PlanFactChart = dynamic(
+  () => import("./dashboard/plan-fact-chart").then((m) => m.PlanFactChart),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="h-[300px] w-full" />,
+  },
+)
 
 // ═══════════════════════════════════════════════════════════════════
 // MAIN COMPONENT
