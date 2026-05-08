@@ -32,6 +32,7 @@ SNAPSHOT_DIR = ROOT / ".lama_snapshots"
 LAMA_REAL = ROOT / "lib" / "mock-data" / "_lama-real.ts"
 OUT_BLOCKS = ROOT / "lib" / "mock-data" / "_lama-unassigned-blocks.ts"
 OUT_ZONES = ROOT / "lib" / "mock-data" / "_lama-employee-zones.ts"
+OUT_WORK_TYPES = ROOT / "lib" / "mock-data" / "_lama-employee-work-types.ts"
 
 # Стандартный набор LAMA-консистентных id'шников (см. требования задачи)
 WORK_TYPES: dict[int, str] = {
@@ -234,6 +235,35 @@ export const MOCK_UNASSIGNED_BLOCKS: UnassignedTaskBlock[] = [
     OUT_BLOCKS.write_text("".join(lines), encoding="utf-8")
 
 
+def write_work_types_file(wt_by_user: dict[int, list[str]]) -> None:
+    n_users = len(wt_by_user)
+    all_wts = set()
+    for ws in wt_by_user.values():
+        all_wts.update(ws)
+    n_wts = len(all_wts)
+
+    header = f'''/**
+ * Типы работ сотрудников из LAMA-истории — какие work_type человек уже
+ * выполнял (хоть 1 task этого типа → значит знает как).
+ *
+ * Сгенерировано из всех snapshot'ов в .lama_snapshots/.
+ * Используется в DistributionSheet для фильтра «только подходящие
+ * сотрудники» когда у задачи нет зоны (Касса/КСО/Менеджерские) —
+ * fallback с zone-match на work-type-match.
+ *
+ * {n_users} сотрудников, {n_wts} уникальных типов работ.
+ */
+export const LAMA_EMPLOYEE_WORK_TYPES: Record<number, string[]> = {{
+'''
+    lines = [header]
+    for user_id in sorted(wt_by_user.keys()):
+        ws = wt_by_user[user_id]
+        ws_literal = ", ".join(ts_string_literal(w) for w in ws)
+        lines.append(f"  {user_id}: [{ws_literal}],\n")
+    lines.append("};\n")
+    OUT_WORK_TYPES.write_text("".join(lines), encoding="utf-8")
+
+
 def write_zones_file(zones_by_user: dict[int, list[str]]) -> None:
     n_users = len(zones_by_user)
     all_zones = set()
@@ -369,30 +399,42 @@ def main() -> None:
             "priority": calc_priority(minutes),
         })
 
-    # 6. Агрегация зон по сотрудникам — по ВСЕМ snapshot'ам
+    # 6. Агрегация зон + work_types по сотрудникам — по ВСЕМ snapshot'ам.
+    # work_types нужны как fallback для фильтра «только подходящие сотрудники»
+    # в DistributionSheet — если у задачи нет зоны (Касса/КСО/Менеджерские),
+    # ищем по тому что человек уже делал такой work_type.
     zones_by_employee: dict[int, set[str]] = defaultdict(set)
+    work_types_by_employee: dict[int, set[str]] = defaultdict(set)
     unmapped_employees: dict[int, int] = defaultdict(int)
     for date, snap in snaps:
         for t in snap.get("tasks", []):
             emp_id = t.get("_employee_id")
-            zone_raw = t.get("operation_zone")
             if emp_id is None:
-                continue
-            if not zone_raw or zone_raw == "N/A":
                 continue
             if emp_id not in user_map:
                 unmapped_employees[emp_id] += 1
                 continue
             user_id = user_map[emp_id]
-            zones_by_employee[user_id].add(_normalize(zone_raw))
+
+            zone_raw = t.get("operation_zone")
+            if zone_raw and zone_raw != "N/A":
+                zones_by_employee[user_id].add(_normalize(zone_raw))
+
+            work_raw = t.get("operation_work")
+            if work_raw:
+                work_types_by_employee[user_id].add(_normalize(work_raw))
 
     zones_by_user_sorted = {
         uid: sorted(z) for uid, z in zones_by_employee.items()
+    }
+    work_types_by_user_sorted = {
+        uid: sorted(w) for uid, w in work_types_by_employee.items()
     }
 
     # 7. Запись файлов
     write_blocks_file(blocks, latest_date, len(snaps))
     write_zones_file(zones_by_user_sorted)
+    write_work_types_file(work_types_by_user_sorted)
 
     # 8. Отчёт
     print("", file=sys.stderr)
@@ -409,6 +451,9 @@ def main() -> None:
           f"{len({b['store_id'] for b in blocks})} stores", file=sys.stderr)
     print(f"  {OUT_ZONES.relative_to(ROOT)} — {len(zones_by_user_sorted)} users, "
           f"{len({z for zs in zones_by_user_sorted.values() for z in zs})} unique zones",
+          file=sys.stderr)
+    print(f"  {OUT_WORK_TYPES.relative_to(ROOT)} — {len(work_types_by_user_sorted)} users, "
+          f"{len({w for ws in work_types_by_user_sorted.values() for w in ws})} unique work_types",
           file=sys.stderr)
     if new_entries_log:
         print("", file=sys.stderr)

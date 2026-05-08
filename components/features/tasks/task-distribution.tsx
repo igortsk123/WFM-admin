@@ -880,30 +880,41 @@ function DistributionSheet({
           </div>
         </div>
 
-        {/* Zone filter toggle — всегда виден.
-            Когда у задачи нет зоны или «Без зоны» — фильтр nothing-matches,
-            label/чекбокс остаются доступными, чекбокс работает на noop. */}
+        {/* Filter «только подходящие сотрудники» — двух-уровневый match:
+            1. Если у задачи есть зона → match по zones (история зон сотрудника).
+            2. Если зоны нет (Касса/КСО/Менеджерские) → match по work_types
+               (тот же тип работы у сотрудника в LAMA history).
+            Чекбокс активен в обоих случаях, disabled только если ни zone ни
+            work_type у задачи нет. */}
         {(() => {
           const hasZone = !!task.zone_name && task.zone_name !== "Без зоны"
+          const hasWorkType = !!task.work_type_name
+          const filterAvailable = hasZone || hasWorkType
           const matched = hasZone
             ? employees.filter((e) => e.user.zones?.includes(task.zone_name))
-            : employees
+            : hasWorkType
+              ? employees.filter((e) => e.user.work_types?.includes(task.work_type_name!))
+              : employees
+          const matchKind = hasZone ? "по зоне" : hasWorkType ? "по типу работ" : ""
           return (
             <div className="px-4 py-2 border-b shrink-0 flex items-center justify-between gap-2 text-xs">
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
                   type="checkbox"
-                  checked={zoneFilterEnabled && hasZone}
+                  checked={zoneFilterEnabled && filterAvailable}
                   onChange={(e) => setZoneFilterEnabled(e.target.checked)}
-                  disabled={!hasZone}
+                  disabled={!filterAvailable}
                   className="size-4"
                 />
-                <span className={cn(!hasZone && "text-muted-foreground")}>
+                <span className={cn(!filterAvailable && "text-muted-foreground")}>
                   Только подходящие сотрудники
+                  {matchKind && (
+                    <span className="text-muted-foreground"> ({matchKind})</span>
+                  )}
                 </span>
               </label>
               <span className="text-muted-foreground">
-                {zoneFilterEnabled && hasZone
+                {zoneFilterEnabled && filterAvailable
                   ? `${matched.length} из ${employees.length}`
                   : `${employees.length} всего`}
               </span>
@@ -917,10 +928,17 @@ function DistributionSheet({
             {t("sheet.employee_list_header")}
           </p>
           <div className="space-y-3">
-            {(zoneFilterEnabled && task.zone_name && task.zone_name !== "Без зоны"
-              ? employees.filter((e) => e.user.zones?.includes(task.zone_name))
-              : employees
-            ).map((emp) => {
+            {(() => {
+              if (!zoneFilterEnabled) return employees
+              const hasZone = !!task.zone_name && task.zone_name !== "Без зоны"
+              if (hasZone) {
+                return employees.filter((e) => e.user.zones?.includes(task.zone_name))
+              }
+              if (task.work_type_name) {
+                return employees.filter((e) => e.user.work_types?.includes(task.work_type_name!))
+              }
+              return employees
+            })().map((emp) => {
               const currentAllocation = allocations[emp.user.id] || 0
               const fullName = getFullName(emp.user.first_name, emp.user.last_name)
               const freeMinutes = emp.shift_total_min - emp.assigned_min

@@ -4,6 +4,7 @@ import { MOCK_USERS } from "@/lib/mock-data/users";
 import { MOCK_NOTIFICATIONS } from "@/lib/mock-data/notifications";
 import { MOCK_UNASSIGNED_BLOCKS } from "@/lib/mock-data/_lama-unassigned-blocks";
 import { LAMA_EMPLOYEE_ZONES } from "@/lib/mock-data/_lama-employee-zones";
+import { LAMA_EMPLOYEE_WORK_TYPES } from "@/lib/mock-data/_lama-employee-work-types";
 import {
   USERS_BY_ID,
   SHIFTS_BY_STORE_DATE,
@@ -24,7 +25,11 @@ export interface EmployeeUtilization {
     middle_name?: string;
     avatar_url?: string;
     position_name?: string;
+    /** Зоны где сотрудник работал (из LAMA history + mock tasks). */
     zones?: string[];
+    /** Типы работ что сотрудник уже выполнял (LAMA history) — fallback для
+     *  фильтра «подходящие» когда у задачи нет зоны (Касса/КСО/...). */
+    work_types?: string[];
   };
   shift_total_min: number;
   assigned_min: number;
@@ -335,6 +340,18 @@ export async function getStoreEmployeesUtilization(
       for (const z of storeZones) zonesFromHistory.add(z);
     }
 
+    // Work types сотрудника — fallback для фильтра «подходящие» когда у
+    // задачи нет зоны. Источник 1: LAMA snapshot history. Источник 2:
+    // история admin-tasks (work_type_name из MOCK_TASKS).
+    const workTypesFromHistory = new Set<string>();
+    const lamaWorkTypes = LAMA_EMPLOYEE_WORK_TYPES[shift.user_id];
+    if (lamaWorkTypes) {
+      for (const w of lamaWorkTypes) workTypesFromHistory.add(w);
+    }
+    for (const t of userTasks) {
+      if (t.work_type_name) workTypesFromHistory.add(t.work_type_name);
+    }
+
     return {
       user: {
         id: shift.user_id,
@@ -344,6 +361,7 @@ export async function getStoreEmployeesUtilization(
         avatar_url: user?.avatar_url,
         position_name: shift.zone_name,
         zones: Array.from(zonesFromHistory),
+        work_types: Array.from(workTypesFromHistory),
       },
       shift_total_min: shiftTotalMin,
       assigned_min: assignedMin,
