@@ -669,9 +669,9 @@ function TeamUtilizationPanel({ employees, planMinByUser, onSelectEmployee, isLo
           {t("utilization.date_label", { date: formattedDate })} · {t("utilization.employees_count", { count: employees.length })}
         </p>
       </CardHeader>
-      <CardContent>
-        <ScrollArea className="max-h-[400px] lg:max-h-[calc(100vh-300px)]">
-          <div className="space-y-1">
+      <CardContent className="flex flex-col">
+        <ScrollArea className="max-h-[400px] lg:max-h-[calc(100vh-360px)] flex-1 min-h-0">
+          <div className="space-y-1 pr-2">
             {employees.map((emp) => (
               <EmployeeUtilizationRow
                 key={emp.user.id}
@@ -683,8 +683,8 @@ function TeamUtilizationPanel({ employees, planMinByUser, onSelectEmployee, isLo
             ))}
           </div>
         </ScrollArea>
-        {/* Summary */}
-        <div className="mt-4 pt-3 border-t">
+        {/* Summary — shrink-0 чтоб не наслаивалось на ScrollArea */}
+        <div className="mt-4 pt-3 border-t shrink-0">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">{t("utilization.summary", {
               free: formatHM(freeMinutes, t),
