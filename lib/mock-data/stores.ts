@@ -138,7 +138,10 @@ export const MOCK_STORES: Store[] = [
     archived: false,
     geo: { lat: 55.3544, lng: 86.0740 },
   },
-  // ── Food City Томск ─────────────────────────────────────────────────
+  // ── Food City Томск (архив — старые тестовые, бренд не партнёрский) ─
+  // Не отображаются в дропдаунах (archived: true), но ссылочные демки
+  // (KPI рейтинги, freelance services, AI-chat) продолжают резолвить
+  // store_id 7..9 → имя магазина.
   {
     id: 7,
     name: "Food City Томск Global Market, пр. Ленина 217",
@@ -151,11 +154,12 @@ export const MOCK_STORES: Store[] = [
     organization_id: "org-lama",
     legal_entity_id: 3,
     region: "Томская обл.",
-    manager_id: 10,  // Смирнова О. И.
-    supervisor_id: 4, // Тарасова О. В. — SUPERVISOR
+    manager_id: 10,
+    supervisor_id: 4,
     lama_synced_at: daysAgo(0),
-    active: true,
-    archived: false,
+    active: false,
+    archived: true,
+    archive_reason: "OTHER",
     geo: { lat: 56.4977, lng: 84.9945 },
   },
   {
@@ -172,8 +176,9 @@ export const MOCK_STORES: Store[] = [
     region: "Томская обл.",
     supervisor_id: 4,
     lama_synced_at: daysAgo(1),
-    active: true,
-    archived: false,
+    active: false,
+    archived: true,
+    archive_reason: "OTHER",
     geo: { lat: 56.4613, lng: 84.9518 },
   },
   {
