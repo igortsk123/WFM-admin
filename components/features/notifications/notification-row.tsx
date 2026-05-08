@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -42,7 +43,7 @@ interface NotificationRowProps {
   onArchive: (id: string) => void;
 }
 
-export function NotificationRow({
+export const NotificationRow = React.memo(function NotificationRow({
   notification,
   categoryLabel,
   onMarkRead,
@@ -160,7 +161,7 @@ export function NotificationRow({
       </div>
     </div>
   );
-}
+});
 
 // ═══════════════════════════════════════════════════════════════════
 // EMPTY STATE

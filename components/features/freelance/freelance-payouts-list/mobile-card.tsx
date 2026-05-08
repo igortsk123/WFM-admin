@@ -76,4 +76,4 @@ export const MobileCard = React.memo(function MobileCard({ payout, onMenuAction 
       </DropdownMenu>
     </div>
   );
-}
+});
