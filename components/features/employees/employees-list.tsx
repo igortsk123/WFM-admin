@@ -754,65 +754,73 @@ export function EmployeesList() {
   const [bulkBarLoading, setBulkBarLoading] = React.useState(false)
 
   // ── Fetch ───────────────────────────────────────────────────────
-  const fetchData = React.useCallback(async () => {
+  // refreshTick — bump-state для ручного re-fetch (после bulk-операций
+  // и т.п.). Изменение → useEffect перевыполняется. fetchData() ниже
+  // экспонируется как стабильная no-args функция, использующая этот bump.
+  const [refreshTick, setRefreshTick] = React.useState(0)
+  const fetchData = React.useCallback(() => {
+    setRefreshTick((t) => t + 1)
+  }, [])
+
+  // Inline effect с cancelled-flag — стандартный pattern для async fetch:
+  // 1) защита от race condition при unmount (стейт не пишется после dispose),
+  // 2) убирает overhead useCallback (раньше было 11 dep, любое изменение →
+  //    новая ссылка callback → re-fetch). Зависимости перечислены явно
+  //    в массиве deps useEffect — JSON.stringify по массивам гарантирует
+  //    стабильное сравнение (без него nuqs возвращает новые refs на каждый
+  //    render → лишние re-fetch).
+  React.useEffect(() => {
+    let cancelled = false
     setIsLoading(true)
     setIsError(false)
-    try {
-      const archived = statusParam === "archived"
-      const result = await getUsers({
-        archived,
-        search: searchParam || undefined,
-        store_ids:
-          selectedStoreIds.length > 0
-            ? selectedStoreIds.map(Number)
-            : undefined,
-        position_ids:
-          selectedPositionIds.length > 0
-            ? selectedPositionIds.map(Number)
-            : undefined,
-        permissions:
-          selectedPermissions.length > 0
-            ? (selectedPermissions as Permission[])
-            : undefined,
-        role: selectedRole ? (selectedRole as FunctionalRole) : undefined,
-        employment_type: selectedEmploymentType
-          ? (selectedEmploymentType as EmployeeType)
-          : undefined,
-        freelancer_status: selectedFreelancerStatus
-          ? (selectedFreelancerStatus as FreelancerStatus)
-          : undefined,
-        agent_ids:
-          selectedAgentIds.length > 0 ? selectedAgentIds : undefined,
-        source: selectedSource
-          ? (selectedSource as "MANUAL" | "EXTERNAL_SYNC")
-          : undefined,
-        page: pageParam,
-        page_size: 20,
+    const archived = statusParam === "archived"
+    getUsers({
+      archived,
+      search: searchParam || undefined,
+      store_ids: selectedStoreIds.length > 0 ? selectedStoreIds.map(Number) : undefined,
+      position_ids: selectedPositionIds.length > 0 ? selectedPositionIds.map(Number) : undefined,
+      permissions: selectedPermissions.length > 0 ? (selectedPermissions as Permission[]) : undefined,
+      role: selectedRole ? (selectedRole as FunctionalRole) : undefined,
+      employment_type: selectedEmploymentType ? (selectedEmploymentType as EmployeeType) : undefined,
+      freelancer_status: selectedFreelancerStatus ? (selectedFreelancerStatus as FreelancerStatus) : undefined,
+      agent_ids: selectedAgentIds.length > 0 ? selectedAgentIds : undefined,
+      source: selectedSource ? (selectedSource as "MANUAL" | "EXTERNAL_SYNC") : undefined,
+      page: pageParam,
+      page_size: 20,
+    })
+      .then((result) => {
+        if (cancelled) return
+        setData(result.data)
+        setTotal(result.total ?? 0)
       })
-      setData(result.data)
-      setTotal(result.total ?? 0)
-    } catch {
-      setIsError(true)
-    } finally {
-      setIsLoading(false)
+      .catch(() => {
+        if (cancelled) return
+        setIsError(true)
+      })
+      .finally(() => {
+        if (cancelled) return
+        setIsLoading(false)
+      })
+    return () => {
+      cancelled = true
     }
+    // Зависимости через JSON.stringify по массивам — иначе nuqs пересоздаёт
+    // массивы на каждый render и хук триггерится впустую.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     statusParam,
     searchParam,
-    selectedStoreIds,
-    selectedPositionIds,
-    selectedPermissions,
+    JSON.stringify(selectedStoreIds),
+    JSON.stringify(selectedPositionIds),
+    JSON.stringify(selectedPermissions),
     selectedRole,
     selectedEmploymentType,
     selectedFreelancerStatus,
-    selectedAgentIds,
+    JSON.stringify(selectedAgentIds),
     selectedSource,
     pageParam,
+    refreshTick,
   ])
-
-  React.useEffect(() => {
-    fetchData()
-  }, [fetchData])
 
   // ── Counts for tabs ─────────────────────────────────────────────
   const [allCount, setAllCount] = React.useState(0)
@@ -820,16 +828,25 @@ export function EmployeesList() {
   const [archivedCount, setArchivedCount] = React.useState(0)
 
   React.useEffect(() => {
+    let cancelled = false
     Promise.all([
       getUsers({ archived: false, page_size: 1 }),
       getUsers({ archived: true, page_size: 1 }),
-    ]).then(([active, archived]) => {
-      const a = active.total ?? 0
-      const ar = archived.total ?? 0
-      setActiveCount(a)
-      setArchivedCount(ar)
-      setAllCount(a + ar)
-    })
+    ])
+      .then(([active, archived]) => {
+        if (cancelled) return
+        const a = active.total ?? 0
+        const ar = archived.total ?? 0
+        setActiveCount(a)
+        setArchivedCount(ar)
+        setAllCount(a + ar)
+      })
+      .catch(() => {
+        // Counts опциональны — silent fail не блокирует основной поток.
+      })
+    return () => {
+      cancelled = true
+    }
   }, [])
 
   // ── Org feature flags (mock: NOMINAL_ACCOUNT + external_hr_enabled) ──
