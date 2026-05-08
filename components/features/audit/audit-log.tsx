@@ -6,863 +6,50 @@ import { useRouter } from "@/i18n/navigation";
 import { useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import {
+  AlertCircle,
   Download,
-  Eye,
-  ArrowUpRight,
-  Copy,
+  RefreshCw,
   ScrollText,
   SearchX,
-  AlertCircle,
-  RefreshCw,
-  Monitor,
-  Smartphone,
-  Tablet,
-  X,
-  ChevronDown,
-  ChevronRight,
-  FileText,
-  Users,
-  UserCheck,
-  Banknote,
-  ClipboardList,
-  Building2,
-  Settings2,
-  RefreshCcw,
-  CreditCard,
-  Link2,
-  Shield,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import {
   Drawer,
   DrawerContent,
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer";
-import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
 
 import { PageHeader } from "@/components/shared/page-header";
-import { FilterChip } from "@/components/shared/filter-chip";
 import { EmptyState } from "@/components/shared/empty-state";
-import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet";
-import { RoleBadge } from "@/components/shared/role-badge";
 
 import {
   getAuditEntries,
   getAuditEntryById,
   type AuditListParams,
 } from "@/lib/api/audit";
-import type { AuditEntry, FunctionalRole } from "@/lib/types";
+import type { AuditEntry } from "@/lib/types";
 
-// ═══════════════════════════════════════════════════════════════════
-// HELPERS
-// ═══════════════════════════════════════════════════════════════════
-
-function getInitials(name: string): string {
-  const parts = name.trim().split(/\s+/);
-  if (parts.length >= 2) return `${parts[0][0]}${parts[1][0]}`.toUpperCase();
-  return name.slice(0, 2).toUpperCase();
-}
-
-function formatTime(iso: string, locale: string): string {
-  return new Intl.DateTimeFormat(locale, { hour: "2-digit", minute: "2-digit" }).format(
-    new Date(iso)
-  );
-}
-
-function formatDateFull(iso: string, locale: string): string {
-  return new Intl.DateTimeFormat(locale, {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  }).format(new Date(iso));
-}
-
-function formatDayLabel(iso: string, locale: string, t: (k: string) => string): string {
-  const d = new Date(iso);
-  const today = new Date();
-  const yesterday = new Date();
-  yesterday.setDate(today.getDate() - 1);
-
-  const sameDay = (a: Date, b: Date) =>
-    a.getFullYear() === b.getFullYear() &&
-    a.getMonth() === b.getMonth() &&
-    a.getDate() === b.getDate();
-
-  const dayStr = new Intl.DateTimeFormat(locale, { day: "numeric", month: "long" }).format(d);
-
-  if (sameDay(d, today)) return `${t("today")}, ${dayStr}`;
-  if (sameDay(d, yesterday)) return `${t("yesterday")}, ${dayStr}`;
-  return dayStr;
-}
-
-function getDayKey(iso: string): string {
-  return iso.slice(0, 10); // YYYY-MM-DD
-}
-
-function detectDeviceType(ua?: string): "desktop" | "mobile" | "tablet" {
-  if (!ua) return "desktop";
-  if (/tablet|ipad/i.test(ua)) return "tablet";
-  if (/mobile|android|iphone/i.test(ua)) return "mobile";
-  return "desktop";
-}
-
-const ENTITY_TYPE_OPTIONS = [
-  "task",
-  "user",
-  "store",
-  "shift",
-  "organization",
-  "api_key",
-  "permission",
-  "session",
-  "work_type",
-  "freelance_application",
-  "freelance_assignment",
-  "freelance_service",
-  "freelance_payout",
-  "freelance_oferta",
-  "freelancer",
-  "budget_limit",
-  "service_norm",
-  "agent",
-  "payment_mode",
-  "external_hr",
-];
-
-const ACTION_OPTIONS = [
-  "task.create",
-  "task.update",
-  "task.start",
-  "task.pause",
-  "task.complete",
-  "task.approve",
-  "task.reject",
-  "user.update",
-  "user.activate",
-  "user.deactivate",
-  "permission.grant",
-  "permission.revoke",
-  "shift.open",
-  "shift.close",
-  "shift.force_close",
-  "settings.update",
-  "api_key.create",
-  "login",
-  "logout",
-  "application.create",
-  "application.cancel",
-  "application.approve_full",
-  "application.approve_partial",
-  "application.reject",
-  "application.replace_with_bonus",
-  "application.approve_mixed",
-  "assignment.create",
-  "assignment.remove",
-  "service.confirm",
-  "service.dispute",
-  "service.no_show",
-  "service.amount_adjust",
-  "payout.batch_created",
-  "payout.sent_to_nominal",
-  "payout.status_received",
-  "payout.retry",
-  "payout.failed",
-  "oferta.sent",
-  "oferta.accepted",
-  "freelancer.activate",
-  "freelancer.block",
-  "freelancer.archive",
-  "budget_limit.create",
-  "budget_limit.update",
-  "budget_limit.archive",
-  "service_norm.create",
-  "service_norm.update",
-  "service_norm.archive",
-  "agent.create",
-  "agent.update",
-  "agent.block",
-  "agent.archive",
-  "external_hr.config_update",
-  "external_hr.sync_manual",
-  "external_hr.sync_auto",
-  "payment_mode.update",
-];
-
-// ═══════════════════════════════════════════════════════════════════
-// ENTITY BADGE
-// ═══════════════════════════════════════════════════════════════════
-
-const ENTITY_TYPE_STYLES: Record<string, string> = {
-  task: "bg-info/10 text-info border-info/20",
-  user: "bg-primary/10 text-primary border-primary/20",
-  shift: "bg-warning/10 text-warning border-warning/20",
-  store: "bg-success/10 text-success border-success/20",
-  organization: "bg-accent text-accent-foreground border-border",
-  api_key: "bg-destructive/10 text-destructive border-destructive/20",
-  permission: "bg-primary/10 text-primary border-primary/20",
-  session: "bg-muted text-muted-foreground border-border",
-  work_type: "bg-accent text-accent-foreground border-border",
-  freelance_application: "bg-info/10 text-info border-info/20",
-  freelance_assignment: "bg-info/10 text-info border-info/20",
-  freelance_service: "bg-success/10 text-success border-success/20",
-  freelance_payout: "bg-warning/10 text-warning border-warning/20",
-  freelance_oferta: "bg-primary/10 text-primary border-primary/20",
-  freelancer: "bg-primary/10 text-primary border-primary/20",
-  budget_limit: "bg-warning/10 text-warning border-warning/20",
-  service_norm: "bg-accent text-accent-foreground border-border",
-  agent: "bg-primary/10 text-primary border-primary/20",
-  payment_mode: "bg-destructive/10 text-destructive border-destructive/20",
-  external_hr: "bg-muted text-muted-foreground border-border",
-};
-
-/** Maps entity_type → Lucide icon component for event rows. */
-const ENTITY_TYPE_ICONS: Record<string, React.ElementType> = {
-  task: ClipboardList,
-  user: Users,
-  shift: Monitor,
-  store: Building2,
-  organization: Building2,
-  api_key: Shield,
-  permission: Shield,
-  session: Monitor,
-  work_type: Settings2,
-  freelance_application: FileText,
-  freelance_assignment: UserCheck,
-  freelance_service: ClipboardList,
-  freelance_payout: Banknote,
-  freelance_oferta: Link2,
-  freelancer: UserCheck,
-  budget_limit: Banknote,
-  service_norm: Settings2,
-  agent: Users,
-  payment_mode: CreditCard,
-  external_hr: RefreshCcw,
-};
-
-function EntityBadge({ type, label }: { type: string; label?: string }) {
-  const style = ENTITY_TYPE_STYLES[type] ?? "bg-muted text-muted-foreground border-border";
-  return (
-    <Badge variant="outline" className={cn("text-xs font-medium shrink-0", style)}>
-      {label ?? type}
-    </Badge>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// MULTI-SELECT COMBOBOX (for entity types / actions)
-// ═══════════════════════════════════════════════════════════════════
-
-interface MultiComboboxProps {
-  options: { value: string; label: string }[];
-  selected: string[];
-  onChange: (values: string[]) => void;
-  placeholder: string;
-}
-
-function MultiCombobox({ options, selected, onChange, placeholder }: MultiComboboxProps) {
-  const [open, setOpen] = React.useState(false);
-
-  function toggle(value: string) {
-    onChange(
-      selected.includes(value)
-        ? selected.filter((v) => v !== value)
-        : [...selected, value]
-    );
-  }
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className="h-9 justify-between gap-1.5 min-w-[140px] text-sm"
-        >
-          <span className="truncate">
-            {selected.length === 0
-              ? placeholder
-              : selected.length === 1
-              ? options.find((o) => o.value === selected[0])?.label ?? selected[0]
-              : `${placeholder} (${selected.length})`}
-          </span>
-          <ChevronDown className="size-3.5 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-56 p-0" align="start">
-        <Command>
-          <CommandInput placeholder="Поиск..." />
-          <CommandList>
-            <CommandEmpty>Нет вариантов</CommandEmpty>
-            <CommandGroup>
-              {options.map((opt) => (
-                <CommandItem
-                  key={opt.value}
-                  value={opt.value}
-                  onSelect={() => toggle(opt.value)}
-                  className="cursor-pointer"
-                >
-                  <div
-                    className={cn(
-                      "mr-2 flex size-4 items-center justify-center rounded border border-muted-foreground/40",
-                      selected.includes(opt.value) && "border-primary bg-primary text-primary-foreground"
-                    )}
-                  >
-                    {selected.includes(opt.value) && (
-                      <svg viewBox="0 0 12 12" className="size-3" fill="currentColor">
-                        <path d="M10.5 2.5L4.5 9.5L1.5 6.5" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
-                    )}
-                  </div>
-                  {opt.label}
-                </CommandItem>
-              ))}
-            </CommandGroup>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// DATE RANGE PICKER
-// ═══════════════════════════════════════════════════════════════════
-
-interface DateRangePickerProps {
-  from: Date | undefined;
-  to: Date | undefined;
-  onChange: (from: Date | undefined, to: Date | undefined) => void;
-  placeholder: string;
-}
-
-function DateRangePicker({ from, to, onChange, placeholder }: DateRangePickerProps) {
-  const [open, setOpen] = React.useState(false);
-  const locale = useLocale();
-
-  const fmt = (d: Date) =>
-    new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" }).format(d);
-
-  const label = from && to ? `${fmt(from)} – ${fmt(to)}` : from ? `${fmt(from)} –` : placeholder;
-
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger asChild>
-        <Button variant="outline" className="h-9 justify-between gap-1.5 min-w-[160px] text-sm">
-          <span className="truncate">{label}</span>
-          <ChevronDown className="size-3.5 shrink-0 opacity-50" />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          mode="range"
-          selected={{ from, to }}
-          onSelect={(range) => {
-            onChange(range?.from, range?.to);
-          }}
-          numberOfMonths={1}
-          disabled={{ after: new Date() }}
-        />
-        {(from || to) && (
-          <div className="p-3 border-t">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="w-full"
-              onClick={() => {
-                onChange(undefined, undefined);
-                setOpen(false);
-              }}
-            >
-              <X className="size-3.5 mr-1" />
-              Очистить
-            </Button>
-          </div>
-        )}
-      </PopoverContent>
-    </Popover>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// DIFF TABLE
-// ═══════════════════════════════════════════════════════════════════
-
-interface DiffTableProps {
-  diff: AuditEntry["diff"];
-}
-
-function DiffTable({ diff }: DiffTableProps) {
-  const t = useTranslations("screen.audit");
-
-  if (!diff || diff.length === 0) return null;
-
-  return (
-    <div className="rounded-md border overflow-hidden">
-      <table className="w-full text-xs">
-        <thead>
-          <tr className="bg-muted/50">
-            <th className="px-3 py-2 text-left font-medium text-muted-foreground">{t("columns.entity_name")}</th>
-            <th className="px-3 py-2 text-left font-medium text-muted-foreground">{t("diff.before")}</th>
-            <th className="px-3 py-2 text-left font-medium text-muted-foreground">{t("diff.after")}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {diff.map((row, i) => (
-            <tr key={i} className="border-t">
-              <td className="px-3 py-2 font-mono text-muted-foreground">{row.field}</td>
-              <td className="px-3 py-2">
-                {row.before !== null && row.before !== undefined ? (
-                  <span className="inline-flex rounded bg-destructive/10 text-destructive px-1.5 py-0.5 font-mono line-through">
-                    {String(row.before)}
-                  </span>
-                ) : (
-                  <span className="text-muted-foreground/40">—</span>
-                )}
-              </td>
-              <td className="px-3 py-2">
-                {row.after !== null && row.after !== undefined ? (
-                  <span className="inline-flex rounded bg-success/10 text-success px-1.5 py-0.5 font-mono">
-                    {String(row.after)}
-                  </span>
-                ) : (
-                  <span className="text-muted-foreground/40">—</span>
-                )}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// DETAIL PANEL CONTENT
-// ═══════════════════════════════════════════════════════════════════
-
-interface DetailPanelContentProps {
-  entry: AuditEntry;
-  onCopyId: () => void;
-  onOpenEntity: () => void;
-  locale: string;
-  entityTypeLabel: (type: string) => string;
-}
-
-function DetailPanelContent({
-  entry,
-  onCopyId,
-  onOpenEntity,
-  locale,
-  entityTypeLabel,
-}: DetailPanelContentProps) {
-  const t = useTranslations("screen.audit");
-
-  const [payloadOpen, setPayloadOpen] = React.useState(true);
-  const deviceType = entry.device_type ?? detectDeviceType(entry.user_agent);
-
-  const DeviceIcon =
-    deviceType === "mobile"
-      ? Smartphone
-      : deviceType === "tablet"
-      ? Tablet
-      : Monitor;
-
-  return (
-    <div className="flex flex-col gap-0">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-3 p-4 border-b">
-        <div className="flex flex-col gap-1.5">
-          <p className="text-sm font-medium text-foreground">
-            {formatDateFull(entry.occurred_at, locale)}
-          </p>
-          <div className="flex items-center gap-1.5 flex-wrap">
-            <EntityBadge type={entry.entity_type} label={entityTypeLabel(entry.entity_type)} />
-            {entry.platform_action && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Badge
-                      variant="outline"
-                      className="text-xs font-medium bg-info/10 text-info border-info/30 cursor-default"
-                    >
-                      <Shield className="size-3 mr-1" aria-hidden />
-                      {t("platform_action.badge")}
-                    </Badge>
-                  </TooltipTrigger>
-                  <TooltipContent>{t("platform_action.tooltip")}</TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
-          </div>
-        </div>
-      </div>
-
-      <ScrollArea className="flex-1 max-h-[calc(100vh-14rem)] lg:max-h-[calc(100vh-12rem)]">
-        <div className="flex flex-col gap-0 divide-y divide-border">
-          {/* WHO */}
-          <section className="p-4 flex flex-col gap-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              {t("detail_sheet.actor_section")}
-            </p>
-            <div className="flex items-start gap-3">
-              <Avatar className="size-9 shrink-0">
-                <AvatarFallback className="text-xs font-medium bg-accent text-accent-foreground">
-                  {getInitials(entry.actor.name)}
-                </AvatarFallback>
-              </Avatar>
-              <div className="flex flex-col gap-1 min-w-0">
-                <a
-                  href={`/employees/${entry.actor.id}`}
-                  className="text-sm font-medium text-foreground hover:underline truncate"
-                >
-                  {entry.actor.name}
-                </a>
-                {entry.actor.email && (
-                  <p className="text-xs text-muted-foreground truncate">{entry.actor.email}</p>
-                )}
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <RoleBadge role={entry.actor.role as FunctionalRole} size="sm" />
-                  {entry.platform_action && (
-                    <Badge
-                      variant="outline"
-                      className="text-xs font-medium bg-info/20 text-info border-info/30"
-                    >
-                      <Shield className="size-3 mr-1" aria-hidden />
-                      Beyond Violet
-                    </Badge>
-                  )}
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* WHAT */}
-          <section className="p-4 flex flex-col gap-2">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              {t("detail_sheet.what_section")}
-            </p>
-            <p className="text-base font-medium text-foreground">{entry.action_label}</p>
-            {entry.entity_url ? (
-              <a
-                href={entry.entity_url}
-                className="text-sm text-primary hover:underline inline-flex items-center gap-1"
-              >
-                {entry.entity_name}
-                <ArrowUpRight className="size-3.5 shrink-0" />
-              </a>
-            ) : (
-              <p className="text-sm text-muted-foreground">{entry.entity_name}</p>
-            )}
-          </section>
-
-          {/* AMOUNT ADJUST — special inline display */}
-          {entry.action === "service.amount_adjust" && (
-            <section className="p-4 flex flex-col gap-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                {t("detail_sheet.diff_section")}
-              </p>
-              <div className="flex items-center gap-2 rounded-md border bg-muted/30 px-3 py-2">
-                <span className="text-sm font-mono font-semibold text-destructive line-through">
-                  {String(entry.payload.from_amount ?? "—")} ₽
-                </span>
-                <ArrowUpRight className="size-3.5 text-muted-foreground rotate-90 shrink-0" aria-hidden />
-                <span className="text-sm font-mono font-semibold text-success">
-                  {String(entry.payload.to_amount ?? "—")} ₽
-                </span>
-              </div>
-              {Boolean(entry.payload.reason) && (
-                <p className="text-xs text-muted-foreground">
-                  <span className="font-medium">{t("diff_fields.reason")}:</span>{" "}
-                  {String(entry.payload.reason)}
-                </p>
-              )}
-            </section>
-          )}
-
-          {/* DIFF */}
-          {entry.diff && entry.diff.length > 0 && entry.action !== "service.amount_adjust" && (
-            <section className="p-4 flex flex-col gap-3">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                {t("detail_sheet.diff_section")}
-              </p>
-              <DiffTable diff={entry.diff} />
-            </section>
-          )}
-
-          {/* DIFF for amount_adjust — also show generic diff if present */}
-          {entry.diff && entry.diff.length > 0 && entry.action === "service.amount_adjust" && (
-            <section className="p-4 flex flex-col gap-3">
-              <DiffTable diff={entry.diff} />
-            </section>
-          )}
-
-          {/* PAYLOAD */}
-          <section className="p-4 flex flex-col gap-2">
-            <Collapsible open={payloadOpen} onOpenChange={setPayloadOpen}>
-              <CollapsibleTrigger className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground hover:text-foreground transition-colors">
-                {payloadOpen ? (
-                  <ChevronDown className="size-3.5" />
-                ) : (
-                  <ChevronRight className="size-3.5" />
-                )}
-                Payload (JSON)
-              </CollapsibleTrigger>
-              <CollapsibleContent>
-                <pre className="mt-2 whitespace-pre-wrap text-xs font-mono bg-muted p-3 rounded max-h-96 overflow-auto">
-                  {JSON.stringify(entry.payload, null, 2)}
-                </pre>
-              </CollapsibleContent>
-            </Collapsible>
-          </section>
-
-          {/* CONTEXT */}
-          <section className="p-4 flex flex-col gap-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-              Контекст
-            </p>
-            <div className="flex flex-col gap-2">
-              {entry.ip_address && (
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-semibold text-muted-foreground w-20 shrink-0">
-                    {t("detail_sheet.ip_label")}
-                  </span>
-                  <span className="font-mono text-xs text-foreground">{entry.ip_address}</span>
-                </div>
-              )}
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-muted-foreground w-20 shrink-0">
-                  Устройство
-                </span>
-                <DeviceIcon className="size-3.5 text-muted-foreground shrink-0" aria-hidden />
-              </div>
-              {entry.user_agent && (
-                <div className="flex items-start gap-2">
-                  <span className="text-xs font-semibold text-muted-foreground w-20 shrink-0">
-                    {t("detail_sheet.user_agent_label")}
-                  </span>
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span className="text-xs text-muted-foreground truncate max-w-[200px] cursor-default">
-                          {entry.user_agent}
-                        </span>
-                      </TooltipTrigger>
-                      <TooltipContent className="max-w-xs break-all">
-                        {entry.user_agent}
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
-                </div>
-              )}
-            </div>
-          </section>
-        </div>
-      </ScrollArea>
-
-      {/* Footer */}
-      <div className="flex gap-2 p-4 border-t">
-        {entry.entity_url && (
-          <Button variant="outline" size="sm" className="flex-1 h-9" onClick={onOpenEntity}>
-            <ArrowUpRight className="size-4" />
-            {t("row_actions.open_entity")}
-          </Button>
-        )}
-        <Button variant="outline" size="sm" className="flex-1 h-9" onClick={onCopyId}>
-          <Copy className="size-4" />
-          {t("row_actions.copy_id")}
-        </Button>
-      </div>
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// EVENT ROW
-// ═══════════════════════════════════════════════════════════════════
-
-interface EventRowProps {
-  entry: AuditEntry;
-  selected: boolean;
-  onSelect: () => void;
-  locale: string;
-  entityTypeLabel: (type: string) => string;
-  onEyeClick: () => void;
-}
-
-function EventRow({
-  entry,
-  selected,
-  onSelect,
-  locale,
-  entityTypeLabel,
-  onEyeClick,
-}: EventRowProps) {
-  return (
-    <button
-      type="button"
-      onClick={onSelect}
-      className={cn(
-        "w-full text-left group flex items-start gap-3 px-4 py-3 transition-colors border-l-4",
-        "hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
-        selected
-          ? "border-l-primary bg-accent"
-          : "border-l-transparent"
-      )}
-      aria-pressed={selected}
-    >
-      {/* Time */}
-      <span className="w-10 shrink-0 font-mono text-xs text-muted-foreground leading-none pt-1">
-        {formatTime(entry.occurred_at, locale)}
-      </span>
-
-      {/* Avatar + entity icon */}
-      <div className="relative shrink-0">
-        <Avatar className="size-8">
-          <AvatarFallback className="text-xs font-medium bg-accent text-accent-foreground">
-            {getInitials(entry.actor.name)}
-          </AvatarFallback>
-        </Avatar>
-        {(() => {
-          const Icon = ENTITY_TYPE_ICONS[entry.entity_type];
-          if (!Icon) return null;
-          return (
-            <span className="absolute -bottom-1 -right-1 flex size-4 items-center justify-center rounded-full bg-background border border-border shadow-sm">
-              <Icon className="size-2.5 text-muted-foreground" aria-hidden />
-            </span>
-          );
-        })()}
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 min-w-0 flex flex-col gap-0.5">
-        <p className="text-sm leading-snug">
-          <span className="font-medium text-foreground">{entry.actor.name}</span>{" "}
-          <span className="text-muted-foreground">{entry.action_label.toLowerCase()}</span>{" "}
-          <span className="font-medium text-foreground">{entry.entity_name}</span>
-        </p>
-        {entry.platform_action && (
-          <span className="inline-flex items-center gap-1 text-xs text-info font-medium">
-            <Shield className="size-3" aria-hidden />
-            Beyond Violet
-          </span>
-        )}
-      </div>
-
-      {/* Entity badge + platform badge + eye */}
-      <div className="flex items-center gap-1.5 shrink-0">
-        {entry.platform_action && (
-          <Badge
-            variant="outline"
-            className="text-xs font-medium bg-info/10 text-info border-info/30 shrink-0"
-          >
-            Платформа
-          </Badge>
-        )}
-        <EntityBadge type={entry.entity_type} label={entityTypeLabel(entry.entity_type)} />
-        <button
-          type="button"
-          aria-label="View details"
-          onClick={(e) => {
-            e.stopPropagation();
-            onEyeClick();
-          }}
-          className="hidden group-hover:flex size-7 items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
-        >
-          <Eye className="size-4" />
-        </button>
-      </div>
-    </button>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// SKELETON
-// ═══════════════════════════════════════════════════════════════════
-
-function AuditSkeleton() {
-  return (
-    <div className="flex flex-col gap-2">
-      {Array.from({ length: 8 }).map((_, i) => (
-        <div key={i} className="flex items-start gap-3 px-4 py-3">
-          <Skeleton className="w-10 h-4 mt-1" />
-          <Skeleton className="size-8 rounded-full shrink-0" />
-          <div className="flex-1 flex flex-col gap-1.5">
-            <Skeleton className="h-4 w-3/4" />
-          </div>
-          <Skeleton className="h-5 w-16 rounded-full" />
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// FILTER STATE
-// ═══════════════════════════════════════════════════════════════════
-
-interface FilterState {
-  search: string;
-  actorId: number | undefined;
-  entityTypes: string[];
-  actions: string[];
-  dateFrom: Date | undefined;
-  dateTo: Date | undefined;
-  platformActionOnly: boolean;
-}
-
-const DEFAULT_DATE_FROM = (() => {
-  const d = new Date();
-  d.setDate(d.getDate() - 7);
-  return d;
-})();
-
-const initialFilters: FilterState = {
-  search: "",
-  actorId: undefined,
-  entityTypes: [],
-  actions: [],
-  dateFrom: DEFAULT_DATE_FROM,
-  dateTo: new Date(),
-  platformActionOnly: false,
-};
+import {
+  ACTION_OPTIONS,
+  ENTITY_TYPE_OPTIONS,
+  PAGE_SIZE,
+  formatDayLabel,
+  getDayKey,
+  initialFilters,
+  type FilterState,
+} from "./audit-log/_shared";
+import { AuditSkeleton } from "./audit-log/audit-skeleton";
+import { EventDetailPanel } from "./audit-log/event-detail-panel";
+import { EventRow } from "./audit-log/event-row";
+import {
+  FiltersBar,
+  type ActiveFilterChip,
+} from "./audit-log/filters-bar";
 
 // ═══════════════════════════════════════════════════════════════════
 // MAIN COMPONENT
@@ -893,7 +80,6 @@ export function AuditLog() {
   const [selectedEntry, setSelectedEntry] = React.useState<AuditEntry | null>(null);
   const [mobileDrawerOpen, setMobileDrawerOpen] = React.useState(false);
   const [page, setPage] = React.useState(1);
-  const PAGE_SIZE = 20;
 
   // Keyboard navigation
   const listRef = React.useRef<HTMLDivElement>(null);
@@ -995,7 +181,7 @@ export function AuditLog() {
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-     
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entries, selectedId]);
 
   function handleSelect(id: string) {
@@ -1013,14 +199,19 @@ export function AuditLog() {
     window.history.replaceState(null, "", url.toString());
   }
 
-  function handleMobileSelect(id: string) {
-    handleSelect(id);
-    setMobileDrawerOpen(true);
+  function clearAllFilters() {
+    setFilters({
+      ...initialFilters,
+      dateFrom: undefined,
+      dateTo: undefined,
+      platformActionOnly: false,
+    });
+    setSearchInput("");
+    setPage(1);
   }
 
-  function clearAllFilters() {
-    setFilters({ ...initialFilters, dateFrom: undefined, dateTo: undefined, platformActionOnly: false });
-    setSearchInput("");
+  function patchFilters(patch: Partial<FilterState>) {
+    setFilters((p) => ({ ...p, ...patch }));
     setPage(1);
   }
 
@@ -1060,7 +251,7 @@ export function AuditLog() {
   }, [entries]);
 
   // Active filter chips
-  const activeFilters: { key: string; label: string; value: string; onRemove: () => void }[] = [];
+  const activeFilters: ActiveFilterChip[] = [];
 
   if (filters.entityTypes.length > 0) {
     filters.entityTypes.forEach((et) => {
@@ -1069,7 +260,10 @@ export function AuditLog() {
         label: t("filters.entity_type"),
         value: entityTypeLabel(et),
         onRemove: () =>
-          setFilters((p) => ({ ...p, entityTypes: p.entityTypes.filter((v) => v !== et) })),
+          setFilters((p) => ({
+            ...p,
+            entityTypes: p.entityTypes.filter((v) => v !== et),
+          })),
       });
     });
   }
@@ -1081,7 +275,10 @@ export function AuditLog() {
         label: t("filters.action"),
         value: a,
         onRemove: () =>
-          setFilters((p) => ({ ...p, actions: p.actions.filter((v) => v !== a) })),
+          setFilters((p) => ({
+            ...p,
+            actions: p.actions.filter((v) => v !== a),
+          })),
       });
     });
   }
@@ -1097,7 +294,8 @@ export function AuditLog() {
       key: "date",
       label: tc("dateRange"),
       value: val,
-      onRemove: () => setFilters((p) => ({ ...p, dateFrom: undefined, dateTo: undefined })),
+      onRemove: () =>
+        setFilters((p) => ({ ...p, dateFrom: undefined, dateTo: undefined })),
     });
   }
 
@@ -1116,67 +314,6 @@ export function AuditLog() {
   }));
 
   const actionOptions = ACTION_OPTIONS.map((v) => ({ value: v, label: v }));
-
-  const filterChildren = (
-    <>
-      <div className="flex flex-col gap-1.5">
-        <p className="text-xs font-medium text-muted-foreground">{t("filters.entity_type")}</p>
-        <MultiCombobox
-          options={entityTypeOptions}
-          selected={filters.entityTypes}
-          onChange={(v) => { setFilters((p) => ({ ...p, entityTypes: v })); setPage(1); }}
-          placeholder={t("filters.entity_type")}
-        />
-      </div>
-      <div className="flex flex-col gap-1.5">
-        <p className="text-xs font-medium text-muted-foreground">{t("filters.action")}</p>
-        <MultiCombobox
-          options={actionOptions}
-          selected={filters.actions}
-          onChange={(v) => { setFilters((p) => ({ ...p, actions: v })); setPage(1); }}
-          placeholder={t("filters.action")}
-        />
-      </div>
-      <div className="flex flex-col gap-1.5">
-        <p className="text-xs font-medium text-muted-foreground">{tc("dateRange")}</p>
-        <DateRangePicker
-          from={filters.dateFrom}
-          to={filters.dateTo}
-          onChange={(from, to) => {
-            setFilters((p) => ({ ...p, dateFrom: from, dateTo: to }));
-            setPage(1);
-          }}
-          placeholder={t("filters.date_range")}
-        />
-      </div>
-      {/* Platform action toggle */}
-      <div className="flex items-center gap-2 pt-1">
-        <button
-          type="button"
-          role="switch"
-          aria-checked={filters.platformActionOnly}
-          onClick={() => {
-            setFilters((p) => ({ ...p, platformActionOnly: !p.platformActionOnly }));
-            setPage(1);
-          }}
-          className={cn(
-            "relative inline-flex h-5 w-9 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            filters.platformActionOnly ? "bg-info" : "bg-muted-foreground/30"
-          )}
-        >
-          <span
-            className={cn(
-              "inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform",
-              filters.platformActionOnly ? "translate-x-4.5" : "translate-x-0.5"
-            )}
-          />
-        </button>
-        <span className="text-xs text-muted-foreground select-none">
-          {t("platform_action.filter_toggle")}
-        </span>
-      </div>
-    </>
-  );
 
   const totalPages = Math.ceil(total / PAGE_SIZE);
 
@@ -1200,108 +337,24 @@ export function AuditLog() {
         />
 
         {/* TOOLBAR */}
-        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80 border-b pb-3 -mx-4 px-4 md:-mx-6 md:px-6 flex flex-col gap-3 pt-2">
-          {/* Search */}
-          <Input
-            placeholder={t("filters.search_placeholder")}
-            value={searchInput}
-            onChange={(e) => setSearchInput(e.target.value)}
-            className="h-9 w-full"
-            aria-label={t("filters.search_placeholder")}
-          />
-
-          {/* Desktop filters */}
-          <div className="hidden md:flex flex-wrap items-center gap-2">
-            <MultiCombobox
-              options={entityTypeOptions}
-              selected={filters.entityTypes}
-              onChange={(v) => { setFilters((p) => ({ ...p, entityTypes: v })); setPage(1); }}
-              placeholder={t("filters.entity_type")}
-            />
-            <MultiCombobox
-              options={actionOptions}
-              selected={filters.actions}
-              onChange={(v) => { setFilters((p) => ({ ...p, actions: v })); setPage(1); }}
-              placeholder={t("filters.action")}
-            />
-            <DateRangePicker
-              from={filters.dateFrom}
-              to={filters.dateTo}
-              onChange={(from, to) => {
-                setFilters((p) => ({ ...p, dateFrom: from, dateTo: to }));
-                setPage(1);
-              }}
-              placeholder={t("filters.date_range")}
-            />
-            {/* Platform action toggle */}
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={filters.platformActionOnly}
-                    onClick={() => {
-                      setFilters((p) => ({ ...p, platformActionOnly: !p.platformActionOnly }));
-                      setPage(1);
-                    }}
-                    className={cn(
-                      "inline-flex h-9 items-center gap-2 rounded-md border px-3 text-xs font-medium transition-colors",
-                      filters.platformActionOnly
-                        ? "border-info/50 bg-info/10 text-info"
-                        : "border-border bg-background text-muted-foreground hover:bg-muted"
-                    )}
-                  >
-                    <Shield className="size-3.5" />
-                    {t("platform_action.badge")}
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">{t("platform_action.filter_toggle")}</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-            {activeFilters.length > 0 && (
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-9 text-muted-foreground"
-                onClick={clearAllFilters}
-              >
-                <X className="size-3.5 mr-1" />
-                {t("filters.clear_all")}
-              </Button>
-            )}
-          </div>
-
-          {/* Mobile filter sheet trigger */}
-          <MobileFilterSheet
-            activeCount={activeFilters.length}
-            onClearAll={clearAllFilters}
-            onApply={() => {}}
-          >
-            {filterChildren}
-          </MobileFilterSheet>
-
-          {/* Active filter chips */}
-          {activeFilters.length > 0 && (
-            <div className="flex flex-wrap gap-1.5" role="list" aria-label="Active filters">
-              {activeFilters.map((chip) => (
-                <FilterChip
-                  key={chip.key}
-                  label={chip.label}
-                  value={chip.value}
-                  onRemove={chip.onRemove}
-                />
-              ))}
-            </div>
-          )}
-        </div>
+        <FiltersBar
+          filters={filters}
+          searchInput={searchInput}
+          onSearchInputChange={setSearchInput}
+          onPatchFilters={patchFilters}
+          onClearAll={clearAllFilters}
+          entityTypeOptions={entityTypeOptions}
+          actionOptions={actionOptions}
+          activeFilters={activeFilters}
+        />
 
         {/* >1000 results warning */}
         {total > 1000 && !loading && (
           <Alert>
             <AlertCircle className="size-4" />
             <AlertDescription>
-              Найдено более 1000 записей. Уточните фильтры для получения более точных результатов.
+              Найдено более 1000 записей. Уточните фильтры для получения более точных
+              результатов.
             </AlertDescription>
           </Alert>
         )}
@@ -1417,7 +470,7 @@ export function AuditLog() {
           <div className="hidden lg:block">
             <div className="sticky top-32 self-start max-h-[calc(100vh-9rem)] overflow-auto rounded-lg border bg-card">
               {selectedEntry ? (
-                <DetailPanelContent
+                <EventDetailPanel
                   entry={selectedEntry}
                   onCopyId={handleCopyId}
                   onOpenEntity={handleOpenEntity}
@@ -1447,7 +500,7 @@ export function AuditLog() {
               <DrawerTitle>{t("detail_sheet.title")}</DrawerTitle>
             </DrawerHeader>
             {selectedEntry ? (
-              <DetailPanelContent
+              <EventDetailPanel
                 entry={selectedEntry}
                 onCopyId={handleCopyId}
                 onOpenEntity={handleOpenEntity}
