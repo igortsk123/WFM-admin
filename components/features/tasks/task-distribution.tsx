@@ -1633,6 +1633,26 @@ export function TaskDistribution() {
   // Фильтры магазинов в toolbar — по городу и по типу.
   const [cityFilter, setCityFilter] = React.useState<string>("all")
   const [typeFilter, setTypeFilter] = React.useState<string>("all")
+
+  // Filtered store list — переиспользуется в Combobox + watcher для авто-переключения.
+  const filteredStores = React.useMemo(() => {
+    return stores.filter((s) => {
+      if (cityFilter !== "all" && s.city !== cityFilter) return false
+      if (typeFilter !== "all" && detectStoreType(s) !== typeFilter) return false
+      return true
+    })
+  }, [stores, cityFilter, typeFilter])
+
+  // Auto-switch: если selectedStoreId не проходит фильтр (его нет в filteredStores) —
+  // переключаемся на первый из подходящих. Без этого user меняет фильтр, но
+  // на странице остаётся старый выбранный магазин.
+  React.useEffect(() => {
+    if (filteredStores.length === 0) return
+    if (selectedStoreId !== null && filteredStores.some((s) => s.id === selectedStoreId)) return
+    // Текущий выбор не подходит → берём первый из фильтрованных.
+    setSelectedStoreId(filteredStores[0].id)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filteredStores])
   // Wrap setter — sync local + URL context
   const setSelectedStoreId = React.useCallback((id: number | null) => {
     setSelectedStoreIdLocal(id)
@@ -1932,14 +1952,10 @@ export function TaskDistribution() {
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
         <StoreCombobox
-          stores={stores.filter((s) => {
-            if (cityFilter !== "all" && s.city !== cityFilter) return false
-            if (typeFilter !== "all" && detectStoreType(s) !== typeFilter) return false
-            return true
-          })}
+          stores={filteredStores}
           value={selectedStoreId}
           onChange={setSelectedStoreId}
-          placeholder={t("toolbar.store_placeholder")}
+          placeholder={`${t("toolbar.store_placeholder")} (${filteredStores.length})`}
           className="w-full sm:w-[280px]"
         />
         <Tabs value={period} onValueChange={(v) => setPeriod(v as PeriodTab)} className="w-full sm:w-auto">

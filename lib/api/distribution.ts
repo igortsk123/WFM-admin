@@ -237,6 +237,26 @@ export async function getStoreEmployeesUtilization(
   // Use indexed lookup: O(1) вместо O(n) фильтра.
   let shifts = SHIFTS_BY_STORE_DATE.get(`${storeId}:${date}`) ?? [];
 
+  // Pre-collect: какие зоны вообще «работают» в этом магазине — собираем из
+  // ВСЕХ исторических task'ов магазина. Используется как fallback для
+  // сотрудников у кого личной истории нет.
+  const storeZonesSet = new Set<string>();
+  for (const t of MOCK_TASKS) {
+    if (t.store_id === storeId && t.zone_name && t.zone_name !== "Без зоны") {
+      storeZonesSet.add(t.zone_name);
+    }
+  }
+  // Если в магазине вообще нет history (база-mock без LAMA tasks) — берём
+  // дефолтный набор для ритейла.
+  const DEFAULT_RETAIL_ZONES = [
+    "Фреш 1", "Фреш 2", "Бакалея", "Алкоголь", "Пиво, чипсы",
+    "Напитки б/а", "Кондитерка, чай, кофе", "Заморозка",
+    "Кассовая зона", "Торговый зал (общая)",
+  ];
+  const storeZones = storeZonesSet.size > 0
+    ? Array.from(storeZonesSet)
+    : DEFAULT_RETAIL_ZONES;
+
   // Fallback: если на запрошенную date нет смен — ищем ближайшую дату с данными
   // в этом магазине (например на mock TODAY=2026-05-01 нет ЛАМА-смен,
   // они на 2026-05-04..10 — берём ближайший).
@@ -292,17 +312,22 @@ export async function getStoreEmployeesUtilization(
       : 0;
 
     // Зоны сотрудника: собираем все unique zone_name из его исторических
-    // задач (TASKS_BY_ASSIGNEE — все его задачи во всех магазинах). Это
-    // даёт реалистичный набор зон где сотрудник работал, для фильтра
-    // «показать только подходящих» в DistributionSheet.
+    // задач (TASKS_BY_ASSIGNEE — все его задачи во всех магазинах).
     const zonesFromHistory = new Set<string>();
     for (const t of userTasks) {
       if (t.zone_name && t.zone_name !== "Без зоны") {
         zonesFromHistory.add(t.zone_name);
       }
     }
-    // Также добавим зону текущей смены если есть.
+    // Зону текущей смены — тоже.
     if (shift.zone_name) zonesFromHistory.add(shift.zone_name);
+    // Если у сотрудника пусто (например у LAMA новенький, или для блока
+    // «Выкладка ФРОВ» нет совпадений) — присваиваем все зоны магазина.
+    // Иначе фильтр «только подходящие зоны» в DistributionSheet даст
+    // пустой список и user не сможет распределить блок.
+    if (zonesFromHistory.size === 0) {
+      for (const z of storeZones) zonesFromHistory.add(z);
+    }
 
     return {
       user: {
