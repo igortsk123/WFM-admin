@@ -1024,7 +1024,7 @@
         "shift_time": "Смена: {start}–{end}"
       },
       "utilization": {
-        "title": "Утилизация команды",
+        "title": "Сводка по команде",
         "date_label": "на {date}",
         "employees_count": "{count, plural, one {# сотрудник на смене} few {# сотрудника на смене} other {# сотрудников на смене}}",
         "hours_format": "{assigned} / {total} смены",

@@ -555,14 +555,13 @@ function EmployeeUtilizationRow({ employee, planMin = 0, onSelect, t }: Employee
 interface TeamUtilizationPanelProps {
   employees: EmployeeUtilization[]
   planMinByUser: Map<number, number>
-  onSelectEmployee: (emp: EmployeeUtilization) => void
   isLoading: boolean
   date: string
   t: ReturnType<typeof useTranslations>
   locale: string
 }
 
-function TeamUtilizationPanel({ employees, planMinByUser, onSelectEmployee, isLoading, date, t, locale }: TeamUtilizationPanelProps) {
+function TeamUtilizationPanel({ employees, planMinByUser, isLoading, date, t, locale }: TeamUtilizationPanelProps) {
   const dateLocale = locale === "en" ? enUS : ru
   const formattedDate = format(new Date(date), "d MMMM", { locale: dateLocale })
 
@@ -630,6 +629,9 @@ function TeamUtilizationPanel({ employees, planMinByUser, onSelectEmployee, isLo
         </p>
       </CardHeader>
       <CardContent className="flex flex-col">
+        {/* Сводка по команде — read-only. Распределение делается через TaskCard
+            в by-task или EmployeeUtilizationRow в by-employee. Здесь сотрудники
+            некликабельны: панель показывает прогресс, не действие. */}
         <ScrollArea className="max-h-[400px] lg:max-h-[calc(100vh-360px)] flex-1 min-h-0">
           <div className="space-y-1 pr-2">
             {employees.map((emp) => (
@@ -637,7 +639,6 @@ function TeamUtilizationPanel({ employees, planMinByUser, onSelectEmployee, isLo
                 key={emp.user.id}
                 employee={emp}
                 planMin={planMinByUser.get(emp.user.id) ?? 0}
-                onSelect={() => onSelectEmployee(emp)}
                 t={t}
               />
             ))}
@@ -913,7 +914,6 @@ function DistributionSheet({
 interface MobileUtilizationCollapsibleProps {
   employees: EmployeeUtilization[]
   planMinByUser: Map<number, number>
-  onSelectEmployee: (emp: EmployeeUtilization) => void
   isLoading: boolean
   date: string
   t: ReturnType<typeof useTranslations>
@@ -951,7 +951,6 @@ function MobileUtilizationCollapsible(props: MobileUtilizationCollapsibleProps) 
                     key={emp.user.id}
                     employee={emp}
                     planMin={props.planMinByUser.get(emp.user.id) ?? 0}
-                    onSelect={() => props.onSelectEmployee(emp)}
                     t={props.t}
                   />
                 ))}
@@ -1849,7 +1848,6 @@ export function TaskDistribution() {
         <MobileUtilizationCollapsible
           employees={employees}
           planMinByUser={planMinByUser}
-          onSelectEmployee={handleSelectEmployee}
           isLoading={isLoadingEmployees}
           date={currentDate}
           t={t}
@@ -1926,7 +1924,6 @@ export function TaskDistribution() {
             <TeamUtilizationPanel
               employees={employees}
               planMinByUser={planMinByUser}
-              onSelectEmployee={handleSelectEmployee}
               isLoading={isLoadingEmployees}
               date={currentDate}
               t={t}
@@ -1998,7 +1995,7 @@ export function TaskDistribution() {
               <CardHeader className="pb-2">
                 <CardTitle className="text-base flex items-center gap-2">
                   <ListChecks className="size-4" />
-                  Сводка задач
+                  Сводка по задачам
                 </CardTitle>
                 <p className="text-xs text-muted-foreground">
                   {tasks.length} задач{tasks.length === 1 ? "а" : tasks.length < 5 ? "и" : ""}

@@ -869,7 +869,7 @@
         "shift_time": "Shift: {start}–{end}"
       },
       "utilization": {
-        "title": "Team Utilization",
+        "title": "Team Summary",
         "date_label": "on {date}",
         "employees_count": "{count, plural, one {# employee on shift} other {# employees on shift}}",
         "hours_format": "{assigned} / {total} shift",
