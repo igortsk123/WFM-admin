@@ -11,10 +11,10 @@ RUN apk add --no-cache libc6-compat
 
 COPY package.json package-lock.json* ./
 # npm install (а не ci) — package-lock иногда отстаёт из-за peer-deps next 15 + react 19.
-# Layer cache работает пока package.json не меняется (и тогда этот RUN cached).
-# При изменении package.json — BuildKit cache mount /root/.npm даёт переиспользование
-# скачанных tarball'ов (npm install с warm cache ~10s вместо ~60s).
-RUN --mount=type=cache,id=wfm-admin-npm,target=/root/.npm npm install --no-audit --no-fund
+# Docker layer cache itself даёт нам "free" кэш npm install, пока package-lock
+# не менялся (тогда этот RUN использует cached layer). BuildKit `--mount=type=cache`
+# не используем — на сервере legacy builder без BuildKit.
+RUN npm install --no-audit --no-fund
 
 # ─── Stage 2: build ────────────────────────────────────────────────
 FROM node:20-alpine AS builder
@@ -26,10 +26,7 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-# Cache mount для .next/cache — Next.js хранит там incremental compile artifacts
-# (модулям SWC, кэш React Compiler, и т.п.). Между билдами на одном host'е этот
-# кэш переиспользуется → next build на повторных деплоях быстрее на 30-50%.
-RUN --mount=type=cache,id=wfm-admin-next-cache,target=/app/.next/cache npm run build
+RUN npm run build
 
 # ─── Stage 3: runtime ──────────────────────────────────────────────
 FROM node:20-alpine AS runner
