@@ -33,6 +33,7 @@ LAMA_REAL = ROOT / "lib" / "mock-data" / "_lama-real.ts"
 OUT_BLOCKS = ROOT / "lib" / "mock-data" / "_lama-unassigned-blocks.ts"
 OUT_ZONES = ROOT / "lib" / "mock-data" / "_lama-employee-zones.ts"
 OUT_WORK_TYPES = ROOT / "lib" / "mock-data" / "_lama-employee-work-types.ts"
+OUT_MEDIANS = ROOT / "lib" / "mock-data" / "_lama-fallback-medians.ts"
 
 # Стандартный набор LAMA-консистентных id'шников (см. требования задачи)
 WORK_TYPES: dict[int, str] = {
@@ -235,6 +236,87 @@ export const MOCK_UNASSIGNED_BLOCKS: UnassignedTaskBlock[] = [
     OUT_BLOCKS.write_text("".join(lines), encoding="utf-8")
 
 
+def write_medians_file(
+    per_day_minutes: dict[tuple[str, int, int, int], int],
+    shop_dates: dict[int, set[str]],
+) -> None:
+    """Генерирует fallback-медианы per (work_type_id, zone_id) для магазинов
+    без LAMA-данных. Используется в generateDefaultBlocksForStore().
+
+    Алгоритм: для каждой пары (wt, zone) собираем все per-day-totals по shop'ам
+    (где у магазина в этот день была эта пара), берём median.
+    Округляем до 15 мин для опрятности (магазины планируют слотами по 15).
+    """
+    from statistics import median
+    # (wt_id, zone_id) → list[per-day-minutes-across-shops]
+    samples: dict[tuple[int, int], list[int]] = defaultdict(list)
+    for (snap_date, store_id, wt_id, z_id), minutes in per_day_minutes.items():
+        if minutes > 0:
+            samples[(wt_id, z_id)].append(minutes)
+
+    # Median + округление до 15
+    medians: list[dict] = []
+    for (wt_id, z_id), vals in samples.items():
+        if len(vals) < 3:
+            continue  # Слишком маленькая выборка — не доверяем
+        m = round(median(vals) / 15) * 15
+        if m < 15:
+            continue
+        medians.append({
+            "wt_id": wt_id,
+            "wt_name": WORK_TYPES.get(wt_id, "?"),
+            "zone_id": z_id,
+            "zone_name": ZONES.get(z_id, "?"),
+            "minutes": m,
+            "samples": len(vals),
+        })
+
+    # Sort: priority asc (по minutes desc — большие задачи в начале)
+    medians.sort(key=lambda r: (-r["minutes"], r["wt_id"], r["zone_id"]))
+
+    n_pairs = len(medians)
+    header = f'''/**
+ * Fallback-медианы per (work_type, zone) — для магазинов БЕЗ LAMA-данных
+ * (например, базовые СПАР/Abricos моки которые не прошли через LAMA fetch).
+ * Используется в generateDefaultBlocksForStore() как шаблон блоков.
+ *
+ * Median minutes посчитаны по всем shop-day observations из снимков:
+ * для пары (wt, zone) собираем суммы за день по магазинам, берём median,
+ * округляем до 15 мин. Включаем только пары где >= 3 sample (для надёжности).
+ *
+ * Сгенерировано из всех snapshot'ов в .lama_snapshots/.
+ * Регенерация: python tools/lama/regenerate-from-snapshots.py.
+ *
+ * {n_pairs} пар (work_type × zone).
+ */
+export interface LamaMedianBlock {{
+  wt_id: number;
+  wt_name: string;
+  zone_id: number;
+  zone_name: string;
+  minutes: number;
+  samples: number;
+}}
+
+export const LAMA_FALLBACK_MEDIANS: LamaMedianBlock[] = [
+'''
+    lines = [header]
+    for m in medians:
+        line = (
+            "  { "
+            f'wt_id: {m["wt_id"]}, '
+            f'wt_name: {ts_string_literal(m["wt_name"])}, '
+            f'zone_id: {m["zone_id"]}, '
+            f'zone_name: {ts_string_literal(m["zone_name"])}, '
+            f'minutes: {m["minutes"]}, '
+            f'samples: {m["samples"]} '
+            "},\n"
+        )
+        lines.append(line)
+    lines.append("];\n")
+    OUT_MEDIANS.write_text("".join(lines), encoding="utf-8")
+
+
 def write_work_types_file(wt_by_user: dict[int, list[str]]) -> None:
     n_users = len(wt_by_user)
     all_wts = set()
@@ -435,6 +517,7 @@ def main() -> None:
     write_blocks_file(blocks, latest_date, len(snaps))
     write_zones_file(zones_by_user_sorted)
     write_work_types_file(work_types_by_user_sorted)
+    write_medians_file(per_day_minutes, shop_dates)
 
     # 8. Отчёт
     print("", file=sys.stderr)
@@ -454,6 +537,11 @@ def main() -> None:
           file=sys.stderr)
     print(f"  {OUT_WORK_TYPES.relative_to(ROOT)} — {len(work_types_by_user_sorted)} users, "
           f"{len({w for ws in work_types_by_user_sorted.values() for w in ws})} unique work_types",
+          file=sys.stderr)
+    # Подсчёт сколько пар попало в medians (для отчёта)
+    from statistics import median as _median  # noqa: F401 (use re-import чтоб посчитать)
+    median_pairs = sum(1 for v in {(wt, z): True for (_, _, wt, z) in per_day_minutes.keys()})
+    print(f"  {OUT_MEDIANS.relative_to(ROOT)} — fallback-медианы для magazinov без LAMA",
           file=sys.stderr)
     if new_entries_log:
         print("", file=sys.stderr)

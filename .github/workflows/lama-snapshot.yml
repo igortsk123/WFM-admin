@@ -1,10 +1,11 @@
 name: Daily LAMA snapshot fetch
 
 on:
-  # Каждый день в 02:00 UTC = 09:00 по Томску (после открытия магазинов,
-  # сменные планы уже обновлены LAMA-планировщиком).
+  # Каждый день в 22:00 UTC = 05:00 по Томску (на час до 06:00 кофе/брифинга,
+  # за 2 часа до открытия 07:00 — данные уже актуальные к началу смены).
+  # Fetch ~30 мин + regen <1 мин + deploy ~5 мин → live к 05:35 Tomsk.
   schedule:
-    - cron: "0 2 * * *"
+    - cron: "0 22 * * *"
   # Manual trigger для теста / форсированного обновления через Actions UI
   workflow_dispatch:
 
@@ -74,7 +75,8 @@ jobs:
           # Только TS файлы — snapshot'ы в .gitignore
           git add lib/mock-data/_lama-unassigned-blocks.ts \
                   lib/mock-data/_lama-employee-zones.ts \
-                  lib/mock-data/_lama-employee-work-types.ts
+                  lib/mock-data/_lama-employee-work-types.ts \
+                  lib/mock-data/_lama-fallback-medians.ts
           if git diff --cached --quiet; then
             echo "Нет изменений — задачи на сегодня совпадают с кэшем"
             exit 0
