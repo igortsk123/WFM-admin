@@ -631,8 +631,8 @@ function TasksSummaryPanel({ tasks, plan, date, locale, t }: TasksSummaryPanelPr
   }
 
   return (
-    <Card className="lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:flex lg:flex-col overflow-hidden">
-      <CardHeader className="pb-2 shrink-0">
+    <Card>
+      <CardHeader className="pb-2">
         <CardTitle className="text-base flex items-center gap-2">
           <ListChecks className="size-4" />
           Сводка по задачам
@@ -642,23 +642,18 @@ function TasksSummaryPanel({ tasks, plan, date, locale, t }: TasksSummaryPanelPr
           {plan.size > 0 && ` · ${plan.size} в плане`}
         </p>
       </CardHeader>
-      <CardContent className="flex flex-col flex-1 min-h-0 overflow-hidden">
-        {/* Native overflow вместо ScrollArea — Radix Viewport не всегда корректно
-            подхватывал flex-1 min-h-0, footer наслаивался на список.
-            Native div + overflow-y-auto работает в flex-контексте надёжно. */}
-        <div className="flex-1 min-h-0 overflow-y-auto pr-2 -mr-2">
-          <div className="space-y-1">
-            {tasks.map((task) => (
-              <TaskRow
-                key={task.id}
-                task={task}
-                planAllocations={plan.get(task.id) ?? []}
-                t={t}
-              />
-            ))}
-          </div>
+      <CardContent>
+        <div className="space-y-1">
+          {tasks.map((task) => (
+            <TaskRow
+              key={task.id}
+              task={task}
+              planAllocations={plan.get(task.id) ?? []}
+              t={t}
+            />
+          ))}
         </div>
-        <div className="mt-4 pt-3 border-t shrink-0">
+        <div className="mt-4 pt-3 border-t">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">
               Покрыто: {formatHM(totalCovered, t)} / {formatHM(totalPlanned, t)}
@@ -728,8 +723,8 @@ function TeamUtilizationPanel({ employees, planMinByUser, isLoading, date, t, lo
   }
 
   return (
-    <Card className="lg:sticky lg:top-4 lg:max-h-[calc(100vh-2rem)] lg:flex lg:flex-col overflow-hidden">
-      <CardHeader className="pb-2 shrink-0">
+    <Card>
+      <CardHeader className="pb-2">
         <CardTitle className="text-base flex items-center gap-2">
           <Users className="size-4" />
           {t("utilization.title")}
@@ -738,24 +733,18 @@ function TeamUtilizationPanel({ employees, planMinByUser, isLoading, date, t, lo
           {t("utilization.date_label", { date: formattedDate })} · {t("utilization.employees_count", { count: employees.length })}
         </p>
       </CardHeader>
-      <CardContent className="flex flex-col flex-1 min-h-0 overflow-hidden">
-        {/* Сводка по команде — read-only. Distrib делается через TaskRow / EmployeeUtilizationRow.
-            Native overflow вместо ScrollArea (см. TasksSummaryPanel — ровно
-            та же причина: footer не наслаивается на скролл). */}
-        <div className="flex-1 min-h-0 overflow-y-auto pr-2 -mr-2">
-          <div className="space-y-1">
-            {employees.map((emp) => (
-              <EmployeeUtilizationRow
-                key={emp.user.id}
-                employee={emp}
-                planMin={planMinByUser.get(emp.user.id) ?? 0}
-                t={t}
-              />
-            ))}
-          </div>
+      <CardContent>
+        <div className="space-y-1">
+          {employees.map((emp) => (
+            <EmployeeUtilizationRow
+              key={emp.user.id}
+              employee={emp}
+              planMin={planMinByUser.get(emp.user.id) ?? 0}
+              t={t}
+            />
+          ))}
         </div>
-        {/* Summary — shrink-0 чтоб не наслаивалось на ScrollArea */}
-        <div className="mt-4 pt-3 border-t shrink-0">
+        <div className="mt-4 pt-3 border-t">
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">{t("utilization.summary", {
               free: formatHM(freeMinutes, t),
@@ -891,22 +880,30 @@ function DistributionSheet({
           </div>
         </div>
 
-        {/* Zone filter toggle (если у task есть zone_name) */}
-        {task.zone_name && task.zone_name !== "Без зоны" && (() => {
-          const matched = employees.filter((e) => e.user.zones?.includes(task.zone_name))
+        {/* Zone filter toggle — всегда виден.
+            Когда у задачи нет зоны или «Без зоны» — фильтр nothing-matches,
+            label/чекбокс остаются доступными, чекбокс работает на noop. */}
+        {(() => {
+          const hasZone = !!task.zone_name && task.zone_name !== "Без зоны"
+          const matched = hasZone
+            ? employees.filter((e) => e.user.zones?.includes(task.zone_name))
+            : employees
           return (
             <div className="px-4 py-2 border-b shrink-0 flex items-center justify-between gap-2 text-xs">
               <label className="flex items-center gap-2 cursor-pointer select-none">
                 <input
                   type="checkbox"
-                  checked={zoneFilterEnabled}
+                  checked={zoneFilterEnabled && hasZone}
                   onChange={(e) => setZoneFilterEnabled(e.target.checked)}
+                  disabled={!hasZone}
                   className="size-4"
                 />
-                <span>Только подходящие сотрудники</span>
+                <span className={cn(!hasZone && "text-muted-foreground")}>
+                  Только подходящие сотрудники
+                </span>
               </label>
               <span className="text-muted-foreground">
-                {zoneFilterEnabled
+                {zoneFilterEnabled && hasZone
                   ? `${matched.length} из ${employees.length}`
                   : `${employees.length} всего`}
               </span>
