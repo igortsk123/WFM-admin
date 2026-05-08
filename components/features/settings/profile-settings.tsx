@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { LogOut, AlertCircle } from "lucide-react";
@@ -25,15 +26,33 @@ import type { CurrentUser } from "@/lib/api/auth";
 import {
   SidebarNav,
   ProfileTab,
-  SecurityTab,
   NotificationsTab,
-  AssignmentsTab,
-  AppearanceTab,
-  OrganizationsTab,
   type Section,
   getSectionsForRole,
   getInitials,
 } from "./profile-settings/index";
+
+// ── Non-default profile-settings tabs: lazy-loaded on click ───────────────────
+const TabSkeleton = () => (
+  <div className="h-64 animate-pulse rounded-md bg-muted/50" />
+);
+
+const SecurityTab = dynamic(
+  () => import("./profile-settings/tab-security").then((m) => m.SecurityTab),
+  { loading: () => <TabSkeleton /> },
+);
+const AssignmentsTab = dynamic(
+  () => import("./profile-settings/tab-assignments").then((m) => m.AssignmentsTab),
+  { loading: () => <TabSkeleton /> },
+);
+const AppearanceTab = dynamic(
+  () => import("./profile-settings/tab-appearance").then((m) => m.AppearanceTab),
+  { loading: () => <TabSkeleton /> },
+);
+const OrganizationsTab = dynamic(
+  () => import("./profile-settings/tab-organizations").then((m) => m.OrganizationsTab),
+  { loading: () => <TabSkeleton /> },
+);
 
 // ─── LOADING SKELETON ─────────────────────────────────────────────────────────
 

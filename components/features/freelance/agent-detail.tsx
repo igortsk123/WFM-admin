@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import dynamic from "next/dynamic";
 import { useTranslations, useLocale } from "next-intl";
 import {
   AlertCircle,
@@ -35,13 +36,25 @@ import {
   HeroCard,
   KpiRow,
   PerformersTab,
-  AccrualsTab,
-  HistoryTab,
   EditSheet,
   BlockDialogWithReason,
   formatMoney,
   type AgentWithRoster,
 } from "./agent-detail/index";
+
+// ── Non-default tabs: lazy-loaded on click ────────────────────────────────────
+const TabSkeleton = () => (
+  <div className="h-64 animate-pulse rounded-md bg-muted/50" />
+);
+
+const AccrualsTab = dynamic(
+  () => import("./agent-detail/tab-accruals").then((m) => m.AccrualsTab),
+  { loading: () => <TabSkeleton /> },
+);
+const HistoryTab = dynamic(
+  () => import("./agent-detail/tab-history").then((m) => m.HistoryTab),
+  { loading: () => <TabSkeleton /> },
+);
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 

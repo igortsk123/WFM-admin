@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import dynamic from "next/dynamic";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { z } from "zod";
@@ -58,9 +59,24 @@ import {
 import { VerticalStepper, HorizontalStepper, type StepMeta } from "./employee-create-wizard/stepper";
 import { SummaryCard } from "./employee-create-wizard/summary-card";
 import { StepPersonal } from "./employee-create-wizard/step-personal";
-import { StepPosition } from "./employee-create-wizard/step-position";
-import { StepPermissions } from "./employee-create-wizard/step-permissions";
-import { StepInvite } from "./employee-create-wizard/step-invite";
+
+// ── Non-default wizard steps: lazy-loaded on advance ──────────────────────────
+const StepSkeleton = () => (
+  <div className="h-64 animate-pulse rounded-md bg-muted/50" />
+);
+
+const StepPosition = dynamic(
+  () => import("./employee-create-wizard/step-position").then((m) => m.StepPosition),
+  { loading: () => <StepSkeleton /> },
+);
+const StepPermissions = dynamic(
+  () => import("./employee-create-wizard/step-permissions").then((m) => m.StepPermissions),
+  { loading: () => <StepSkeleton /> },
+);
+const StepInvite = dynamic(
+  () => import("./employee-create-wizard/step-invite").then((m) => m.StepInvite),
+  { loading: () => <StepSkeleton /> },
+);
 
 export function EmployeeCreateWizard() {
   const t = useTranslations("screen.employeeCreate");

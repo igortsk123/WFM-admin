@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import dynamic from "next/dynamic";
 import { useTranslations, useLocale } from "next-intl";
 import {
   CheckCircle2,
@@ -21,9 +22,24 @@ import { formatDateTime, formatRelative } from "@/lib/utils/format";
 import type { Locale } from "@/lib/types";
 
 import { StatusTab } from "./lama-detail/tab-status";
-import { MappingTab } from "./lama-detail/tab-mapping";
-import { ScheduleTab } from "./lama-detail/tab-schedule";
-import { LogsTab } from "./lama-detail/tab-logs";
+
+// ── Non-default tabs: lazy-loaded on click ────────────────────────────────────
+const TabSkeleton = () => (
+  <div className="h-64 animate-pulse rounded-md bg-muted/50" />
+);
+
+const MappingTab = dynamic(
+  () => import("./lama-detail/tab-mapping").then((m) => m.MappingTab),
+  { loading: () => <TabSkeleton /> },
+);
+const ScheduleTab = dynamic(
+  () => import("./lama-detail/tab-schedule").then((m) => m.ScheduleTab),
+  { loading: () => <TabSkeleton /> },
+);
+const LogsTab = dynamic(
+  () => import("./lama-detail/tab-logs").then((m) => m.LogsTab),
+  { loading: () => <TabSkeleton /> },
+);
 
 // ═══════════════════════════════════════════════════════════════════
 // MAIN COMPONENT

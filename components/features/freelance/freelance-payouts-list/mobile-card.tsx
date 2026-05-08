@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { useTranslations } from "next-intl";
 import { Download, MoreVertical, RefreshCw } from "lucide-react";
 
@@ -22,7 +23,7 @@ interface MobileCardProps {
   onMenuAction: (action: PayoutMenuAction, id: string) => void;
 }
 
-export function MobileCard({ payout, onMenuAction }: MobileCardProps) {
+export const MobileCard = React.memo(function MobileCard({ payout, onMenuAction }: MobileCardProps) {
   const t = useTranslations("screen.freelancePayoutsList");
 
   return (

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import dynamic from "next/dynamic"
 import { useTranslations, useLocale } from "next-intl"
 import { useRouter } from "@/i18n/navigation"
 import { toast } from "sonner"
@@ -42,15 +43,45 @@ import { HeroCard } from "./employee-detail/hero-card"
 import { HeroActions } from "./employee-detail/hero-actions"
 import { EmployeeTabsHeader } from "./employee-detail/tabs-header"
 import { EmployeeProfileTab } from "./employee-detail/tab-profile"
-import { EmployeeTasksTab } from "./employee-detail/tab-tasks"
-import { EmployeeShiftsTab } from "./employee-detail/tab-shifts"
-import { EmployeePermissionsTab } from "./employee-detail/tab-permissions"
-import { EmployeeHistoryTab } from "./employee-detail/tab-history"
-import { EmployeeDocumentsTab } from "./employee-detail/tab-documents"
-import { EmployeeServicesTab } from "./employee-detail/tab-services"
-import { EmployeePayoutsTab } from "./employee-detail/tab-payouts"
-import { EmployeeRatingTab } from "./employee-detail/tab-rating"
 import { FreelanceOfferCard } from "./employee-detail/freelance-offer-card"
+
+// ── Non-default tabs: lazy-loaded on click ────────────────────────────────────
+const TabSkeleton = () => (
+  <div className="h-64 animate-pulse rounded-md bg-muted/50" />
+)
+
+const EmployeeTasksTab = dynamic(
+  () => import("./employee-detail/tab-tasks").then((m) => m.EmployeeTasksTab),
+  { loading: () => <TabSkeleton /> },
+)
+const EmployeeShiftsTab = dynamic(
+  () => import("./employee-detail/tab-shifts").then((m) => m.EmployeeShiftsTab),
+  { loading: () => <TabSkeleton /> },
+)
+const EmployeePermissionsTab = dynamic(
+  () => import("./employee-detail/tab-permissions").then((m) => m.EmployeePermissionsTab),
+  { loading: () => <TabSkeleton /> },
+)
+const EmployeeHistoryTab = dynamic(
+  () => import("./employee-detail/tab-history").then((m) => m.EmployeeHistoryTab),
+  { loading: () => <TabSkeleton /> },
+)
+const EmployeeDocumentsTab = dynamic(
+  () => import("./employee-detail/tab-documents").then((m) => m.EmployeeDocumentsTab),
+  { loading: () => <TabSkeleton /> },
+)
+const EmployeeServicesTab = dynamic(
+  () => import("./employee-detail/tab-services").then((m) => m.EmployeeServicesTab),
+  { loading: () => <TabSkeleton /> },
+)
+const EmployeePayoutsTab = dynamic(
+  () => import("./employee-detail/tab-payouts").then((m) => m.EmployeePayoutsTab),
+  { loading: () => <TabSkeleton /> },
+)
+const EmployeeRatingTab = dynamic(
+  () => import("./employee-detail/tab-rating").then((m) => m.EmployeeRatingTab),
+  { loading: () => <TabSkeleton /> },
+)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES

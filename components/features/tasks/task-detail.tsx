@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import dynamic from "next/dynamic"
 import { useRouter } from "@/i18n/navigation"
 import { useSearchParams } from "next/navigation"
 import { useTranslations } from "next-intl"
@@ -53,9 +54,24 @@ import {
   SidebarTimingContent,
 } from "./task-detail/sidebar"
 import { TabDescription } from "./task-detail/tab-description"
-import { TabHistory } from "./task-detail/tab-history"
-import { TabReport } from "./task-detail/tab-report"
-import { TabSubtasks } from "./task-detail/tab-subtasks"
+
+// ── Non-default tabs: lazy-loaded on click ────────────────────────────────────
+const TabSkeleton = () => (
+  <div className="h-64 animate-pulse rounded-md bg-muted/50" />
+)
+
+const TabHistory = dynamic(
+  () => import("./task-detail/tab-history").then((m) => m.TabHistory),
+  { loading: () => <TabSkeleton /> },
+)
+const TabReport = dynamic(
+  () => import("./task-detail/tab-report").then((m) => m.TabReport),
+  { loading: () => <TabSkeleton /> },
+)
+const TabSubtasks = dynamic(
+  () => import("./task-detail/tab-subtasks").then((m) => m.TabSubtasks),
+  { loading: () => <TabSkeleton /> },
+)
 
 // ──────────────────────────────────────────────────────────────────
 // Main component

@@ -1,5 +1,7 @@
 "use client"
 
+import * as React from "react"
+
 import type { FreelanceApplication } from "@/lib/types"
 
 import { Badge } from "@/components/ui/badge"
@@ -12,7 +14,7 @@ interface MobileCardProps {
   locale: string
 }
 
-export function MobileCard({ app, locale }: MobileCardProps) {
+export const MobileCard = React.memo(function MobileCard({ app, locale }: MobileCardProps) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-start justify-between gap-2">
@@ -48,4 +50,4 @@ export function MobileCard({ app, locale }: MobileCardProps) {
       </div>
     </div>
   )
-}
+})

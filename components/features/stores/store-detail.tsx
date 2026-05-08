@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useCallback } from "react"
+import dynamic from "next/dynamic"
 import { useTranslations, useLocale } from "next-intl"
 import { toast } from "sonner"
 import {
@@ -38,9 +39,24 @@ import { ArchiveStoreDialog } from "./store-detail/archive-store-dialog"
 import { ZoneFormDialog, ZoneDeleteDialog, type ZoneDialogState } from "./store-detail/zone-dialogs"
 import { StoreHeroCard } from "./store-detail/hero-card"
 import { StoreOverviewTab } from "./store-detail/tab-overview"
-import { StoreTeamTab } from "./store-detail/tab-team"
-import { StoreZonesTab } from "./store-detail/tab-zones"
-import { StoreHistoryTab } from "./store-detail/tab-history"
+
+// ── Non-default tabs: lazy-loaded on click ────────────────────────────────────
+const TabSkeleton = () => (
+  <div className="h-64 animate-pulse rounded-md bg-muted/50" />
+)
+
+const StoreTeamTab = dynamic(
+  () => import("./store-detail/tab-team").then((m) => m.StoreTeamTab),
+  { loading: () => <TabSkeleton /> },
+)
+const StoreZonesTab = dynamic(
+  () => import("./store-detail/tab-zones").then((m) => m.StoreZonesTab),
+  { loading: () => <TabSkeleton /> },
+)
+const StoreHistoryTab = dynamic(
+  () => import("./store-detail/tab-history").then((m) => m.StoreHistoryTab),
+  { loading: () => <TabSkeleton /> },
+)
 import { buildActivityFeedItems, getLamaColor } from "./store-detail/_shared"
 
 // ─── Props ────────────────────────────────────────────────────────────────────
