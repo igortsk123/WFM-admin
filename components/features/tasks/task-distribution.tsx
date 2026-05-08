@@ -2093,70 +2093,143 @@ export function TaskDistribution() {
         </div>
       ) : (
         // ── By Employee mode ──────────────────────────────────────────
-        <div className="space-y-4">
-          <h2 className="text-sm font-medium text-muted-foreground">
-            {t("by_employee.section_title")}
-            {employees.length > 0 && (
-              <span className="ml-1.5 text-foreground">({employees.length})</span>
-            )}
-          </h2>
-          {isLoadingEmployees ? (
-            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-              {Array.from({ length: 6 }).map((_, i) => (
-                <Card key={i}>
-                  <CardContent className="p-3 space-y-2">
-                    <div className="flex gap-3">
-                      <Skeleton className="size-10 rounded-full shrink-0" />
-                      <div className="flex-1 space-y-2">
-                        <Skeleton className="h-3 w-24" />
-                        <Skeleton className="h-2 w-32" />
-                        <Skeleton className="h-1.5 w-full rounded-full" />
+        // Зеркальный layout к by-task: слева компактные карточки сотрудников
+        // (плоский список без группировки), справа — сводка задач с прогрессом.
+        <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
+          {/* Левая колонка: список сотрудников */}
+          <div className="space-y-2">
+            <h2 className="text-sm font-medium text-muted-foreground">
+              {t("by_employee.section_title")}
+              {employees.length > 0 && (
+                <span className="ml-1.5 text-foreground">({employees.length})</span>
+              )}
+            </h2>
+            {isLoadingEmployees ? (
+              <div className="space-y-1">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <Card key={i}>
+                    <CardContent className="p-3">
+                      <div className="flex items-center gap-3">
+                        <Skeleton className="size-8 rounded-full shrink-0" />
+                        <div className="flex-1 space-y-1.5">
+                          <Skeleton className="h-3 w-32" />
+                          <Skeleton className="h-1.5 w-full rounded-full" />
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          ) : employees.length === 0 ? (
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            ) : employees.length === 0 ? (
+              <Card>
+                <CardContent className="py-12">
+                  <EmptyState
+                    icon={Calendar}
+                    title={t("empty.no_shifts_title")}
+                    description={t("empty.no_shifts_description")}
+                  />
+                </CardContent>
+              </Card>
+            ) : (
+              <Card>
+                <CardContent className="p-2">
+                  <div className="space-y-1">
+                    {employees.map((emp) => (
+                      <EmployeeUtilizationRow
+                        key={emp.user.id}
+                        employee={emp}
+                        planMin={planMinByUser.get(emp.user.id) ?? 0}
+                        onSelect={() => handleSelectEmployee(emp)}
+                        t={t}
+                      />
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          {/* Правая колонка: сводка задач — что распределено, на сколько часов */}
+          <div className="lg:sticky lg:top-4 lg:self-start">
             <Card>
-              <CardContent className="py-12">
-                <EmptyState
-                  icon={Calendar}
-                  title={t("empty.no_shifts_title")}
-                  description={t("empty.no_shifts_description")}
-                />
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <ListChecks className="size-4" />
+                  Сводка задач
+                </CardTitle>
+                <p className="text-xs text-muted-foreground">
+                  {tasks.length} задач{tasks.length === 1 ? "а" : tasks.length < 5 ? "и" : ""}
+                  {plan.size > 0 && ` · ${plan.size} в плане`}
+                </p>
+              </CardHeader>
+              <CardContent>
+                {tasks.length === 0 ? (
+                  <p className="text-xs text-muted-foreground py-4 text-center">
+                    Нет задач для распределения
+                  </p>
+                ) : (
+                  <ScrollArea className="max-h-[400px] lg:max-h-[calc(100vh-280px)]">
+                    <div className="space-y-2 pr-2">
+                      {tasks.map((task) => {
+                        const planAllocs = plan.get(task.id) ?? []
+                        const planMinutes = planAllocs.reduce((s, a) => s + a.minutes, 0)
+                        const totalCovered = task.distributed_minutes + planMinutes
+                        const pct = task.planned_minutes > 0
+                          ? Math.min(100, Math.round((totalCovered / task.planned_minutes) * 100))
+                          : 0
+                        const isFullyCovered = totalCovered >= task.planned_minutes
+                        return (
+                          <div
+                            key={task.id}
+                            className={cn(
+                              "rounded-md border p-2 text-xs",
+                              isFullyCovered ? "border-success/40 bg-success/5" : "bg-card",
+                            )}
+                          >
+                            <div className="flex items-start justify-between gap-2 mb-1">
+                              <div className="font-medium leading-tight truncate flex-1">
+                                {task.title}
+                              </div>
+                              <span
+                                className={cn(
+                                  "text-[10px] font-medium shrink-0",
+                                  isFullyCovered ? "text-success" : "text-muted-foreground",
+                                )}
+                              >
+                                {pct}%
+                              </span>
+                            </div>
+                            <div className="text-[10px] text-muted-foreground mb-1 flex items-center gap-1">
+                              <MapPin className="size-2.5" />
+                              <span className="truncate">{task.zone_name}</span>
+                              <span className="text-border">·</span>
+                              <span>
+                                {formatHM(totalCovered, t)} / {formatHM(task.planned_minutes, t)}
+                              </span>
+                            </div>
+                            <div className="h-1 bg-muted rounded-full overflow-hidden">
+                              <div
+                                className={cn(
+                                  "h-full transition-all",
+                                  isFullyCovered ? "bg-success" : "bg-primary",
+                                )}
+                                style={{ width: `${pct}%` }}
+                              />
+                            </div>
+                            {planAllocs.length > 0 && (
+                              <div className="mt-1.5 text-[10px] text-primary">
+                                В плане: {planAllocs.length} назначен{planAllocs.length === 1 ? "ие" : "ия"} (+{formatHM(planMinutes, t)})
+                              </div>
+                            )}
+                          </div>
+                        )
+                      })}
+                    </div>
+                  </ScrollArea>
+                )}
               </CardContent>
             </Card>
-          ) : (
-            <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-              {employees.map((emp) => {
-                const empPlanTasks: { taskId: string; title: string; minutes: number }[] = []
-                for (const [tid, allocs] of plan) {
-                  const myAlloc = allocs.find((a) => a.userId === emp.user.id)
-                  if (myAlloc) {
-                    const task = tasks.find((tt) => tt.id === tid)
-                    if (task) {
-                      empPlanTasks.push({
-                        taskId: tid,
-                        title: task.title,
-                        minutes: myAlloc.minutes,
-                      })
-                    }
-                  }
-                }
-                return (
-                  <EmployeeBigCard
-                    key={emp.user.id}
-                    employee={emp}
-                    planMin={planMinByUser.get(emp.user.id) ?? 0}
-                    planTasks={empPlanTasks}
-                    onClick={() => handleSelectEmployee(emp)}
-                    t={t}
-                  />
-                )
-              })}
-            </div>
-          )}
+          </div>
         </div>
       )}
 
