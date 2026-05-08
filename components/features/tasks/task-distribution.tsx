@@ -363,12 +363,31 @@ function TaskCard({ task, planAllocations, onDistribute, disabled, t }: TaskCard
   const distributedPct = (task.distributed_minutes / task.planned_minutes) * 100
   const planPct = (planMin / task.planned_minutes) * 100
 
+  const cardDisabled = disabled || (isFullyDistributed && planMin === 0)
+  const handleCardClick = () => {
+    if (!cardDisabled) onDistribute()
+  }
+
   return (
-    <Card className={cn(
-      "transition-shadow hover:shadow-md",
-      isFullyDistributed && planMin === 0 && "opacity-60",
-      planMin > 0 && "ring-1 ring-primary"
-    )}>
+    <Card
+      role="button"
+      tabIndex={cardDisabled ? -1 : 0}
+      onClick={handleCardClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault()
+          handleCardClick()
+        }
+      }}
+      aria-disabled={cardDisabled}
+      className={cn(
+        "transition-shadow",
+        cardDisabled
+          ? "cursor-not-allowed opacity-60"
+          : "cursor-pointer hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+        planMin > 0 && "ring-1 ring-primary",
+      )}
+    >
       <CardContent className="p-4">
         {/* Title and source badge */}
         <div className="flex items-start justify-between gap-2 mb-2">
@@ -406,62 +425,34 @@ function TaskCard({ task, planAllocations, onDistribute, disabled, t }: TaskCard
         </div>
 
         {/* Distribution progress — две полосы стэком: уже сохранено (primary)
-            + в плане (warning). Полная заливка = task будет полностью разнесена
-            после подтверждения плана. */}
-        <div className="mb-3">
-          <div className="flex items-center justify-between text-xs mb-1">
-            <span className="text-muted-foreground">
-              {isFullyDistributed
-                ? planMin > 0
-                  ? t("taskCard.full_after_confirm")
-                  : t("taskCard.fully_distributed")
-                : t("taskCard.unassigned_hours", { remaining: remainingLabel, total: totalLabel })}
+            + в плане (primary/40). Полная заливка = task будет полностью
+            разнесена после подтверждения плана. Под прогрессом — статусная
+            подпись + Check icon если 100%. Кнопки нет: вся карточка кликабельная,
+            это даёт паритет с by-employee представлением. */}
+        <div className="flex items-center justify-between text-xs mb-1.5">
+          <span className="text-muted-foreground">
+            {isFullyDistributed
+              ? planMin > 0
+                ? t("taskCard.full_after_confirm")
+                : t("taskCard.fully_distributed")
+              : t("taskCard.unassigned_hours", { remaining: remainingLabel, total: totalLabel })}
+          </span>
+          {isFullyDistributed && planMin === 0 && (
+            <span className="flex items-center gap-1 text-success font-medium">
+              <Check className="size-3" />
             </span>
-          </div>
-          {/* Saved (primary) + staged (primary/40) — обе заливки одного hue,
-              разная opacity чтоб не конфликтовать. */}
-          <div className="h-1.5 bg-muted rounded-full overflow-hidden flex">
-            <div
-              className="h-full bg-primary transition-all"
-              style={{ width: `${distributedPct}%` }}
-            />
-            <div
-              className="h-full bg-primary/40 transition-all"
-              style={{ width: `${planPct}%` }}
-            />
-          </div>
+          )}
         </div>
-
-        {/* Distribute button */}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <div>
-                <Button
-                  size="sm"
-                  variant={isFullyDistributed && planMin === 0 ? "outline" : "default"}
-                  className="w-full"
-                  onClick={onDistribute}
-                  disabled={disabled || (isFullyDistributed && planMin === 0)}
-                >
-                  {isFullyDistributed && planMin === 0 ? (
-                    <>
-                      <Check className="size-4 mr-1.5" />
-                      {t("taskCard.fully_distributed")}
-                    </>
-                  ) : planMin > 0 ? (
-                    t("taskCard.edit_plan")
-                  ) : (
-                    t("taskCard.distribute")
-                  )}
-                </Button>
-              </div>
-            </TooltipTrigger>
-            {disabled && (
-              <TooltipContent>{t("forbidden.tooltip")}</TooltipContent>
-            )}
-          </Tooltip>
-        </TooltipProvider>
+        <div className="h-1.5 bg-muted rounded-full overflow-hidden flex">
+          <div
+            className="h-full bg-primary transition-all"
+            style={{ width: `${distributedPct}%` }}
+          />
+          <div
+            className="h-full bg-primary/40 transition-all"
+            style={{ width: `${planPct}%` }}
+          />
+        </div>
       </CardContent>
     </Card>
   )
@@ -973,93 +964,6 @@ function MobileUtilizationCollapsible(props: MobileUtilizationCollapsibleProps) 
   )
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// TaskZoneGroup — collapsible секция по зоне с summary в шапке
-// ─────────────────────────────────────────────────────────────────────────────
-
-interface TaskZoneGroupProps {
-  zoneName: string
-  tasks: UnassignedTask[]
-  plan: Map<string, TaskDistributionAllocation[]>
-  onDistribute: (task: UnassignedTask) => void
-  disabled: boolean
-  t: ReturnType<typeof useTranslations>
-}
-
-function TaskZoneGroup({ zoneName, tasks, plan, onDistribute, disabled, t }: TaskZoneGroupProps) {
-  // Collapsed by default — при 25+ задач на 11+ зон открытый список заваливает экран.
-  // User раскроет нужные зоны.
-  const [open, setOpen] = React.useState(false)
-
-  const totalPlanned = tasks.reduce((s, tt) => s + tt.planned_minutes, 0)
-  const totalDistributed = tasks.reduce((s, tt) => s + tt.distributed_minutes, 0)
-  const totalInPlan = tasks.reduce((s, tt) => {
-    const planAllocs = plan.get(tt.id) ?? []
-    return s + planAllocs.reduce((ss, a) => ss + a.minutes, 0)
-  }, 0)
-  const fullyCovered = totalDistributed + totalInPlan >= totalPlanned
-  const coveragePct = totalPlanned > 0
-    ? Math.min(100, Math.round(((totalDistributed + totalInPlan) / totalPlanned) * 100))
-    : 0
-
-  return (
-    <Collapsible open={open} onOpenChange={setOpen} className="border rounded-lg overflow-hidden">
-      <CollapsibleTrigger asChild>
-        <button className="w-full flex items-center gap-3 px-3 py-2.5 bg-muted/30 hover:bg-muted/50 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
-          {open ? (
-            <ChevronDown className="size-4 text-muted-foreground shrink-0" />
-          ) : (
-            <ChevronRight className="size-4 text-muted-foreground shrink-0" />
-          )}
-          <div className="flex items-center gap-2 min-w-0 flex-1">
-            <MapPin className="size-3.5 text-muted-foreground shrink-0" />
-            <span className="text-sm font-medium truncate">{zoneName}</span>
-            <Badge variant="secondary" className="text-xs shrink-0">
-              {tasks.length}
-            </Badge>
-          </div>
-          <div className="flex items-center gap-2 shrink-0">
-            <span className="text-xs text-muted-foreground hidden sm:inline">
-              {t("zone_group.summary", {
-                distributed: formatHM(totalDistributed + totalInPlan, t),
-                planned: formatHM(totalPlanned, t),
-              })}
-            </span>
-            <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
-              <div
-                className={cn(
-                  "h-full transition-all",
-                  fullyCovered ? "bg-success" : "bg-primary"
-                )}
-                style={{ width: `${coveragePct}%` }}
-              />
-            </div>
-            <span className={cn(
-              "text-xs font-medium shrink-0 w-10 text-right",
-              fullyCovered ? "text-success" : "text-muted-foreground"
-            )}>
-              {coveragePct}%
-            </span>
-          </div>
-        </button>
-      </CollapsibleTrigger>
-      <CollapsibleContent>
-        <div className="grid gap-3 p-3 sm:grid-cols-2">
-          {tasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              planAllocations={plan.get(task.id) ?? []}
-              onDistribute={() => onDistribute(task)}
-              disabled={disabled}
-              t={t}
-            />
-          ))}
-        </div>
-      </CollapsibleContent>
-    </Collapsible>
-  )
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // EmployeeSheet — взгляд «от сотрудника к задачам»: его план + add/remove
@@ -1989,28 +1893,26 @@ export function TaskDistribution() {
                 </CardContent>
               </Card>
             ) : (
-              <div className="space-y-3">
-                {Array.from(
-                  tasks.reduce((acc, task) => {
-                    const zone = task.zone_name ?? t("zone_group.no_zone")
-                    if (!acc.has(zone)) acc.set(zone, [])
-                    acc.get(zone)!.push(task)
-                    return acc
-                  }, new Map<string, UnassignedTask[]>())
-                )
-                  .sort(([za, ta], [zb, tb]) => {
-                    const ra = ta.some((t) => t.remaining_minutes > 0)
-                    const rb = tb.some((t) => t.remaining_minutes > 0)
-                    if (ra !== rb) return ra ? -1 : 1
-                    return za.localeCompare(zb)
+              // Плоский список задач — клик по карточке открывает DistributionSheet.
+              // Сортировка: сначала нераспределённые (remaining_minutes > 0),
+              // потом по приоритету (1 = критично), потом по зоне.
+              <div className="grid gap-3 sm:grid-cols-2">
+                {[...tasks]
+                  .sort((a, b) => {
+                    const ar = a.remaining_minutes > 0 ? 0 : 1
+                    const br = b.remaining_minutes > 0 ? 0 : 1
+                    if (ar !== br) return ar - br
+                    const ap = a.priority ?? 50
+                    const bp = b.priority ?? 50
+                    if (ap !== bp) return ap - bp
+                    return (a.zone_name ?? "").localeCompare(b.zone_name ?? "")
                   })
-                  .map(([zone, zoneTasks]) => (
-                    <TaskZoneGroup
-                      key={zone}
-                      zoneName={zone}
-                      tasks={zoneTasks}
-                      plan={plan}
-                      onDistribute={handleDistribute}
+                  .map((task) => (
+                    <TaskCard
+                      key={task.id}
+                      task={task}
+                      planAllocations={plan.get(task.id) ?? []}
+                      onDistribute={() => handleDistribute(task)}
                       disabled={!canEdit}
                       t={t}
                     />
