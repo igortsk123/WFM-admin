@@ -1,12 +1,10 @@
 name: Daily LAMA snapshot fetch
 
 on:
-  # Каждый день в 22:00 UTC = 05:00 по Томску (на час до 06:00 кофе/брифинга,
-  # за 2 часа до открытия 07:00 — данные уже актуальные к началу смены).
-  # Fetch ~30 мин + regen <1 мин + deploy ~5 мин → live к 05:35 Tomsk.
-  schedule:
-    - cron: "0 22 * * *"
-  # Manual trigger для теста / форсированного обновления через Actions UI
+  # Daily cron работает на сервере 193.160.208.41 (см. tools/lama/cron-daily.sh
+  # + crontab `0 22 * * *`). Там fetch идёт ~30 мин против ~60+ на GitHub
+  # runner (LAMA API даёт более жёсткий rate-limit для US IP).
+  # Здесь — только manual workflow_dispatch для bootstrap / экстренного теста.
   workflow_dispatch:
 
 # Одновременно только один fetch — параллельный fetch может дать
