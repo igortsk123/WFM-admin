@@ -1,16 +1,20 @@
-"""LAMA snapshot fetcher — sequential pull всех 21 магазина с rate-limit.
+"""LAMA snapshot fetcher — sequential pull всех активных магазинов.
 
 Сохраняет snapshot в .lama_snapshots/{YYYY-MM-DD}.json. Каждый snapshot —
 полные employees + tasks на этот день. Накапливаем — потом lama-stats.py
 агрегирует медианы по всей истории.
 
 Использование:
-    python tools/lama/fetch-snapshot.py
+    python tools/lama/fetch-snapshot.py                    # все активные
     python tools/lama/fetch-snapshot.py --shop-codes 0001,0002
+    python tools/lama/fetch-snapshot.py --limit 30         # первые 30 (для теста)
 
-Rate-limit: 2 сек между запросами /employee/, 1.5 сек между /shift/ /tasks/.
+Список магазинов берётся из /shops/ (133 объекта, фильтруем is_active=true).
+Раньше скрипт хардкодил range(1, 31) и брал лишь 21 магазин из 133!
+
+Rate-limit: 2 сек между /employee/, 1.5 сек между /shift/ /tasks/.
 LAMA блокирует за parallel burst, sequential ОК.
-Полный fetch ~5-10 мин на 21 магазин.
+Полный fetch ~30-60 мин на 130 магазинов.
 """
 import argparse, urllib.request, json, sys, io, time
 from datetime import datetime, timezone
@@ -36,16 +40,32 @@ def get(path: str, delay: float = 1.5):
         return None
 
 
+def fetch_active_shop_codes() -> list[str]:
+    """GET /shops/ → коды только активных магазинов, отсортированы."""
+    print("Fetching shop list from /shops/...", file=sys.stderr, flush=True)
+    raw = get("/shops/", delay=0.5)
+    if not isinstance(raw, list):
+        print("  ERR: /shops/ не вернул list, fallback на 0001-0185", file=sys.stderr)
+        return [f"{n:04d}" for n in range(1, 186)]
+    active = [s.get("code", "") for s in raw if s.get("is_active") and s.get("code")]
+    # Аномальный код "7" (без leading zeros) — пропускаем, он скорее тестовый
+    active = [c for c in active if c != "7"]
+    return sorted(set(active))
+
+
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--shop-codes", help="Comma-separated shop codes (default: 0001-0030)")
+    parser.add_argument("--shop-codes", help="Comma-separated shop codes (default: все is_active из /shops/)")
+    parser.add_argument("--limit", type=int, help="Ограничить число магазинов (для теста)")
     parser.add_argument("--out", help="Output filename (default: today YYYY-MM-DD.json)")
     args = parser.parse_args()
 
     if args.shop_codes:
         codes = args.shop_codes.split(",")
     else:
-        codes = [f"{n:04d}" for n in range(1, 31)]
+        codes = fetch_active_shop_codes()
+    if args.limit:
+        codes = codes[: args.limit]
 
     out_name = args.out or f"{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.json"
     out_path = SNAPSHOT_DIR / out_name
@@ -56,7 +76,7 @@ def main():
     employees = []
     tasks = []
 
-    for code in codes:
+    for idx, code in enumerate(codes, start=1):
         emps = get(f"/employee/?shop_code={code}", delay=2.0)
         if not isinstance(emps, list) or len(emps) == 0:
             continue
@@ -64,7 +84,7 @@ def main():
         first_pos = (first_emp.get("positions") or [{}])[0]
         shop_name = first_pos.get("shop_name", "?")
         shops.append(code)
-        print(f"  {code}: {shop_name} ({len(emps)} emps)", file=sys.stderr, flush=True)
+        print(f"  [{idx}/{len(codes)}] {code}: {shop_name} ({len(emps)} emps)", file=sys.stderr, flush=True)
 
         for e in emps:
             for pos in e.get("positions", []):
