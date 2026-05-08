@@ -52,17 +52,56 @@ jobs:
             git log -1 --oneline
             echo "::endgroup::"
 
+            echo "::group::Ensure docker buildx (idempotent)"
+            # buildx нужен для BuildKit cache mounts (.next/cache, npm cache).
+            # Установка БИНАРНИКОМ в user-local cli-plugins — НЕ трогает docker
+            # daemon, НЕ требует sudo, НЕ перезапускает другие контейнеры на сервере.
+            if ! docker buildx version >/dev/null 2>&1; then
+              echo "buildx отсутствует — ставим user-local binary"
+
+              # Snapshot других контейнеров ДО установки (sanity check).
+              CONTAINERS_BEFORE=$(docker ps --format '{{.Names}}' | sort | tr '\n' ',' | sed 's/,$//')
+              echo "Running containers before: $CONTAINERS_BEFORE"
+
+              mkdir -p ~/.docker/cli-plugins
+              # Pin стабильную версию (не latest — чтобы избежать сюрпризов).
+              BUILDX_VERSION="v0.17.1"
+              if ! curl -sSL --fail \
+                "https://github.com/docker/buildx/releases/download/${BUILDX_VERSION}/buildx-${BUILDX_VERSION}.linux-amd64" \
+                -o ~/.docker/cli-plugins/docker-buildx; then
+                echo "ERROR: не смог скачать buildx binary — пропускаем, билд пойдёт legacy путём"
+              else
+                chmod +x ~/.docker/cli-plugins/docker-buildx
+                docker buildx version || echo "WARN: buildx скачан но не работает"
+              fi
+
+              # Verify ничего не упало.
+              CONTAINERS_AFTER=$(docker ps --format '{{.Names}}' | sort | tr '\n' ',' | sed 's/,$//')
+              if [ "$CONTAINERS_BEFORE" != "$CONTAINERS_AFTER" ]; then
+                echo "WARNING: список контейнеров изменился!"
+                echo "Before: $CONTAINERS_BEFORE"
+                echo "After:  $CONTAINERS_AFTER"
+              else
+                echo "OK: другие контейнеры не тронуты ($CONTAINERS_BEFORE)"
+              fi
+            else
+              echo "buildx уже установлен: $(docker buildx version 2>&1 | head -1)"
+            fi
+            echo "::endgroup::"
+
             echo "::group::Pre-build cleanup"
-            # Чистим dangling images + старый builder cache ДО build, чтобы
-            # избежать «no space left on device» при docker build (50G partition
-            # быстро забивается интермедиатами). Tagged images (:latest, :prev)
-            # НЕ удаляются — `prune` без `-a` чистит только dangling.
+            # Чистим dangling images. Builder cache ослаблен с 2h до 24h, чтобы
+            # BuildKit cache mounts (.next/cache, npm cache из Dockerfile) жили
+            # между деплоями в течение дня. Tagged images НЕ удаляются.
             docker image prune -f 2>&1 | tail -3
-            docker builder prune -af --filter "until=2h" 2>&1 | tail -3
+            docker builder prune -f --filter "until=24h" 2>&1 | tail -3
             df -h / | tail -1
             echo "::endgroup::"
 
             echo "::group::Build new image"
+            # DOCKER_BUILDKIT=1 — нужен для --mount=type=cache в Dockerfile.
+            # buildx ставится в шаге выше (idempotent).
+            export DOCKER_BUILDKIT=1
             # Не использую `| tail` или PIPESTATUS — appleboy/ssh-action иногда
             # запускает скрипт в sh, где PIPESTATUS не работает.
             # `if !` достоверно ловит exit-code в любом POSIX shell.
