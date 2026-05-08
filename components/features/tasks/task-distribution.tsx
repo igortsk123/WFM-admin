@@ -279,6 +279,38 @@ function formatShiftTime(isoStart: string, isoEnd: string): string {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Store type — определяет «тип» магазина из format_shop_name (LAMA API)
+// или fallback на префикс имени:
+//   Г, ГС → Гипермаркет
+//   Д     → Дискаунтер
+//   С, СС → Супермаркет (бренд СПАР для base mocks)
+//   У, УФ → Универсам
+// Возвращает одну из нормализованных категорий.
+// ─────────────────────────────────────────────────────────────────────────────
+
+type StoreTypeCategory = "Гипермаркет" | "Супермаркет" | "Универсам" | "Дискаунтер" | "Прочие"
+
+function detectStoreType(store: Store): StoreTypeCategory {
+  // 1. Из API format_shop_name (LAMA даёт точно)
+  const fs = (store.format_shop_name ?? "").toLowerCase()
+  if (fs.includes("гипермаркет")) return "Гипермаркет"
+  if (fs.includes("дискаунтер")) return "Дискаунтер"
+  if (fs.includes("универсам")) return "Универсам"
+  if (fs.includes("супермаркет")) return "Супермаркет"
+  // 2. Fallback на admin enum
+  if (store.object_format === "HYPERMARKET") return "Гипермаркет"
+  if (store.object_format === "SUPERMARKET") return "Супермаркет"
+  if (store.object_format === "CONVENIENCE") return "Универсам"
+  // 3. Fallback на префикс имени
+  const prefix = (store.name ?? "").split(/[\s\-,]/, 1)[0].toUpperCase()
+  if (prefix === "Г" || prefix === "ГС") return "Гипермаркет"
+  if (prefix === "Д") return "Дискаунтер"
+  if (prefix === "У" || prefix === "УФ") return "Универсам"
+  if (prefix === "С" || prefix === "СС" || prefix === "СПАР") return "Супермаркет"
+  return "Прочие"
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // StoreCombobox
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -1598,6 +1630,9 @@ export function TaskDistribution() {
   // State
   const [stores, setStores] = React.useState<Store[]>([])
   const [selectedStoreId, setSelectedStoreIdLocal] = React.useState<number | null>(null)
+  // Фильтры магазинов в toolbar — по городу и по типу.
+  const [cityFilter, setCityFilter] = React.useState<string>("all")
+  const [typeFilter, setTypeFilter] = React.useState<string>("all")
   // Wrap setter — sync local + URL context
   const setSelectedStoreId = React.useCallback((id: number | null) => {
     setSelectedStoreIdLocal(id)
@@ -1871,10 +1906,37 @@ export function TaskDistribution() {
         ]}
       />
 
+      {/* Filters bar — город + тип магазина (фильтр для StoreCombobox ниже) */}
+      <div className="flex flex-col sm:flex-row gap-2 sm:items-center text-xs">
+        <div className="text-muted-foreground shrink-0">Город:</div>
+        <Tabs value={cityFilter} onValueChange={setCityFilter} className="w-full sm:w-auto">
+          <TabsList className="grid w-full sm:w-auto sm:inline-grid grid-cols-4 h-8">
+            <TabsTrigger value="all" className="text-xs h-7">Все</TabsTrigger>
+            <TabsTrigger value="Томск" className="text-xs h-7">Томск</TabsTrigger>
+            <TabsTrigger value="Северск" className="text-xs h-7">Северск</TabsTrigger>
+            <TabsTrigger value="Новосибирск" className="text-xs h-7">Новосибирск</TabsTrigger>
+          </TabsList>
+        </Tabs>
+        <div className="text-muted-foreground shrink-0 sm:ml-2">Тип:</div>
+        <Tabs value={typeFilter} onValueChange={setTypeFilter} className="w-full sm:w-auto">
+          <TabsList className="grid w-full sm:w-auto sm:inline-grid grid-cols-5 h-8">
+            <TabsTrigger value="all" className="text-xs h-7">Все</TabsTrigger>
+            <TabsTrigger value="Гипермаркет" className="text-xs h-7">Гипер</TabsTrigger>
+            <TabsTrigger value="Супермаркет" className="text-xs h-7">Супер</TabsTrigger>
+            <TabsTrigger value="Универсам" className="text-xs h-7">Универсам</TabsTrigger>
+            <TabsTrigger value="Дискаунтер" className="text-xs h-7">Дискаунтер</TabsTrigger>
+          </TabsList>
+        </Tabs>
+      </div>
+
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
         <StoreCombobox
-          stores={stores}
+          stores={stores.filter((s) => {
+            if (cityFilter !== "all" && s.city !== cityFilter) return false
+            if (typeFilter !== "all" && detectStoreType(s) !== typeFilter) return false
+            return true
+          })}
           value={selectedStoreId}
           onChange={setSelectedStoreId}
           placeholder={t("toolbar.store_placeholder")}
