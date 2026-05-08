@@ -903,7 +903,7 @@ function DistributionSheet({
                   onChange={(e) => setZoneFilterEnabled(e.target.checked)}
                   className="size-4"
                 />
-                <span>Только подходящие зоны</span>
+                <span>Только подходящие сотрудники</span>
               </label>
               <span className="text-muted-foreground">
                 {zoneFilterEnabled
@@ -1248,7 +1248,7 @@ function EmployeeSheet({
                 onChange={(e) => setZoneFilterEnabled(e.target.checked)}
                 className="size-4"
               />
-              <span>Только подходящие зоны</span>
+              <span>Только подходящие задачи</span>
             </label>
             <span className="text-muted-foreground">
               {zoneFilterEnabled
