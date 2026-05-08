@@ -30,6 +30,7 @@ import {
 import type { FunctionalRole, Store } from "@/lib/types"
 import type { UnassignedTask, EmployeeUtilization, TaskDistributionAllocation } from "@/lib/api/distribution"
 import type { UnassignedTaskBlock } from "@/lib/types"
+import { BlockDistributeSheet } from "./block-distribute-sheet"
 import {
   getStoreUnassignedTasks,
   getStoreEmployeesUtilization,
@@ -1582,6 +1583,11 @@ export function TaskDistribution() {
   // Нераспределённые блоки задач из LAMA — основная сущность для распределения.
   // Когда блок распределяется, он лопается на N Task'ов в MOCK_TASKS.
   const [blocks, setBlocks] = React.useState<UnassignedTaskBlock[]>([])
+  // Фильтр магазинов по городу (Все / Томск / Северск / Новосибирск).
+  const [cityFilter, setCityFilter] = React.useState<string>("all")
+  // Block distribute sheet
+  const [selectedBlock, setSelectedBlock] = React.useState<UnassignedTaskBlock | null>(null)
+  const [blockSheetOpen, setBlockSheetOpen] = React.useState(false)
   const [isLoadingStores, setIsLoadingStores] = React.useState(true)
   const [isLoadingTasks, setIsLoadingTasks] = React.useState(false)
   const [isLoadingEmployees, setIsLoadingEmployees] = React.useState(false)
@@ -1635,7 +1641,8 @@ export function TaskDistribution() {
     async function loadStores() {
       setIsLoadingStores(true)
       try {
-        const response = await getStores({})
+        // page_size 200 чтобы получить все 133 ЛАМА-магазина (default 20).
+        const response = await getStores({ page_size: 200 })
         setStores(response.data)
         // Default: URL ?store=N если он валидный для текущего org-scope, иначе
         // первый магазин из загруженных (распределение «по сети» бессмысленно —
@@ -1853,8 +1860,17 @@ export function TaskDistribution() {
 
       {/* Toolbar */}
       <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
+        {/* Фильтр по городу — переключаем подмножество магазинов */}
+        <Tabs value={cityFilter} onValueChange={setCityFilter} className="w-full sm:w-auto">
+          <TabsList className="grid w-full sm:w-auto sm:inline-grid grid-cols-4">
+            <TabsTrigger value="all">Все</TabsTrigger>
+            <TabsTrigger value="Томск">Томск</TabsTrigger>
+            <TabsTrigger value="Северск">Северск</TabsTrigger>
+            <TabsTrigger value="Новосибирск">Новосибирск</TabsTrigger>
+          </TabsList>
+        </Tabs>
         <StoreCombobox
-          stores={stores}
+          stores={cityFilter === "all" ? stores : stores.filter((s) => s.city === cityFilter)}
           value={selectedStoreId}
           onChange={setSelectedStoreId}
           placeholder={t("toolbar.store_placeholder")}
@@ -1986,28 +2002,49 @@ export function TaskDistribution() {
                         <Badge variant="secondary">{blocks.length} блоков · {blocks.reduce((s, b) => s + b.remaining_minutes, 0)} мин</Badge>
                       </div>
                       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                        {blocks.slice(0, 12).map((block) => (
-                          <div
-                            key={block.id}
-                            className={cn(
-                              "rounded-md border bg-card p-3 text-sm transition hover:border-primary/50",
-                              block.priority && block.priority <= 3 && "border-destructive/40",
-                            )}
-                          >
-                            <div className="flex items-start justify-between gap-2">
-                              <div className="font-medium leading-tight">{block.title}</div>
-                              {block.priority && block.priority <= 3 && (
-                                <Badge variant="destructive" className="shrink-0 text-[10px]">P{block.priority}</Badge>
+                        {blocks.slice(0, 12).map((block) => {
+                          const pct = block.total_minutes > 0
+                            ? Math.round((block.distributed_minutes / block.total_minutes) * 100)
+                            : 0
+                          return (
+                            <button
+                              key={block.id}
+                              type="button"
+                              disabled={!canEdit}
+                              onClick={() => {
+                                setSelectedBlock(block)
+                                setBlockSheetOpen(true)
+                              }}
+                              className={cn(
+                                "rounded-md border bg-card p-3 text-sm transition text-left",
+                                "hover:border-primary/50 hover:shadow-sm focus:outline-none focus:ring-2 focus:ring-primary/40",
+                                "disabled:opacity-60 disabled:cursor-not-allowed",
+                                block.priority && block.priority <= 3 && "border-destructive/40",
                               )}
-                            </div>
-                            <div className="text-xs text-muted-foreground mt-1">
-                              {Math.floor(block.remaining_minutes / 60)}ч {block.remaining_minutes % 60}мин
-                              {block.distributed_minutes > 0 && (
-                                <span className="text-primary"> · {block.distributed_minutes} мин уже разложено</span>
-                              )}
-                            </div>
-                          </div>
-                        ))}
+                            >
+                              <div className="flex items-start justify-between gap-2">
+                                <div className="font-medium leading-tight">{block.title}</div>
+                                {block.priority && block.priority <= 3 && (
+                                  <Badge variant="destructive" className="shrink-0 text-[10px]">P{block.priority}</Badge>
+                                )}
+                              </div>
+                              <div className="text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                                <Clock className="size-3" />
+                                {Math.floor(block.remaining_minutes / 60)}ч {block.remaining_minutes % 60}мин
+                                {block.total_minutes !== block.remaining_minutes && (
+                                  <span className="text-primary ml-1">· {block.distributed_minutes}/{block.total_minutes} мин</span>
+                                )}
+                              </div>
+                              {/* Progress bar */}
+                              <div className="mt-2 h-1 bg-muted rounded-full overflow-hidden">
+                                <div
+                                  className="h-full bg-primary transition-all"
+                                  style={{ width: `${pct}%` }}
+                                />
+                              </div>
+                            </button>
+                          )
+                        })}
                       </div>
                       {blocks.length > 12 && (
                         <div className="text-xs text-muted-foreground text-center">
@@ -2166,6 +2203,29 @@ export function TaskDistribution() {
         onPlanChange={setPlan}
         canEdit={canEdit}
         t={t}
+      />
+
+      {/* Block Distribute Sheet — клик по карточке блока ЛАМА открывает форму
+          для разбивки блока на N задач конкретным сотрудникам */}
+      <BlockDistributeSheet
+        block={selectedBlock}
+        employees={employees}
+        open={blockSheetOpen}
+        canEdit={canEdit}
+        onClose={() => setBlockSheetOpen(false)}
+        onConfirmed={async () => {
+          // Refresh blocks + tasks после распределения
+          if (selectedStoreId !== null) {
+            const [tasksRes, blocksRes, employeesRes] = await Promise.all([
+              getStoreUnassignedTasks(selectedStoreId, currentDate),
+              getStoreUnassignedBlocks(selectedStoreId, currentDate),
+              getStoreEmployeesUtilization(selectedStoreId, currentDate),
+            ])
+            setTasks(tasksRes.data)
+            setBlocks(blocksRes.data)
+            setEmployees(employeesRes.data)
+          }
+        }}
       />
     </div>
   )
