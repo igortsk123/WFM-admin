@@ -724,25 +724,47 @@ export async function notifyOverShiftAssignment(
 // ═══════════════════════════════════════════════════════════════════
 
 /**
- * Greedy plan: sort tasks by priority asc (1 = critical), для каждой —
- * сначала кандидаты с совпадением зоны (employee.zones ∩ task.zone_name);
- * если совпадений нет — fallback на всех со свободным временем.
- * Внутри кандидатов сортировка по убыванию свободных минут (наименее
- * загруженный первым). Аллоцируем greedy пока задача не закрыта или
- * кандидаты не закончились.
+ * Greedy distribution с tier-cascade matching и balance-aware ranking.
  *
- * Возвращает план — Map<taskId, allocations>. Caller показывает план в UI
- * для подтверждения, затем коммитит через assignTaskToUser per task.
+ * Сортируем задачи по priority asc (1 = critical), затем для каждой:
+ *
+ * 1. **Match cascade** — кандидаты выбираются по убыванию релевантности:
+ *    a) Сотрудники с подходящей zone (e.user.zones ∩ task.zone_name).
+ *       В бизнес-модели LAMA permission == доступ к зоне, потому отдельно
+ *       по permissions не фильтруем — zones уже это покрывает.
+ *    b) Если задача без зоны (Касса/КСО/Менеджерские) ИЛИ по zone никого
+ *       не нашлось — fallback на work_types (e.user.work_types ∩
+ *       task.work_type_name из LAMA history).
+ *    c) Финальный fallback — все со свободным временем.
+ *
+ * 2. **Balance-aware ranking** — внутри кандидатов сортируем по relative
+ *    free ratio descending. Сотрудник с 100% свободного времени получает
+ *    раньше чем с 50% — балансирует загрузку команды равномерно вместо
+ *    жадного «один забирает всё».
+ *
+ * 3. **Two-pass chunk size** — стараемся не дробить 4ч задачу на 8 огрызков:
+ *    - **Pass 1 (preferred)**: пропускаем кандидатов у кого free < 60 мин.
+ *      Получаем «большие» куски ≥1ч на одного.
+ *    - **Pass 2 (relaxed)**: если задача не покрылась — релаксируем порог
+ *      до 30 мин, добиваем остаток (но не вторым чанком тому же человеку
+ *      в той же задаче — dedup через allocated set).
+ *    - Хвост <30 мин разрешён (лучше отдать огрызок одному, чем не
+ *      распределить).
  *
  * Не делает API-вызовов, не мутирует серверное состояние. Идемпотентна.
+ * Caller показывает план в UI для подтверждения, затем коммитит через
+ * assignTaskToUser per task.
  */
 export function autoDistribute(
   tasks: UnassignedTask[],
   employees: EmployeeUtilization[]
 ): Map<string, TaskDistributionAllocation[]> {
+  const PREFERRED_CHUNK = 60; // мин — целимся в куски ≥1ч (TIER 2)
+  const MIN_CHUNK = 30; // мин — абсолютный порог защиты от фрагментации
+
   const plan = new Map<string, TaskDistributionAllocation[]>();
 
-  // Mutable per-employee free minutes — shrinks as мы аллоцируем
+  // Mutable per-employee free minutes — shrinks как аллоцируем.
   const freeByUser = new Map<number, number>();
   for (const emp of employees) {
     freeByUser.set(
@@ -751,7 +773,7 @@ export function autoDistribute(
     );
   }
 
-  // Sort: priority asc (1 = high, 100 = low), затем zone alpha для группировки
+  // Sort: priority asc (1 = high, 100 = low), затем zone alpha для группировки.
   const sorted = [...tasks]
     .filter((t) => t.remaining_minutes > 0)
     .sort((a, b) => {
@@ -765,35 +787,73 @@ export function autoDistribute(
     let remaining = task.remaining_minutes;
     const allocations: TaskDistributionAllocation[] = [];
 
-    // Step 1: zone match (по shift zone сотрудника)
-    const zoneMatch = task.zone_name
-      ? employees.filter(
-          (e) =>
-            e.user.zones?.includes(task.zone_name!) &&
-            (freeByUser.get(e.user.id) ?? 0) > 0
-        )
-      : [];
+    // Match cascade: zone → work_type → all
+    const hasZone = !!task.zone_name && task.zone_name !== "Без зоны";
+    const hasWorkType = !!task.work_type_name;
 
-    // Step 2: fallback all available если zone match пуст
-    const candidates =
-      zoneMatch.length > 0
-        ? zoneMatch
-        : employees.filter((e) => (freeByUser.get(e.user.id) ?? 0) > 0);
+    let candidates: EmployeeUtilization[] = [];
+    if (hasZone) {
+      candidates = employees.filter(
+        (e) =>
+          e.user.zones?.includes(task.zone_name!) &&
+          (freeByUser.get(e.user.id) ?? 0) > 0,
+      );
+    }
+    if (candidates.length === 0 && hasWorkType) {
+      candidates = employees.filter(
+        (e) =>
+          e.user.work_types?.includes(task.work_type_name!) &&
+          (freeByUser.get(e.user.id) ?? 0) > 0,
+      );
+    }
+    if (candidates.length === 0) {
+      candidates = employees.filter((e) => (freeByUser.get(e.user.id) ?? 0) > 0);
+    }
 
-    // Most-free first
-    const ranked = [...candidates].sort(
-      (a, b) =>
-        (freeByUser.get(b.user.id) ?? 0) - (freeByUser.get(a.user.id) ?? 0)
-    );
+    // Balance-aware ranking: relative free ratio desc (наименее загруженный первым).
+    const ranked = [...candidates].sort((a, b) => {
+      const aRatio =
+        a.shift_total_min > 0 ? (freeByUser.get(a.user.id) ?? 0) / a.shift_total_min : 0;
+      const bRatio =
+        b.shift_total_min > 0 ? (freeByUser.get(b.user.id) ?? 0) / b.shift_total_min : 0;
+      return bRatio - aRatio;
+    });
 
+    // Track кому уже дали в этой задаче — dedup для pass 2.
+    const allocatedToThisTask = new Set<number>();
+
+    // Pass 1: preferred chunks ≥60 мин (целимся в большие куски).
     for (const emp of ranked) {
       if (remaining <= 0) break;
+      if (allocatedToThisTask.has(emp.user.id)) continue;
       const free = freeByUser.get(emp.user.id) ?? 0;
       if (free <= 0) continue;
+      // Skip если этот сотрудник может дать только мелкий слот, а задаче
+      // ещё нужно много — пропускаем его в надежде на «большой» кандидат.
+      if (free < PREFERRED_CHUNK && remaining >= PREFERRED_CHUNK) continue;
+
       const allocate = Math.min(remaining, free);
       allocations.push({ userId: emp.user.id, minutes: allocate });
       freeByUser.set(emp.user.id, free - allocate);
       remaining -= allocate;
+      allocatedToThisTask.add(emp.user.id);
+    }
+
+    // Pass 2: если задача не покрыта — релаксируем порог до MIN_CHUNK (30 мин).
+    if (remaining > 0) {
+      for (const emp of ranked) {
+        if (remaining <= 0) break;
+        if (allocatedToThisTask.has(emp.user.id)) continue;
+        const free = freeByUser.get(emp.user.id) ?? 0;
+        if (free <= 0) continue;
+        if (free < MIN_CHUNK && remaining >= MIN_CHUNK) continue;
+
+        const allocate = Math.min(remaining, free);
+        allocations.push({ userId: emp.user.id, minutes: allocate });
+        freeByUser.set(emp.user.id, free - allocate);
+        remaining -= allocate;
+        allocatedToThisTask.add(emp.user.id);
+      }
     }
 
     if (allocations.length > 0) {
