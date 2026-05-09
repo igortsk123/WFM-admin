@@ -1,7 +1,7 @@
 import type { useTranslations } from "next-intl";
 import { CalendarClock, Clock, TrendingUp, AlertTriangle } from "lucide-react";
 
-import { KpiCard } from "@/components/shared/kpi-card";
+import { KpiCardGrid, type KpiCardItem } from "@/components/shared";
 import type { PlanFactReportData } from "@/lib/api/reports";
 
 import { formatDate } from "./_shared";
@@ -24,30 +24,34 @@ export function SummaryCards({
 }) {
   const worstDayFormatted = formatDate(cards.worstDay.date);
 
-  return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-      <KpiCard
-        icon={CalendarClock}
-        label={t("summary_cards.planned_hours")}
-        value={`${cards.totalPlanned} ч`}
-      />
-      <KpiCard
-        icon={Clock}
-        label={t("summary_cards.actual_hours")}
-        value={`${cards.totalActual} ч`}
-        diff={cards.deltaPct}
-        trend={reportData.days.slice(0, 14).map((d) => d.actual_hours)}
-      />
-      <KpiCard
-        icon={TrendingUp}
-        label={t("summary_cards.avg_deviation")}
-        value={`${cards.avgDailyDelta > 0 ? "+" : ""}${cards.avgDailyDelta} ч/день`}
-      />
-      <KpiCard
-        icon={AlertTriangle}
-        label={t("summary_cards.worst_day")}
-        value={worstDayFormatted}
-      />
-    </div>
-  );
+  const items: KpiCardItem[] = [
+    {
+      key: "planned_hours",
+      icon: CalendarClock,
+      label: t("summary_cards.planned_hours"),
+      value: `${cards.totalPlanned} ч`,
+    },
+    {
+      key: "actual_hours",
+      icon: Clock,
+      label: t("summary_cards.actual_hours"),
+      value: `${cards.totalActual} ч`,
+      diff: cards.deltaPct,
+      trend: reportData.days.slice(0, 14).map((d) => d.actual_hours),
+    },
+    {
+      key: "avg_deviation",
+      icon: TrendingUp,
+      label: t("summary_cards.avg_deviation"),
+      value: `${cards.avgDailyDelta > 0 ? "+" : ""}${cards.avgDailyDelta} ч/день`,
+    },
+    {
+      key: "worst_day",
+      icon: AlertTriangle,
+      label: t("summary_cards.worst_day"),
+      value: worstDayFormatted,
+    },
+  ];
+
+  return <KpiCardGrid items={items} />;
 }
