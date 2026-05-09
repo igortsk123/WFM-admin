@@ -43,7 +43,7 @@ import {
   initialFilters,
   type FilterState,
 } from "./audit-log/_shared";
-import { AuditSkeleton } from "./audit-log/audit-skeleton";
+import { ListSkeleton } from "@/components/shared/list-skeleton";
 import { EventDetailPanel } from "./audit-log/event-detail-panel";
 import { EventRow } from "./audit-log/event-row";
 import {
@@ -364,7 +364,7 @@ export function AuditLog() {
           {/* LEFT: Event list */}
           <div className="lg:col-span-2 flex flex-col gap-0 rounded-lg border bg-card overflow-hidden">
             {loading ? (
-              <AuditSkeleton />
+              <ListSkeleton items={8} avatar lines={1} trailing />
             ) : error ? (
               <div className="p-6 flex flex-col items-center gap-4">
                 <Alert variant="destructive">

@@ -34,7 +34,7 @@ import {
   SOURCE_OPTIONS,
   TAB_STATUS_MAP,
 } from "./applications-list/_shared"
-import { ListSkeleton } from "./applications-list/list-skeleton"
+import { TableSkeleton } from "@/components/shared/table-skeleton"
 import { TabsBar } from "./applications-list/tabs-bar"
 import { FiltersBar } from "./applications-list/filters-bar"
 import { buildApplicationColumns } from "./applications-list/columns"
@@ -377,7 +377,7 @@ export function ApplicationsList() {
 
         {/* Table area */}
         {isLoading ? (
-          <ListSkeleton />
+          <TableSkeleton />
         ) : isError ? (
           <div className="flex flex-col items-center gap-4 py-16 text-center">
             <ServerCrash className="size-10 text-muted-foreground" aria-hidden="true" />

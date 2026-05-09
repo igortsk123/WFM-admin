@@ -23,12 +23,13 @@ import { PageHeader } from "@/components/shared/page-header"
 import { EmptyState } from "@/components/shared/empty-state"
 import { ResponsiveDataTable } from "@/components/shared/responsive-data-table"
 
+import { TableSkeleton } from "@/components/shared/table-skeleton"
+
 import {
   AgentSheet,
   BlockDialog,
   FiltersBar,
   MobileCard,
-  TableSkeleton,
   buildColumns,
   TAB_STATUS_MAP,
   type AgentTab,

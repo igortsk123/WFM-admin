@@ -33,7 +33,7 @@ import { FiltersBar } from "./budget-limits/filters-bar";
 import { HistorySheet } from "./budget-limits/history-sheet";
 import { LimitForm } from "./budget-limits/edit-dialog";
 import { LimitsTable } from "./budget-limits/limits-table";
-import { LoadingSkeleton } from "./budget-limits/skeleton";
+import { TableSkeleton } from "@/components/shared/table-skeleton";
 import {
   TODAY_ISO,
   isExpired,
@@ -288,7 +288,7 @@ function BudgetLimitsInner({ canWrite }: InnerProps) {
 
         {/* Content */}
         {loading ? (
-          <LoadingSkeleton />
+          <TableSkeleton rows={5} rowHeight="h-14" />
         ) : filteredLimits.length === 0 ? (
           tab === "active" ? (
             <EmptyState

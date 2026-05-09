@@ -1,5 +1,6 @@
 "use client"
 
+import { CardGridSkeleton } from "@/components/shared/card-grid-skeleton"
 import { Skeleton } from "@/components/ui/skeleton"
 
 export function WorkTypesListSkeleton() {
@@ -15,11 +16,7 @@ export function WorkTypesListSkeleton() {
           <Skeleton className="h-9 w-44" />
         </div>
       </div>
-      <div className="grid grid-cols-3 gap-4">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <Skeleton key={i} className="h-24 w-full rounded-xl" />
-        ))}
-      </div>
+      <CardGridSkeleton count={3} columns={3} height="h-24" />
       <Skeleton className="h-10 w-full" />
       <Skeleton className="h-80 w-full rounded-lg" />
     </div>

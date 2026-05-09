@@ -1,5 +1,4 @@
 export { ContractBadge } from "./contract-badge"
-export { TableSkeleton } from "./skeleton"
 export { BlockDialog } from "./block-dialog"
 export { AgentSheet } from "./agent-sheet"
 export { RowActions } from "./row-actions"
