@@ -11,5 +11,9 @@ tsconfig.tsbuildinfo
 .lama_snapshots/
 
 # Local-only directories
-"wfm-develop mobile *"/
+wfm-develop mobile *
 Производство*/
+
+# Claude Code agent worktrees (per-agent isolated copies)
+.claude/worktrees/
+.claude/scheduled_tasks.lock

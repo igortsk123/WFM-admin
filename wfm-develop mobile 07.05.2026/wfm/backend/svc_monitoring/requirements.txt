@@ -1,8 +1,0 @@
-fastapi==0.115.6
-uvicorn[standard]==0.34.0
-websockets==14.1
-pydantic==2.10.4
-pydantic-settings==2.7.0
-httpx==0.28.1
-psutil>=5.9
-semetrics-sdk>=0.1.0

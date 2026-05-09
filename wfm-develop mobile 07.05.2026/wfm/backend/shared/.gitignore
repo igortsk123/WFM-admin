@@ -1,4 +1,0 @@
-# Secrets
-bv_public_key.pem
-*.pem
-!*.pem.example
