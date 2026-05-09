@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { Globe, SearchX, AlertCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -52,6 +53,12 @@ export function TabGlobal({
   onCreate,
 }: TabGlobalProps) {
   const t = useTranslations("screen.zones");
+  // Локальный mirror для search input — родитель оборачивает onSearchChange
+  // в startTransition, без mirror Input лагает.
+  const [searchInput, setSearchInput] = React.useState(search);
+  React.useEffect(() => {
+    setSearchInput((prev) => (prev === search ? prev : search));
+  }, [search]);
 
   return (
     <div className="mt-0 flex flex-col gap-4">
@@ -64,8 +71,12 @@ export function TabGlobal({
         <Input
           className="w-full sm:max-w-xs"
           placeholder={t("filters.search_placeholder")}
-          value={search}
-          onChange={(e) => onSearchChange(e.target.value)}
+          value={searchInput}
+          onChange={(e) => {
+            const v = e.target.value;
+            setSearchInput(v);
+            onSearchChange(v);
+          }}
         />
         {hasFilters && (
           <Button

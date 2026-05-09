@@ -95,7 +95,12 @@ export function DataTableShell<TData>({
   }
 
   return (
-    <div className={cn("flex flex-col gap-0", className)}>
+    <div
+      className={cn(
+        "flex flex-col gap-0 transition-opacity duration-200",
+        className
+      )}
+    >
       <div className="rounded-lg border border-border overflow-hidden">
         <Table>
           <TableHeader>
@@ -154,7 +159,10 @@ export function DataTableShell<TData>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  className={cn(onRowClick && "cursor-pointer")}
+                  className={cn(
+                    "animate-in fade-in",
+                    onRowClick && "cursor-pointer"
+                  )}
                   onClick={(e) => onRowClick?.(row.original, e)}
                 >
                   {row.getVisibleCells().map((cell) => (

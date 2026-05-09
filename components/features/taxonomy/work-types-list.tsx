@@ -43,6 +43,8 @@ import { WorkTypeDeleteDialog } from "./work-types-list/delete-dialog"
 export function WorkTypesList() {
   const t = useTranslations("screen.workTypes")
   const tCommon = useTranslations("common")
+  // useTransition — фильтры/поиск как non-urgent.
+  const [, startTransition] = React.useTransition()
 
   // ── State ────────────────────────────────────────────────────────
   const [items, setItems] = React.useState<WorkTypeWithCount[]>([])
@@ -298,16 +300,20 @@ export function WorkTypesList() {
       {/* Toolbar (search + filters + chips) */}
       <FiltersBar
         viewMode={viewMode}
-        onViewModeChange={setViewMode}
+        onViewModeChange={(v) => startTransition(() => setViewMode(v))}
         search={search}
-        onSearchChange={setSearch}
+        onSearchChange={(v) => startTransition(() => setSearch(v))}
         selectedGroups={selectedGroups}
         onSelectedGroupsChange={(groups) => {
-          setSelectedGroups(groups)
-          setPage(1)
+          startTransition(() => {
+            setSelectedGroups(groups)
+            setPage(1)
+          })
         }}
         requiresPhoto={requiresPhoto}
-        onRequiresPhotoChange={setRequiresPhoto}
+        onRequiresPhotoChange={(v) =>
+          startTransition(() => setRequiresPhoto(v))
+        }
         activeFilters={activeFilters}
         onClearAll={clearAllFilters}
         t={t}

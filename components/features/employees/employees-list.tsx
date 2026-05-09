@@ -51,6 +51,8 @@ export function EmployeesList() {
   const router = useRouter()
   const locale = useLocale()
   const { user } = useAuth()
+  // useTransition — фильтры/поиск как non-urgent, ввод остаётся responsive.
+  const [, startTransition] = React.useTransition()
 
   const currentRole = user.role
 
@@ -432,48 +434,66 @@ export function EmployeesList() {
       <FiltersBar
         search={searchParam ?? ""}
         onSearchChange={(v) => {
-          setSearchParam(v || null)
-          setPageParam(null)
+          startTransition(() => {
+            setSearchParam(v || null)
+            setPageParam(null)
+          })
         }}
         selectedStoreIds={selectedStoreIds}
         onStoreIdsChange={(v) => {
-          setSelectedStoreIds(v)
-          setPageParam(null)
+          startTransition(() => {
+            setSelectedStoreIds(v)
+            setPageParam(null)
+          })
         }}
         selectedPositionIds={selectedPositionIds}
         onPositionIdsChange={(v) => {
-          setSelectedPositionIds(v)
-          setPageParam(null)
+          startTransition(() => {
+            setSelectedPositionIds(v)
+            setPageParam(null)
+          })
         }}
         selectedPermissions={selectedPermissions}
         onPermissionsChange={(v) => {
-          setSelectedPermissions(v)
-          setPageParam(null)
+          startTransition(() => {
+            setSelectedPermissions(v)
+            setPageParam(null)
+          })
         }}
         selectedAgentIds={selectedAgentIds}
         onAgentIdsChange={(v) => {
-          setSelectedAgentIds(v)
-          setPageParam(null)
+          startTransition(() => {
+            setSelectedAgentIds(v)
+            setPageParam(null)
+          })
         }}
         selectedRole={selectedRole}
         onRoleChange={(v) => {
-          setSelectedRole(v)
-          setPageParam(null)
+          startTransition(() => {
+            setSelectedRole(v)
+            setPageParam(null)
+          })
         }}
         selectedEmploymentType={selectedEmploymentType}
         onEmploymentTypeChange={(v) => {
-          setSelectedEmploymentType(v)
-          setPageParam(null)
+          startTransition(() => {
+            setSelectedEmploymentType(v)
+            setPageParam(null)
+          })
         }}
         selectedFreelancerStatus={selectedFreelancerStatus}
         onFreelancerStatusChange={(v) => {
-          setSelectedFreelancerStatus(v)
-          setPageParam(null)
+          startTransition(() => {
+            setSelectedFreelancerStatus(v)
+            setPageParam(null)
+          })
         }}
         selectedSource={selectedSource}
         onSourceChange={(v) => {
-          setSelectedSource(v)
-          setPageParam(null)
+          startTransition(() => {
+            setSelectedSource(v)
+            setPageParam(null)
+          })
         }}
         hideStore={hideStore}
         showAgentFilter={showAgentFilter}

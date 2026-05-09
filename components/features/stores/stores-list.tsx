@@ -58,6 +58,8 @@ import { StoreDialog } from "./stores-list/store-dialog"
 export function StoresList() {
   const t = useTranslations("screen.stores")
   const router = useRouter()
+  // useTransition — фильтры/поиск/таб как non-urgent, ввод responsive.
+  const [, startTransition] = React.useTransition()
 
   // ── URL state ──────────────────────────────────────────────────
   const [tabParam, setTabParam] = useQueryState("status", parseAsString.withDefault("all"))
@@ -345,9 +347,11 @@ export function StoresList() {
           <Tabs
             value={tabParam}
             onValueChange={(v) => {
-              setTabParam(v)
-              setPageParam(null)
-              setSelectedIds(new Set())
+              startTransition(() => {
+                setTabParam(v)
+                setPageParam(null)
+                setSelectedIds(new Set())
+              })
             }}
           >
             <TabsList className="h-9">
@@ -403,19 +407,27 @@ export function StoresList() {
         hasActiveFilters={hasActiveFilters}
         activeFilterCount={activeFilterCount}
         onSearchChange={(v) => {
-          setSearchParam(v || null)
-          setPageParam(null)
+          startTransition(() => {
+            setSearchParam(v || null)
+            setPageParam(null)
+          })
         }}
         onCityChange={(v) => {
-          setCityParam(v || null)
-          setPageParam(null)
+          startTransition(() => {
+            setCityParam(v || null)
+            setPageParam(null)
+          })
         }}
         onStoreTypeChange={(v) => {
-          setStoreTypeParam(v || null)
-          setPageParam(null)
+          startTransition(() => {
+            setStoreTypeParam(v || null)
+            setPageParam(null)
+          })
         }}
         onRemoveFormat={(fmt) =>
-          setSelectedFormats((prev) => prev.filter((f) => f !== fmt))
+          startTransition(() => {
+            setSelectedFormats((prev) => prev.filter((f) => f !== fmt))
+          })
         }
         onClearAll={clearAllFilters}
       />

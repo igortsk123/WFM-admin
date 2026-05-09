@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { Settings2, CheckCheck, LayoutList, Layers } from "lucide-react";
 import { toast } from "sonner";
@@ -131,6 +131,9 @@ export function NotificationsList() {
   const t = useTranslations("screen.notifications");
   const tCat = useTranslations("screen.notifications.category");
   const tFilters = useTranslations("screen.notifications.filters");
+
+  // useTransition — таб/фильтры/view-mode как non-urgent.
+  const [, startTransition] = useTransition();
 
   const [tab, setTab] = useState<TabValue>("all");
   const [viewMode, setViewMode] = useState<ViewMode>("list");
@@ -268,7 +271,12 @@ export function NotificationsList() {
 
       {/* Tabs + Mark-all-read */}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <Tabs value={tab} onValueChange={(v) => setTab(v as TabValue)}>
+        <Tabs
+          value={tab}
+          onValueChange={(v) =>
+            startTransition(() => setTab(v as TabValue))
+          }
+        >
           <TabsList>
             <TabsTrigger value="all">{t("tabs.all")}</TabsTrigger>
             <TabsTrigger value="unread" className="gap-2">
@@ -318,7 +326,10 @@ export function NotificationsList() {
       </div>
 
       {/* Filters */}
-      <NotificationFilters value={filters} onChange={setFilters} />
+      <NotificationFilters
+        value={filters}
+        onChange={(next) => startTransition(() => setFilters(next))}
+      />
 
       <Separator />
 
@@ -332,15 +343,17 @@ export function NotificationsList() {
             onReset={hasFilters ? () => setFilters({ search: "", categories: [] }) : undefined}
           />
         ) : viewMode === "grouped" ? (
-          <GroupedNotifications
-            notifications={notifications}
-            categoryLabel={categoryLabel}
-            groupLabel={(g) => groupLabel(g)}
-            onMarkRead={handleMarkRead}
-            onArchive={handleArchive}
-          />
+          <div className="animate-in fade-in">
+            <GroupedNotifications
+              notifications={notifications}
+              categoryLabel={categoryLabel}
+              groupLabel={(g) => groupLabel(g)}
+              onMarkRead={handleMarkRead}
+              onArchive={handleArchive}
+            />
+          </div>
         ) : (
-          <div>
+          <div className="animate-in fade-in">
             {notifications.map((n, idx) => (
               <div key={n.id}>
                 {idx > 0 && <Separator className="mx-4" />}

@@ -32,6 +32,8 @@ export function PositionsList() {
   const t = useTranslations("screen.positions");
   const tRole = useTranslations("role.functional");
   const { user } = useAuth();
+  // useTransition — фильтры как non-urgent.
+  const [, startTransition] = React.useTransition();
 
   // Permission: STORE_DIRECTOR gets 403 equivalent (read-only/hidden)
   const canEdit =
@@ -142,14 +144,19 @@ export function PositionsList() {
   }
 
   // ── Filter helpers ────────────────────────────────────────────────
+  // useTransition — фильтры/поиск как non-urgent (поднято в начале функции).
   const handleSearchChange = (value: string) => {
-    setSearch(value);
-    setPage(1);
+    startTransition(() => {
+      setSearch(value);
+      setPage(1);
+    });
   };
 
   const handleRoleFilterChange = (value: RoleFilter) => {
-    setRoleFilter(value);
-    setPage(1);
+    startTransition(() => {
+      setRoleFilter(value);
+      setPage(1);
+    });
   };
 
   const handleResetFilters = () => {

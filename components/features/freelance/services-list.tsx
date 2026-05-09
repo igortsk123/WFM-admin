@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useTransition } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { parseAsInteger, parseAsString, useQueryState } from "nuqs";
 import { FileDown, RefreshCw } from "lucide-react";
@@ -37,6 +37,8 @@ export function ServicesList() {
   const tc = useTranslations("common");
   const locale = useLocale();
   const { user } = useAuth();
+  // useTransition — таб/фильтры как non-urgent.
+  const [, startTransition] = useTransition();
 
   const paymentMode = user.organization.payment_mode;
   const isNominal = paymentMode === "NOMINAL_ACCOUNT";
@@ -139,8 +141,10 @@ export function ServicesList() {
 
   const wrapFilterChange = useCallback(
     (setter: (v: string) => Promise<unknown>) => (v: string) => {
-      void setter(v);
-      void setPage(1);
+      startTransition(() => {
+        void setter(v);
+        void setPage(1);
+      });
     },
     [setPage],
   );
@@ -216,16 +220,20 @@ export function ServicesList() {
         <Tabs
           value={tab}
           onValueChange={(v) => {
-            void setActiveTab(v);
-            void setPage(1);
+            startTransition(() => {
+              void setActiveTab(v);
+              void setPage(1);
+            });
           }}
         >
           <SectionTabs
             tabs={tabs}
             activeTab={tab}
             onTabChange={(next) => {
-              void setActiveTab(next);
-              void setPage(1);
+              startTransition(() => {
+                void setActiveTab(next);
+                void setPage(1);
+              });
             }}
           />
 

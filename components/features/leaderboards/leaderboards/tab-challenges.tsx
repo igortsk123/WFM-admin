@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { format } from "date-fns";
 import { Gift, MoreHorizontal, Plus, XCircle } from "lucide-react";
 import { toast } from "sonner";
@@ -39,6 +39,7 @@ export function ChallengesTab({
   onCreateChallenge: () => void;
   t: T;
 }) {
+  const [, startTransition] = useTransition();
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<ChallengeStatus | "ALL">("ALL");
@@ -84,7 +85,7 @@ export function ChallengesTab({
         {filters.map((f) => (
           <button
             key={f.key}
-            onClick={() => setStatusFilter(f.key)}
+            onClick={() => startTransition(() => setStatusFilter(f.key))}
             className={`shrink-0 px-3 py-1 rounded-full text-sm font-medium transition-colors min-h-[36px] ${
               statusFilter === f.key
                 ? "bg-primary text-primary-foreground"
@@ -97,7 +98,10 @@ export function ChallengesTab({
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
+        <div
+          className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2 transition-opacity duration-200"
+          aria-busy="true"
+        >
           {Array.from({ length: 4 }).map((_, i) => (
             <Skeleton key={i} className="h-52" />
           ))}
@@ -114,7 +118,7 @@ export function ChallengesTab({
           }
         />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-2 animate-in fade-in">
           {challenges.map((ch) => {
             const pct =
               ch.goal_value > 0

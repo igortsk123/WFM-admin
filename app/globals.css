@@ -241,6 +241,36 @@
   --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 }
 
+/* ═════════════════════════════════════════════════════════════════════
+   PERCEIVED-PERF ANIMATIONS — fade-in для контента после скелетонов.
+   Используется через `animate-in fade-in` (300ms ease-out).
+   Минимальный shim вместо tailwindcss-animate: shadcn ui-компоненты
+   уже опираются на класс `animate-in fade-in-0`, плюс мы добавляем
+   нашу собственную утилиту `fade-in` для перехода skeleton → content.
+   prefers-reduced-motion полностью отключает анимацию.
+   ═════════════════════════════════════════════════════════════════════ */
+@layer utilities {
+  .animate-in {
+    animation: wfm-enter 300ms ease-out both;
+  }
+  .fade-in,
+  .fade-in-0 {
+    --tw-enter-opacity: 0;
+  }
+}
+
+@keyframes wfm-enter {
+  from {
+    opacity: var(--tw-enter-opacity, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-in {
+    animation: none;
+  }
+}
+
 @layer base {
   * {
     @apply border-border;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 
@@ -51,6 +51,9 @@ export function BonusTasks() {
   const isDirector = user.role === "STORE_DIRECTOR";
   const canCreate = ["SUPERVISOR", "REGIONAL", "NETWORK_OPS"].includes(user.role);
   const storeId = user.stores?.[0]?.id;
+
+  // useTransition — таб/period фильтры как non-urgent (тяжёлый рендер вкладок).
+  const [, startTransition] = useTransition();
 
   // ── State ────────────────────────────────────────────────────────
   const [period, setPeriod] = useState<PeriodFilter>("today");
@@ -216,7 +219,10 @@ export function BonusTasks() {
       />
 
       {/* Period filter chips */}
-      <PeriodFilterChips period={period} onChange={setPeriod} />
+      <PeriodFilterChips
+        period={period}
+        onChange={(v) => startTransition(() => setPeriod(v))}
+      />
 
       {/* KPI Row */}
       <KpiRow
@@ -244,7 +250,10 @@ export function BonusTasks() {
       )}
 
       {/* Main tabs */}
-      <Tabs value={tab} onValueChange={setTab}>
+      <Tabs
+        value={tab}
+        onValueChange={(v) => startTransition(() => setTab(v))}
+      >
         <TabsList className="h-9">
           <TabsTrigger value="active" className="text-xs">
             {t("tabs.active")}

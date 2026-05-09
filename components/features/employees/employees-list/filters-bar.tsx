@@ -309,11 +309,10 @@ export function FiltersBar({
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-2">
-        <Input
+        <SearchInput
           placeholder={t("filters.search_placeholder")}
           value={search}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className="h-9 max-w-xs"
+          onChange={onSearchChange}
         />
 
         {/* Desktop filter comboboxes */}
@@ -445,5 +444,37 @@ export function FiltersBar({
         clearAllLabel={t("filters.clear_all")}
       />
     </div>
+  )
+}
+
+/**
+ * Search input с локальным state mirror — родитель оборачивает onChange
+ * в startTransition (employees-list.tsx) для не-срочных URL-state updates.
+ * Локальный mirror удерживает Input responsive под keystroke-нагрузкой.
+ */
+function SearchInput({
+  placeholder,
+  value,
+  onChange,
+}: {
+  placeholder: string
+  value: string
+  onChange: (v: string) => void
+}) {
+  const [inputValue, setInputValue] = React.useState(value)
+  React.useEffect(() => {
+    setInputValue((prev) => (prev === value ? prev : value))
+  }, [value])
+  return (
+    <Input
+      placeholder={placeholder}
+      value={inputValue}
+      onChange={(e) => {
+        const v = e.target.value
+        setInputValue(v)
+        onChange(v)
+      }}
+      className="h-9 max-w-xs"
+    />
   )
 }

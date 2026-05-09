@@ -57,9 +57,14 @@ export function ResponsiveDataTable<TData>({
       {/* Mobile < md */}
       <div className={cn("flex flex-col gap-2 md:hidden", className)}>
         {isLoading ? (
-          Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton key={i} className="h-24 w-full rounded-lg" />
-          ))
+          <div
+            className="contents transition-opacity duration-200"
+            aria-busy="true"
+          >
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton key={i} className="h-24 w-full rounded-lg" />
+            ))}
+          </div>
         ) : showEmpty ? (
           <EmptyState
             icon={InboxIcon}
@@ -73,7 +78,7 @@ export function ResponsiveDataTable<TData>({
               role={onRowClick ? "button" : undefined}
               tabIndex={onRowClick ? 0 : undefined}
               className={cn(
-                "bg-card border border-border rounded-lg p-4",
+                "bg-card border border-border rounded-lg p-4 animate-in fade-in",
                 onRowClick && "cursor-pointer active:bg-muted/50 transition-colors"
               )}
               onClick={(e) => onRowClick?.(row, e)}

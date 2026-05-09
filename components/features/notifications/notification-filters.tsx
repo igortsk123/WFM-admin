@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Check, ChevronsUpDown, Search, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 import type { NotificationCategory } from "@/lib/types";
 import { CATEGORY_CONFIG } from "./notification-category-badge";
@@ -176,6 +176,13 @@ function CategoryCombobox({
 export function NotificationFilters({ value, onChange }: NotificationFiltersProps) {
   const t = useTranslations("screen.notifications");
 
+  // Локальный mirror для input — родитель оборачивает onChange в
+  // startTransition, без mirror Input лагал бы на каждый keystroke.
+  const [searchInput, setSearchInput] = useState(value.search);
+  useEffect(() => {
+    setSearchInput((prev) => (prev === value.search ? prev : value.search));
+  }, [value.search]);
+
   const hasActiveFilters = value.search.length > 0 || value.categories.length > 0;
 
   const handleToggleCategory = (cat: NotificationCategory) => {
@@ -199,14 +206,21 @@ export function NotificationFilters({ value, onChange }: NotificationFiltersProp
       <div className="relative flex-1 min-w-[180px] max-w-sm">
         <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
         <Input
-          value={value.search}
-          onChange={(e) => onChange({ ...value, search: e.target.value })}
+          value={searchInput}
+          onChange={(e) => {
+            const v = e.target.value;
+            setSearchInput(v);
+            onChange({ ...value, search: v });
+          }}
           placeholder={t("filters.search_placeholder")}
           className="pl-8 h-9 text-sm"
         />
-        {value.search && (
+        {searchInput && (
           <button
-            onClick={() => onChange({ ...value, search: "" })}
+            onClick={() => {
+              setSearchInput("");
+              onChange({ ...value, search: "" });
+            }}
             className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
             aria-label="Clear search"
           >

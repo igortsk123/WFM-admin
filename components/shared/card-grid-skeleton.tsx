@@ -35,7 +35,7 @@ export function CardGridSkeleton({
 }: CardGridSkeletonProps) {
   return (
     <div
-      className={className ?? `grid gap-4 ${COLUMN_CLASS[columns]}`}
+      className={`${className ?? `grid gap-4 ${COLUMN_CLASS[columns]}`} transition-opacity duration-200`}
       aria-busy="true"
     >
       {Array.from({ length: count }).map((_, i) => (

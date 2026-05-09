@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { useTranslations } from "next-intl"
 import { Search, X } from "lucide-react"
 
@@ -60,24 +61,11 @@ export function FiltersBar({
       kind: "custom",
       key: "search",
       render: () => (
-        <div className="relative flex-1 min-w-0 max-w-sm">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
-          <Input
-            className="h-9 pl-9"
-            placeholder={t("filters.search_placeholder")}
-            value={searchValue}
-            onChange={(e) => onSearchChange(e.target.value)}
-          />
-          {searchValue && (
-            <button
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-              onClick={() => onSearchChange("")}
-              aria-label="Очистить поиск"
-            >
-              <X className="size-3.5" />
-            </button>
-          )}
-        </div>
+        <SearchInputDesktop
+          placeholder={t("filters.search_placeholder")}
+          value={searchValue}
+          onChange={onSearchChange}
+        />
       ),
     },
     {
@@ -159,15 +147,11 @@ export function FiltersBar({
             <Label className="text-sm font-medium">
               {t("filters.search_placeholder")}
             </Label>
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
-              <Input
-                className="h-11 pl-9"
-                placeholder={t("filters.search_placeholder")}
-                value={searchValue}
-                onChange={(e) => onSearchChange(e.target.value)}
-              />
-            </div>
+            <SearchInputMobile
+              placeholder={t("filters.search_placeholder")}
+              value={searchValue}
+              onChange={onSearchChange}
+            />
           </div>
           <div className="space-y-1.5">
             <Label className="text-sm font-medium">{t("filters.city")}</Label>
@@ -200,5 +184,82 @@ export function FiltersBar({
       {/* Active filter chips */}
       <FilterChipsRow chips={chips} />
     </>
+  )
+}
+
+/**
+ * Desktop search input с локальным state mirror — родитель оборачивает
+ * onChange в startTransition (stores-list.tsx). Без mirror Input лагает
+ * на каждый keystroke.
+ */
+function SearchInputDesktop({
+  placeholder,
+  value,
+  onChange,
+}: {
+  placeholder: string
+  value: string
+  onChange: (v: string) => void
+}) {
+  const [inputValue, setInputValue] = React.useState(value)
+  React.useEffect(() => {
+    setInputValue((prev) => (prev === value ? prev : value))
+  }, [value])
+  return (
+    <div className="relative flex-1 min-w-0 max-w-sm">
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+      <Input
+        className="h-9 pl-9"
+        placeholder={placeholder}
+        value={inputValue}
+        onChange={(e) => {
+          const v = e.target.value
+          setInputValue(v)
+          onChange(v)
+        }}
+      />
+      {inputValue && (
+        <button
+          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          onClick={() => {
+            setInputValue("")
+            onChange("")
+          }}
+          aria-label="Очистить поиск"
+        >
+          <X className="size-3.5" />
+        </button>
+      )}
+    </div>
+  )
+}
+
+function SearchInputMobile({
+  placeholder,
+  value,
+  onChange,
+}: {
+  placeholder: string
+  value: string
+  onChange: (v: string) => void
+}) {
+  const [inputValue, setInputValue] = React.useState(value)
+  React.useEffect(() => {
+    setInputValue((prev) => (prev === value ? prev : value))
+  }, [value])
+  return (
+    <div className="relative">
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
+      <Input
+        className="h-11 pl-9"
+        placeholder={placeholder}
+        value={inputValue}
+        onChange={(e) => {
+          const v = e.target.value
+          setInputValue(v)
+          onChange(v)
+        }}
+      />
+    </div>
   )
 }

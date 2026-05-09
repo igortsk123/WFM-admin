@@ -44,6 +44,8 @@ export function TasksList() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const pathname = usePathname()
+  // useTransition — фильтры/поиск/таб как non-urgent, ввод остаётся responsive.
+  const [, startTransition] = React.useTransition()
 
   // ── URL state ─────────────────────────────────────────────────────────────
   const activeTab = (searchParams.get("tab") as TabKey) ?? "all"
@@ -328,45 +330,59 @@ export function TasksList() {
       <FiltersBar
         search={search}
         onSearchChange={(v) => {
-          setSearch(v)
-          setPage(1)
+          startTransition(() => {
+            setSearch(v)
+            setPage(1)
+          })
         }}
         storeOptions={storeOptions}
         selectedStores={selectedStores}
         onStoresChange={(v) => {
-          setSelectedStores(v)
-          setPage(1)
+          startTransition(() => {
+            setSelectedStores(v)
+            setPage(1)
+          })
         }}
         zoneOptions={zoneOptions}
         selectedZones={selectedZones}
         onZonesChange={(v) => {
-          setSelectedZones(v)
-          setPage(1)
+          startTransition(() => {
+            setSelectedZones(v)
+            setPage(1)
+          })
         }}
         workTypeOptions={workTypeOptions}
         selectedWorkTypes={selectedWorkTypes}
         onWorkTypesChange={(v) => {
-          setSelectedWorkTypes(v)
-          setPage(1)
+          startTransition(() => {
+            setSelectedWorkTypes(v)
+            setPage(1)
+          })
         }}
         categoryOptions={categoryOptions}
         selectedCategories={selectedCategories}
         onCategoriesChange={(v) => {
-          setSelectedCategories(v)
-          setPage(1)
+          startTransition(() => {
+            setSelectedCategories(v)
+            setPage(1)
+          })
         }}
         assigneeOptions={assigneeOptions}
         selectedAssignees={selectedAssignees}
         onAssigneesChange={(v) => {
-          setSelectedAssignees(v)
-          setPage(1)
+          startTransition(() => {
+            setSelectedAssignees(v)
+            setPage(1)
+          })
         }}
         dateFrom={dateFrom}
         dateTo={dateTo}
         onDateRangeChange={(from, to) => {
-          setDateFrom(from)
-          setDateTo(to)
-          setPage(1)
+          startTransition(() => {
+            setDateFrom(from)
+            setDateTo(to)
+            setPage(1)
+          })
         }}
         activeFilterCount={activeFilterCount}
         onClearAll={clearAllFilters}

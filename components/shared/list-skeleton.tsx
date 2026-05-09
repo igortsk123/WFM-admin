@@ -32,7 +32,7 @@ export function ListSkeleton({
 }: ListSkeletonProps) {
   return (
     <div
-      className={className ?? "flex flex-col gap-2"}
+      className={`${className ?? "flex flex-col gap-2"} transition-opacity duration-200`}
       aria-busy="true"
       aria-label={ariaLabel}
     >

@@ -30,6 +30,7 @@ export function OffersList() {
   const t = useTranslations("screen.offers")
   const locale = useLocale()
   const router = useRouter()
+  const [, startTransition] = React.useTransition()
   const [tabParam, setTabParam] = useQueryState("tab", parseAsString.withDefault("active"))
   const tab = tabParam ?? "active"
 
@@ -68,7 +69,14 @@ export function OffersList() {
         ]}
       />
 
-      <Tabs value={tab} onValueChange={(v) => setTabParam(v === "active" ? null : v)}>
+      <Tabs
+        value={tab}
+        onValueChange={(v) =>
+          startTransition(() => {
+            void setTabParam(v === "active" ? null : v)
+          })
+        }
+      >
         <TabsList className="h-9">
           <TabsTrigger value="active">
             {t("tabs.active")}
@@ -87,13 +95,13 @@ export function OffersList() {
       </Tabs>
 
       {loading ? (
-        <div className="space-y-2">
+        <div className="space-y-2 transition-opacity duration-200" aria-busy="true">
           {Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} className="h-24 w-full" />)}
         </div>
       ) : data.length === 0 ? (
         <EmptyState icon={Inbox} title={t("empty_title")} description={t("empty_desc")} />
       ) : (
-        <div className="grid gap-3 md:grid-cols-2">
+        <div className="grid gap-3 md:grid-cols-2 animate-in fade-in">
           {data.map((offer) => (
             <Card
               key={offer.id}

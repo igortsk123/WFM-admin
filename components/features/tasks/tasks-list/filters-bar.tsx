@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { useTranslations } from "next-intl"
 
 import { Input } from "@/components/ui/input"
@@ -146,11 +147,10 @@ export function FiltersBar(props: FiltersBarProps) {
       {/* Mobile filter row */}
       <div className="md:hidden flex flex-col gap-2">
         <div className="flex gap-2">
-          <Input
+          <MobileSearchInput
             placeholder={t("filters.search_placeholder")}
             value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
-            className="h-11 flex-1"
+            onChange={onSearchChange}
           />
           <MobileFilterSheet
             activeCount={activeFilterCount - (search ? 1 : 0)}
@@ -217,5 +217,37 @@ export function FiltersBar(props: FiltersBarProps) {
         </div>
       </div>
     </>
+  )
+}
+
+/**
+ * Mobile search input с локальным state mirror — родительский `onChange`
+ * обычно завёрнут в startTransition (см. tasks-list.tsx) → значение из
+ * пропа отстаёт от keystroke. Локальный state удерживает Input responsive.
+ */
+function MobileSearchInput({
+  placeholder,
+  value,
+  onChange,
+}: {
+  placeholder: string
+  value: string
+  onChange: (v: string) => void
+}) {
+  const [inputValue, setInputValue] = React.useState(value)
+  React.useEffect(() => {
+    setInputValue((prev) => (prev === value ? prev : value))
+  }, [value])
+  return (
+    <Input
+      placeholder={placeholder}
+      value={inputValue}
+      onChange={(e) => {
+        const v = e.target.value
+        setInputValue(v)
+        onChange(v)
+      }}
+      className="h-11 flex-1"
+    />
   )
 }

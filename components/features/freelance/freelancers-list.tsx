@@ -54,6 +54,9 @@ export function FreelancersList() {
   const t = useTranslations("screen.freelancers")
   const locale = useLocale()
   const router = useRouter()
+  // useTransition — поиск/фильтры не блокируют ввод (см. ниже searchInput
+  // mirror keeps Input responsive while URL state — non-urgent).
+  const [, startTransition] = React.useTransition()
 
   const [tabParam, setTabParam] = useQueryState(
     "tab",
@@ -70,6 +73,13 @@ export function FreelancersList() {
   )
 
   const [availableOnly, setAvailableOnly] = React.useState(false)
+
+  // Локальный mirror для search input — пишем сразу (urgent), а URL-state
+  // обновляем внутри startTransition чтобы не блокировать keystroke.
+  const [searchInput, setSearchInput] = React.useState(searchParam)
+  React.useEffect(() => {
+    setSearchInput((prev) => (prev === searchParam ? prev : searchParam))
+  }, [searchParam])
 
   const tab = (tabParam as FreelancerTab) ?? "active"
 
@@ -343,8 +353,10 @@ export function FreelancersList() {
       <Tabs
         value={tab}
         onValueChange={(v) => {
-          setTabParam(v === "active" ? null : v)
-          setPageParam(null)
+          startTransition(() => {
+            setTabParam(v === "active" ? null : v)
+            setPageParam(null)
+          })
         }}
       >
         <TabsList className="h-9">
@@ -372,10 +384,14 @@ export function FreelancersList() {
         <div className="relative flex-1 min-w-[240px] md:max-w-sm">
           <Input
             placeholder={t("filters.search_placeholder")}
-            value={searchParam}
+            value={searchInput}
             onChange={(e) => {
-              setSearchParam(e.target.value || null)
-              setPageParam(null)
+              const v = e.target.value
+              setSearchInput(v) // urgent — Input остаётся responsive
+              startTransition(() => {
+                setSearchParam(v || null)
+                setPageParam(null)
+              })
             }}
             className="h-9"
           />
@@ -383,8 +399,10 @@ export function FreelancersList() {
         <Select
           value={agentParam ?? "all"}
           onValueChange={(v) => {
-            setAgentParam(v === "all" ? null : v)
-            setPageParam(null)
+            startTransition(() => {
+              setAgentParam(v === "all" ? null : v)
+              setPageParam(null)
+            })
           }}
         >
           <SelectTrigger className="h-9 md:w-[200px]">
@@ -405,8 +423,10 @@ export function FreelancersList() {
             id="available-only"
             checked={availableOnly}
             onCheckedChange={(v) => {
-              setAvailableOnly(v)
-              setPageParam(null)
+              startTransition(() => {
+                setAvailableOnly(v)
+                setPageParam(null)
+              })
             }}
           />
           <Label htmlFor="available-only" className="text-sm cursor-pointer">
@@ -442,7 +462,7 @@ export function FreelancersList() {
       )}
 
       {loading ? (
-        <div className="space-y-2">
+        <div className="space-y-2 transition-opacity duration-200" aria-busy="true">
           {Array.from({ length: 6 }).map((_, i) => (
             <Skeleton key={i} className="h-14 w-full" />
           ))}
@@ -461,19 +481,21 @@ export function FreelancersList() {
           description={t("empty_desc")}
         />
       ) : (
-        <ResponsiveDataTable
-          columns={columns}
-          data={data}
-          onRowClick={(f) => router.push(ADMIN_ROUTES.freelanceFreelancerDetail(f.id))}
-          mobileCardRender={(f) => (
-            <FreelancerCard
-              freelancer={f}
-              onOffer={() => setOfferingTo(f)}
-              onOpen={() => router.push(ADMIN_ROUTES.freelanceFreelancerDetail(f.id))}
-              t={t}
-            />
-          )}
-        />
+        <div className="animate-in fade-in">
+          <ResponsiveDataTable
+            columns={columns}
+            data={data}
+            onRowClick={(f) => router.push(ADMIN_ROUTES.freelanceFreelancerDetail(f.id))}
+            mobileCardRender={(f) => (
+              <FreelancerCard
+                freelancer={f}
+                onOffer={() => setOfferingTo(f)}
+                onOpen={() => router.push(ADMIN_ROUTES.freelanceFreelancerDetail(f.id))}
+                t={t}
+              />
+            )}
+          />
+        </div>
       )}
 
       {/* Pagination summary */}

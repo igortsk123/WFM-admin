@@ -27,7 +27,10 @@ export function TableSkeleton({
   className,
 }: TableSkeletonProps) {
   return (
-    <div className={className ?? "space-y-2"} aria-busy="true">
+    <div
+      className={`${className ?? "space-y-2"} transition-opacity duration-200`}
+      aria-busy="true"
+    >
       {showHeader && (
         <div className="flex gap-2">
           {Array.from({ length: columns }).map((_, i) => (

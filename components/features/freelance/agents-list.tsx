@@ -41,6 +41,9 @@ export function AgentsList() {
   const router = useRouter()
   const locale = useLocale()
   const { user } = useAuth()
+  // useTransition для не-срочных обновлений (search/filter/tab) — input/клик
+  // остаются responsive, фоновое перевычисление списка не блокирует ввод.
+  const [, startTransition] = React.useTransition()
 
   const currentRole = user.role
   const canWrite = currentRole === "NETWORK_OPS" || currentRole === "HR_MANAGER"
@@ -245,18 +248,24 @@ export function AgentsList() {
       <FiltersBar
         activeTab={activeTab}
         onTabChange={(v) => {
-          void setTabParam(v)
-          void setPageParam(null)
+          startTransition(() => {
+            void setTabParam(v)
+            void setPageParam(null)
+          })
         }}
         searchValue={searchParam}
         onSearchChange={(v) => {
-          void setSearchParam(v || null)
-          void setPageParam(null)
+          startTransition(() => {
+            void setSearchParam(v || null)
+            void setPageParam(null)
+          })
         }}
         typeValue={typeParam}
         onTypeChange={(v) => {
-          void setTypeParam(v || null)
-          void setPageParam(null)
+          startTransition(() => {
+            void setTypeParam(v || null)
+            void setPageParam(null)
+          })
         }}
       />
 
@@ -282,18 +291,20 @@ export function AgentsList() {
           }
         />
       ) : (
-        <ResponsiveDataTable
-          columns={columns}
-          data={data}
-          mobileCardRender={mobileCard}
-          onRowClick={handleRowClick}
-          pagination={{
-            page: pageParam,
-            pageSize: 20,
-            total,
-            onPageChange: (p) => void setPageParam(p),
-          }}
-        />
+        <div className="animate-in fade-in">
+          <ResponsiveDataTable
+            columns={columns}
+            data={data}
+            mobileCardRender={mobileCard}
+            onRowClick={handleRowClick}
+            pagination={{
+              page: pageParam,
+              pageSize: 20,
+              total,
+              onPageChange: (p) => void setPageParam(p),
+            }}
+          />
+        </div>
       )}
 
       {/* Block dialog */}

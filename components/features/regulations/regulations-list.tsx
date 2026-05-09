@@ -33,6 +33,9 @@ export function RegulationsList() {
   const t = useTranslations("screen.regulations");
   const tc = useTranslations("common");
 
+  // useTransition — фильтры/поиск как non-urgent.
+  const [, startTransition] = React.useTransition();
+
   // ── filter state ──────────────────────────────────────────────
   const [search, setSearch] = React.useState("");
   const [workTypeIds, setWorkTypeIds] = React.useState<number[]>([]);
@@ -224,13 +227,15 @@ export function RegulationsList() {
         {/* Filters (desktop + mobile) */}
         <FiltersBar
           search={search}
-          onSearchChange={setSearch}
+          onSearchChange={(v) => startTransition(() => setSearch(v))}
           workTypeIds={workTypeIds}
-          onWorkTypeIdsChange={setWorkTypeIds}
+          onWorkTypeIdsChange={(v) => startTransition(() => setWorkTypeIds(v))}
           zoneIds={zoneIds}
-          onZoneIdsChange={setZoneIds}
+          onZoneIdsChange={(v) => startTransition(() => setZoneIds(v))}
           showArchived={showArchived}
-          onShowArchivedChange={setShowArchived}
+          onShowArchivedChange={(v) =>
+            startTransition(() => setShowArchived(v))
+          }
           activeChipsCount={activeChips.length}
           onClearAll={clearAllFilters}
         />

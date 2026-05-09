@@ -46,6 +46,8 @@ interface LogsTabProps {
 }
 
 export function LogsTab({ t, locale }: LogsTabProps) {
+  // useTransition — debounced search/filter как non-urgent.
+  const [, startTransition] = React.useTransition();
   const [logs, setLogs] = React.useState<LamaSyncLog[]>([]);
   const [total, setTotal] = React.useState(0);
   const [loading, setLoading] = React.useState(true);
@@ -65,10 +67,15 @@ export function LogsTab({ t, locale }: LogsTabProps) {
     });
   }, [search, statusFilter, page]);
 
-  // Debounced search
+  // Debounced search — debounce + startTransition двойная защита.
   const [debouncedSearch, setDebouncedSearch] = React.useState("");
   React.useEffect(() => {
-    const timer = setTimeout(() => { setSearch(debouncedSearch); setPage(1); }, 400);
+    const timer = setTimeout(() => {
+      startTransition(() => {
+        setSearch(debouncedSearch);
+        setPage(1);
+      });
+    }, 400);
     return () => clearTimeout(timer);
   }, [debouncedSearch]);
 
@@ -87,7 +94,15 @@ export function LogsTab({ t, locale }: LogsTabProps) {
             className="pl-8 h-8 text-sm w-52"
           />
         </div>
-        <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPage(1); }}>
+        <Select
+          value={statusFilter}
+          onValueChange={(v) => {
+            startTransition(() => {
+              setStatusFilter(v);
+              setPage(1);
+            });
+          }}
+        >
           <SelectTrigger className="h-8 text-sm w-40">
             <SelectValue />
           </SelectTrigger>
@@ -101,7 +116,7 @@ export function LogsTab({ t, locale }: LogsTabProps) {
       </div>
 
       {loading ? (
-        <div className="space-y-2">
+        <div className="space-y-2 transition-opacity duration-200" aria-busy="true">
           {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-12 w-full" />)}
         </div>
       ) : logs.length === 0 ? (
@@ -109,7 +124,7 @@ export function LogsTab({ t, locale }: LogsTabProps) {
           <p className="text-sm text-muted-foreground">Логи не найдены</p>
         </div>
       ) : (
-        <>
+        <div className="animate-in fade-in">
           {/* Desktop table */}
           <div className="hidden md:block rounded-md border border-border overflow-hidden">
             <Table>
@@ -219,7 +234,7 @@ export function LogsTab({ t, locale }: LogsTabProps) {
               </div>
             </div>
           )}
-        </>
+        </div>
       )}
 
       {/* Log detail drawer */}

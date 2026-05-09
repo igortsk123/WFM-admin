@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { DEMO_TOP_STORES } from "@/lib/api/_demo-stores";
@@ -317,6 +317,9 @@ export function PayoutsList() {
   const isNetworkOps = true;
   const isHrManager = false;
 
+  // useTransition — фильтр статуса/магазина как non-urgent.
+  const [, startTransition] = useTransition();
+
   const [periods, setPeriods] = useState<PayoutPeriod[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -432,7 +435,9 @@ export function PayoutsList() {
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <Tabs
             value={viewMode}
-            onValueChange={(v) => setViewMode(v as ViewMode)}
+            onValueChange={(v) =>
+              startTransition(() => setViewMode(v as ViewMode))
+            }
             className="w-full md:w-auto"
           >
             <TabsList className="w-full justify-start overflow-x-auto md:w-auto">
@@ -448,7 +453,7 @@ export function PayoutsList() {
 
           <Select
             value={selectedStore}
-            onValueChange={setSelectedStore}
+            onValueChange={(v) => startTransition(() => setSelectedStore(v))}
             disabled={isHrManager}
           >
             <SelectTrigger className="w-full md:w-48">
@@ -493,7 +498,7 @@ export function PayoutsList() {
           }
         />
       ) : (
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 animate-in fade-in">
           {filteredPeriods.map((period) => (
             <PeriodCard
               key={period.id}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useTransition } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { useQueryState } from "nuqs";
@@ -289,12 +289,19 @@ export function AgentFreelancers() {
   const tFreelancer = useTranslations("freelancer.status");
   const locale = useLocale() as Locale;
   const router = useRouter();
+  // useTransition — фильтры/поиск как non-urgent.
+  const [, startTransition] = useTransition();
 
   // nuqs URL state — filter persists on deep-link navigation
   const [search, setSearch] = useQueryState("q", { defaultValue: "" });
   const [statusFilter, setStatusFilter] = useQueryState("status", {
     defaultValue: "",
   });
+  // Локальный mirror для search input — чтобы Input оставался responsive.
+  const [searchInput, setSearchInput] = useState(search);
+  useEffect(() => {
+    setSearchInput((prev) => (prev === search ? prev : search));
+  }, [search]);
 
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
@@ -377,15 +384,25 @@ export function AgentFreelancers() {
           <Input
             type="search"
             placeholder={t("filters.search")}
-            value={search}
-            onChange={(e) => setSearch(e.target.value || null)}
+            value={searchInput}
+            onChange={(e) => {
+              const v = e.target.value;
+              setSearchInput(v);
+              startTransition(() => {
+                void setSearch(v || null);
+              });
+            }}
             className="pl-8 h-9"
             aria-label={t("filters.search")}
           />
         </div>
         <Select
           value={statusFilter || "__all__"}
-          onValueChange={(v) => setStatusFilter(v === "__all__" ? null : v)}
+          onValueChange={(v) =>
+            startTransition(() => {
+              void setStatusFilter(v === "__all__" ? null : v);
+            })
+          }
         >
           <SelectTrigger className="h-9 w-full sm:w-44" aria-label={t("filters.status")}>
             <SelectValue placeholder={t("filters.status_placeholder")} />

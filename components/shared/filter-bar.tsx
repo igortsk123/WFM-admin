@@ -156,18 +156,54 @@ function getControlKey(c: FilterControl, i: number): string {
   return `${c.kind}-${i}`
 }
 
+/**
+ * Search input с локальным state mirror.
+ *
+ * Зачем: на listing-экранах вызов `onChange` оборачивается в
+ * `startTransition(...)` чтобы таблица перефильтровалась как non-urgent
+ * update. При этом проп `control.value` приходит из transition-state и
+ * между keystroke и приходом нового значения "отстаёт" → input лагает.
+ *
+ * Решение: локальное `inputValue` обновляется синхронно (urgent), а в
+ * родителя пробрасываем `onChange` который тот, в свою очередь, может
+ * обернуть в transition без потери responsiveness ввода.
+ *
+ * Если родитель меняет `control.value` извне (нпр. clearAll), мы это
+ * подхватываем через useEffect-синхронизацию.
+ */
+function SearchControl({
+  control,
+}: {
+  control: Extract<FilterControl, { kind: "search" }>
+}) {
+  const [inputValue, setInputValue] = React.useState(control.value)
+
+  // Внешние обновления (clearAll, URL-back, programmatic reset) → синкаем.
+  // Не синкаем, если значение совпадает — иначе бы создали лишний rerender.
+  React.useEffect(() => {
+    setInputValue((prev) => (prev === control.value ? prev : control.value))
+  }, [control.value])
+
+  return (
+    <Input
+      value={inputValue}
+      onChange={(e) => {
+        const v = e.target.value
+        setInputValue(v) // urgent — input стал responsive
+        control.onChange(v) // родитель может обернуть в startTransition
+      }}
+      placeholder={control.placeholder}
+      aria-label={control.ariaLabel ?? control.placeholder}
+      className={cn("h-9 w-full sm:w-64", control.className)}
+    />
+  )
+}
+
 function FilterControlRenderer({ control }: { control: FilterControl }) {
   switch (control.kind) {
     case "search":
-      return (
-        <Input
-          value={control.value}
-          onChange={(e) => control.onChange(e.target.value)}
-          placeholder={control.placeholder}
-          aria-label={control.ariaLabel ?? control.placeholder}
-          className={cn("h-9 w-full sm:w-64", control.className)}
-        />
-      )
+      return <SearchControl control={control} />
+
 
     case "single-select":
       return (

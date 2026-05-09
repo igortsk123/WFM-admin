@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useTransition } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { format, parseISO } from "date-fns";
 import { CalendarX2, Info, Plus, Wallet } from "lucide-react";
@@ -102,6 +102,9 @@ function BudgetLimitsInner({ canWrite }: InnerProps) {
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+  // useTransition — таб/фильтры как non-urgent.
+  const [, startTransition] = useTransition();
 
   // ── filters ───────────────────────────────────────────────────────
   const [tab, setTab] = useState<"active" | "expired">("active");
@@ -273,16 +276,18 @@ function BudgetLimitsInner({ canWrite }: InnerProps) {
       <div className="flex flex-col gap-4">
         <FiltersBar
           tab={tab}
-          onChangeTab={setTab}
+          onChangeTab={(v) => startTransition(() => setTab(v))}
           storeOptions={storeOptions}
           filterStores={filterStores}
-          onChangeStores={setFilterStores}
+          onChangeStores={(v) => startTransition(() => setFilterStores(v))}
           filterPeriod={filterPeriod}
-          onChangePeriod={setFilterPeriod}
+          onChangePeriod={(v) => startTransition(() => setFilterPeriod(v))}
           activeChips={activeChips}
           onClearAll={() => {
-            setFilterStores([]);
-            setFilterPeriod("");
+            startTransition(() => {
+              setFilterStores([]);
+              setFilterPeriod("");
+            });
           }}
         />
 
@@ -317,16 +322,18 @@ function BudgetLimitsInner({ canWrite }: InnerProps) {
             />
           )
         ) : (
-          <LimitsTable
-            limits={filteredLimits}
-            usagesMap={usagesMap}
-            isClientDirect={isClientDirect}
-            canWrite={canWrite}
-            locale={locale}
-            onEdit={openEdit}
-            onTerminate={handleTerminate}
-            onHistory={openHistory}
-          />
+          <div className="animate-in fade-in">
+            <LimitsTable
+              limits={filteredLimits}
+              usagesMap={usagesMap}
+              isClientDirect={isClientDirect}
+              canWrite={canWrite}
+              locale={locale}
+              onEdit={openEdit}
+              onTerminate={handleTerminate}
+              onHistory={openHistory}
+            />
+          </div>
         )}
       </div>
 

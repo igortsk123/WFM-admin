@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import {
@@ -57,6 +57,9 @@ export function FreelancePayoutsList() {
   const isNetworkOps =
     user.role === "NETWORK_OPS" || user.role === "REGIONAL";
   const isReadOnly = user.role === "HR_MANAGER";
+
+  // useTransition — таб/фильтры как non-urgent.
+  const [, startTransition] = useTransition();
 
   // ── state ─────────────────────────────────────────────────────────
   const [activeTab, setActiveTab] = useState<TabStatus>("PENDING");
@@ -241,10 +244,10 @@ export function FreelancePayoutsList() {
 
       <FiltersBar
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={(v) => startTransition(() => setActiveTab(v))}
         tabCounts={tabCounts}
         filters={filters}
-        onFiltersChange={setFilters}
+        onFiltersChange={(next) => startTransition(() => setFilters(next))}
         freelancerOptions={freelancerOptions}
         agentOptions={agentOptions}
       />

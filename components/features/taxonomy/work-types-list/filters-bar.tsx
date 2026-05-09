@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import { List, LayoutGrid } from "lucide-react"
 
 import { Input } from "@/components/ui/input"
@@ -51,6 +52,12 @@ export function FiltersBar({
   t,
 }: FiltersBarProps) {
   const groupOptions = WORK_TYPE_GROUPS.map((g) => ({ value: g, label: g }))
+  // Локальный mirror для search input — родитель оборачивает onSearchChange
+  // в startTransition (work-types-list.tsx).
+  const [searchInput, setSearchInput] = React.useState(search)
+  React.useEffect(() => {
+    setSearchInput((prev) => (prev === search ? prev : search))
+  }, [search])
 
   return (
     <div className="flex flex-col gap-3">
@@ -78,8 +85,12 @@ export function FiltersBar({
         {/* Search */}
         <div className="relative flex-1">
           <Input
-            value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
+            value={searchInput}
+            onChange={(e) => {
+              const v = e.target.value
+              setSearchInput(v)
+              onSearchChange(v)
+            }}
             placeholder={t("filters.search_placeholder")}
             className="pl-3"
             aria-label={t("filters.search_placeholder")}

@@ -62,6 +62,11 @@ export function AuditLog() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  // useTransition — heavy filter changes (entity_type/action/date) запускаются
+  // как non-urgent. searchInput остаётся urgent (локальный mirror), но setFilters
+  // от debounced search уже non-urgent → keystroke не блокирован.
+  const [, startTransition] = React.useTransition();
+
   // State
   const [filters, setFilters] = React.useState<FilterState>(() => ({
     ...initialFilters,
@@ -84,11 +89,15 @@ export function AuditLog() {
   // Keyboard navigation
   const listRef = React.useRef<HTMLDivElement>(null);
 
-  // Debounced search
+  // Debounced search — debounce уже снижает нагрузку, но setFilters
+  // дополнительно оборачиваем в startTransition для не-урgent прихода
+  // нового списка.
   React.useEffect(() => {
     const timer = setTimeout(() => {
-      setFilters((prev) => ({ ...prev, search: searchInput }));
-      setPage(1);
+      startTransition(() => {
+        setFilters((prev) => ({ ...prev, search: searchInput }));
+        setPage(1);
+      });
     }, 300);
     return () => clearTimeout(timer);
   }, [searchInput]);
@@ -239,8 +248,10 @@ export function AuditLog() {
   }
 
   function patchFilters(patch: Partial<FilterState>) {
-    setFilters((p) => ({ ...p, ...patch }));
-    setPage(1);
+    startTransition(() => {
+      setFilters((p) => ({ ...p, ...patch }));
+      setPage(1);
+    });
   }
 
   function handleCopyId() {
@@ -434,7 +445,12 @@ export function AuditLog() {
                 />
               )
             ) : (
-              <div ref={listRef} role="listbox" aria-label="Audit events">
+              <div
+                ref={listRef}
+                role="listbox"
+                aria-label="Audit events"
+                className="animate-in fade-in"
+              >
                 {grouped.map(([dayKey, dayEntries]) => (
                   <div key={dayKey}>
                     {/* Day sticky sub-header */}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useTransition } from "react";
 import { useTranslations } from "next-intl";
 import { Plus } from "lucide-react";
 
@@ -20,6 +20,8 @@ import { DialogZoneForm } from "./zones-list/dialog-zone-form";
 
 export function ZonesList() {
   const t = useTranslations("screen.zones");
+  // useTransition — переключение таба, search/store-фильтр (большой list).
+  const [, startTransition] = useTransition();
 
   const [activeTab, setActiveTab] = useState<ZonesTab>("global");
   const [selectedStoreId, setSelectedStoreId] = useState<string>("");
@@ -118,7 +120,9 @@ export function ZonesList() {
 
       <Tabs
         value={activeTab}
-        onValueChange={(v) => setActiveTab(v as ZonesTab)}
+        onValueChange={(v) =>
+          startTransition(() => setActiveTab(v as ZonesTab))
+        }
         className="flex flex-col gap-4"
       >
         <div className="overflow-x-auto">
@@ -137,8 +141,8 @@ export function ZonesList() {
             hasFilters={hasGlobalFilters}
             deleteAlertOpen={deleteAlertOpen}
             deleteTargetId={deleteTargetId}
-            onSearchChange={setSearchGlobal}
-            onClearFilters={() => setSearchGlobal("")}
+            onSearchChange={(v) => startTransition(() => setSearchGlobal(v))}
+            onClearFilters={() => startTransition(() => setSearchGlobal(""))}
             onRetry={() => mutateGlobal()}
             onEdit={openEdit}
             onDelete={handleDeleteRequest}
@@ -161,8 +165,10 @@ export function ZonesList() {
             hasFilters={hasStoreFilters}
             deleteAlertOpen={deleteAlertOpen}
             deleteTargetId={deleteTargetId}
-            onSearchChange={setSearchStore}
-            onSelectedStoreChange={setSelectedStoreId}
+            onSearchChange={(v) => startTransition(() => setSearchStore(v))}
+            onSelectedStoreChange={(v) =>
+              startTransition(() => setSelectedStoreId(v))
+            }
             onClearFilters={clearStoreFilters}
             onRetry={() => mutateStore()}
             onEdit={openEdit}

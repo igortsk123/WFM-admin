@@ -51,6 +51,8 @@ export function ApplicationsList() {
   const router = useRouter()
   const locale = useLocale()
   const { user } = useAuth()
+  // useTransition — фильтры/таб как non-urgent.
+  const [, startTransition] = React.useTransition()
 
   const currentRole = user.role
   const canCreateApplication =
@@ -307,32 +309,46 @@ export function ApplicationsList() {
 
   // ── Filter handlers ─────────────────────────────────────────────
   const handleChangeStores = (values: string[]) => {
-    setSelectedStoreIds(values)
-    void setPageParam(null)
+    startTransition(() => {
+      setSelectedStoreIds(values)
+      void setPageParam(null)
+    })
   }
   const handleChangeWorkTypes = (values: string[]) => {
-    setSelectedWorkTypeIds(values)
-    void setPageParam(null)
+    startTransition(() => {
+      setSelectedWorkTypeIds(values)
+      void setPageParam(null)
+    })
   }
   const handleChangeDateFrom = (value: string | null) => {
-    void setDateFromParam(value)
-    void setPageParam(null)
+    startTransition(() => {
+      void setDateFromParam(value)
+      void setPageParam(null)
+    })
   }
   const handleChangeDateTo = (value: string | null) => {
-    void setDateToParam(value)
-    void setPageParam(null)
+    startTransition(() => {
+      void setDateToParam(value)
+      void setPageParam(null)
+    })
   }
   const handleChangeSource = (value: string | null) => {
-    void setSourceParam(value)
-    void setPageParam(null)
+    startTransition(() => {
+      void setSourceParam(value)
+      void setPageParam(null)
+    })
   }
   const handleChangeUnassigned = (value: boolean | null) => {
-    void setUnassignedParam(value)
-    void setPageParam(null)
+    startTransition(() => {
+      void setUnassignedParam(value)
+      void setPageParam(null)
+    })
   }
   const handleChangeTab = (value: string) => {
-    void setTabParam(value)
-    void setPageParam(null)
+    startTransition(() => {
+      void setTabParam(value)
+      void setPageParam(null)
+    })
   }
 
   // ─────────────────────────────────────────────────────────────
@@ -426,19 +442,21 @@ export function ApplicationsList() {
             />
           )
         ) : (
-          <ResponsiveDataTable
-            columns={columns}
-            data={data}
-            mobileCardRender={(app) => <MobileCard app={app} locale={locale} />}
-            isLoading={false}
-            onRowClick={handleRowClick}
-            pagination={{
-              page: pageParam,
-              pageSize: 20,
-              total,
-              onPageChange: (p) => void setPageParam(p),
-            }}
-          />
+          <div className="animate-in fade-in">
+            <ResponsiveDataTable
+              columns={columns}
+              data={data}
+              mobileCardRender={(app) => <MobileCard app={app} locale={locale} />}
+              isLoading={false}
+              onRowClick={handleRowClick}
+              pagination={{
+                page: pageParam,
+                pageSize: 20,
+                total,
+                onPageChange: (p) => void setPageParam(p),
+              }}
+            />
+          </div>
         )}
 
         {/* Cancel confirm dialog */}

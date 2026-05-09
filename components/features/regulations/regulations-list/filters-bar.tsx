@@ -1,5 +1,6 @@
 "use client";
 
+import * as React from "react";
 import { useTranslations } from "next-intl";
 
 import { MOCK_WORK_TYPES } from "@/lib/mock-data/work-types";
@@ -40,6 +41,16 @@ export function FiltersBar({
   const t = useTranslations("screen.regulations");
   const tc = useTranslations("common");
 
+  // Локальный mirror — родитель оборачивает onSearchChange в startTransition.
+  const [searchInput, setSearchInput] = React.useState(search);
+  React.useEffect(() => {
+    setSearchInput((prev) => (prev === search ? prev : search));
+  }, [search]);
+  const handleSearch = (v: string) => {
+    setSearchInput(v);
+    onSearchChange(v);
+  };
+
   const workTypeOptions = MOCK_WORK_TYPES.slice(0, 13).map((wt) => ({
     id: wt.id,
     name: wt.name,
@@ -52,8 +63,8 @@ export function FiltersBar({
       <div className="hidden md:flex flex-wrap items-center gap-2">
         <Input
           placeholder={t("filters.search_placeholder")}
-          value={search}
-          onChange={(e) => onSearchChange(e.target.value)}
+          value={searchInput}
+          onChange={(e) => handleSearch(e.target.value)}
           className="h-9 w-72 max-w-full"
           aria-label={t("filters.search_placeholder")}
         />
@@ -98,8 +109,8 @@ export function FiltersBar({
             </Label>
             <Input
               placeholder={t("filters.search_placeholder")}
-              value={search}
-              onChange={(e) => onSearchChange(e.target.value)}
+              value={searchInput}
+              onChange={(e) => handleSearch(e.target.value)}
               className="h-10"
             />
           </div>
