@@ -1,0 +1,7 @@
+// Конфигурация для приложения «Умный Сотрудник»
+// Внешние/временные сотрудники LAMA и других партнёров
+
+PRODUCT_BUNDLE_IDENTIFIER = com.bv.wfm
+INFOPLIST_KEY_CFBundleDisplayName = Умный Сотрудник
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = $(inherited) SMART_BRAND

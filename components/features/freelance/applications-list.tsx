@@ -247,11 +247,17 @@ export function ApplicationsList() {
   const isEmpty = !isLoading && !isError && data.length === 0
 
   // ── Active filter chips ─────────────────────────────────────────
-  const filterChips: { label: string; value: string; onRemove: () => void }[] = []
+  const filterChips: {
+    key: string
+    label: string
+    value: string
+    onRemove: () => void
+  }[] = []
 
   for (const id of selectedStoreIds) {
     const name = STORE_OPTIONS.find((s) => s.id === id)?.name ?? id
     filterChips.push({
+      key: `store-${id}`,
       label: "Объект",
       value: name,
       onRemove: () => setSelectedStoreIds((prev) => prev.filter((v) => v !== id)),
@@ -260,6 +266,7 @@ export function ApplicationsList() {
   for (const id of selectedWorkTypeIds) {
     const name = WORK_TYPE_OPTIONS.find((w) => w.id === id)?.name ?? id
     filterChips.push({
+      key: `wt-${id}`,
       label: "Тип работ",
       value: name,
       onRemove: () => setSelectedWorkTypeIds((prev) => prev.filter((v) => v !== id)),
@@ -267,6 +274,7 @@ export function ApplicationsList() {
   }
   if (dateFromParam) {
     filterChips.push({
+      key: "date-from",
       label: "Дата от",
       value: dateFromParam,
       onRemove: () => void setDateFromParam(null),
@@ -274,6 +282,7 @@ export function ApplicationsList() {
   }
   if (dateToParam) {
     filterChips.push({
+      key: "date-to",
       label: "Дата до",
       value: dateToParam,
       onRemove: () => void setDateToParam(null),
@@ -281,6 +290,7 @@ export function ApplicationsList() {
   }
   if (sourceParam) {
     filterChips.push({
+      key: "source",
       label: "Источник",
       value: SOURCE_OPTIONS.find((s) => s.value === sourceParam)?.label ?? sourceParam,
       onRemove: () => void setSourceParam(null),
@@ -288,6 +298,7 @@ export function ApplicationsList() {
   }
   if (unassignedParam) {
     filterChips.push({
+      key: "unassigned",
       label: "Фильтр",
       value: "Требуют назначения",
       onRemove: () => void setUnassignedParam(null),

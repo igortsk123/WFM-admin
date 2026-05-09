@@ -1,10 +1,8 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { DateRangePicker } from "@/components/shared/date-range-picker";
-import { SingleSelectCombobox } from "@/components/shared/single-select-combobox";
+
+import { FilterBar, type FilterControl } from "@/components/shared/filter-bar";
 import {
   defaultDateFrom,
   defaultDateTo,
@@ -45,53 +43,47 @@ export function FiltersBar({
     label: f.name,
   }));
 
-  const statusOptions: Array<{ value: "CALCULATED" | "PAID"; label: string }> = [
+  const statusOptions = [
     { value: "CALCULATED", label: t("status.CALCULATED") },
     { value: "PAID", label: t("status.PAID") },
   ];
 
+  const controls: FilterControl[] = [
+    {
+      kind: "date-range",
+      from: parseIsoDate(dateFrom),
+      to: parseIsoDate(dateTo),
+      onChange: (from, to) =>
+        onChangeRange(
+          from ? toIsoDate(from) : defaultDateFrom(),
+          to ? toIsoDate(to) : defaultDateTo(),
+        ),
+      placeholder: t("filters.date_range"),
+    },
+    {
+      kind: "single-select",
+      value: freelancerId,
+      onChange: onChangeFreelancer,
+      options: freelancerOptions,
+      placeholder: t("filters.freelancer"),
+      className: "h-9 max-w-[220px]",
+    },
+    {
+      kind: "single-select",
+      value: status,
+      onChange: onChangeStatus,
+      options: statusOptions,
+      placeholder: t("filters.status"),
+      className: "h-9",
+    },
+  ];
+
   return (
-    <div
-      className="flex flex-wrap items-center gap-2"
-      role="group"
-      aria-label="Filters"
-    >
-      <DateRangePicker
-        from={parseIsoDate(dateFrom)}
-        to={parseIsoDate(dateTo)}
-        onChange={(from, to) =>
-          onChangeRange(
-            from ? toIsoDate(from) : defaultDateFrom(),
-            to ? toIsoDate(to) : defaultDateTo()
-          )
-        }
-        placeholder={t("filters.date_range")}
-      />
-      <SingleSelectCombobox
-        options={freelancerOptions}
-        value={freelancerId}
-        onValueChange={onChangeFreelancer}
-        placeholder={t("filters.freelancer")}
-        className="h-9 max-w-[220px]"
-      />
-      <SingleSelectCombobox
-        options={statusOptions}
-        value={status}
-        onValueChange={onChangeStatus}
-        placeholder={t("filters.status")}
-        className="h-9"
-      />
-      {activeFiltersCount > 0 && (
-        <Button
-          variant="ghost"
-          size="sm"
-          className="h-9 text-xs text-muted-foreground hover:text-foreground gap-1"
-          onClick={onClearAll}
-        >
-          <X className="size-3" aria-hidden="true" />
-          {t("filters.clear_all")}
-        </Button>
-      )}
-    </div>
+    <FilterBar
+      controls={controls}
+      activeFiltersCount={activeFiltersCount}
+      onClearAll={onClearAll}
+      clearAllLabel={t("filters.clear_all")}
+    />
   );
 }

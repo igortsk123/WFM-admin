@@ -8,17 +8,15 @@ import { cn } from "@/lib/utils"
 
 import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet"
 import { MultiSelectCombobox } from "@/components/shared/multi-select-combobox"
-import { FilterChip } from "@/components/shared/filter-chip"
+import {
+  FilterChipsRow,
+  type FilterChipDescriptor,
+} from "@/components/shared/filter-bar"
 
 import { WORK_TYPE_GROUPS } from "../work-type-edit-dialog-content"
 import type { ViewMode, TFn } from "./_shared"
 
-export interface ActiveFilterChip {
-  key: string
-  label: string
-  value: string
-  onRemove: () => void
-}
+export type ActiveFilterChip = FilterChipDescriptor
 
 interface FiltersBarProps {
   viewMode: ViewMode
@@ -167,25 +165,11 @@ export function FiltersBar({
       </div>
 
       {/* Filter chips row */}
-      {activeFilters.length > 0 && (
-        <div className="flex flex-wrap items-center gap-2">
-          {activeFilters.map((chip) => (
-            <FilterChip
-              key={chip.key}
-              label={chip.label}
-              value={chip.value}
-              onRemove={chip.onRemove}
-            />
-          ))}
-          <button
-            type="button"
-            onClick={onClearAll}
-            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {t("filters.clear_all")}
-          </button>
-        </div>
-      )}
+      <FilterChipsRow
+        chips={activeFilters}
+        onClearAll={onClearAll}
+        clearAllLabel={t("filters.clear_all")}
+      />
     </div>
   )
 }

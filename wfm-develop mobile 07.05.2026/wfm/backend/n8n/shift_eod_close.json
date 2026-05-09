@@ -1,0 +1,53 @@
+{
+  "name": "Shift EOD Close",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23,
+              "triggerAtMinute": 50
+            }
+          ]
+        }
+      },
+      "id": "cron-trigger",
+      "name": "Каждый день в 23:50",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://svc_tasks:8000/internal/close-shifts-eod",
+        "options": {
+          "timeout": 60000
+        }
+      },
+      "id": "http-close",
+      "name": "Закрыть открытые смены",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [460, 300]
+    }
+  ],
+  "connections": {
+    "Каждый день в 23:50": {
+      "main": [
+        [
+          {
+            "node": "Закрыть открытые смены",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

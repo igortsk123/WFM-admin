@@ -1,16 +1,20 @@
 "use client"
 
 import { ToggleLeft, ToggleRight } from "lucide-react"
-import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
-import { FilterChip } from "@/components/shared/filter-chip"
 import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet"
 import { MultiSelectCombobox } from "@/components/shared/multi-select-combobox"
 import { SingleSelectCombobox } from "@/components/shared/single-select-combobox"
 import { DateRangePicker } from "@/components/shared/date-range-picker"
+import {
+  FilterBar,
+  FilterChipsRow,
+  type FilterChipDescriptor,
+  type FilterControl,
+} from "@/components/shared/filter-bar"
 
 import {
   STORE_OPTIONS,
@@ -36,7 +40,7 @@ interface FiltersBarProps {
   onChangeSource: (value: string | null) => void
   onChangeUnassigned: (value: boolean | null) => void
   onClearAll: () => void
-  filterChips: { label: string; value: string; onRemove: () => void }[]
+  filterChips: FilterChipDescriptor[]
 }
 
 export function FiltersBar({
@@ -57,67 +61,77 @@ export function FiltersBar({
   onClearAll,
   filterChips,
 }: FiltersBarProps) {
-  const tCommon = useTranslations("common")
-
   const storeOptions = STORE_OPTIONS.map((s) => ({ value: s.id, label: s.name }))
   const workTypeOptions = WORK_TYPE_OPTIONS.map((w) => ({ value: w.id, label: w.name }))
+
+  const desktopControls: FilterControl[] = [
+    {
+      kind: "multi-select",
+      value: selectedStoreIds,
+      onChange: onChangeStores,
+      options: storeOptions,
+      placeholder: "Объект",
+      className: "min-w-[160px]",
+    },
+    {
+      kind: "multi-select",
+      value: selectedWorkTypeIds,
+      onChange: onChangeWorkTypes,
+      options: workTypeOptions,
+      placeholder: "Тип работ",
+      className: "min-w-[160px]",
+    },
+    {
+      kind: "date-range",
+      from: parseIsoDate(dateFromParam),
+      to: parseIsoDate(dateToParam),
+      onChange: (from, to) => {
+        onChangeDateFrom(from ? toIsoDate(from) : null)
+        onChangeDateTo(to ? toIsoDate(to) : null)
+      },
+      placeholder: "Дата выхода",
+    },
+  ]
+
+  if (externalHrEnabled) {
+    desktopControls.push({
+      kind: "single-select",
+      value: sourceParam,
+      onChange: (v) => onChangeSource(v || null),
+      options: SOURCE_OPTIONS,
+      placeholder: "Источник",
+      className: "min-w-[140px]",
+    })
+  }
+
+  desktopControls.push({
+    kind: "custom",
+    key: "unassigned-toggle",
+    render: () => (
+      <Button
+        variant={unassignedParam ? "default" : "outline"}
+        size="sm"
+        className={cn(
+          "h-9 gap-1.5 text-sm font-normal",
+          unassignedParam && "bg-primary text-primary-foreground",
+        )}
+        onClick={() => onChangeUnassigned(unassignedParam ? null : true)}
+        aria-pressed={unassignedParam}
+      >
+        {unassignedParam ? (
+          <ToggleRight className="size-4 shrink-0" />
+        ) : (
+          <ToggleLeft className="size-4 shrink-0" />
+        )}
+        Требуют назначения
+      </Button>
+    ),
+  })
 
   return (
     <>
       {/* Filter row — desktop */}
-      <div className="hidden md:flex items-center gap-2 flex-wrap">
-        <MultiSelectCombobox
-          options={storeOptions}
-          selected={selectedStoreIds}
-          onSelectionChange={onChangeStores}
-          placeholder="Объект"
-          className="min-w-[160px]"
-        />
-        <MultiSelectCombobox
-          options={workTypeOptions}
-          selected={selectedWorkTypeIds}
-          onSelectionChange={onChangeWorkTypes}
-          placeholder="Тип работ"
-          className="min-w-[160px]"
-        />
-        <DateRangePicker
-          from={parseIsoDate(dateFromParam)}
-          to={parseIsoDate(dateToParam)}
-          onChange={(from, to) => {
-            onChangeDateFrom(from ? toIsoDate(from) : null)
-            onChangeDateTo(to ? toIsoDate(to) : null)
-          }}
-          placeholder="Дата выхода"
-        />
-        {externalHrEnabled && (
-          <SingleSelectCombobox
-            options={SOURCE_OPTIONS}
-            value={sourceParam}
-            onValueChange={(v) => onChangeSource(v || null)}
-            placeholder="Источник"
-            className="min-w-[140px]"
-          />
-        )}
-
-        {/* Unassigned toggle chip */}
-        <Button
-          variant={unassignedParam ? "default" : "outline"}
-          size="sm"
-          className={cn(
-            "h-9 gap-1.5 text-sm font-normal",
-            unassignedParam && "bg-primary text-primary-foreground"
-          )}
-          onClick={() => onChangeUnassigned(unassignedParam ? null : true)}
-          aria-pressed={unassignedParam}
-        >
-          {unassignedParam ? (
-            <ToggleRight className="size-4 shrink-0" />
-          ) : (
-            <ToggleLeft className="size-4 shrink-0" />
-          )}
-          Требуют назначения
-        </Button>
-      </div>
+      <FilterBar controls={desktopControls} desktopOnly />
 
       {/* Mobile filter sheet */}
       <MobileFilterSheet
@@ -189,20 +203,7 @@ export function FiltersBar({
       </MobileFilterSheet>
 
       {/* Active filter chips */}
-      {filterChips.length > 0 && (
-        <div className="flex items-center gap-2 flex-wrap">
-          {filterChips.map((chip, i) => (
-            <FilterChip key={i} label={chip.label} value={chip.value} onRemove={chip.onRemove} />
-          ))}
-          <button
-            type="button"
-            onClick={onClearAll}
-            className="text-xs text-muted-foreground hover:text-foreground underline transition-colors"
-          >
-            {tCommon("clearAll")}
-          </button>
-        </div>
-      )}
+      <FilterChipsRow chips={filterChips} onClearAll={onClearAll} />
     </>
   )
 }

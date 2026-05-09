@@ -8,8 +8,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { FilterChip, MobileFilterSheet } from "@/components/shared";
+import {
+  FilterChipsRow,
+  MobileFilterSheet,
+  type FilterChipDescriptor,
+} from "@/components/shared";
 
 import type { AISuggestionType, AISuggestionPriority } from "@/lib/types";
 
@@ -42,17 +45,19 @@ export function FiltersBar({
   t,
   tCommon,
 }: FiltersBarProps) {
-  // Build active filters list
-  const activeFilters: { label: string; value: string; onRemove: () => void }[] = [];
+  // Build active chips
+  const chips: FilterChipDescriptor[] = [];
   if (typeFilter) {
-    activeFilters.push({
+    chips.push({
+      key: "type",
       label: t("filters.type"),
       value: t(`type.${typeFilter}` as Parameters<typeof t>[0]),
       onRemove: () => onUpdateFilters({ type: null }),
     });
   }
   if (priorityFilter) {
-    activeFilters.push({
+    chips.push({
+      key: "priority",
       label: t("filters.priority"),
       value: t(`priority.${priorityFilter}` as Parameters<typeof t>[0]),
       onRemove: () => onUpdateFilters({ priority: null }),
@@ -60,7 +65,8 @@ export function FiltersBar({
   }
   if (storeFilter) {
     const store = stores.find((s) => s.id === storeFilter);
-    activeFilters.push({
+    chips.push({
+      key: "store",
       label: t("filters.store"),
       value: store?.name || `#${storeFilter}`,
       onRemove: () => onUpdateFilters({ store_id: null }),
@@ -127,7 +133,7 @@ export function FiltersBar({
 
       {/* Mobile filter sheet */}
       <MobileFilterSheet
-        activeCount={activeFilters.length}
+        activeCount={chips.length}
         onClearAll={onClearFilters}
         onApply={() => {}}
       >
@@ -203,26 +209,11 @@ export function FiltersBar({
       </MobileFilterSheet>
 
       {/* Active filter chips */}
-      {activeFilters.length > 0 && (
-        <div className="flex items-center gap-2 flex-wrap">
-          {activeFilters.map((filter, i) => (
-            <FilterChip
-              key={i}
-              label={filter.label}
-              value={filter.value}
-              onRemove={filter.onRemove}
-            />
-          ))}
-          <Button
-            variant="link"
-            size="sm"
-            className="h-7 px-2 text-xs"
-            onClick={onClearFilters}
-          >
-            {tCommon("clear_all")}
-          </Button>
-        </div>
-      )}
+      <FilterChipsRow
+        chips={chips}
+        onClearAll={onClearFilters}
+        clearAllLabel={tCommon("clear_all")}
+      />
     </>
   );
 }

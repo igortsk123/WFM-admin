@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { SingleSelectCombobox } from "@/components/shared/single-select-combobox"
+import { FilterBar, type FilterControl } from "@/components/shared/filter-bar"
 
 import type { SortOption, TFn } from "./_shared"
 
@@ -51,48 +51,63 @@ export function FiltersBar({
   onSortByChange,
   t,
 }: FiltersBarProps) {
-  return (
-    <div className="flex flex-wrap items-center gap-2">
-      {isNetworkOps && (
-        <SingleSelectCombobox
-          options={storeOptions}
-          value={storeFilter}
-          onValueChange={onStoreFilterChange}
-          placeholder={t("filter_store")}
-          className="w-44"
-        />
-      )}
-      <SingleSelectCombobox
-        options={zoneOptions}
-        value={zoneFilter}
-        onValueChange={onZoneFilterChange}
-        placeholder={t("filter_zone")}
-        className="w-36"
-      />
-      <SingleSelectCombobox
-        options={workTypeOptions}
-        value={workTypeFilter}
-        onValueChange={onWorkTypeFilterChange}
-        placeholder={t("filter_work_type")}
-        className="w-40"
-      />
-      <SingleSelectCombobox
-        options={assigneeOptions}
-        value={assigneeFilter}
-        onValueChange={onAssigneeFilterChange}
-        placeholder={t("filter_assignee")}
-        className="w-44"
-      />
-      <Select value={sortBy} onValueChange={(v) => onSortByChange(v as SortOption)}>
-        <SelectTrigger className="h-9 w-44 text-sm">
-          <SelectValue />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="oldest">{t("sort_oldest")}</SelectItem>
-          <SelectItem value="newest">{t("sort_newest")}</SelectItem>
-          <SelectItem value="duration">{t("sort_duration")}</SelectItem>
-        </SelectContent>
-      </Select>
-    </div>
+  const controls: FilterControl[] = []
+
+  if (isNetworkOps) {
+    controls.push({
+      kind: "single-select",
+      value: storeFilter,
+      onChange: onStoreFilterChange,
+      options: storeOptions,
+      placeholder: t("filter_store"),
+      className: "w-44",
+    })
+  }
+  controls.push(
+    {
+      kind: "single-select",
+      value: zoneFilter,
+      onChange: onZoneFilterChange,
+      options: zoneOptions,
+      placeholder: t("filter_zone"),
+      className: "w-36",
+    },
+    {
+      kind: "single-select",
+      value: workTypeFilter,
+      onChange: onWorkTypeFilterChange,
+      options: workTypeOptions,
+      placeholder: t("filter_work_type"),
+      className: "w-40",
+    },
+    {
+      kind: "single-select",
+      value: assigneeFilter,
+      onChange: onAssigneeFilterChange,
+      options: assigneeOptions,
+      placeholder: t("filter_assignee"),
+      className: "w-44",
+    },
+    {
+      kind: "custom",
+      key: "sort",
+      render: () => (
+        <Select
+          value={sortBy}
+          onValueChange={(v) => onSortByChange(v as SortOption)}
+        >
+          <SelectTrigger className="h-9 w-44 text-sm">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="oldest">{t("sort_oldest")}</SelectItem>
+            <SelectItem value="newest">{t("sort_newest")}</SelectItem>
+            <SelectItem value="duration">{t("sort_duration")}</SelectItem>
+          </SelectContent>
+        </Select>
+      ),
+    },
   )
+
+  return <FilterBar controls={controls} />
 }

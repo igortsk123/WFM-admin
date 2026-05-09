@@ -1,0 +1,133 @@
+{
+  "name": "LAMA Daily Sync v2 (per-store)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 6,
+              "triggerAtMinute": 0
+            }
+          ]
+        }
+      },
+      "id": "sync-v2-0001",
+      "name": "Каждый день в 6:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "http://svc_tasks:8000/internal/store-codes",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "sync-v2-0002",
+      "name": "Получить список магазинов",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "jsCode": "const storeCodes = $input.first().json.data?.store_codes || [];\nif (storeCodes.length === 0) {\n  throw new Error('Список магазинов пуст — синхронизация прервана');\n}\nreturn storeCodes.map(code => ({ json: { shop_code: code } }));"
+      },
+      "id": "sync-v2-0003",
+      "name": "Подготовить список",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "sync-v2-0004",
+      "name": "По одному магазину",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [900, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=http://svc_tasks:8000/internal/sync-store?shop_code={{ $json.shop_code }}",
+        "options": {
+          "timeout": 120000
+        }
+      },
+      "id": "sync-v2-0005",
+      "name": "Синхронизировать магазин",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [1120, 300]
+    }
+  ],
+  "connections": {
+    "Каждый день в 6:00": {
+      "main": [
+        [
+          {
+            "node": "Получить список магазинов",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Получить список магазинов": {
+      "main": [
+        [
+          {
+            "node": "Подготовить список",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Подготовить список": {
+      "main": [
+        [
+          {
+            "node": "По одному магазину",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "По одному магазину": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Синхронизировать магазин",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Синхронизировать магазин": {
+      "main": [
+        [
+          {
+            "node": "По одному магазину",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

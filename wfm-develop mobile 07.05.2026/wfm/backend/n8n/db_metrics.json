@@ -1,0 +1,180 @@
+{
+  "name": "db_metrics",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 23,
+              "triggerAtMinute": 55
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "Каждый день в 23:55",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [-400, 400]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  COUNT(*) AS total_users,\n  COUNT(sso_id) AS users_with_sso\nFROM users;",
+        "options": {}
+      },
+      "id": "sql-users",
+      "name": "Пользователи",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [0, 0],
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "o8dcZQsMua42to6t",
+          "name": "users"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(*) AS total_stores FROM stores;",
+        "options": {}
+      },
+      "id": "sql-stores",
+      "name": "Магазины",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [0, 200],
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "o8dcZQsMua42to6t",
+          "name": "users"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(*) AS total_assignments FROM assignments;",
+        "options": {}
+      },
+      "id": "sql-assignments",
+      "name": "Назначения",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [0, 400],
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "o8dcZQsMua42to6t",
+          "name": "users"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  COUNT(*) AS total_tasks,\n  COUNT(CASE WHEN state = 'COMPLETED' THEN 1 END) AS completed_tasks\nFROM tasks;",
+        "options": {}
+      },
+      "id": "sql-tasks",
+      "name": "Задачи",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [0, 600],
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "sVVdEta8AQuL47Ln",
+          "name": "tasks"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(*) AS total_shifts_plan FROM shifts_plan;",
+        "options": {}
+      },
+      "id": "sql-shifts-plan",
+      "name": "Плановые смены",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [0, 800],
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "sVVdEta8AQuL47Ln",
+          "name": "tasks"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(*) AS total_shifts_fact FROM shifts_fact;",
+        "options": {}
+      },
+      "id": "sql-shifts-fact",
+      "name": "Фактические смены",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [0, 1000],
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "sVVdEta8AQuL47Ln",
+          "name": "tasks"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT COUNT(*) AS completed_count\nFROM public.task_events\nWHERE event_type = 'COMPLETE'\n  AND DATE(created_at) = CURRENT_DATE\n  AND actor_id > 4;",
+        "options": {}
+      },
+      "id": "sql-completed-today",
+      "name": "Завершённых задач сегодня",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [0, 1200],
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "sVVdEta8AQuL47Ln",
+          "name": "tasks"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Каждый день в 23:55": {
+      "main": [
+        [
+          { "node": "Пользователи", "type": "main", "index": 0 },
+          { "node": "Магазины", "type": "main", "index": 0 },
+          { "node": "Назначения", "type": "main", "index": 0 },
+          { "node": "Задачи", "type": "main", "index": 0 },
+          { "node": "Плановые смены", "type": "main", "index": 0 },
+          { "node": "Фактические смены", "type": "main", "index": 0 },
+          { "node": "Завершённых задач сегодня", "type": "main", "index": 0 }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "49016fefd63ba50832e53786cdfa65c9d30d1d66398a3b5739652728aa272b21"
+  },
+  "tags": []
+}

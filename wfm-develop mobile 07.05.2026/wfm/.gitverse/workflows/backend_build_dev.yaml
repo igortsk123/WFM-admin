@@ -1,0 +1,57 @@
+name: Build Dev Images
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - "backend/**"
+
+jobs:
+
+  build-and-push:
+    runs-on: self-hosted
+    container:
+      image: catthehacker/ubuntu:act-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to Registry
+        run: |
+          echo "${{ secrets.REGISTRY_PASSWORD }}" | \
+          docker login registry.beyondviolet.com \
+            -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin
+
+      - name: Build and Push svc_tasks
+        run: |
+          docker build \
+            -t registry.beyondviolet.com/wfm/svc_tasks:dev \
+            -f backend/svc_tasks/Dockerfile backend/
+          docker push registry.beyondviolet.com/wfm/svc_tasks:dev
+
+      - name: Build and Push svc_users
+        run: |
+          docker build \
+            -t registry.beyondviolet.com/wfm/svc_users:dev \
+            -f backend/svc_users/Dockerfile backend/
+          docker push registry.beyondviolet.com/wfm/svc_users:dev
+
+      - name: Build and Push svc_notifications
+        run: |
+          docker build \
+            -t registry.beyondviolet.com/wfm/svc_notifications:dev \
+            -f backend/svc_notifications/Dockerfile backend/
+          docker push registry.beyondviolet.com/wfm/svc_notifications:dev
+
+      - name: Build and Push svc_monitoring
+        run: |
+          docker build \
+            -t registry.beyondviolet.com/wfm/svc_monitoring:dev \
+            -f backend/svc_monitoring/Dockerfile backend/
+          docker push registry.beyondviolet.com/wfm/svc_monitoring:dev
+
+      - name: Logout from Registry
+        if: always()
+        run: docker logout registry.beyondviolet.com

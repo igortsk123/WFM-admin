@@ -1,0 +1,6 @@
+// Конфигурация для приложения «ХВ Сотрудник»
+// Штатные сотрудники LAMA
+
+PRODUCT_BUNDLE_IDENTIFIER = com.beyondviolet.rost.wfm
+INFOPLIST_KEY_CFBundleDisplayName = ХВ Сотрудник
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIconHV

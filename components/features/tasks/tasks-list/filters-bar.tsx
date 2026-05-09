@@ -7,6 +7,10 @@ import { Label } from "@/components/ui/label"
 import { MultiSelectCombobox } from "@/components/shared/multi-select-combobox"
 import { DateRangePicker } from "@/components/shared/date-range-picker"
 import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet"
+import {
+  FilterBar,
+  type FilterControl,
+} from "@/components/shared/filter-bar"
 
 interface Option {
   value: string
@@ -75,67 +79,68 @@ export function FiltersBar(props: FiltersBarProps) {
     onApply,
   } = props
 
-  // Filter content (shared between desktop row and mobile sheet body)
-  const filterContent = (
-    <div className="flex flex-col gap-3 md:flex-row md:flex-wrap md:items-end">
-      {/* Search */}
-      <div className="relative flex-1 min-w-[260px] md:basis-[280px]">
-        <Input
-          placeholder={t("filters.search_placeholder")}
-          value={search}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className="h-9 pr-8"
-        />
-      </div>
-      <MultiSelectCombobox
-        options={storeOptions}
-        selected={selectedStores}
-        onSelectionChange={onStoresChange}
-        placeholder={t("filters.store")}
-        className="md:w-[180px]"
-      />
-      <MultiSelectCombobox
-        options={zoneOptions}
-        selected={selectedZones}
-        onSelectionChange={onZonesChange}
-        placeholder={t("filters.zone")}
-        className="md:w-[150px]"
-      />
-      <MultiSelectCombobox
-        options={workTypeOptions}
-        selected={selectedWorkTypes}
-        onSelectionChange={onWorkTypesChange}
-        placeholder={t("filters.work_type")}
-        className="md:w-[160px]"
-      />
-      <MultiSelectCombobox
-        options={categoryOptions}
-        selected={selectedCategories}
-        onSelectionChange={onCategoriesChange}
-        placeholder={t("filters.product_category")}
-        className="md:w-[170px]"
-      />
-      <MultiSelectCombobox
-        options={assigneeOptions}
-        selected={selectedAssignees}
-        onSelectionChange={onAssigneesChange}
-        placeholder={t("filters.assignee")}
-        className="md:w-[170px]"
-      />
-      <DateRangePicker
-        from={dateFrom}
-        to={dateTo}
-        onChange={(from, to) => onDateRangeChange(from, to)}
-        placeholder={t("filters.date_range")}
-      />
-    </div>
-  )
+  const desktopControls: FilterControl[] = [
+    {
+      kind: "search",
+      value: search,
+      onChange: onSearchChange,
+      placeholder: t("filters.search_placeholder"),
+      className: "h-9 md:basis-[280px] flex-1 min-w-[260px]",
+    },
+    {
+      kind: "multi-select",
+      value: selectedStores,
+      onChange: onStoresChange,
+      options: storeOptions,
+      placeholder: t("filters.store"),
+      className: "md:w-[180px]",
+    },
+    {
+      kind: "multi-select",
+      value: selectedZones,
+      onChange: onZonesChange,
+      options: zoneOptions,
+      placeholder: t("filters.zone"),
+      className: "md:w-[150px]",
+    },
+    {
+      kind: "multi-select",
+      value: selectedWorkTypes,
+      onChange: onWorkTypesChange,
+      options: workTypeOptions,
+      placeholder: t("filters.work_type"),
+      className: "md:w-[160px]",
+    },
+    {
+      kind: "multi-select",
+      value: selectedCategories,
+      onChange: onCategoriesChange,
+      options: categoryOptions,
+      placeholder: t("filters.product_category"),
+      className: "md:w-[170px]",
+    },
+    {
+      kind: "multi-select",
+      value: selectedAssignees,
+      onChange: onAssigneesChange,
+      options: assigneeOptions,
+      placeholder: t("filters.assignee"),
+      className: "md:w-[170px]",
+    },
+    {
+      kind: "date-range",
+      from: dateFrom,
+      to: dateTo,
+      onChange: (from, to) => onDateRangeChange(from, to),
+      placeholder: t("filters.date_range"),
+    },
+  ]
 
   return (
     <>
       {/* Desktop filter row */}
       <div className="hidden md:block bg-card border border-border rounded-lg p-3">
-        {filterContent}
+        <FilterBar controls={desktopControls} />
       </div>
 
       {/* Mobile filter row */}

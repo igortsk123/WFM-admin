@@ -1,0 +1,66 @@
+name: Build Prod Images
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+
+  build-and-push:
+    runs-on: self-hosted
+    container:
+      image: catthehacker/ubuntu:act-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Extract version
+        id: version
+        run: echo "VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+
+      - name: Login to Registry
+        run: |
+          echo "${{ secrets.REGISTRY_PASSWORD }}" | \
+          docker login registry.beyondviolet.com \
+            -u ${{ secrets.REGISTRY_USERNAME }} --password-stdin
+
+      - name: Build and Push svc_tasks
+        run: |
+          docker build \
+            -t registry.beyondviolet.com/wfm/svc_tasks:${{ steps.version.outputs.VERSION }} \
+            -t registry.beyondviolet.com/wfm/svc_tasks:latest \
+            -f backend/svc_tasks/Dockerfile backend/
+          docker push registry.beyondviolet.com/wfm/svc_tasks:${{ steps.version.outputs.VERSION }}
+          docker push registry.beyondviolet.com/wfm/svc_tasks:latest
+
+      - name: Build and Push svc_users
+        run: |
+          docker build \
+            -t registry.beyondviolet.com/wfm/svc_users:${{ steps.version.outputs.VERSION }} \
+            -t registry.beyondviolet.com/wfm/svc_users:latest \
+            -f backend/svc_users/Dockerfile backend/
+          docker push registry.beyondviolet.com/wfm/svc_users:${{ steps.version.outputs.VERSION }}
+          docker push registry.beyondviolet.com/wfm/svc_users:latest
+
+      - name: Build and Push svc_notifications
+        run: |
+          docker build \
+            -t registry.beyondviolet.com/wfm/svc_notifications:${{ steps.version.outputs.VERSION }} \
+            -t registry.beyondviolet.com/wfm/svc_notifications:latest \
+            -f backend/svc_notifications/Dockerfile backend/
+          docker push registry.beyondviolet.com/wfm/svc_notifications:${{ steps.version.outputs.VERSION }}
+          docker push registry.beyondviolet.com/wfm/svc_notifications:latest
+
+      - name: Build and Push svc_monitoring
+        run: |
+          docker build \
+            -t registry.beyondviolet.com/wfm/svc_monitoring:${{ steps.version.outputs.VERSION }} \
+            -t registry.beyondviolet.com/wfm/svc_monitoring:latest \
+            -f backend/svc_monitoring/Dockerfile backend/
+          docker push registry.beyondviolet.com/wfm/svc_monitoring:${{ steps.version.outputs.VERSION }}
+          docker push registry.beyondviolet.com/wfm/svc_monitoring:latest
+
+      - name: Logout from Registry
+        if: always()
+        run: docker logout registry.beyondviolet.com
