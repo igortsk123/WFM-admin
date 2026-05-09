@@ -1,5 +1,6 @@
 "use client"
 
+import { memo } from "react"
 import { useLocale } from "next-intl"
 import { Shield } from "lucide-react"
 
@@ -21,7 +22,7 @@ interface MobileCardProps {
   isArchiveTab: boolean
 }
 
-export function MobileCard({
+export const MobileCard = memo(function MobileCard({
   task,
   isSelected,
   onToggleSelect,
@@ -87,4 +88,4 @@ export function MobileCard({
       }
     />
   )
-}
+})

@@ -1,5 +1,6 @@
 "use client"
 
+import { memo } from "react"
 import { useTranslations } from "next-intl"
 import { AlertCircle, MoreHorizontal } from "lucide-react"
 
@@ -24,15 +25,15 @@ interface MobileCardProps {
   /**
    * Click target. The parent `ResponsiveDataTable` already calls `onRowClick`
    * for the whole card, so this is used only inside the dropdown's
-   * "Open" item to keep parity with desktop.
+   * "Open" item to keep parity with desktop. Callback receives the row store.
    */
-  onClick: () => void
-  onArchive: () => void
-  onSync: () => void
-  onEdit: () => void
+  onClick: (store: StoreWithStats) => void
+  onArchive: (store: StoreWithStats) => void
+  onSync: (store: StoreWithStats) => void
+  onEdit: (store: StoreWithStats) => void
 }
 
-export function MobileCard({ store, onClick, onArchive, onSync, onEdit }: MobileCardProps) {
+export const MobileCard = memo(function MobileCard({ store, onClick, onArchive, onSync, onEdit }: MobileCardProps) {
   const t = useTranslations("screen.stores")
   const { label: lamaLabel, level: lamaLevel } = formatLamaSync(store.lama_synced_at)
 
@@ -106,14 +107,14 @@ export function MobileCard({ store, onClick, onArchive, onSync, onEdit }: Mobile
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={onClick}>{t("actions.open")}</DropdownMenuItem>
-                <DropdownMenuItem onClick={onEdit}>{t("actions.edit")}</DropdownMenuItem>
-                <DropdownMenuItem onClick={onSync}>
+                <DropdownMenuItem onClick={() => onClick(store)}>{t("actions.open")}</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onEdit(store)}>{t("actions.edit")}</DropdownMenuItem>
+                <DropdownMenuItem onClick={() => onSync(store)}>
                   {t("actions.force_sync_lama")}
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
-                  onClick={onArchive}
+                  onClick={() => onArchive(store)}
                   className="text-destructive focus:text-destructive"
                 >
                   {t("actions.archive")}
@@ -125,4 +126,4 @@ export function MobileCard({ store, onClick, onArchive, onSync, onEdit }: Mobile
       }
     />
   )
-}
+})

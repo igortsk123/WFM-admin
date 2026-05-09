@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { memo } from "react"
 import { useTranslations } from "next-intl"
 import { FileWarning } from "lucide-react"
 
@@ -31,7 +32,7 @@ interface MobileCardProps {
   onArchive: (userId: number) => void
 }
 
-export function MobileCard({
+export const MobileCard = memo(function MobileCard({
   user,
   hideStore,
   canFullCRUD,
@@ -148,4 +149,4 @@ export function MobileCard({
       ]}
     />
   )
-}
+})

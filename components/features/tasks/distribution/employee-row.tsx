@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { memo } from "react"
 import { useTranslations } from "next-intl"
 import { Star, Wand2, ChevronRight } from "lucide-react"
 
@@ -30,7 +31,7 @@ export interface EmployeeUtilizationRowProps {
   t: ReturnType<typeof useTranslations>
 }
 
-export function EmployeeUtilizationRow({ employee, planMin = 0, onSelect, t }: EmployeeUtilizationRowProps) {
+export const EmployeeUtilizationRow = memo(function EmployeeUtilizationRow({ employee, planMin = 0, onSelect, t }: EmployeeUtilizationRowProps) {
   const fullName = getFullName(employee.user.first_name, employee.user.last_name)
   const effectiveAssigned = employee.assigned_min + planMin
   const effectivePct = employee.shift_total_min > 0
@@ -123,4 +124,4 @@ export function EmployeeUtilizationRow({ employee, planMin = 0, onSelect, t }: E
 
   // Read-only — компактная строка для RIGHT-панели.
   return <div className="flex items-center gap-3 py-2">{content}</div>
-}
+})

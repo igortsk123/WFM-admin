@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { format, parseISO } from "date-fns";
 import { useTranslations } from "next-intl";
 
@@ -22,7 +23,7 @@ interface MobileCardProps {
   onHistory: (limit: BudgetLimit) => void;
 }
 
-export function MobileCard({
+export const MobileCard = memo(function MobileCard({
   limit,
   usage,
   isClientDirect,
@@ -80,4 +81,4 @@ export function MobileCard({
       }
     />
   );
-}
+});

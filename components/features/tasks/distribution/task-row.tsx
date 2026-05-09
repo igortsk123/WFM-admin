@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { memo } from "react"
 import { useTranslations } from "next-intl"
 import { Sparkles, Wand2, ListChecks, ChevronRight } from "lucide-react"
 
@@ -26,7 +27,7 @@ export interface TaskRowProps {
   t: ReturnType<typeof useTranslations>
 }
 
-export function TaskRow({ task, planAllocations, onSelect, disabled, t }: TaskRowProps) {
+export const TaskRow = memo(function TaskRow({ task, planAllocations, onSelect, disabled, t }: TaskRowProps) {
   const totalLabel = formatHM(task.planned_minutes, t)
   const planMin = planAllocations.reduce((sum, a) => sum + a.minutes, 0)
   const effectiveDistributed = task.distributed_minutes + planMin
@@ -137,4 +138,4 @@ export function TaskRow({ task, planAllocations, onSelect, disabled, t }: TaskRo
 
   // Read-only — компактная строка для RIGHT-панели.
   return <div className="flex items-center gap-3 py-2">{content}</div>
-}
+})

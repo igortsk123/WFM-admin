@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { Pencil, Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -24,7 +25,7 @@ interface ZoneCardProps {
   onDelete: (zone: ZoneWithCounts) => void;
 }
 
-export function ZoneCard({
+export const ZoneCard = memo(function ZoneCard({
   zone,
   showStoreBadge = false,
   onEdit,
@@ -125,4 +126,4 @@ export function ZoneCard({
       </CardContent>
     </Card>
   );
-}
+});

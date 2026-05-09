@@ -1,5 +1,7 @@
 "use client";
 
+import { memo } from "react";
+
 import type { Service } from "@/lib/types";
 
 import { ServiceStatusBadge } from "@/components/shared/service-status-badge";
@@ -14,7 +16,7 @@ export interface ServiceMobileCardProps {
   locale: string;
 }
 
-export function ServiceMobileCard({
+export const ServiceMobileCard = memo(function ServiceMobileCard({
   service: s,
   isNominal,
   locale,
@@ -60,4 +62,4 @@ export function ServiceMobileCard({
       </div>
     </div>
   );
-}
+});

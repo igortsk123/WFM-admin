@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 import { useTranslations } from "next-intl";
 import { MoreVertical, Sparkles, User, Users, Coins } from "lucide-react";
 import { toast } from "sonner";
@@ -24,7 +24,7 @@ interface BonusTaskCardProps {
   onRejectProposal?: (id: string) => void;
 }
 
-export function BonusTaskCard({
+export const BonusTaskCard = memo(function BonusTaskCard({
   task,
   isProposal,
   onRemove,
@@ -148,4 +148,4 @@ export function BonusTaskCard({
       </CardContent>
     </Card>
   );
-}
+});

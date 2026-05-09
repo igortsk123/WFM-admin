@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { memo } from "react"
 import { Camera, Clock } from "lucide-react"
 
 import type { TaskWithAvatar } from "@/lib/api/tasks"
@@ -18,7 +19,7 @@ export interface QueueRowProps {
   locale: string
 }
 
-export function QueueRow({ task, isSelected, onClick, t, locale }: QueueRowProps) {
+export const QueueRow = memo(function QueueRow({ task, isSelected, onClick, t, locale }: QueueRowProps) {
   const waitTime = task.updated_at ? fmtWaitTime(task.updated_at, t) : "—"
   const completedAt = task.history_brief?.completed_at
     ? fmtRelative(task.history_brief.completed_at, locale)
@@ -78,4 +79,4 @@ export function QueueRow({ task, isSelected, onClick, t, locale }: QueueRowProps
       </div>
     </button>
   )
-}
+})

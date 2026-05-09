@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { format, parseISO } from "date-fns";
 import { useTranslations } from "next-intl";
 
@@ -23,7 +24,7 @@ interface LimitRowProps {
   onHistory: (limit: BudgetLimit) => void;
 }
 
-export function LimitRow({
+export const LimitRow = memo(function LimitRow({
   limit,
   usage,
   isClientDirect,
@@ -112,4 +113,4 @@ export function LimitRow({
       )}
     </TableRow>
   );
-}
+});

@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { memo } from "react";
 import { Eye, Shield } from "lucide-react";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -15,13 +16,13 @@ import { EntityBadge } from "./entity-badge";
 interface EventRowProps {
   entry: AuditEntry;
   selected: boolean;
-  onSelect: () => void;
+  onSelect: (id: string) => void;
   locale: string;
   entityTypeLabel: (type: string) => string;
-  onEyeClick: () => void;
+  onEyeClick: (id: string) => void;
 }
 
-export function EventRow({
+export const EventRow = memo(function EventRow({
   entry,
   selected,
   onSelect,
@@ -32,7 +33,7 @@ export function EventRow({
   return (
     <button
       type="button"
-      onClick={onSelect}
+      onClick={() => onSelect(entry.id)}
       className={cn(
         "w-full text-left group flex items-start gap-3 px-4 py-3 transition-colors border-l-4",
         "hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset",
@@ -99,7 +100,7 @@ export function EventRow({
           aria-label="View details"
           onClick={(e) => {
             e.stopPropagation();
-            onEyeClick();
+            onEyeClick(entry.id);
           }}
           className="hidden group-hover:flex size-7 items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
         >
@@ -108,4 +109,4 @@ export function EventRow({
       </div>
     </button>
   );
-}
+});

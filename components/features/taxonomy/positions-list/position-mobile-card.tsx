@@ -1,5 +1,7 @@
 "use client";
 
+import { memo } from "react";
+
 import { Badge } from "@/components/ui/badge";
 import { RoleBadge } from "@/components/shared/role-badge";
 
@@ -19,7 +21,7 @@ interface PositionMobileCardProps {
   t: TFn;
 }
 
-export function PositionMobileCard({
+export const PositionMobileCard = memo(function PositionMobileCard({
   position,
   canEdit,
   onEdit,
@@ -63,4 +65,4 @@ export function PositionMobileCard({
       />
     </div>
   );
-}
+});

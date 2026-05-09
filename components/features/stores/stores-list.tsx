@@ -227,6 +227,40 @@ export function StoresList() {
     router.push(ADMIN_ROUTES.storeDetail(String(row.id)))
   }
 
+  // ── Stable row handlers (used by columns + mobileCardRender) ────
+  const handleOpen = React.useCallback(
+    (store: StoreWithStats) =>
+      router.push(ADMIN_ROUTES.storeDetail(String(store.id))),
+    [router],
+  )
+  const handleEdit = React.useCallback((store: StoreWithStats) => {
+    setEditingStore(store)
+    setStoreDialogOpen(true)
+  }, [])
+  const handleSync = React.useCallback((store: StoreWithStats) => {
+    setSyncingId(store.id)
+    setSyncConfirmOpen(true)
+  }, [])
+  const handleRowArchive = React.useCallback((store: StoreWithStats) => {
+    setArchivingId(store.id)
+  }, [])
+  const handleChangeDirector = React.useCallback(() => {
+    // TODO: change-director flow
+  }, [])
+
+  const renderStoreMobileCard = React.useCallback(
+    (store: StoreWithStats) => (
+      <MobileCard
+        store={store}
+        onClick={handleOpen}
+        onArchive={handleRowArchive}
+        onSync={handleSync}
+        onEdit={handleEdit}
+      />
+    ),
+    [handleOpen, handleRowArchive, handleSync, handleEdit],
+  )
+
   // ── Columns definition ──────────────────────────────────────────
   const columns = buildStoreColumns({
     t,
@@ -234,19 +268,11 @@ export function StoresList() {
     allSelected,
     onToggleAll: toggleAll,
     onToggleRow: toggleRow,
-    onOpen: (store) => router.push(ADMIN_ROUTES.storeDetail(String(store.id))),
-    onEdit: (store) => {
-      setEditingStore(store)
-      setStoreDialogOpen(true)
-    },
-    onChangeDirector: () => {
-      // TODO: change-director flow
-    },
-    onSync: (store) => {
-      setSyncingId(store.id)
-      setSyncConfirmOpen(true)
-    },
-    onArchive: (store) => setArchivingId(store.id),
+    onOpen: handleOpen,
+    onEdit: handleEdit,
+    onChangeDirector: handleChangeDirector,
+    onSync: handleSync,
+    onArchive: handleRowArchive,
   })
 
   // ── Empty / error states ────────────────────────────────────────
@@ -459,21 +485,7 @@ export function StoresList() {
                 total,
                 onPageChange: (p) => setPageParam(p),
               }}
-              mobileCardRender={(store) => (
-                <MobileCard
-                  store={store}
-                  onClick={() => router.push(ADMIN_ROUTES.storeDetail(String(store.id)))}
-                  onArchive={() => setArchivingId(store.id)}
-                  onSync={() => {
-                    setSyncingId(store.id)
-                    setSyncConfirmOpen(true)
-                  }}
-                  onEdit={() => {
-                    setEditingStore(store)
-                    setStoreDialogOpen(true)
-                  }}
-                />
-              )}
+              mobileCardRender={renderStoreMobileCard}
             />
           )}
         </>

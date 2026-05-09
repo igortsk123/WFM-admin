@@ -1,5 +1,6 @@
 "use client"
 
+import { memo } from "react"
 import { useTranslations } from "next-intl"
 import { Building2, User, Users } from "lucide-react"
 
@@ -17,7 +18,7 @@ interface MobileCardProps {
   onUnblock: (agent: Agent) => void
 }
 
-export function MobileCard({ agent, canWrite, onEdit, onBlock, onUnblock }: MobileCardProps) {
+export const MobileCard = memo(function MobileCard({ agent, canWrite, onEdit, onBlock, onUnblock }: MobileCardProps) {
   const t = useTranslations("screen.freelanceAgents")
   const Icon = agent.type === "COMPANY" ? Building2 : User
   const showActions = canWrite && agent.status !== "ARCHIVED"
@@ -73,4 +74,4 @@ export function MobileCard({ agent, canWrite, onEdit, onBlock, onUnblock }: Mobi
       }
     />
   )
-}
+})

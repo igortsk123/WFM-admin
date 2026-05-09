@@ -1,5 +1,6 @@
 "use client"
 
+import { memo } from "react"
 import { Camera } from "lucide-react"
 
 import { EntityMobileCard } from "@/components/shared/entity-mobile-card"
@@ -18,7 +19,7 @@ interface MobileCardProps {
   tCommon: TFn
 }
 
-export function WorkTypeMobileCard({
+export const WorkTypeMobileCard = memo(function WorkTypeMobileCard({
   workType: wt,
   onEdit,
   onDuplicate,
@@ -70,4 +71,4 @@ export function WorkTypeMobileCard({
       ]}
     />
   )
-}
+})

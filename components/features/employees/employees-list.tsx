@@ -271,12 +271,23 @@ export function EmployeesList() {
     }
   }
 
-  function toggleRow(id: number) {
-    const next = new Set(selectedIds)
-    if (next.has(id)) next.delete(id)
-    else next.add(id)
-    setSelectedIds(next)
-  }
+  const toggleRow = React.useCallback((id: number) => {
+    setSelectedIds((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+  }, [])
+
+  const handleOpenPermissions = React.useCallback((userId: number) => {
+    setSelectedIds(new Set([userId]))
+    setPermDialogOpen(true)
+  }, [])
+
+  const handleArchiveRow = React.useCallback((userId: number) => {
+    setArchivingId(userId)
+  }, [])
 
   // ── Row actions ─────────────────────────────────────────────────
   async function handleArchiveSingle(id: number) {
@@ -500,11 +511,8 @@ export function EmployeesList() {
               canImpersonate={canImpersonate}
               selectedIds={selectedIds}
               toggleRow={toggleRow}
-              onOpenPermissions={(userId) => {
-                setSelectedIds(new Set([userId]))
-                setPermDialogOpen(true)
-              }}
-              onArchive={(userId) => setArchivingId(userId)}
+              onOpenPermissions={handleOpenPermissions}
+              onArchive={handleArchiveRow}
             />
           )}
           isLoading={isLoading}

@@ -1,5 +1,7 @@
 "use client";
 
+import { memo } from "react";
+
 import { EntityMobileCard } from "@/components/shared/entity-mobile-card";
 import { EarningStatusBadge } from "@/components/shared/earning-status-badge";
 import type { AgentEarning, Locale } from "@/lib/types";
@@ -14,7 +16,7 @@ interface MobileEarningCardProps {
   statusLabel: string;
 }
 
-export function MobileEarningCard({
+export const MobileEarningCard = memo(function MobileEarningCard({
   earning,
   onClick,
   locale,
@@ -40,4 +42,4 @@ export function MobileEarningCard({
       }
     />
   );
-}
+});

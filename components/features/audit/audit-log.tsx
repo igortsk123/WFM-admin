@@ -184,20 +184,48 @@ export function AuditLog() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [entries, selectedId]);
 
-  function handleSelect(id: string) {
+  const handleSelect = React.useCallback((id: string) => {
     setSelectedId(id);
     const url = new URL(window.location.href);
     url.searchParams.set("id", id);
     window.history.replaceState(null, "", url.toString());
-  }
+  }, []);
 
-  function handleDeselect() {
+  const handleDeselect = React.useCallback(() => {
     setSelectedId(null);
     setSelectedEntry(null);
     const url = new URL(window.location.href);
     url.searchParams.delete("id");
     window.history.replaceState(null, "", url.toString());
-  }
+  }, []);
+
+  const handleRowSelect = React.useCallback(
+    (id: string) => {
+      // Toggle: if same id selected, deselect; else select.
+      setSelectedId((prev) => {
+        if (prev === id) {
+          setSelectedEntry(null);
+          const url = new URL(window.location.href);
+          url.searchParams.delete("id");
+          window.history.replaceState(null, "", url.toString());
+          return null;
+        }
+        const url = new URL(window.location.href);
+        url.searchParams.set("id", id);
+        window.history.replaceState(null, "", url.toString());
+        return id;
+      });
+    },
+    [],
+  );
+
+  const handleEyeClick = React.useCallback(
+    (id: string) => {
+      handleSelect(id);
+      setMobileDrawerOpen(true);
+    },
+    [handleSelect],
+  );
 
   function clearAllFilters() {
     setFilters({
@@ -231,13 +259,16 @@ export function AuditLog() {
     toast.success(t("toasts.exported"));
   }
 
-  function entityTypeLabel(type: string): string {
-    try {
-      return t(`entity_type.${type}` as Parameters<typeof t>[0]);
-    } catch {
-      return type;
-    }
-  }
+  const entityTypeLabel = React.useCallback(
+    (type: string): string => {
+      try {
+        return t(`entity_type.${type}` as Parameters<typeof t>[0]);
+      } catch {
+        return type;
+      }
+    },
+    [t],
+  );
 
   // Group entries by day
   const grouped = React.useMemo(() => {
@@ -417,19 +448,10 @@ export function AuditLog() {
                         key={entry.id}
                         entry={entry}
                         selected={selectedId === entry.id}
-                        onSelect={() => {
-                          if (selectedId === entry.id) {
-                            handleDeselect();
-                          } else {
-                            handleSelect(entry.id);
-                          }
-                        }}
+                        onSelect={handleRowSelect}
                         locale={locale}
                         entityTypeLabel={entityTypeLabel}
-                        onEyeClick={() => {
-                          handleSelect(entry.id);
-                          setMobileDrawerOpen(true);
-                        }}
+                        onEyeClick={handleEyeClick}
                       />
                     ))}
                     <Separator />

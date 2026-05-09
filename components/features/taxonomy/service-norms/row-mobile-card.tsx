@@ -1,5 +1,7 @@
 "use client";
 
+import { memo } from "react";
+
 import type { ServiceNorm } from "@/lib/types";
 
 import { ObjectFormatBadge } from "./badge-object-format";
@@ -17,7 +19,7 @@ interface MobileNormCardProps {
   tFreelance: TFn;
 }
 
-export function MobileNormCard({
+export const MobileNormCard = memo(function MobileNormCard({
   norm,
   isWriter,
   isArchive,
@@ -64,4 +66,4 @@ export function MobileNormCard({
       </div>
     </div>
   );
-}
+});

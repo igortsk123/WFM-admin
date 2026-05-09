@@ -197,14 +197,14 @@ export function TasksList() {
   }
 
   // ── Selection handlers ────────────────────────────────────────────────────
-  const toggleSelect = (id: string) => {
+  const toggleSelect = React.useCallback((id: string) => {
     setSelectedIds((prev) => {
       const next = new Set(prev)
       if (next.has(id)) next.delete(id)
       else next.add(id)
       return next
     })
-  }
+  }, [])
 
   const toggleSelectAll = () => {
     if (selectedIds.size === data.length) {

@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
 
@@ -23,7 +24,7 @@ interface RegulationsMobileCardProps {
   onDownload: (id: string) => void;
 }
 
-export function RegulationsMobileCard({
+export const RegulationsMobileCard = memo(function RegulationsMobileCard({
   regulation: reg,
   onView,
   onEditTags,
@@ -88,4 +89,4 @@ export function RegulationsMobileCard({
       ]}
     />
   );
-}
+});
