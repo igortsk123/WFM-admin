@@ -25,7 +25,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Calendar } from "@/components/ui/calendar";
+import { LazyCalendar as Calendar } from "@/components/shared/lazy-calendar";
 import {
   Tooltip,
   TooltipContent,

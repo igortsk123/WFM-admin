@@ -1,9 +1,19 @@
 "use client"
 
+import dynamic from "next/dynamic"
 import { type LucideIcon, TrendingUp, TrendingDown } from "lucide-react"
-import { LineChart, Line, ResponsiveContainer } from "recharts"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
+
+// recharts ships ~90 kB gz — keep it out of the initial bundle on every
+// screen that uses KpiCard but renders no sparkline (most of them).
+const KpiCardSparkline = dynamic(
+  () => import("./kpi-card-sparkline").then((m) => m.KpiCardSparkline),
+  {
+    ssr: false,
+    loading: () => null,
+  }
+)
 
 interface KpiCardProps {
   label: string
@@ -72,22 +82,7 @@ export function KpiCard({
 
           {sparkData && sparkData.length > 1 && (
             <div className="shrink-0 w-20 h-8" aria-hidden="true">
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={sparkData}>
-                  <Line
-                    type="monotone"
-                    dataKey="v"
-                    stroke={
-                      isNegative
-                        ? "var(--color-destructive)"
-                        : "var(--color-primary)"
-                    }
-                    strokeWidth={1.5}
-                    dot={false}
-                    isAnimationActive={false}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              <KpiCardSparkline data={sparkData} isNegative={isNegative} />
             </div>
           )}
         </div>

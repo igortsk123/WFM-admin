@@ -18,7 +18,11 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form"
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp"
+import {
+  LazyInputOTP as InputOTP,
+  LazyInputOTPGroup as InputOTPGroup,
+  LazyInputOTPSlot as InputOTPSlot,
+} from "@/components/shared/lazy-input-otp"
 import { verifyTotp } from "@/lib/api/auth"
 import type { FunctionalRole } from "@/lib/types"
 

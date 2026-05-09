@@ -13,7 +13,7 @@ import { addDays, format, isBefore, startOfDay } from "date-fns";
 import { ru } from "date-fns/locale";
 
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { LazyCalendar as Calendar } from "@/components/shared/lazy-calendar";
 import {
   Command,
   CommandEmpty,

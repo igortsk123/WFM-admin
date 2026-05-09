@@ -4,7 +4,7 @@ import { Download, GitCompareArrows } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar } from "@/components/ui/calendar";
+import { LazyCalendar as Calendar } from "@/components/shared/lazy-calendar";
 import {
   Popover,
   PopoverContent,

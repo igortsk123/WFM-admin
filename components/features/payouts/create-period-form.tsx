@@ -11,7 +11,7 @@ import { CalendarIcon, Loader2 } from "lucide-react";
 import { DEMO_TOP_STORES } from "@/lib/api/_demo-stores";
 
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+import { LazyCalendar as Calendar } from "@/components/shared/lazy-calendar";
 import {
   Form,
   FormControl,

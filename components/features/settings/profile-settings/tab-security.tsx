@@ -33,7 +33,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Skeleton } from "@/components/ui/skeleton";
-import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
+import {
+  LazyInputOTP as InputOTP,
+  LazyInputOTPGroup as InputOTPGroup,
+  LazyInputOTPSlot as InputOTPSlot,
+} from "@/components/shared/lazy-input-otp";
 import { Spinner } from "@/components/ui/spinner";
 
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";

@@ -4,7 +4,7 @@ import { Download, BarChart3 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Calendar } from "@/components/ui/calendar";
+import { LazyCalendar as Calendar } from "@/components/shared/lazy-calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Combobox } from "@/components/ui/combobox";
 import { Link } from "@/i18n/navigation";

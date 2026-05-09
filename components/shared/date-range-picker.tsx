@@ -5,7 +5,7 @@ import { useLocale } from "next-intl"
 import { ChevronDown, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import { LazyCalendar as Calendar } from "@/components/shared/lazy-calendar"
 import {
   Popover,
   PopoverContent,
