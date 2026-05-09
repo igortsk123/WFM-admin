@@ -1,16 +1,16 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import {
   Lightbulb,
   Target,
   ClipboardList,
   BarChart2,
   MessageSquare,
-  X,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
+import { InformationBanner } from "@/components/shared";
+import { Link } from "@/i18n/navigation";
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
 import type { AIChatContextType } from "@/lib/types";
 
@@ -71,35 +71,23 @@ export function ContextBanner({
   const showCloseButton = contextType !== "general" && onClose;
 
   return (
-    <div className="sticky top-0 z-10 flex h-14 items-center justify-between gap-3 border-b bg-info/5 px-4">
-      <div className="flex items-center gap-2 overflow-hidden">
-        <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary/10">
-          <Icon className="size-4 text-primary" />
-        </div>
-        <span className="truncate text-sm font-medium">{labelText}</span>
-        {link && (
+    <InformationBanner
+      variant="info"
+      layout="sticky"
+      icon={<Icon className="size-4" />}
+      title={labelText}
+      action={
+        link ? (
           <Link
             href={link}
             className="hidden shrink-0 text-xs text-primary hover:underline md:inline"
           >
             {t("open_link")}
           </Link>
-        )}
-      </div>
-
-      <div className="flex shrink-0 items-center gap-2">
-        {showCloseButton && (
-          <Button
-            variant="ghost"
-            size="icon"
-            className="size-8"
-            onClick={onClose}
-            aria-label={t("close")}
-          >
-            <X className="size-4" />
-          </Button>
-        )}
-      </div>
-    </div>
+        ) : undefined
+      }
+      onClose={showCloseButton ? onClose : undefined}
+      closeLabel={t("close")}
+    />
   );
 }

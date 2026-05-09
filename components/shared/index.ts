@@ -23,6 +23,12 @@ export type { EntityMobileCardProps } from "./entity-mobile-card"
 export { ActivityFeed } from "./activity-feed"
 export type { ActivityItem, ActivityType } from "./activity-feed"
 export { EmptyState } from "./empty-state"
+export { InformationBanner } from "./information-banner"
+export type {
+  InformationBannerProps,
+  InformationBannerVariant,
+  InformationBannerLayout,
+} from "./information-banner"
 
 // Data primitives & mobile/i18n
 export { DataTableShell } from "./data-table-shell"
