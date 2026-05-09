@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 
+import { EntityMobileCard } from "@/components/shared/entity-mobile-card"
 import { PermissionPill } from "@/components/shared/permission-pill"
 import { RoleBadge } from "@/components/shared/role-badge"
 import { ShiftStateBadge } from "@/components/shared/shift-state-badge"
@@ -56,8 +57,8 @@ export function MobileCard({
   const extraPerms = (u.permissions ?? []).length - 2
 
   return (
-    <div className="flex flex-col gap-2">
-      <div className="flex items-start justify-between gap-2">
+    <EntityMobileCard
+      title={
         <div className="flex items-center gap-2 min-w-0 flex-1">
           <UserCell
             user={{
@@ -76,7 +77,9 @@ export function MobileCard({
             />
           )}
         </div>
-        <div className="flex items-center gap-1 shrink-0">
+      }
+      actions={
+        <>
           <Checkbox
             checked={selectedIds.has(u.id)}
             onCheckedChange={() => toggleRow(u.id)}
@@ -93,58 +96,56 @@ export function MobileCard({
             onOpenPermissions={() => onOpenPermissions(u.id)}
             onArchive={() => onArchive(u.id)}
           />
-        </div>
-      </div>
-
-      {!hideStore && u.assignment?.store_name && (
-        <p className="text-xs text-muted-foreground truncate pl-[42px]">
-          {u.assignment.store_name}
-        </p>
-      )}
-
-      <div className="flex items-center gap-2 pl-[42px] flex-wrap">
-        {u.functional_role && (
-          <RoleBadge role={u.functional_role} size="sm" />
-        )}
-        <Badge
-          className={cn(
-            "text-xs",
-            isFreelance
-              ? "bg-warning/10 text-warning border-warning/20"
-              : "bg-muted text-muted-foreground border-transparent"
+        </>
+      }
+      meta={[
+        !hideStore && u.assignment?.store_name ? (
+          <p className="text-xs text-muted-foreground truncate pl-[42px] w-full">
+            {u.assignment.store_name}
+          </p>
+        ) : null,
+        <div key="role" className="flex items-center gap-2 pl-[42px] flex-wrap">
+          {u.functional_role && (
+            <RoleBadge role={u.functional_role} size="sm" />
           )}
-        >
-          {isFreelance ? t("employment.freelance") : t("employment.staff")}
-        </Badge>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-1 pl-[42px]">
-        {visiblePerms.map((p) => (
-          <PermissionPill key={p} permission={p} />
-        ))}
-        {extraPerms > 0 && (
-          <Badge variant="secondary" className="text-xs px-1.5">
-            {t("columns.more_permissions", { n: extraPerms })}
-          </Badge>
-        )}
-      </div>
-
-      <div className="flex items-center gap-2 pl-[42px]">
-        {shift ? (
-          <>
-            <ShiftStateBadge status={shift.status} size="sm" />
-            {shift.status === "OPENED" && start && end && (
-              <span className="text-xs text-muted-foreground">
-                {t("shift.time_range", { start, end })}
-              </span>
+          <Badge
+            className={cn(
+              "text-xs",
+              isFreelance
+                ? "bg-warning/10 text-warning border-warning/20"
+                : "bg-muted text-muted-foreground border-transparent",
             )}
-          </>
-        ) : (
-          <span className="text-xs italic text-muted-foreground">
-            {t("shift.no_shift")}
-          </span>
-        )}
-      </div>
-    </div>
+          >
+            {isFreelance ? t("employment.freelance") : t("employment.staff")}
+          </Badge>
+        </div>,
+        <div key="perms" className="flex flex-wrap items-center gap-1 pl-[42px]">
+          {visiblePerms.map((p) => (
+            <PermissionPill key={p} permission={p} />
+          ))}
+          {extraPerms > 0 && (
+            <Badge variant="secondary" className="text-xs px-1.5">
+              {t("columns.more_permissions", { n: extraPerms })}
+            </Badge>
+          )}
+        </div>,
+        <div key="shift" className="flex items-center gap-2 pl-[42px]">
+          {shift ? (
+            <>
+              <ShiftStateBadge status={shift.status} size="sm" />
+              {shift.status === "OPENED" && start && end && (
+                <span className="text-xs text-muted-foreground">
+                  {t("shift.time_range", { start, end })}
+                </span>
+              )}
+            </>
+          ) : (
+            <span className="text-xs italic text-muted-foreground">
+              {t("shift.no_shift")}
+            </span>
+          )}
+        </div>,
+      ]}
+    />
   )
 }

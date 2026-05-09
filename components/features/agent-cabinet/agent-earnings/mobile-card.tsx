@@ -1,8 +1,10 @@
 "use client";
 
-import { formatCurrency } from "@/lib/utils/format";
-import type { AgentEarning, Locale } from "@/lib/types";
+import { EntityMobileCard } from "@/components/shared/entity-mobile-card";
 import { EarningStatusBadge } from "@/components/shared/earning-status-badge";
+import type { AgentEarning, Locale } from "@/lib/types";
+import { formatCurrency } from "@/lib/utils/format";
+
 import { formatShortDate } from "./_shared";
 
 interface MobileEarningCardProps {
@@ -19,26 +21,23 @@ export function MobileEarningCard({
   statusLabel,
 }: MobileEarningCardProps) {
   return (
-    <button
-      type="button"
+    <EntityMobileCard
       onClick={onClick}
-      className="w-full text-left rounded-lg border border-border bg-card p-4 flex flex-col gap-2 hover:bg-muted/50 transition-colors min-h-[44px]"
       aria-label={`${earning.freelancer_name} – ${formatCurrency(earning.commission_amount, locale)}`}
-    >
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-sm font-medium text-foreground truncate">
-          {earning.freelancer_name}
-        </span>
+      title={earning.freelancer_name}
+      status={
         <EarningStatusBadge status={earning.status} label={statusLabel} />
-      </div>
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-xs text-muted-foreground">
-          {formatShortDate(earning.period_date, locale)}
-        </span>
-        <span className="text-sm font-semibold tabular-nums text-foreground">
-          {formatCurrency(earning.commission_amount, locale)}
-        </span>
-      </div>
-    </button>
+      }
+      meta={
+        <div className="flex items-center justify-between gap-2 w-full">
+          <span className="text-xs text-muted-foreground">
+            {formatShortDate(earning.period_date, locale)}
+          </span>
+          <span className="text-sm font-semibold tabular-nums text-foreground">
+            {formatCurrency(earning.commission_amount, locale)}
+          </span>
+        </div>
+      }
+    />
   );
 }

@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import type { Regulation } from "@/lib/types";
 
 import { Badge } from "@/components/ui/badge";
+import { EntityMobileCard } from "@/components/shared/entity-mobile-card";
 import { cn } from "@/lib/utils";
 
 import { FileIcon } from "./file-icon";
@@ -33,11 +34,13 @@ export function RegulationsMobileCard({
   const t = useTranslations("screen.regulations");
 
   return (
-    <div className="flex items-start gap-3">
-      <div className="flex size-9 items-center justify-center rounded-lg bg-muted shrink-0">
-        <FileIcon type={reg.file_type} />
-      </div>
-      <div className="flex-1 min-w-0">
+    <EntityMobileCard
+      leading={
+        <div className="flex size-9 items-center justify-center rounded-lg bg-muted">
+          <FileIcon type={reg.file_type} />
+        </div>
+      }
+      title={
         <button
           type="button"
           className="text-sm font-medium text-foreground hover:text-primary text-left line-clamp-2 block w-full"
@@ -45,10 +48,27 @@ export function RegulationsMobileCard({
         >
           {reg.name}
         </button>
-        <div className="mt-1.5 flex flex-wrap gap-1">
-          <TagPills workTypeIds={reg.work_type_ids} zoneIds={reg.zone_ids} />
-        </div>
-        <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
+      }
+      actions={
+        <RowActionsMenu
+          regulation={reg}
+          onView={onView}
+          onEditTags={onEditTags}
+          onReplace={onReplace}
+          onArchive={onArchive}
+          onDownload={onDownload}
+        />
+      }
+      meta={[
+        <TagPills
+          key="tags"
+          workTypeIds={reg.work_type_ids}
+          zoneIds={reg.zone_ids}
+        />,
+        <div
+          key="info"
+          className="flex items-center gap-3 text-xs text-muted-foreground"
+        >
           <span className="flex items-center gap-1">
             <Sparkles className="size-3 text-muted-foreground" />
             {reg.ai_usage_count_30d}
@@ -64,16 +84,8 @@ export function RegulationsMobileCard({
           >
             {reg.is_archived ? t("status.archived") : t("status.active")}
           </Badge>
-        </div>
-      </div>
-      <RowActionsMenu
-        regulation={reg}
-        onView={onView}
-        onEditTags={onEditTags}
-        onReplace={onReplace}
-        onArchive={onArchive}
-        onDownload={onDownload}
-      />
-    </div>
+        </div>,
+      ]}
+    />
   );
 }

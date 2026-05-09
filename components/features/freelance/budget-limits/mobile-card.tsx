@@ -3,6 +3,7 @@
 import { format, parseISO } from "date-fns";
 import { useTranslations } from "next-intl";
 
+import { EntityMobileCard } from "@/components/shared/entity-mobile-card";
 import type { BudgetLimit, BudgetUsage } from "@/lib/types";
 
 import { BudgetPeriodBadge } from "./period-badge";
@@ -32,55 +33,51 @@ export function MobileCard({
   onHistory,
 }: MobileCardProps) {
   const t = useTranslations("freelanceBudgetLimits");
+  const [primary, ...rest] = limit.store_name.split(",");
+  const subtitleText = rest.join(",").trim();
 
   return (
-    <div className="rounded-xl border bg-card p-4 flex flex-col gap-3">
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex flex-col gap-0.5 min-w-0">
-          <span className="text-sm font-semibold text-foreground leading-tight">
-            {limit.store_name.split(",")[0]}
+    <EntityMobileCard
+      asCard
+      title={primary}
+      subtitle={subtitleText || undefined}
+      status={<BudgetPeriodBadge period={limit.period} />}
+      actions={
+        canWrite ? (
+          <RowActions
+            limit={limit}
+            onEdit={onEdit}
+            onTerminate={onTerminate}
+            onHistory={onHistory}
+          />
+        ) : undefined
+      }
+      meta={
+        <div className="flex items-center justify-between text-xs text-muted-foreground w-full">
+          <span className="tabular-nums font-semibold text-foreground text-sm">
+            {limit.amount.toLocaleString("ru-RU")} {limit.currency}
           </span>
-          {limit.store_name.includes(",") && (
-            <span className="text-xs text-muted-foreground leading-tight">
-              {limit.store_name.split(",").slice(1).join(",").trim()}
-            </span>
-          )}
+          <span>
+            {format(parseISO(limit.valid_from), "dd.MM.yy")} –{" "}
+            {limit.valid_to
+              ? format(parseISO(limit.valid_to), "dd.MM.yy")
+              : t("indefinite")}
+          </span>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          <BudgetPeriodBadge period={limit.period} />
-          {canWrite && (
-            <RowActions
-              limit={limit}
-              onEdit={onEdit}
-              onTerminate={onTerminate}
-              onHistory={onHistory}
-            />
-          )}
+      }
+      footer={
+        <div className="flex flex-col gap-3">
+          <BudgetUsageBar
+            usage={usage}
+            limitAmount={limit.amount}
+            currency={limit.currency}
+            isClientDirect={isClientDirect}
+          />
+          <div className="text-xs text-muted-foreground">
+            {limit.set_by_name} · {formatRelative(limit.set_at, locale)}
+          </div>
         </div>
-      </div>
-
-      <div className="flex items-center justify-between text-xs text-muted-foreground">
-        <span className="tabular-nums font-semibold text-foreground text-sm">
-          {limit.amount.toLocaleString("ru-RU")} {limit.currency}
-        </span>
-        <span>
-          {format(parseISO(limit.valid_from), "dd.MM.yy")} –{" "}
-          {limit.valid_to
-            ? format(parseISO(limit.valid_to), "dd.MM.yy")
-            : t("indefinite")}
-        </span>
-      </div>
-
-      <BudgetUsageBar
-        usage={usage}
-        limitAmount={limit.amount}
-        currency={limit.currency}
-        isClientDirect={isClientDirect}
-      />
-
-      <div className="text-xs text-muted-foreground">
-        {limit.set_by_name} · {formatRelative(limit.set_at, locale)}
-      </div>
-    </div>
+      }
+    />
   );
 }

@@ -2,6 +2,7 @@
 
 import { Camera } from "lucide-react"
 
+import { EntityMobileCard } from "@/components/shared/entity-mobile-card"
 import type { WorkTypeWithCount } from "@/lib/api/taxonomy"
 
 import { GroupBadge } from "./group-badge"
@@ -26,23 +27,36 @@ export function WorkTypeMobileCard({
   tCommon,
 }: MobileCardProps) {
   return (
-    <div className="flex items-start justify-between gap-3">
-      <div className="flex flex-col gap-1.5 min-w-0">
+    <EntityMobileCard
+      title={
         <div className="flex items-center gap-2 flex-wrap">
           <span className="font-medium text-sm">{wt.name}</span>
           <span className="font-mono text-xs uppercase tracking-wide bg-muted px-1.5 py-0.5 rounded text-foreground">
             {wt.code}
           </span>
         </div>
-        <div className="flex items-center gap-2 flex-wrap">
+      }
+      actions={
+        <RowActions
+          workType={wt}
+          onEdit={onEdit}
+          onDuplicate={onDuplicate}
+          onDelete={onDelete}
+          t={t}
+          tCommon={tCommon}
+          variant="card"
+        />
+      }
+      meta={[
+        <>
           <GroupBadge group={wt.group} />
           {wt.usage_count !== undefined && wt.usage_count > 0 && (
             <span className="text-xs text-muted-foreground">
               {wt.usage_count} задач
             </span>
           )}
-        </div>
-        <div className="flex items-center gap-3 mt-0.5">
+        </>,
+        <div key="extra" className="flex items-center gap-3">
           {wt.requires_photo_default && (
             <span className="flex items-center gap-1 text-xs text-muted-foreground">
               <Camera className="size-3" aria-hidden="true" />
@@ -52,17 +66,8 @@ export function WorkTypeMobileCard({
           <span className="text-xs text-muted-foreground">
             {wt.default_duration_min} мин
           </span>
-        </div>
-      </div>
-      <RowActions
-        workType={wt}
-        onEdit={onEdit}
-        onDuplicate={onDuplicate}
-        onDelete={onDelete}
-        t={t}
-        tCommon={tCommon}
-        variant="card"
-      />
-    </div>
+        </div>,
+      ]}
+    />
   )
 }
