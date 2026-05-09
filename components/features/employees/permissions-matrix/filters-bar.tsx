@@ -13,7 +13,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-import { FilterChip } from "@/components/shared/filter-chip";
+import {
+  FilterChipsRow,
+  type FilterChipDescriptor,
+} from "@/components/shared/filter-bar";
 import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet";
 
 import type { Permission, Store } from "@/lib/types";
@@ -62,6 +65,32 @@ export function FiltersBar({
     onFilterPositionChange(null);
     onFilterPermissionChange(null);
   };
+
+  const chips: FilterChipDescriptor[] = [];
+  if (filterStoreId) {
+    chips.push({
+      key: "store",
+      label: t("toolbar.store"),
+      value: stores.find((s) => s.id === filterStoreId)?.name ?? "—",
+      onRemove: () => onFilterStoreChange(null),
+    });
+  }
+  if (filterPositionId) {
+    chips.push({
+      key: "position",
+      label: t("toolbar.position"),
+      value: positions.find((p) => p.id === filterPositionId)?.name ?? "—",
+      onRemove: () => onFilterPositionChange(null),
+    });
+  }
+  if (filterPermission) {
+    chips.push({
+      key: "permission",
+      label: t("toolbar.permission"),
+      value: permLabel[filterPermission],
+      onRemove: () => onFilterPermissionChange(null),
+    });
+  }
 
   return (
     <div className="flex flex-col gap-3">
@@ -215,40 +244,11 @@ export function FiltersBar({
       </div>
 
       {/* Filter chips row */}
-      {activeFiltersCount > 0 && (
-        <div className="flex items-center gap-2 flex-wrap">
-          {filterStoreId && (
-            <FilterChip
-              label={t("toolbar.store")}
-              value={stores.find((s) => s.id === filterStoreId)?.name ?? "—"}
-              onRemove={() => onFilterStoreChange(null)}
-            />
-          )}
-          {filterPositionId && (
-            <FilterChip
-              label={t("toolbar.position")}
-              value={
-                positions.find((p) => p.id === filterPositionId)?.name ?? "—"
-              }
-              onRemove={() => onFilterPositionChange(null)}
-            />
-          )}
-          {filterPermission && (
-            <FilterChip
-              label={t("toolbar.permission")}
-              value={permLabel[filterPermission]}
-              onRemove={() => onFilterPermissionChange(null)}
-            />
-          )}
-          <button
-            type="button"
-            onClick={clearAllFilters}
-            className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors"
-          >
-            {t("toolbar.clear_all")}
-          </button>
-        </div>
-      )}
+      <FilterChipsRow
+        chips={chips}
+        onClearAll={clearAllFilters}
+        clearAllLabel={t("toolbar.clear_all")}
+      />
     </div>
   );
 }

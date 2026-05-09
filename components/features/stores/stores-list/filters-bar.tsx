@@ -5,7 +5,6 @@ import { Search, X } from "lucide-react"
 
 import type { ObjectFormat } from "@/lib/types"
 
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -16,7 +15,12 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { FilterChip } from "@/components/shared/filter-chip"
+import {
+  FilterBar,
+  FilterChipsRow,
+  type FilterChipDescriptor,
+  type FilterControl,
+} from "@/components/shared/filter-bar"
 import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet"
 import { SingleSelectCombobox } from "@/components/shared/single-select-combobox"
 
@@ -51,13 +55,11 @@ export function FiltersBar({
 }: FiltersBarProps) {
   const t = useTranslations("screen.stores")
 
-  const hasChips = !!cityValue || !!storeTypeValue || selectedFormats.length > 0
-
-  return (
-    <>
-      {/* Filter row — desktop */}
-      <div className="hidden md:flex items-center gap-2 flex-wrap">
-        {/* Search */}
+  const desktopControls: FilterControl[] = [
+    {
+      kind: "custom",
+      key: "search",
+      render: () => (
         <div className="relative flex-1 min-w-0 max-w-sm">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground pointer-events-none" />
           <Input
@@ -76,21 +78,21 @@ export function FiltersBar({
             </button>
           )}
         </div>
-
-        {/* City */}
-        <SingleSelectCombobox
-          options={CITY_OPTIONS}
-          value={cityValue}
-          onValueChange={onCityChange}
-          placeholder={t("filters.city")}
-          className="w-40"
-        />
-
-        {/* Format */}
-        <Select
-          value={storeTypeValue}
-          onValueChange={onStoreTypeChange}
-        >
+      ),
+    },
+    {
+      kind: "single-select",
+      value: cityValue,
+      onChange: onCityChange,
+      options: CITY_OPTIONS,
+      placeholder: t("filters.city"),
+      className: "w-40",
+    },
+    {
+      kind: "custom",
+      key: "store-type",
+      render: () => (
+        <Select value={storeTypeValue} onValueChange={onStoreTypeChange}>
           <SelectTrigger className="h-9 w-44">
             <SelectValue placeholder={t("filters.store_type")} />
           </SelectTrigger>
@@ -102,19 +104,48 @@ export function FiltersBar({
             ))}
           </SelectContent>
         </Select>
+      ),
+    },
+  ]
 
-        {/* Clear */}
-        {hasActiveFilters && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onClearAll}
-            className="gap-1 text-muted-foreground"
-          >
-            <X className="size-3.5" /> {t("filters.clear_all")}
-          </Button>
-        )}
-      </div>
+  const chips: FilterChipDescriptor[] = []
+  if (cityValue) {
+    chips.push({
+      key: "city",
+      label: t("filters.city"),
+      value: cityValue,
+      onRemove: () => onCityChange(""),
+    })
+  }
+  if (storeTypeValue) {
+    chips.push({
+      key: "store-type",
+      label: t("filters.store_type"),
+      value:
+        FORMAT_OPTIONS.find((f) => f.value === storeTypeValue)?.label ??
+        storeTypeValue,
+      onRemove: () => onStoreTypeChange(""),
+    })
+  }
+  selectedFormats.forEach((fmt) => {
+    chips.push({
+      key: `fmt-${fmt}`,
+      label: t("filters.format"),
+      value: FORMAT_OPTIONS.find((f) => f.value === fmt)?.label ?? fmt,
+      onRemove: () => onRemoveFormat(fmt),
+    })
+  })
+
+  return (
+    <>
+      {/* Filter row — desktop */}
+      <FilterBar
+        controls={desktopControls}
+        activeFiltersCount={hasActiveFilters ? activeFilterCount : 0}
+        onClearAll={onClearAll}
+        clearAllLabel={t("filters.clear_all")}
+        desktopOnly
+      />
 
       {/* Filter row — mobile (sheet) */}
       <MobileFilterSheet
@@ -167,34 +198,7 @@ export function FiltersBar({
       </MobileFilterSheet>
 
       {/* Active filter chips */}
-      {hasChips && (
-        <div className="flex flex-wrap gap-2">
-          {cityValue && (
-            <FilterChip
-              label={t("filters.city")}
-              value={cityValue}
-              onRemove={() => onCityChange("")}
-            />
-          )}
-          {storeTypeValue && (
-            <FilterChip
-              label={t("filters.store_type")}
-              value={
-                FORMAT_OPTIONS.find((f) => f.value === storeTypeValue)?.label ?? storeTypeValue
-              }
-              onRemove={() => onStoreTypeChange("")}
-            />
-          )}
-          {selectedFormats.map((fmt) => (
-            <FilterChip
-              key={fmt}
-              label={t("filters.format")}
-              value={FORMAT_OPTIONS.find((f) => f.value === fmt)?.label ?? fmt}
-              onRemove={() => onRemoveFormat(fmt)}
-            />
-          ))}
-        </div>
-      )}
+      <FilterChipsRow chips={chips} />
     </>
   )
 }

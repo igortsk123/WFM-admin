@@ -2,9 +2,10 @@
 
 import { useTranslations } from "next-intl"
 
-import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { SingleSelectCombobox } from "@/components/shared/single-select-combobox"
+
+import { FilterBar, type FilterControl } from "@/components/shared/filter-bar"
 
 import type { AgentTab } from "./_shared"
 
@@ -28,7 +29,7 @@ export function FiltersBar({
   const t = useTranslations("screen.freelanceAgents")
 
   const tabOptions = [
-    { value: "active",  label: t("tabs.active") },
+    { value: "active", label: t("tabs.active") },
     { value: "blocked", label: t("tabs.blocked") },
     { value: "archive", label: t("tabs.archive") },
   ]
@@ -36,6 +37,23 @@ export function FiltersBar({
   const typeOptions = [
     { value: "INDIVIDUAL", label: t("type.INDIVIDUAL") },
     { value: "COMPANY", label: t("type.COMPANY") },
+  ]
+
+  const controls: FilterControl[] = [
+    {
+      kind: "search",
+      value: searchValue,
+      onChange: onSearchChange,
+      placeholder: t("filters.search"),
+    },
+    {
+      kind: "single-select",
+      value: typeValue,
+      onChange: onTypeChange,
+      options: typeOptions,
+      placeholder: t("filters.type"),
+      className: "min-w-[140px]",
+    },
   ]
 
   return (
@@ -63,22 +81,7 @@ export function FiltersBar({
       </div>
 
       {/* Filter row */}
-      <div className="flex flex-wrap gap-2 items-center">
-        <Input
-          placeholder={t("filters.search")}
-          value={searchValue}
-          onChange={(e) => onSearchChange(e.target.value)}
-          className="h-9 w-full sm:w-64"
-          aria-label={t("filters.search")}
-        />
-        <SingleSelectCombobox
-          value={typeValue}
-          onValueChange={onTypeChange}
-          placeholder={t("filters.type")}
-          options={typeOptions}
-          className="min-w-[140px]"
-        />
-      </div>
+      <FilterBar controls={controls} />
     </>
   )
 }

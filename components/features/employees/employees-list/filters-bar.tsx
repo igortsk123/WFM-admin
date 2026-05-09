@@ -3,14 +3,16 @@
 import * as React from "react"
 import { useTranslations } from "next-intl"
 
-import type {
-  Permission,
-  FunctionalRole,
-} from "@/lib/types"
+import type { Permission, FunctionalRole } from "@/lib/types"
 
 import { Input } from "@/components/ui/input"
 
-import { FilterChip } from "@/components/shared/filter-chip"
+import {
+  FilterBar,
+  FilterChipsRow,
+  type FilterChipDescriptor,
+  type FilterControl,
+} from "@/components/shared/filter-bar"
 import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet"
 import { MultiSelectCombobox } from "@/components/shared/multi-select-combobox"
 import { SingleSelectCombobox } from "@/components/shared/single-select-combobox"
@@ -105,7 +107,7 @@ export function FiltersBar({
     (r) => ({
       value: r,
       label: roleLabelMap[r] ?? r,
-    })
+    }),
   )
   const employmentOptions = [
     { value: "STAFF", label: t("employment.staff") },
@@ -121,129 +123,187 @@ export function FiltersBar({
       s === "NEW"
         ? "Новый"
         : s === "VERIFICATION"
-        ? "Проверка"
-        : s === "ACTIVE"
-        ? "Активен"
-        : s === "BLOCKED"
-        ? "Заблокирован"
-        : "Архив",
+          ? "Проверка"
+          : s === "ACTIVE"
+            ? "Активен"
+            : s === "BLOCKED"
+              ? "Заблокирован"
+              : "Архив",
   }))
   const sourceOptions = [
     { value: "MANUAL", label: t("source.manual") },
     { value: "EXTERNAL_SYNC", label: t("source.external") },
   ]
 
+  // Shared filter controls (used in both desktop FilterBar and mobile sheet via render-prop wrappers)
+  const desktopControls: FilterControl[] = []
+  if (!hideStore) {
+    desktopControls.push({
+      kind: "multi-select",
+      value: selectedStoreIds,
+      onChange: onStoreIdsChange,
+      options: storeOptions,
+      placeholder: t("filters.store"),
+      className: "w-44",
+    })
+  }
+  desktopControls.push(
+    {
+      kind: "multi-select",
+      value: selectedPositionIds,
+      onChange: onPositionIdsChange,
+      options: positionOptions,
+      placeholder: t("filters.position"),
+      className: "w-44",
+    },
+    {
+      kind: "multi-select",
+      value: selectedPermissions,
+      onChange: onPermissionsChange,
+      options: permOptions,
+      placeholder: t("filters.permission"),
+      className: "w-40",
+    },
+    {
+      kind: "single-select",
+      value: selectedRole,
+      onChange: onRoleChange,
+      options: roleOptions,
+      placeholder: t("filters.functional_role"),
+      className: "w-44",
+    },
+    {
+      kind: "single-select",
+      value: selectedEmploymentType,
+      onChange: (v) => {
+        onEmploymentTypeChange(v)
+        if (v !== "FREELANCE") onFreelancerStatusChange("")
+      },
+      options: employmentOptions,
+      placeholder: t("filters.employment_type"),
+      className: "w-40",
+    },
+  )
+  if (showFreelancerStatusFilter) {
+    desktopControls.push({
+      kind: "single-select",
+      value: selectedFreelancerStatus,
+      onChange: onFreelancerStatusChange,
+      options: freelancerStatusOptions,
+      placeholder: t("filters.freelancer_status"),
+      className: "w-44",
+    })
+  }
+  if (showAgentFilter) {
+    desktopControls.push({
+      kind: "multi-select",
+      value: selectedAgentIds,
+      onChange: onAgentIdsChange,
+      options: agentOptions,
+      placeholder: t("filters.agent"),
+      className: "w-44",
+    })
+  }
+  if (showSourceFilter) {
+    desktopControls.push({
+      kind: "single-select",
+      value: selectedSource,
+      onChange: onSourceChange,
+      options: sourceOptions,
+      placeholder: t("filters.source_creation"),
+      className: "w-44",
+    })
+  }
+
   // ── Filter chips ─────────────────────────────────────────────────
-  const filterChips: React.ReactNode[] = []
+  const filterChips: FilterChipDescriptor[] = []
 
   selectedStoreIds.forEach((id) => {
     const name = STORE_OPTIONS.find((s) => String(s.id) === id)?.name ?? id
-    filterChips.push(
-      <FilterChip
-        key={`store-${id}`}
-        label={t("filters.store")}
-        value={name}
-        onRemove={() =>
-          onStoreIdsChange(selectedStoreIds.filter((v) => v !== id))
-        }
-      />
-    )
+    filterChips.push({
+      key: `store-${id}`,
+      label: t("filters.store"),
+      value: name,
+      onRemove: () =>
+        onStoreIdsChange(selectedStoreIds.filter((v) => v !== id)),
+    })
   })
 
   selectedPositionIds.forEach((id) => {
     const name = POSITION_OPTIONS.find((p) => String(p.id) === id)?.name ?? id
-    filterChips.push(
-      <FilterChip
-        key={`pos-${id}`}
-        label={t("filters.position")}
-        value={name}
-        onRemove={() =>
-          onPositionIdsChange(selectedPositionIds.filter((v) => v !== id))
-        }
-      />
-    )
+    filterChips.push({
+      key: `pos-${id}`,
+      label: t("filters.position"),
+      value: name,
+      onRemove: () =>
+        onPositionIdsChange(selectedPositionIds.filter((v) => v !== id)),
+    })
   })
 
   selectedPermissions.forEach((p) => {
-    filterChips.push(
-      <FilterChip
-        key={`perm-${p}`}
-        label={t("filters.permission")}
-        value={permLabelMap[p as Permission] ?? p}
-        onRemove={() =>
-          onPermissionsChange(selectedPermissions.filter((v) => v !== p))
-        }
-      />
-    )
+    filterChips.push({
+      key: `perm-${p}`,
+      label: t("filters.permission"),
+      value: permLabelMap[p as Permission] ?? p,
+      onRemove: () =>
+        onPermissionsChange(selectedPermissions.filter((v) => v !== p)),
+    })
   })
 
   if (selectedRole) {
-    filterChips.push(
-      <FilterChip
-        key="role"
-        label={t("filters.functional_role")}
-        value={roleLabelMap[selectedRole] ?? selectedRole}
-        onRemove={() => onRoleChange("")}
-      />
-    )
+    filterChips.push({
+      key: "role",
+      label: t("filters.functional_role"),
+      value: roleLabelMap[selectedRole] ?? selectedRole,
+      onRemove: () => onRoleChange(""),
+    })
   }
 
   if (selectedEmploymentType) {
-    filterChips.push(
-      <FilterChip
-        key="emp"
-        label={t("filters.employment_type")}
-        value={
-          selectedEmploymentType === "STAFF"
-            ? t("employment.staff")
-            : t("employment.freelance")
-        }
-        onRemove={() => onEmploymentTypeChange("")}
-      />
-    )
+    filterChips.push({
+      key: "emp",
+      label: t("filters.employment_type"),
+      value:
+        selectedEmploymentType === "STAFF"
+          ? t("employment.staff")
+          : t("employment.freelance"),
+      onRemove: () => onEmploymentTypeChange(""),
+    })
   }
 
   selectedAgentIds.forEach((id) => {
     const name = AGENT_OPTIONS.find((a) => a.id === id)?.name ?? id
-    filterChips.push(
-      <FilterChip
-        key={`agent-${id}`}
-        label={t("filters.agent")}
-        value={name}
-        onRemove={() =>
-          onAgentIdsChange(selectedAgentIds.filter((v) => v !== id))
-        }
-      />
-    )
+    filterChips.push({
+      key: `agent-${id}`,
+      label: t("filters.agent"),
+      value: name,
+      onRemove: () =>
+        onAgentIdsChange(selectedAgentIds.filter((v) => v !== id)),
+    })
   })
 
   if (selectedFreelancerStatus) {
     const statusLabel =
       freelancerStatusOptions.find((o) => o.value === selectedFreelancerStatus)
         ?.label ?? selectedFreelancerStatus
-    filterChips.push(
-      <FilterChip
-        key="fstatus"
-        label={t("filters.freelancer_status")}
-        value={statusLabel}
-        onRemove={() => onFreelancerStatusChange("")}
-      />
-    )
+    filterChips.push({
+      key: "fstatus",
+      label: t("filters.freelancer_status"),
+      value: statusLabel,
+      onRemove: () => onFreelancerStatusChange(""),
+    })
   }
 
   if (selectedSource) {
-    filterChips.push(
-      <FilterChip
-        key="source"
-        label={t("filters.source_creation")}
-        value={
-          selectedSource === "MANUAL"
-            ? t("source.manual")
-            : t("source.external")
-        }
-        onRemove={() => onSourceChange("")}
-      />
-    )
+    filterChips.push({
+      key: "source",
+      label: t("filters.source_creation"),
+      value:
+        selectedSource === "MANUAL"
+          ? t("source.manual")
+          : t("source.external"),
+      onRemove: () => onSourceChange(""),
+    })
   }
 
   return (
@@ -257,75 +317,10 @@ export function FiltersBar({
         />
 
         {/* Desktop filter comboboxes */}
-        <div className="hidden md:flex items-center gap-2 flex-wrap flex-1">
-          {!hideStore && (
-            <MultiSelectCombobox
-              options={storeOptions}
-              selected={selectedStoreIds}
-              onSelectionChange={onStoreIdsChange}
-              placeholder={t("filters.store")}
-              className="w-44"
-            />
-          )}
-          <MultiSelectCombobox
-            options={positionOptions}
-            selected={selectedPositionIds}
-            onSelectionChange={onPositionIdsChange}
-            placeholder={t("filters.position")}
-            className="w-44"
-          />
-          <MultiSelectCombobox
-            options={permOptions}
-            selected={selectedPermissions}
-            onSelectionChange={onPermissionsChange}
-            placeholder={t("filters.permission")}
-            className="w-40"
-          />
-          <SingleSelectCombobox
-            options={roleOptions}
-            value={selectedRole}
-            onValueChange={onRoleChange}
-            placeholder={t("filters.functional_role")}
-            className="w-44"
-          />
-          <SingleSelectCombobox
-            options={employmentOptions}
-            value={selectedEmploymentType}
-            onValueChange={(v) => {
-              onEmploymentTypeChange(v)
-              if (v !== "FREELANCE") onFreelancerStatusChange("")
-            }}
-            placeholder={t("filters.employment_type")}
-            className="w-40"
-          />
-          {showFreelancerStatusFilter && (
-            <SingleSelectCombobox
-              options={freelancerStatusOptions}
-              value={selectedFreelancerStatus}
-              onValueChange={onFreelancerStatusChange}
-              placeholder={t("filters.freelancer_status")}
-              className="w-44"
-            />
-          )}
-          {showAgentFilter && (
-            <MultiSelectCombobox
-              options={agentOptions}
-              selected={selectedAgentIds}
-              onSelectionChange={onAgentIdsChange}
-              placeholder={t("filters.agent")}
-              className="w-44"
-            />
-          )}
-          {showSourceFilter && (
-            <SingleSelectCombobox
-              options={sourceOptions}
-              value={selectedSource}
-              onValueChange={onSourceChange}
-              placeholder={t("filters.source_creation")}
-              className="w-44"
-            />
-          )}
-        </div>
+        <FilterBar
+          controls={desktopControls}
+          className="hidden md:flex flex-1"
+        />
 
         {/* Mobile filter sheet trigger */}
         <div className="md:hidden flex-1">
@@ -444,17 +439,11 @@ export function FiltersBar({
       </div>
 
       {/* Active filter chips */}
-      {filterChips.length > 0 && (
-        <div className="flex items-center flex-wrap gap-2">
-          {filterChips}
-          <button
-            onClick={clearAllFilters}
-            className="text-xs text-muted-foreground underline hover:text-foreground transition-colors"
-          >
-            {t("filters.clear_all")}
-          </button>
-        </div>
-      )}
+      <FilterChipsRow
+        chips={filterChips}
+        onClearAll={clearAllFilters}
+        clearAllLabel={t("filters.clear_all")}
+      />
     </div>
   )
 }

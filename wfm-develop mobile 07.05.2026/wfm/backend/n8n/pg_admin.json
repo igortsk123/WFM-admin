@@ -1,0 +1,200 @@
+{
+  "name": "pg_admin",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        208
+      ],
+      "id": "85caa247-6896-47dd-90b5-f18e6235bb73",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT \n    n.nspname AS schema_name,\n    c.relname AS table_name\nFROM \n    pg_catalog.pg_class c\nJOIN \n    pg_catalog.pg_namespace n \n    ON n.oid = c.relnamespace\nWHERE \n    c.relkind = 'r' -- только обычные таблицы\n    AND n.nspname NOT IN ('pg_catalog', 'information_schema') -- исключение системных схем\nORDER BY \n    n.nspname, c.relname;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -464,
+        48
+      ],
+      "id": "2ab28131-5c9c-4e89-b60d-e61a695c6cd5",
+      "name": "sql all schemas & tables",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "o8dcZQsMua42to6t",
+          "name": "users"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DROP TABLE public.products;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -448,
+        880
+      ],
+      "id": "adc49669-e42f-433e-b6b9-9f21555417a5",
+      "name": "delete table",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "sVVdEta8AQuL47Ln",
+          "name": "tasks"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n    c.column_name,\n    c.data_type,\n    c.is_nullable,\n    c.column_default,\n    CASE \n        WHEN tc.constraint_type = 'PRIMARY KEY' THEN 'YES'\n        ELSE 'NO'\n    END AS is_primary_key\nFROM information_schema.columns c\nLEFT JOIN information_schema.key_column_usage kcu\n    ON c.table_name = kcu.table_name\n    AND c.column_name = kcu.column_name\nLEFT JOIN information_schema.table_constraints tc\n    ON kcu.constraint_name = tc.constraint_name\n    AND tc.constraint_type = 'PRIMARY KEY'\nWHERE c.table_name = 'roles'\nORDER BY c.ordinal_position;\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -432,
+        544
+      ],
+      "id": "0fe1dcbc-6f85-41dd-b76a-b75d9d475cc0",
+      "name": "structure",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "o8dcZQsMua42to6t",
+          "name": "users"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM public.sale;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -640,
+        768
+      ],
+      "id": "5f23e77f-4b42-42d1-89da-eaa04146978a",
+      "name": "clear table",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "sVVdEta8AQuL47Ln",
+          "name": "tasks"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SHOW timezone;\nSELECT now(), current_date;\n\n--SELECT *\n--FROM roles\n--WHERE sku='2612'\n--WHERE item_key=1615091\n--ORDER BY id\n--LIMIT 10",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -432,
+        336
+      ],
+      "id": "ea31d90a-2d35-4050-988a-cbbc004cf302",
+      "name": "ipwm sku",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "o8dcZQsMua42to6t",
+          "name": "users"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## Анализ дня (графики)\n- запускаем в main, на нужном дне, блок \"call items_filter_without_move\" (займет 5 мин)\n- заходим в items_filter_without_move > last executions > блок \"reduce\"\n- копируем входные данные\n- вставляем в файл \"analyze_template.html_\" (xcode долго вставляет, если знает, что это html!)\n- переименовываем в html",
+        "height": 192,
+        "width": 656
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        304,
+        -32
+      ],
+      "typeVersion": 1,
+      "id": "63211150-24e7-4e0a-b8f0-bbd906c7a824",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT\n  c.ordinal_position,\n  c.column_name,\n  c.data_type,\n  c.udt_name AS udt_type,\n  c.is_nullable,\n  c.column_default,\n  c.character_maximum_length,\n  c.numeric_precision,\n  c.numeric_scale\nFROM information_schema.columns c\nWHERE c.table_schema = 'employee'\n  AND c.table_name   = 'shift_history'\nORDER BY c.ordinal_position;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -176,
+        64
+      ],
+      "id": "0a2406e4-6ee2-4629-bba9-8da89b04bdf6",
+      "name": "structure 2",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "sVVdEta8AQuL47Ln",
+          "name": "tasks"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT tablename\nFROM pg_catalog.pg_tables\nWHERE schemaname = 'employee'\nORDER BY tablename;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -176,
+        240
+      ],
+      "id": "f4588063-2e6a-4622-a208-8f2234d6c5e2",
+      "name": "tables in schema",
+      "executeOnce": true,
+      "credentials": {
+        "postgres": {
+          "id": "sVVdEta8AQuL47Ln",
+          "name": "tasks"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {},
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "d11296c6-60c0-45ca-b36c-d1e7aa94af6a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "49016fefd63ba50832e53786cdfa65c9d30d1d66398a3b5739652728aa272b21"
+  },
+  "id": "v8KWqTlIO6MX1gniF5PPc",
+  "tags": []
+}

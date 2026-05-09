@@ -14,19 +14,17 @@ import {
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 
-import { FilterChip } from "@/components/shared/filter-chip";
+import {
+  FilterChipsRow,
+  type FilterChipDescriptor,
+} from "@/components/shared/filter-bar";
 import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet";
 
 import type { FilterState } from "./_shared";
 import { DateRangePicker } from "@/components/shared/date-range-picker";
 import { MultiSelectCombobox } from "@/components/shared/multi-select-combobox";
 
-export interface ActiveFilterChip {
-  key: string;
-  label: string;
-  value: string;
-  onRemove: () => void;
-}
+export type ActiveFilterChip = FilterChipDescriptor;
 
 export interface FilterOption {
   value: string;
@@ -207,22 +205,7 @@ export function FiltersBar({
       </MobileFilterSheet>
 
       {/* Active filter chips */}
-      {activeFilters.length > 0 && (
-        <div
-          className="flex flex-wrap gap-1.5"
-          role="list"
-          aria-label="Active filters"
-        >
-          {activeFilters.map((chip) => (
-            <FilterChip
-              key={chip.key}
-              label={chip.label}
-              value={chip.value}
-              onRemove={chip.onRemove}
-            />
-          ))}
-        </div>
-      )}
+      <FilterChipsRow chips={activeFilters} />
     </div>
   );
 }

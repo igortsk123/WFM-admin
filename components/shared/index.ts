@@ -28,6 +28,17 @@ export { EmptyState } from "./empty-state"
 export { DataTableShell } from "./data-table-shell"
 export type { PaginationState } from "./data-table-shell"
 export { FilterChip } from "./filter-chip"
+export {
+  FilterBar,
+  DesktopFilterRow,
+  FilterChipsRow,
+  type FilterControl,
+  type FilterOption,
+  type FilterBarProps,
+  type DesktopFilterRowProps,
+  type FilterChipDescriptor,
+  type FilterChipsRowProps,
+} from "./filter-bar"
 export { UserCell } from "./user-cell"
 export { ConfirmDialog } from "./confirm-dialog"
 export { ResponsiveDataTable } from "./responsive-data-table"

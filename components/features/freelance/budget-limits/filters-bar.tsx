@@ -4,9 +4,12 @@ import { useTranslations } from "next-intl";
 
 import type { BudgetPeriod } from "@/lib/types";
 
-import { FilterChip } from "@/components/shared/filter-chip";
-import { MultiSelectCombobox } from "@/components/shared/multi-select-combobox";
-import { SingleSelectCombobox } from "@/components/shared/single-select-combobox";
+import {
+  FilterBar,
+  FilterChipsRow,
+  type FilterChipDescriptor,
+  type FilterControl,
+} from "@/components/shared/filter-bar";
 import {
   Select,
   SelectContent,
@@ -14,18 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Tabs,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
-
-interface FilterChipDescriptor {
-  id: string;
-  label: string;
-  value: string;
-  onRemove: () => void;
-}
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface FiltersBarProps {
   tab: "active" | "expired";
@@ -57,6 +49,26 @@ export function FiltersBar({
     { value: "DAY", label: t("period.DAY") },
     { value: "WEEK", label: t("period.WEEK") },
     { value: "MONTH", label: t("period.MONTH") },
+  ];
+
+  const controls: FilterControl[] = [
+    {
+      kind: "multi-select",
+      value: filterStores,
+      onChange: onChangeStores,
+      options: storeOptions,
+      placeholder: t("filters.object_placeholder"),
+      searchPlaceholder: t("filters.search_object"),
+      className: "min-w-[176px] min-h-11",
+    },
+    {
+      kind: "single-select",
+      value: filterPeriod,
+      onChange: (v) => onChangePeriod((v as BudgetPeriod) || ""),
+      options: periodOptions,
+      placeholder: t("filters.period_placeholder"),
+      className: "min-w-[144px] min-h-11",
+    },
   ];
 
   return (
@@ -93,52 +105,15 @@ export function FiltersBar({
         </div>
 
         {/* Filter row */}
-        <div className="flex flex-wrap gap-2">
-          {/* Object filter — multi-select */}
-          <MultiSelectCombobox
-            options={storeOptions}
-            selected={filterStores}
-            onSelectionChange={onChangeStores}
-            placeholder={t("filters.object_placeholder")}
-            searchPlaceholder={t("filters.search_object")}
-            className="min-w-[176px] min-h-11"
-          />
-
-          {/* Period filter — single-select */}
-          <SingleSelectCombobox
-            options={periodOptions}
-            value={filterPeriod}
-            onValueChange={(v) => onChangePeriod((v as BudgetPeriod) || "")}
-            placeholder={t("filters.period_placeholder")}
-            className="min-w-[144px] min-h-11"
-          />
-        </div>
+        <FilterBar controls={controls} />
       </div>
 
       {/* Active filter chips */}
-      {activeChips.length > 0 && (
-        <div
-          className="flex flex-wrap gap-2"
-          role="group"
-          aria-label={tCommon("filters")}
-        >
-          {activeChips.map((chip) => (
-            <FilterChip
-              key={chip.id}
-              label={chip.label}
-              value={chip.value}
-              onRemove={chip.onRemove}
-            />
-          ))}
-          <button
-            type="button"
-            onClick={onClearAll}
-            className="text-xs text-muted-foreground hover:text-foreground underline underline-offset-2 transition-colors px-1"
-          >
-            {tCommon("clearAll")}
-          </button>
-        </div>
-      )}
+      <FilterChipsRow
+        chips={activeChips}
+        onClearAll={onClearAll}
+        clearAllLabel={tCommon("clearAll")}
+      />
     </>
   );
 }

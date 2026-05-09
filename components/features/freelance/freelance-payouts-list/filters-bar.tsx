@@ -11,8 +11,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { SingleSelectCombobox } from "@/components/shared/single-select-combobox";
-import { DateRangePicker } from "@/components/shared/date-range-picker";
+
+import {
+  FilterBar,
+  type FilterControl,
+} from "@/components/shared/filter-bar";
 
 import type { Filters, TabStatus } from "./_shared";
 
@@ -48,6 +51,40 @@ export function FiltersBar({
   agentOptions,
 }: FiltersBarProps) {
   const t = useTranslations("screen.freelancePayoutsList");
+
+  const filterControls: FilterControl[] = [
+    {
+      kind: "single-select",
+      value: filters.freelancerId,
+      onChange: (v) => onFiltersChange({ ...filters, freelancerId: v }),
+      options: freelancerOptions,
+      placeholder: t("filters.freelancer_placeholder"),
+      searchPlaceholder: t("filters.freelancer"),
+      className: "w-full sm:w-48",
+    },
+    {
+      kind: "single-select",
+      value: filters.agentId,
+      onChange: (v) => onFiltersChange({ ...filters, agentId: v }),
+      options: agentOptions,
+      placeholder: t("filters.agent_placeholder"),
+      searchPlaceholder: t("filters.agent"),
+      className: "w-full sm:w-44",
+    },
+    {
+      kind: "date-range",
+      from: fromIsoDate(filters.dateFrom),
+      to: fromIsoDate(filters.dateTo),
+      onChange: (from, to) =>
+        onFiltersChange({
+          ...filters,
+          dateFrom: toIsoDate(from),
+          dateTo: toIsoDate(to),
+        }),
+      placeholder: t("filters.date_range"),
+      disableFuture: false,
+    },
+  ];
 
   return (
     <div className="space-y-4">
@@ -133,39 +170,7 @@ export function FiltersBar({
       </div>
 
       {/* Filter row */}
-      <div className="flex flex-wrap gap-2 items-center">
-        <SingleSelectCombobox
-          options={freelancerOptions}
-          value={filters.freelancerId}
-          onValueChange={(v) =>
-            onFiltersChange({ ...filters, freelancerId: v })
-          }
-          placeholder={t("filters.freelancer_placeholder")}
-          searchPlaceholder={t("filters.freelancer")}
-          className="w-full sm:w-48"
-        />
-        <SingleSelectCombobox
-          options={agentOptions}
-          value={filters.agentId}
-          onValueChange={(v) => onFiltersChange({ ...filters, agentId: v })}
-          placeholder={t("filters.agent_placeholder")}
-          searchPlaceholder={t("filters.agent")}
-          className="w-full sm:w-44"
-        />
-        <DateRangePicker
-          from={fromIsoDate(filters.dateFrom)}
-          to={fromIsoDate(filters.dateTo)}
-          onChange={(from, to) =>
-            onFiltersChange({
-              ...filters,
-              dateFrom: toIsoDate(from),
-              dateTo: toIsoDate(to),
-            })
-          }
-          placeholder={t("filters.date_range")}
-          disableFuture={false}
-        />
-      </div>
+      <FilterBar controls={filterControls} />
     </div>
   );
 }

@@ -1,6 +1,5 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   Select,
@@ -11,6 +10,10 @@ import {
 } from "@/components/ui/select";
 
 import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet";
+import {
+  FilterBar,
+  type FilterControl,
+} from "@/components/shared/filter-bar";
 
 import type { TFn } from "./_shared";
 
@@ -35,58 +38,71 @@ export function FiltersBar({
 }: FiltersBarProps) {
   const activeFilterCount = roleFilter ? 1 : 0;
 
+  const roleOptions = [
+    { value: "1", label: t("filters.role_worker") },
+    { value: "2", label: t("filters.role_manager") },
+  ];
+
+  const desktopControls: FilterControl[] = [
+    {
+      kind: "search",
+      value: search,
+      onChange: onSearchChange,
+      placeholder: t("filters.search_placeholder"),
+      className: "h-9 max-w-xs",
+    },
+    {
+      kind: "single-select",
+      value: roleFilter,
+      onChange: (v) => onRoleFilterChange(v as RoleFilter),
+      options: roleOptions,
+      placeholder: t("filters.role"),
+      className: "h-9 w-44",
+    },
+  ];
+
   return (
     <div className="flex flex-col gap-2 md:flex-row md:items-center">
-      {/* Search */}
-      <div className="relative flex-1">
-        <Input
-          value={search}
-          onChange={(e) => onSearchChange(e.target.value)}
-          placeholder={t("filters.search_placeholder")}
-          className="h-9 pl-3 pr-3"
-          aria-label={t("filters.search_placeholder")}
+      {/* Desktop filter row */}
+      <FilterBar controls={desktopControls} className="hidden md:flex flex-1" />
+
+      {/* Mobile: search inline + filter sheet */}
+      <div className="flex md:hidden items-center gap-2 flex-1">
+        <FilterBar
+          controls={[
+            {
+              kind: "search",
+              value: search,
+              onChange: onSearchChange,
+              placeholder: t("filters.search_placeholder"),
+              className: "h-9 flex-1",
+            },
+          ]}
+          className="flex-1"
         />
+        <MobileFilterSheet
+          activeCount={activeFilterCount}
+          onClearAll={onResetFilters}
+          onApply={() => {}}
+        >
+          <div className="flex flex-col gap-1.5">
+            <Label className="text-sm font-medium">{t("filters.role")}</Label>
+            <Select
+              value={roleFilter}
+              onValueChange={(v) => onRoleFilterChange(v as RoleFilter)}
+            >
+              <SelectTrigger className="h-9">
+                <SelectValue placeholder={t("filters.role_all")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="">{t("filters.role_all")}</SelectItem>
+                <SelectItem value="1">{t("filters.role_worker")}</SelectItem>
+                <SelectItem value="2">{t("filters.role_manager")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </MobileFilterSheet>
       </div>
-
-      {/* Role filter — desktop */}
-      <Select
-        value={roleFilter}
-        onValueChange={(v) => onRoleFilterChange(v as RoleFilter)}
-      >
-        <SelectTrigger className="h-9 w-full md:w-44 hidden md:flex">
-          <SelectValue placeholder={t("filters.role")} />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="">{t("filters.role_all")}</SelectItem>
-          <SelectItem value="1">{t("filters.role_worker")}</SelectItem>
-          <SelectItem value="2">{t("filters.role_manager")}</SelectItem>
-        </SelectContent>
-      </Select>
-
-      {/* Role filter — mobile inside sheet */}
-      <MobileFilterSheet
-        activeCount={activeFilterCount}
-        onClearAll={onResetFilters}
-        onApply={() => {}}
-        className="md:hidden"
-      >
-        <div className="flex flex-col gap-1.5">
-          <Label className="text-sm font-medium">{t("filters.role")}</Label>
-          <Select
-            value={roleFilter}
-            onValueChange={(v) => onRoleFilterChange(v as RoleFilter)}
-          >
-            <SelectTrigger className="h-9">
-              <SelectValue placeholder={t("filters.role_all")} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="">{t("filters.role_all")}</SelectItem>
-              <SelectItem value="1">{t("filters.role_worker")}</SelectItem>
-              <SelectItem value="2">{t("filters.role_manager")}</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-      </MobileFilterSheet>
     </div>
   );
 }

@@ -1,0 +1,89 @@
+# DEV сервер (147.45.147.5 / dev.wfm.beyondviolet.com)
+# Запуск: docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+
+services:
+
+  postgres:
+    ports:
+      - "5432:5432"
+
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=n8n_user
+      - DB_POSTGRESDB_PASSWORD=${N8N_DB_PASSWORD:-Pakar602}
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER:-admin}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD:-testA1234}
+      - N8N_HOST=dev.wfm.beyondviolet.com
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_FILESYSTEM_ALLOW_LIST=/shared
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:-}
+      - N8N_LICENSE_ACTIVATION_KEY=${N8N_LICENSE_ACTIVATION_KEY:-}
+      - GENERIC_TIMEZONE=Asia/Novosibirsk
+      - N8N_DEFAULT_LOCALE=ru-RU
+      - WEBHOOK_URL=https://dev.wfm.beyondviolet.com
+    volumes:
+      - ./n8n_data:/home/node/.n8n
+      - /srv/shared:/shared:Z
+    user: root
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  svc_tasks:
+    image: registry.beyondviolet.com/wfm/svc_tasks:dev
+    ports:
+      - "8000:8000"
+    environment:
+      - SERVER_NAME=dev
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  svc_users:
+    image: registry.beyondviolet.com/wfm/svc_users:dev
+    ports:
+      - "8001:8000"
+    environment:
+      - SERVER_NAME=dev
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  svc_notifications:
+    image: registry.beyondviolet.com/wfm/svc_notifications:dev
+    ports:
+      - "8003:8000"
+    environment:
+      - SERVER_NAME=dev
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  svc_monitoring:
+    image: registry.beyondviolet.com/wfm/svc_monitoring:dev
+    environment:
+      - SERVER_NAME=dev
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root/.docker/config.json:/config.json:ro
+    environment:
+      - DOCKER_API_VERSION=1.44
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=30
+      - WATCHTOWER_LABEL_ENABLE=true

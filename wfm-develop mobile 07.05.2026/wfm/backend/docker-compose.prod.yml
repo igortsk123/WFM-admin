@@ -1,0 +1,85 @@
+# PROD сервер (185.177.219.196 / wfm.beyondviolet.com)
+# Запуск: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+services:
+
+  postgres:
+    ports:
+      - "5432:5432"
+
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=n8n
+      - DB_POSTGRESDB_USER=n8n_user
+      - DB_POSTGRESDB_PASSWORD=${N8N_DB_PASSWORD:?Set N8N_DB_PASSWORD in .env}
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=${N8N_BASIC_AUTH_USER:?Set N8N_BASIC_AUTH_USER in .env}
+      - N8N_BASIC_AUTH_PASSWORD=${N8N_BASIC_AUTH_PASSWORD:?Set N8N_BASIC_AUTH_PASSWORD in .env}
+      - N8N_HOST=wfm.beyondviolet.com
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - N8N_FILESYSTEM_ALLOW_LIST=/shared
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:-}
+      - N8N_LICENSE_ACTIVATION_KEY=${N8N_LICENSE_ACTIVATION_KEY:-}
+      - GENERIC_TIMEZONE=Asia/Novosibirsk
+      - N8N_DEFAULT_LOCALE=ru-RU
+      - WEBHOOK_URL=https://wfm.beyondviolet.com
+    volumes:
+      - ./n8n_data:/home/node/.n8n
+      - /srv/shared:/shared:Z
+    user: root
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  svc_tasks:
+    ports:
+      - "8000:8000"
+    environment:
+      - SERVER_NAME=prod
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  svc_users:
+    ports:
+      - "8001:8000"
+    environment:
+      - SERVER_NAME=prod
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  svc_notifications:
+    ports:
+      - "8003:8000"
+    environment:
+      - SERVER_NAME=prod
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  svc_monitoring:
+    environment:
+      - SERVER_NAME=prod
+    labels:
+      - "com.centurylinklabs.watchtower.enable=true"
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root/.docker/config.json:/config.json:ro
+    environment:
+      - DOCKER_API_VERSION=1.44
+      - WATCHTOWER_CLEANUP=true
+      - WATCHTOWER_POLL_INTERVAL=60
+      - WATCHTOWER_LABEL_ENABLE=true

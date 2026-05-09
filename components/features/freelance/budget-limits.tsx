@@ -134,7 +134,7 @@ function BudgetLimitsInner({ canWrite }: InnerProps) {
 
   const activeChips = useMemo(() => {
     const chips: Array<{
-      id: string;
+      key: string;
       label: string;
       value: string;
       onRemove: () => void;
@@ -142,7 +142,7 @@ function BudgetLimitsInner({ canWrite }: InnerProps) {
     filterStores.forEach((sid) => {
       const name = storeOptions.find((o) => o.value === sid)?.label ?? sid;
       chips.push({
-        id: `store-${sid}`,
+        key: `store-${sid}`,
         label: t("filters.object"),
         value: name,
         onRemove: () =>
@@ -151,7 +151,7 @@ function BudgetLimitsInner({ canWrite }: InnerProps) {
     });
     if (filterPeriod) {
       chips.push({
-        id: `period-${filterPeriod}`,
+        key: `period-${filterPeriod}`,
         label: t("filters.period"),
         value: t(`period.${filterPeriod}`),
         onRemove: () => setFilterPeriod(""),
