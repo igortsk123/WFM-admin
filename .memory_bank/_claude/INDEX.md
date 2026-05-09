@@ -12,6 +12,7 @@
 | **Деплой / билд упал в CI** | [DEPLOY.md](./DEPLOY.md) — workflow, manual rollback, что НЕ делать руками |
 | **Новое API / меняешь моки** | [SYNC-WITH-BACKEND.md](./SYNC-WITH-BACKEND.md) — сначала сверить с `../backend/apis/` (живые контракты) |
 | **Хочу проверить терминологию / стиль** | [PREFERENCES.md](./PREFERENCES.md) — terminology, tokens, language, тон |
+| **Где живут LAMA-данные / cron / снапшоты** | [LAMA-DATA-FLOW.md](./LAMA-DATA-FLOW.md) — карта где какой артефакт, что в гите а что на сервере |
 | **Историческая справка по operations серии MY-PLAN** | [operations-v1/](./operations-v1/) — 10 планов 2026-05-06, выполнено |
 
 ## Файлы в `_claude/`
@@ -25,6 +26,7 @@
 | `V0-FAIL-PATTERNS.md` | 14 повторяющихся V0 ошибок | ~80 строк |
 | `PREFERENCES.md` | Terminology, tokens, style | ~70 строк |
 | `SYNC-WITH-BACKEND.md` | Mobile+backend как живой справочник, синхронизация | новый |
+| `LAMA-DATA-FLOW.md` | Где какие LAMA-артефакты (JSON на сервере, TS в гите), cron schedule, скрипты | ~80 строк |
 | `operations-v1/` | Архив MY-PLAN-1..10 (выполнено, для blame/history) | 10 файлов |
 
 ## Path-scoped rules (auto-load в Claude Code)
