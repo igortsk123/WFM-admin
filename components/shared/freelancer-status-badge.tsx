@@ -1,41 +1,41 @@
-import type { FreelancerStatus } from "@/lib/types"
-import { cn } from "@/lib/utils"
+"use client";
 
-interface FreelancerStatusBadgeProps {
-  status: FreelancerStatus
-  size?: "sm" | "md"
-  className?: string
+import type { FreelancerStatus } from "@/lib/types";
+
+import { StatusBadge, type StatusConfig } from "./status-badge";
+
+const FREELANCER_LABELS_RU: Record<FreelancerStatus, string> = {
+  NEW: "Новый",
+  VERIFICATION: "Проверка",
+  ACTIVE: "Активен",
+  BLOCKED: "Заблокирован",
+  ARCHIVED: "Архив",
+};
+
+const FREELANCER_LABELS_EN: Record<FreelancerStatus, string> = {
+  NEW: "New",
+  VERIFICATION: "Verification",
+  ACTIVE: "Active",
+  BLOCKED: "Blocked",
+  ARCHIVED: "Archived",
+};
+
+function buildFreelancerStatusConfig(
+  labels: Record<FreelancerStatus, string>,
+): StatusConfig<FreelancerStatus> {
+  return {
+    NEW: { label: labels.NEW, tone: "muted" },
+    VERIFICATION: { label: labels.VERIFICATION, tone: "warning" },
+    ACTIVE: { label: labels.ACTIVE, tone: "success" },
+    BLOCKED: { label: labels.BLOCKED, tone: "destructive" },
+    ARCHIVED: { label: labels.ARCHIVED, tone: "muted" },
+  };
 }
 
-const STATUS_CONFIG: Record<
-  FreelancerStatus,
-  { label: string; labelEn: string; className: string }
-> = {
-  NEW: {
-    label: "Новый",
-    labelEn: "New",
-    className: "bg-muted text-muted-foreground",
-  },
-  VERIFICATION: {
-    label: "Проверка",
-    labelEn: "Verification",
-    className: "bg-warning/10 text-warning",
-  },
-  ACTIVE: {
-    label: "Активен",
-    labelEn: "Active",
-    className: "bg-success/10 text-success",
-  },
-  BLOCKED: {
-    label: "Заблокирован",
-    labelEn: "Blocked",
-    className: "bg-destructive/10 text-destructive",
-  },
-  ARCHIVED: {
-    label: "Архив",
-    labelEn: "Archived",
-    className: "bg-muted text-muted-foreground",
-  },
+interface FreelancerStatusBadgeProps {
+  status: FreelancerStatus;
+  size?: "sm" | "md";
+  className?: string;
 }
 
 export function FreelancerStatusBadge({
@@ -43,27 +43,21 @@ export function FreelancerStatusBadge({
   size = "md",
   className,
 }: FreelancerStatusBadgeProps) {
-  const config = STATUS_CONFIG[status]
-
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-md font-medium whitespace-nowrap",
-        size === "sm" ? "px-1.5 py-0.5 text-xs" : "px-2 py-0.5 text-xs",
-        config.className,
-        className
-      )}
-    >
-      {config.label}
-    </span>
-  )
+    <StatusBadge
+      status={status}
+      config={buildFreelancerStatusConfig(FREELANCER_LABELS_RU)}
+      size={size === "sm" ? "sm" : "default"}
+      className={className}
+    />
+  );
 }
 
-/** Английская метка для фильтра/опции */
 export function getFreelancerStatusLabel(
   status: FreelancerStatus,
-  locale: string = "ru"
+  locale: string = "ru",
 ): string {
-  const config = STATUS_CONFIG[status]
-  return locale === "en" ? config.labelEn : config.label
+  const labels =
+    locale === "en" ? FREELANCER_LABELS_EN : FREELANCER_LABELS_RU;
+  return labels[status];
 }

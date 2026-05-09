@@ -1,59 +1,50 @@
-"use client"
+"use client";
 
-import { cn } from "@/lib/utils"
-import type { ServiceStatus } from "@/lib/types"
+import { useTranslations } from "next-intl";
+
+import type { ServiceStatus } from "@/lib/types";
+
+import { StatusBadge, type StatusConfig } from "./status-badge";
+
+const SERVICE_TONES: Record<ServiceStatus, StatusConfig<ServiceStatus>[ServiceStatus]["tone"]> = {
+  PLANNED: "muted",
+  IN_PROGRESS: "info",
+  COMPLETED: "warning",
+  CONFIRMED: "success",
+  READY_TO_PAY: "info",
+  PAID: "success",
+  NO_SHOW: "destructive",
+  DISPUTED: "destructive",
+};
+
+// Static EN fallback labels for getServiceStatusLabel() used in non-React
+// contexts (CSV exports, filter chips that don't have a translator handy).
+const LABELS_RU: Record<ServiceStatus, string> = {
+  PLANNED: "Запланирована",
+  IN_PROGRESS: "Выполняется",
+  COMPLETED: "Ждёт подтверждения",
+  CONFIRMED: "Подтверждена",
+  READY_TO_PAY: "Готова к оплате",
+  PAID: "Выплачена",
+  NO_SHOW: "Невыход",
+  DISPUTED: "Спор",
+};
+
+const LABELS_EN: Record<ServiceStatus, string> = {
+  PLANNED: "Planned",
+  IN_PROGRESS: "In progress",
+  COMPLETED: "Awaiting confirmation",
+  CONFIRMED: "Confirmed",
+  READY_TO_PAY: "Ready to pay",
+  PAID: "Paid",
+  NO_SHOW: "No-show",
+  DISPUTED: "Disputed",
+};
 
 interface ServiceStatusBadgeProps {
-  status: ServiceStatus
-  size?: "sm" | "md"
-  className?: string
-}
-
-const STATUS_CONFIG: Record<
-  ServiceStatus,
-  { labelRu: string; labelEn: string; className: string; dot?: boolean }
-> = {
-  PLANNED: {
-    labelRu: "Запланирована",
-    labelEn: "Planned",
-    className: "bg-muted text-muted-foreground",
-  },
-  IN_PROGRESS: {
-    labelRu: "Выполняется",
-    labelEn: "In progress",
-    className: "bg-info/10 text-info",
-    dot: true,
-  },
-  COMPLETED: {
-    labelRu: "Ждёт подтверждения",
-    labelEn: "Awaiting confirmation",
-    className: "bg-warning/10 text-warning",
-  },
-  CONFIRMED: {
-    labelRu: "Подтверждена",
-    labelEn: "Confirmed",
-    className: "bg-success/10 text-success",
-  },
-  READY_TO_PAY: {
-    labelRu: "Готова к оплате",
-    labelEn: "Ready to pay",
-    className: "bg-info/10 text-info",
-  },
-  PAID: {
-    labelRu: "Выплачена",
-    labelEn: "Paid",
-    className: "bg-success/10 text-success",
-  },
-  NO_SHOW: {
-    labelRu: "Невыход",
-    labelEn: "No-show",
-    className: "bg-destructive/10 text-destructive",
-  },
-  DISPUTED: {
-    labelRu: "Спор",
-    labelEn: "Disputed",
-    className: "bg-destructive/10 text-destructive",
-  },
+  status: ServiceStatus;
+  size?: "sm" | "md";
+  className?: string;
 }
 
 export function ServiceStatusBadge({
@@ -61,32 +52,33 @@ export function ServiceStatusBadge({
   size = "md",
   className,
 }: ServiceStatusBadgeProps) {
-  const config = STATUS_CONFIG[status]
+  const t = useTranslations("freelance.service.status");
+
+  const config = (Object.keys(SERVICE_TONES) as ServiceStatus[]).reduce<
+    StatusConfig<ServiceStatus>
+  >((acc, key) => {
+    acc[key] = {
+      label: t(key as Parameters<typeof t>[0]),
+      tone: SERVICE_TONES[key],
+      dot: key === "IN_PROGRESS",
+      pulse: key === "IN_PROGRESS",
+    };
+    return acc;
+  }, {} as StatusConfig<ServiceStatus>);
 
   return (
-    <span
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-md font-medium whitespace-nowrap",
-        size === "sm" ? "px-1.5 py-0.5 text-xs" : "px-2 py-0.5 text-xs",
-        config.className,
-        className
-      )}
-    >
-      {config.dot && (
-        <span
-          aria-hidden="true"
-          className="size-1.5 rounded-full bg-current animate-pulse shrink-0"
-        />
-      )}
-      {config.labelRu}
-    </span>
-  )
+    <StatusBadge
+      status={status}
+      config={config}
+      size={size === "sm" ? "sm" : "default"}
+      className={className}
+    />
+  );
 }
 
 export function getServiceStatusLabel(
   status: ServiceStatus,
-  locale: string = "ru"
+  locale: string = "ru",
 ): string {
-  const config = STATUS_CONFIG[status]
-  return locale === "en" ? config.labelEn : config.labelRu
+  return locale === "en" ? LABELS_EN[status] : LABELS_RU[status];
 }

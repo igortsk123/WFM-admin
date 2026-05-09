@@ -1,31 +1,39 @@
-import type { AgentStatus } from "@/lib/types"
-import { cn } from "@/lib/utils"
+"use client";
 
-interface AgentStatusBadgeProps {
-  status: AgentStatus
-  size?: "sm" | "md"
-  className?: string
+import type { AgentStatus } from "@/lib/types";
+
+import { StatusBadge, type StatusConfig } from "./status-badge";
+
+// Labels are static (no useTranslations namespace exists for agent.status yet),
+// so we keep them inline here. Refactoring to next-intl would require adding
+// a "freelance.agent.status.*" namespace — out of scope for this consolidation.
+const AGENT_STATUS_LABELS_RU: Record<AgentStatus, string> = {
+  ACTIVE: "Активен",
+  BLOCKED: "Заблокирован",
+  ARCHIVED: "Архив",
+};
+
+const AGENT_STATUS_LABELS_EN: Record<AgentStatus, string> = {
+  ACTIVE: "Active",
+  BLOCKED: "Blocked",
+  ARCHIVED: "Archived",
+};
+
+function buildAgentStatusConfig(
+  labels: Record<AgentStatus, string>,
+): StatusConfig<AgentStatus> {
+  return {
+    ACTIVE: { label: labels.ACTIVE, tone: "success" },
+    BLOCKED: { label: labels.BLOCKED, tone: "warning" },
+    ARCHIVED: { label: labels.ARCHIVED, tone: "muted" },
+  };
 }
 
-const STATUS_CONFIG: Record<
-  AgentStatus,
-  { labelRu: string; labelEn: string; className: string }
-> = {
-  ACTIVE: {
-    labelRu: "Активен",
-    labelEn: "Active",
-    className: "bg-success/10 text-success",
-  },
-  BLOCKED: {
-    labelRu: "Заблокирован",
-    labelEn: "Blocked",
-    className: "bg-warning/10 text-warning",
-  },
-  ARCHIVED: {
-    labelRu: "Архив",
-    labelEn: "Archived",
-    className: "bg-muted text-muted-foreground",
-  },
+interface AgentStatusBadgeProps {
+  status: AgentStatus;
+  /** "md" is preserved as alias for default tone — wrappers shipped before this had "sm" | "md". */
+  size?: "sm" | "md";
+  className?: string;
 }
 
 export function AgentStatusBadge({
@@ -33,26 +41,21 @@ export function AgentStatusBadge({
   size = "md",
   className,
 }: AgentStatusBadgeProps) {
-  const config = STATUS_CONFIG[status]
-
   return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-md font-medium whitespace-nowrap",
-        size === "sm" ? "px-1.5 py-0.5 text-xs" : "px-2 py-0.5 text-xs",
-        config.className,
-        className
-      )}
-    >
-      {config.labelRu}
-    </span>
-  )
+    <StatusBadge
+      status={status}
+      config={buildAgentStatusConfig(AGENT_STATUS_LABELS_RU)}
+      size={size === "sm" ? "sm" : "default"}
+      className={className}
+    />
+  );
 }
 
 export function getAgentStatusLabel(
   status: AgentStatus,
-  locale: string = "ru"
+  locale: string = "ru",
 ): string {
-  const config = STATUS_CONFIG[status]
-  return locale === "en" ? config.labelEn : config.labelRu
+  const labels =
+    locale === "en" ? AGENT_STATUS_LABELS_EN : AGENT_STATUS_LABELS_RU;
+  return labels[status];
 }

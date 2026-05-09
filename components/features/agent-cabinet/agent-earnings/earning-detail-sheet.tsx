@@ -13,7 +13,7 @@ import { cn } from "@/lib/utils";
 import { formatCurrency } from "@/lib/utils/format";
 import { getMyPayoutById } from "@/lib/api/agent-cabinet";
 import type { AgentEarning, Locale, Payout } from "@/lib/types";
-import { EarningStatusBadge } from "./earning-status-badge";
+import { EarningStatusBadge } from "@/components/shared/earning-status-badge";
 import { formatShortDate } from "./_shared";
 
 interface EarningDetailSheetProps {

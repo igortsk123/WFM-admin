@@ -16,6 +16,8 @@ import {
 import { getMyFreelancerDetailById } from "@/lib/api/agent-cabinet";
 import { AGENT_ROUTES } from "@/lib/constants/routes";
 import { FreelancerStatusBadge } from "@/components/shared/freelancer-status-badge";
+import { ServiceStatusBadge } from "@/components/shared/service-status-badge";
+import { EarningStatusBadge } from "@/components/shared/earning-status-badge";
 import { KpiCard } from "@/components/shared/kpi-card";
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -126,57 +128,6 @@ function HeroCard({
         </div>
       </CardContent>
     </Card>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// SERVICE STATUS BADGE
-// ═══════════════════════════════════════════════════════════════════
-
-const SERVICE_STATUS_STYLES: Record<string, string> = {
-  PLANNED: "bg-muted text-muted-foreground",
-  IN_PROGRESS: "bg-info/10 text-info",
-  COMPLETED: "bg-info/10 text-info",
-  CONFIRMED: "bg-success/10 text-success",
-  READY_TO_PAY: "bg-warning/10 text-warning",
-  PAID: "bg-success/10 text-success",
-  NO_SHOW: "bg-destructive/10 text-destructive",
-  DISPUTED: "bg-destructive/10 text-destructive",
-};
-
-function ServiceStatusBadge({ status }: { status: string }) {
-  const t = useTranslations("freelance.service.status");
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium whitespace-nowrap",
-        SERVICE_STATUS_STYLES[status] ?? "bg-muted text-muted-foreground"
-      )}
-    >
-      {t(status as Parameters<typeof t>[0])}
-    </span>
-  );
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// EARNING STATUS BADGE
-// ═══════════════════════════════════════════════════════════════════
-
-function EarningStatusBadge({ status }: { status: "CALCULATED" | "PAID" }) {
-  const styles =
-    status === "PAID"
-      ? "bg-success/10 text-success"
-      : "bg-warning/10 text-warning";
-  const labels = { CALCULATED: "Начислено", PAID: "Выплачено" };
-  return (
-    <span
-      className={cn(
-        "inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium whitespace-nowrap",
-        styles
-      )}
-    >
-      {labels[status]}
-    </span>
   );
 }
 
@@ -317,6 +268,7 @@ function EarningsTab({
   locale: Locale;
 }) {
   const t = useTranslations("screen.agentFreelancers.detail.earnings");
+  const tStatus = useTranslations("screen.agentEarnings.status");
 
   if (earnings.length === 0) {
     return (
@@ -350,7 +302,7 @@ function EarningsTab({
               <span className="text-sm font-semibold text-foreground tabular-nums">
                 {formatCurrency(e.commission_amount, locale)}
               </span>
-              <EarningStatusBadge status={e.status} />
+              <EarningStatusBadge status={e.status} label={tStatus(e.status)} />
             </div>
           </li>
         ))}
@@ -399,7 +351,7 @@ function EarningsTab({
                   {formatCurrency(e.commission_amount, locale)}
                 </td>
                 <td className="px-4 py-3">
-                  <EarningStatusBadge status={e.status} />
+                  <EarningStatusBadge status={e.status} label={tStatus(e.status)} />
                 </td>
               </tr>
             ))}

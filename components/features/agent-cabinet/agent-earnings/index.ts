@@ -1,4 +1,4 @@
-export { EarningStatusBadge } from "./earning-status-badge";
+export { EarningStatusBadge } from "@/components/shared/earning-status-badge";
 export { EarningsSkeleton } from "./earnings-skeleton";
 export { SummaryCards } from "./summary-cards";
 export { FiltersBar } from "./filters-bar";

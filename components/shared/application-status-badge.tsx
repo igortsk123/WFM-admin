@@ -1,5 +1,55 @@
+"use client";
+
 import type { ApplicationStatus } from "@/lib/types";
-import { cn } from "@/lib/utils";
+
+import { StatusBadge, type StatusConfig } from "./status-badge";
+
+const APPLICATION_TONES: Record<
+  ApplicationStatus,
+  StatusConfig<ApplicationStatus>[ApplicationStatus]["tone"]
+> = {
+  DRAFT: "muted",
+  PENDING: "warning",
+  APPROVED_FULL: "success",
+  APPROVED_PARTIAL: "success",
+  REJECTED: "destructive",
+  REPLACED_WITH_BONUS: "info",
+  MIXED: "info",
+  CANCELLED: "muted",
+};
+
+const LABELS_RU: Record<ApplicationStatus, string> = {
+  DRAFT: "Черновик",
+  PENDING: "На рассмотрении",
+  APPROVED_FULL: "Согласована",
+  APPROVED_PARTIAL: "Частично",
+  REJECTED: "Отклонена",
+  REPLACED_WITH_BONUS: "Бонус",
+  MIXED: "Смешанная",
+  CANCELLED: "Отменена",
+};
+
+const LABELS_EN: Record<ApplicationStatus, string> = {
+  DRAFT: "Draft",
+  PENDING: "Pending",
+  APPROVED_FULL: "Approved",
+  APPROVED_PARTIAL: "Partial",
+  REJECTED: "Rejected",
+  REPLACED_WITH_BONUS: "Bonus",
+  MIXED: "Mixed",
+  CANCELLED: "Cancelled",
+};
+
+function buildConfig(
+  labels: Record<ApplicationStatus, string>,
+): StatusConfig<ApplicationStatus> {
+  return (Object.keys(APPLICATION_TONES) as ApplicationStatus[]).reduce<
+    StatusConfig<ApplicationStatus>
+  >((acc, key) => {
+    acc[key] = { label: labels[key], tone: APPLICATION_TONES[key] };
+    return acc;
+  }, {} as StatusConfig<ApplicationStatus>);
+}
 
 interface ApplicationStatusBadgeProps {
   status: ApplicationStatus;
@@ -11,52 +61,6 @@ interface ApplicationStatusBadgeProps {
   retroactive?: boolean;
 }
 
-const STATUS_CONFIG: Record<
-  ApplicationStatus,
-  { labelRu: string; labelEn: string; className: string }
-> = {
-  DRAFT: {
-    labelRu: "Черновик",
-    labelEn: "Draft",
-    className: "bg-muted text-muted-foreground",
-  },
-  PENDING: {
-    labelRu: "На рассмотрении",
-    labelEn: "Pending",
-    className: "bg-warning/10 text-warning",
-  },
-  APPROVED_FULL: {
-    labelRu: "Согласована",
-    labelEn: "Approved",
-    className: "bg-success/10 text-success",
-  },
-  APPROVED_PARTIAL: {
-    labelRu: "Частично",
-    labelEn: "Partial",
-    className: "bg-success/10 text-success",
-  },
-  REJECTED: {
-    labelRu: "Отклонена",
-    labelEn: "Rejected",
-    className: "bg-destructive/10 text-destructive",
-  },
-  REPLACED_WITH_BONUS: {
-    labelRu: "Бонус",
-    labelEn: "Bonus",
-    className: "bg-info/10 text-info",
-  },
-  MIXED: {
-    labelRu: "Смешанная",
-    labelEn: "Mixed",
-    className: "bg-info/10 text-info",
-  },
-  CANCELLED: {
-    labelRu: "Отменена",
-    labelEn: "Cancelled",
-    className: "bg-muted text-muted-foreground",
-  },
-};
-
 export function ApplicationStatusBadge({
   status,
   size = "md",
@@ -64,20 +68,18 @@ export function ApplicationStatusBadge({
   urgent,
   retroactive,
 }: ApplicationStatusBadgeProps) {
-  const config = STATUS_CONFIG[status];
-
+  // Original component always rendered RU labels. next-intl namespace
+  // freelance.application.status exists, but adopting it here would
+  // change visible behaviour for screens that don't currently translate.
+  // Keep RU-static here; getApplicationStatusLabel handles EN explicitly.
   return (
     <span className="inline-flex items-center gap-1">
-      <span
-        className={cn(
-          "inline-flex items-center rounded-md font-medium whitespace-nowrap",
-          size === "sm" ? "px-1.5 py-0.5 text-xs" : "px-2.5 py-1 text-xs",
-          config.className,
-          className
-        )}
-      >
-        {config.labelRu}
-      </span>
+      <StatusBadge
+        status={status}
+        config={buildConfig(LABELS_RU)}
+        size={size === "sm" ? "sm" : "default"}
+        className={className}
+      />
       {urgent && (
         <span
           className="inline-block size-1.5 rounded-full bg-destructive"
@@ -96,8 +98,7 @@ export function ApplicationStatusBadge({
 
 export function getApplicationStatusLabel(
   status: ApplicationStatus,
-  locale: string = "ru"
+  locale: string = "ru",
 ): string {
-  const config = STATUS_CONFIG[status];
-  return locale === "en" ? config.labelEn : config.labelRu;
+  return locale === "en" ? LABELS_EN[status] : LABELS_RU[status];
 }

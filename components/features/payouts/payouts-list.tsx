@@ -48,6 +48,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 
 import { PageHeader } from "@/components/shared/page-header";
 import { EmptyState } from "@/components/shared/empty-state";
+import { PayoutPeriodStatusBadge } from "@/components/shared/payout-period-status-badge";
 
 import {
   getPayoutPeriods,
@@ -68,45 +69,6 @@ type ViewMode = "all" | PayoutPeriodStatus;
 
 interface PayoutStageProps {
   currentStage: number;
-}
-
-// ═══════════════════════════════════════════════════════════════════
-// STATUS BADGE
-// ═══════════════════════════════════════════════════════════════════
-
-function PayoutStatusBadge({
-  status,
-  t,
-}: {
-  status: PayoutPeriodStatus;
-  t: ReturnType<typeof useTranslations<"screen.payouts">>;
-}) {
-  const config: Record<
-    PayoutPeriodStatus,
-    { variant: "info" | "warning" | "success" | "muted"; className: string }
-  > = {
-    OPEN: { variant: "info", className: "bg-info/10 text-info border-info/20" },
-    CALCULATING: {
-      variant: "warning",
-      className: "bg-warning/10 text-warning border-warning/20",
-    },
-    READY: {
-      variant: "success",
-      className: "bg-success/10 text-success border-success/20",
-    },
-    PAID: {
-      variant: "muted",
-      className: "bg-muted text-muted-foreground border-border",
-    },
-  };
-
-  const { className } = config[status];
-
-  return (
-    <Badge variant="outline" className={className}>
-      {t(`status.${status}` as Parameters<typeof t>[0])}
-    </Badge>
-  );
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -193,7 +155,10 @@ function PeriodCard({ period, isNetworkOps, onExport }: PeriodCardProps) {
           <h3 className="text-lg font-semibold text-foreground">
             {period.period_label}
           </h3>
-          <PayoutStatusBadge status={period.status} t={t} />
+          <PayoutPeriodStatusBadge
+            status={period.status}
+            label={t(`status.${period.status}` as Parameters<typeof t>[0])}
+          />
         </div>
         <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
           <Calendar className="size-3.5" aria-hidden="true" />

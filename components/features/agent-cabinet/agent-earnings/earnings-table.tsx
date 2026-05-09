@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table";
 import { formatCurrency } from "@/lib/utils/format";
 import type { AgentEarning, Locale } from "@/lib/types";
-import { EarningStatusBadge } from "./earning-status-badge";
+import { EarningStatusBadge } from "@/components/shared/earning-status-badge";
 import { formatShortDate } from "./_shared";
 
 interface EarningsTableProps {

@@ -26,6 +26,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Dialog } from "@/components/ui/dialog"
 import { EmptyState } from "@/components/shared/empty-state"
 import { FreelancerStatusBadge } from "@/components/shared/freelancer-status-badge"
+import { StatusBadge, type StatusConfig } from "@/components/shared/status-badge"
 import { PageHeader } from "@/components/shared/page-header"
 
 import { OfferTaskDialogContent } from "./offer-task-dialog-content"
@@ -344,12 +345,12 @@ function AssignmentRow({ assignment: a, locale, t }: AssignmentRowProps) {
 
 function AssignmentStatusBadge({ status }: { status: FreelancerAssignment["status"] }) {
   const t = useTranslations("screen.freelancerDetail.status")
-  const map: Record<typeof status, string> = {
-    SCHEDULED: "bg-info/10 text-info border-info/20",
-    CHECKED_IN: "bg-warning/10 text-warning border-warning/20",
-    WORKING: "bg-warning/10 text-warning border-warning/20",
-    DONE: "bg-success/10 text-success border-success/20",
-    NO_SHOW: "bg-destructive/10 text-destructive border-destructive/20",
+  const config: StatusConfig<FreelancerAssignment["status"]> = {
+    SCHEDULED: { label: t("scheduled"), tone: "info" },
+    CHECKED_IN: { label: t("checked_in"), tone: "warning" },
+    WORKING: { label: t("working"), tone: "warning" },
+    DONE: { label: t("done"), tone: "success" },
+    NO_SHOW: { label: t("no_show"), tone: "destructive" },
   }
-  return <Badge className={map[status]}>{t(status.toLowerCase())}</Badge>
+  return <StatusBadge status={status} config={config} />
 }
