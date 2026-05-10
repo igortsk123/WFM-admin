@@ -23,22 +23,26 @@ git pull origin main >> $LOG 2>&1
 # Fetch + regen
 python3 tools/lama/fetch-snapshot-async.py --concurrency 3 >> $LOG 2>&1
 python3 tools/lama/regenerate-from-snapshots.py >> $LOG 2>&1
+python3 tools/lama/build-planning-pool.py >> $LOG 2>&1
 
 # Commit только если TS-файлы изменились
 git add lib/mock-data/_lama-unassigned-blocks.ts \
         lib/mock-data/_lama-employee-zones.ts \
         lib/mock-data/_lama-employee-work-types.ts \
-        lib/mock-data/_lama-fallback-medians.ts
+        lib/mock-data/_lama-fallback-medians.ts \
+        lib/mock-data/_lama-planning-pool.ts
 
 if git diff --cached --quiet; then
   echo "$(date -u +%H:%M:%S) NO CHANGES" >> $LOG
 else
   BLOCKS=$(grep -c '^  { id:' lib/mock-data/_lama-unassigned-blocks.ts || true)
   STORES=$(grep -oE 'store_id: [0-9]+' lib/mock-data/_lama-unassigned-blocks.ts | sort -u | wc -l)
+  PLAN_TASKS=$(grep -cE '^      \{ id: [0-9]+,' lib/mock-data/_lama-planning-pool.ts || true)
+  PLAN_SHOPS=$(grep -cE '^  "[0-9]{4}": \{$' lib/mock-data/_lama-planning-pool.ts || true)
   DATE=$(date +%Y-%m-%d)
-  git commit -m "chore(lama): daily snapshot $DATE — $BLOCKS blocks / $STORES stores (auto)" >> $LOG 2>&1
+  git commit -m "chore(lama): daily snapshot $DATE — $BLOCKS blocks / $STORES stores, $PLAN_TASKS plan-tasks / $PLAN_SHOPS plan-shops (auto)" >> $LOG 2>&1
   git push origin main >> $LOG 2>&1
-  echo "$(date -u +%H:%M:%S) PUSHED $BLOCKS blocks / $STORES stores" >> $LOG
+  echo "$(date -u +%H:%M:%S) PUSHED $BLOCKS blocks / $STORES stores, $PLAN_TASKS plan-tasks / $PLAN_SHOPS plan-shops" >> $LOG
 fi
 
 echo "=== $(date -u +%Y-%m-%dT%H:%M:%SZ) END ===" >> $LOG
