@@ -822,36 +822,73 @@ export async function notifyOverShiftAssignment(
 // ═══════════════════════════════════════════════════════════════════
 
 /**
- * Greedy distribution с tier-cascade matching и balance-aware ranking.
+ * Iter#2 scoring weights — derived from per-store backtest analysis
+ * (`tools/lama/PER-STORE-PATTERNS.md`). 5765 реальных decisions:
+ *
+ *   zone_affinity      — 44.6% match rate
+ *   work_type_affinity — 40.5% match rate
+ *   lowest_load        — 12.0% match rate
+ *   top_rank/seniority — 11.7% match rate
+ *
+ * Нормировано к 100% от aggregate match rates: 41 / 37 / 11 / 11.
+ */
+const SCORE_WEIGHT_ZONE = 0.41;
+const SCORE_WEIGHT_WTYPE = 0.37;
+const SCORE_WEIGHT_BALANCE = 0.11;
+const SCORE_WEIGHT_RANK = 0.11;
+
+/**
+ * Seniority score из position_name (LAMA `rank` поле = «N/A» для всех
+ * Administrators, поэтому используем keyword match по должности).
+ * Source: per-store-pattern-analysis.py — те же ключи.
+ */
+function rankSeniority(positionName?: string): number {
+  if (!positionName) return 0;
+  const p = positionName.toLowerCase();
+  if (p.includes("управляющий магазином")) return 8;
+  if (p.includes("заместитель управляющего")) return 7;
+  if (p.includes("старший смены")) return 5;
+  if (p.includes("старший")) return 4;
+  if (p.includes("заместитель")) return 4;
+  if (p.includes("администратор")) return 3;
+  if (p.includes("универсал")) return 2;
+  return 1;
+}
+
+/** Min-max нормализация значения в [0..1] относительно набора кандидатов. */
+function minmax(value: number, min: number, max: number): number {
+  if (max <= min) return value > 0 ? 1 : 0;
+  return (value - min) / (max - min);
+}
+
+/**
+ * Greedy distribution с weighted multi-factor scoring (iter#2).
  *
  * Сортируем задачи по priority asc (1 = critical), затем для каждой:
  *
- * 1. **Match cascade** — кандидаты выбираются по убыванию релевантности:
+ * 1. **Match cascade** — фильтр кандидатов по совместимости:
  *    a) Сотрудники с подходящей zone (e.user.zones ∩ task.zone_name).
- *       В бизнес-модели LAMA permission == доступ к зоне, потому отдельно
- *       по permissions не фильтруем — zones уже это покрывает.
  *    b) Если задача без зоны (Касса/КСО/Менеджерские) ИЛИ по zone никого
- *       не нашлось — fallback на work_types (e.user.work_types ∩
- *       task.work_type_name из LAMA history).
+ *       не нашлось — fallback на work_types.
  *    c) Финальный fallback — все со свободным временем.
  *
- * 2. **Balance-aware ranking** — внутри кандидатов сортируем по relative
- *    free ratio descending. Сотрудник с 100% свободного времени получает
- *    раньше чем с 50% — балансирует загрузку команды равномерно вместо
- *    жадного «один забирает всё».
+ * 2. **Weighted score** — внутри кандидатов сортируем по убыванию score:
+ *
+ *    score = 0.41 * zone_affinity_norm
+ *          + 0.37 * work_type_affinity_norm
+ *          + 0.11 * (1 - load_norm)
+ *          + 0.11 * rank_seniority_norm
+ *
+ *    Каждое слагаемое — minmax-norm среди eligible кандидатов task'а.
+ *    Веса откалиброваны по 5765 реальным решениям директоров за 4 дня
+ *    (см. PER-STORE-PATTERNS.md). Реальность концентрирует работу на
+ *    профиле сотрудника (zone+wtype 78%), почти не балансирует (11%).
  *
  * 3. **Two-pass chunk size** — стараемся не дробить 4ч задачу на 8 огрызков:
- *    - **Pass 1 (preferred)**: пропускаем кандидатов у кого free < 60 мин.
- *      Получаем «большие» куски ≥1ч на одного.
- *    - **Pass 2 (relaxed)**: если задача не покрылась — релаксируем порог
- *      до 30 мин, добиваем остаток (но не вторым чанком тому же человеку
- *      в той же задаче — dedup через allocated set).
- *    - Хвост <30 мин разрешён (лучше отдать огрызок одному, чем не
- *      распределить).
+ *    - Pass 1 (preferred): пропускаем кандидатов у кого free < 60 мин.
+ *    - Pass 2 (relaxed): порог 30 мин, добиваем остаток.
  *
  * Не делает API-вызовов, не мутирует серверное состояние. Идемпотентна.
- * Caller показывает план в UI для подтверждения, затем коммитит через
- * assignTaskToUser per task.
  */
 export function autoDistribute(
   tasks: UnassignedTask[],
@@ -908,30 +945,51 @@ export function autoDistribute(
       candidates = employees.filter((e) => (freeByUser.get(e.user.id) ?? 0) > 0);
     }
 
-    // Balance-aware ranking: relative free ratio desc (least loaded first),
-    // с history-affinity tiebreaker для близких кандидатов (≤5% difference).
-    // Чем больше у сотрудника подтверждённого опыта по этому work_type
-    // (count в EMPLOYEE_STATS из вчерашних снапшотов), тем выше он попадает
-    // при равной загрузке. Стат каждый день обновляется через analyze-distribution.py
-    // → алгоритм улучшается без UI-триггера.
-    const FREE_RATIO_TIE_EPSILON = 0.05;
+    // Iter#2 weighted scoring (zone 41% + wtype 37% + balance 11% + rank 11%).
+    // Каждая metric нормирована minmax относительно eligible кандидатов task'а;
+    // load инвертирован (low load = high score). Стат обновляется ежедневно
+    // через analyze-distribution.py → алгоритм улучшается с историей.
     const taskWorkType = task.work_type_name ?? "";
-    const affinityFor = (userId: number): number => {
+    const taskZone = task.zone_name ?? "";
+
+    const zoneAffFor = (userId: number): number => {
+      const stats = EMPLOYEE_STATS[userId];
+      if (!stats || !taskZone) return 0;
+      return stats.zone_affinity?.[taskZone] ?? 0;
+    };
+    const wtypeAffFor = (userId: number): number => {
       const stats = EMPLOYEE_STATS[userId];
       if (!stats || !taskWorkType) return 0;
       return stats.affinity?.[taskWorkType]?.count ?? 0;
     };
-    const ranked = [...candidates].sort((a, b) => {
-      const aRatio =
-        a.shift_total_min > 0 ? (freeByUser.get(a.user.id) ?? 0) / a.shift_total_min : 0;
-      const bRatio =
-        b.shift_total_min > 0 ? (freeByUser.get(b.user.id) ?? 0) / b.shift_total_min : 0;
-      if (Math.abs(aRatio - bRatio) > FREE_RATIO_TIE_EPSILON) {
-        return bRatio - aRatio;
-      }
-      // Tiebreaker: исторический опыт по типу работ (больше count = опытнее)
-      return affinityFor(b.user.id) - affinityFor(a.user.id);
-    });
+    const loadFor = (uid: number, total: number): number =>
+      total > 0 ? 1 - (freeByUser.get(uid) ?? 0) / total : 1;
+    const rankFor = (e: EmployeeUtilization): number =>
+      rankSeniority(e.user.position_name);
+
+    // Pre-compute ranges для minmax нормализации.
+    const zoneVals = candidates.map((e) => zoneAffFor(e.user.id));
+    const wtypeVals = candidates.map((e) => wtypeAffFor(e.user.id));
+    const loadVals = candidates.map((e) => loadFor(e.user.id, e.shift_total_min));
+    const rankVals = candidates.map((e) => rankFor(e));
+    const zMin = Math.min(...zoneVals), zMax = Math.max(...zoneVals);
+    const wMin = Math.min(...wtypeVals), wMax = Math.max(...wtypeVals);
+    const lMin = Math.min(...loadVals), lMax = Math.max(...loadVals);
+    const rMin = Math.min(...rankVals), rMax = Math.max(...rankVals);
+
+    const scoreOf = (e: EmployeeUtilization): number => {
+      const z = minmax(zoneAffFor(e.user.id), zMin, zMax);
+      const w = minmax(wtypeAffFor(e.user.id), wMin, wMax);
+      const l = minmax(loadFor(e.user.id, e.shift_total_min), lMin, lMax);
+      const r = minmax(rankFor(e), rMin, rMax);
+      return (
+        SCORE_WEIGHT_ZONE * z +
+        SCORE_WEIGHT_WTYPE * w +
+        SCORE_WEIGHT_BALANCE * (1 - l) +
+        SCORE_WEIGHT_RANK * r
+      );
+    };
+    const ranked = [...candidates].sort((a, b) => scoreOf(b) - scoreOf(a));
 
     // Track кому уже дали в этой задаче — dedup для pass 2.
     const allocatedToThisTask = new Set<number>();

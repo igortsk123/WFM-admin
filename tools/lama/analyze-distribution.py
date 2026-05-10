@@ -133,6 +133,8 @@ def main() -> None:
     # employee × work_type → durations + count.
     emp_wt_durations: dict[tuple[int, str], list[int]] = defaultdict(list)
     emp_wt_count: dict[tuple[int, str], int] = defaultdict(int)
+    # employee × zone → count (для zone_affinity скоринга в iter#2).
+    emp_zone_count: dict[tuple[int, str], int] = defaultdict(int)
     # employee × date → seconds (для daily_load).
     emp_day_seconds: dict[tuple[int, str], int] = defaultdict(int)
 
@@ -186,6 +188,7 @@ def main() -> None:
                 zone = t.get("operation_zone")
                 if isinstance(zone, str) and zone and zone != "N/A":
                     emp_zones[emp_id].add(zone)
+                    emp_zone_count[(emp_id, zone)] += 1
                 emp_wt_durations[(emp_id, work)].append(duration)
                 emp_wt_count[(emp_id, work)] += 1
                 emp_day_seconds[(emp_id, snap_date)] += duration
@@ -237,6 +240,13 @@ def main() -> None:
                 "median_duration": int(median(durations)) if durations else 0,
             }
 
+        # zone_affinity[zone] = count (для weighted scoring в auto-distribute).
+        zone_affinity: dict[str, int] = {}
+        for (eid, zn), cnt in emp_zone_count.items():
+            if eid != emp_id:
+                continue
+            zone_affinity[zn] = cnt
+
         # daily_load_hours = sorted by date, hours per active day.
         daily_pairs = sorted(
             (date, sec) for (eid, date), sec in emp_day_seconds.items() if eid == emp_id
@@ -252,6 +262,7 @@ def main() -> None:
                 "success_rate": success_rate,
                 "zones_worked": zones,
                 "affinity": affinity,
+                "zone_affinity": zone_affinity,
                 "daily_load_hours": daily_load_hours,
             }
         )
@@ -342,6 +353,8 @@ export interface EmployeeStats {{
   success_rate: number;
   zones_worked: string[];
   affinity: Record<string, EmployeeAffinity>;
+  /** Per-zone task count from real history — для weighted scoring в auto-distribute. */
+  zone_affinity: Record<string, number>;
   daily_load_hours: number[];
 }}
 
@@ -406,6 +419,16 @@ export interface ShopWorkloadStats {{
                     f"count: {aff['count']}, "
                     f"median_duration: {aff['median_duration']} "
                     "},\n"
+                )
+            lines.append("    },\n")
+        # zone_affinity
+        if not r["zone_affinity"]:
+            lines.append("    zone_affinity: {},\n")
+        else:
+            lines.append("    zone_affinity: {\n")
+            for zn in sorted(r["zone_affinity"].keys()):
+                lines.append(
+                    f"      {ts_string_literal(zn)}: {r['zone_affinity'][zn]},\n"
                 )
             lines.append("    },\n")
         lines.append(

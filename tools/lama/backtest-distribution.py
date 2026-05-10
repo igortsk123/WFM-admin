@@ -54,6 +54,7 @@ sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8", errors="repla
 
 ROOT = Path(__file__).resolve().parents[2]
 MOCK_DATA = ROOT / "lib" / "mock-data"
+SNAPSHOT_DIR = ROOT / ".lama_snapshots"
 
 BASELINE_FILE = MOCK_DATA / "_lama-backtest-baseline.ts"
 ZONES_FILE = MOCK_DATA / "_lama-employee-zones.ts"
@@ -63,6 +64,44 @@ POOL_FILE = MOCK_DATA / "_lama-planning-pool.ts"
 
 OUT_RESULTS_DIR = ROOT / "tools" / "lama" / "backtest-results"
 OUT_SUMMARY_TS = MOCK_DATA / "_backtest-summary.ts"
+
+
+def load_employee_positions() -> dict[int, str]:
+    """Читает snapshots → {employee_id: position_name}.
+
+    Используется в iter#2 scoring (rank_seniority по position keyword).
+    Если у emp_id меняется position между snapshot'ами — берём latest.
+    """
+    out: dict[int, str] = {}
+    snap_files = sorted(
+        f for f in SNAPSHOT_DIR.glob("*.json") if not f.name.startswith("_")
+    )
+    for sf in snap_files:
+        try:
+            data = json.loads(sf.read_text(encoding="utf-8-sig"))
+        except Exception:
+            continue
+        for e in data.get("employees", []):
+            eid = e.get("employee_id")
+            pos = e.get("position_name") or ""
+            if isinstance(eid, int) and pos:
+                out[eid] = pos
+    return out
+
+
+# ─────────────────────────────────────────────────────────────────────
+# Iter#2 scoring weights (mirror of TS lib/api/distribution.ts).
+# ─────────────────────────────────────────────────────────────────────
+SCORE_WEIGHT_ZONE = 0.41
+SCORE_WEIGHT_WTYPE = 0.37
+SCORE_WEIGHT_BALANCE = 0.11
+SCORE_WEIGHT_RANK = 0.11
+
+
+def minmax_norm(value: float, lo: float, hi: float) -> float:
+    if hi <= lo:
+        return 1.0 if value > 0 else 0.0
+    return (value - lo) / (hi - lo)
 
 # ─────────────────────────────────────────────────────────────────────
 # TS parsing — primitive regex extraction (TS файлы auto-generated, легко
@@ -161,6 +200,92 @@ def parse_employee_arrays(text: str, var_name: str) -> dict[int, list[str]]:
         pos = end + 1
 
     return out
+
+
+def parse_employee_stats_zone_affinity(text: str) -> dict[int, dict[str, int]]:
+    """Парсит zone_affinity per emp из EMPLOYEE_STATS.
+
+    Returns { emp_id -> { zone_name: count } }.
+    """
+    start_pat = re.compile(r'export const EMPLOYEE_STATS[^=]*=\s*\{', re.DOTALL)
+    m = start_pat.search(text)
+    if not m:
+        return {}
+    body_start = m.end()
+    depth = 1
+    pos = body_start
+    while pos < len(text) and depth > 0:
+        c = text[pos]
+        if c == "{":
+            depth += 1
+        elif c == "}":
+            depth -= 1
+            if depth == 0:
+                break
+        pos += 1
+    body = text[body_start:pos]
+
+    out: dict[int, dict[str, int]] = {}
+    entry_pat = re.compile(r'\n  (\d+):\s*\{')
+    matches = list(entry_pat.finditer(body))
+    for m in matches:
+        emp_id = int(m.group(1))
+        entry_start = m.end() - 1
+        depth = 1
+        p = entry_start + 1
+        while p < len(body) and depth > 0:
+            c = body[p]
+            if c == "{":
+                depth += 1
+            elif c == "}":
+                depth -= 1
+                if depth == 0:
+                    break
+            p += 1
+        entry_body = body[entry_start + 1 : p]
+        za_match = re.search(r'zone_affinity:\s*\{', entry_body)
+        if not za_match:
+            continue
+        za_start = za_match.end() - 1
+        d = 1
+        q = za_start + 1
+        while q < len(entry_body) and d > 0:
+            c = entry_body[q]
+            if c == "{":
+                d += 1
+            elif c == "}":
+                d -= 1
+                if d == 0:
+                    break
+            q += 1
+        za_body = entry_body[za_start + 1 : q]
+        zn_pat = re.compile(r'"([^"]+)":\s*(\d+)')
+        zone_aff: dict[str, int] = {}
+        for zn_m in zn_pat.finditer(za_body):
+            zone_aff[zn_m.group(1)] = int(zn_m.group(2))
+        if zone_aff:
+            out[emp_id] = zone_aff
+    return out
+
+
+def rank_seniority(position_name: str) -> int:
+    """Same logic as TS `rankSeniority` in `lib/api/distribution.ts`."""
+    p = (position_name or "").lower()
+    if "управляющий магазином" in p:
+        return 8
+    if "заместитель управляющего" in p:
+        return 7
+    if "старший смены" in p:
+        return 5
+    if "старший" in p:
+        return 4
+    if "заместитель" in p:
+        return 4
+    if "администратор" in p:
+        return 3
+    if "универсал" in p:
+        return 2
+    return 1
 
 
 def parse_employee_stats_affinity(text: str) -> dict[int, dict[str, int]]:
@@ -325,6 +450,7 @@ class Employee:
     work_types: list[str]
     shift_total_min: int = 720  # 12h synthetic
     free_min: int = 720
+    position_name: str = ""  # для rank_seniority в iter#2 scoring
 
 
 @dataclass
@@ -362,11 +488,14 @@ def auto_distribute(
     tasks: list[Task],
     employees: list[Employee],
     affinity: dict[int, dict[str, int]],
+    zone_affinity: dict[int, dict[str, int]] | None = None,
 ) -> dict[int, list[tuple[int, int]]]:
     """Returns { task_id: [(emp_id, minutes), ...] }.
 
-    Mirror of TS `autoDistribute` — see comments in `lib/api/distribution.ts`.
+    Mirror of TS `autoDistribute` (iter#2) — weighted scoring:
+    zone 41% / wtype 37% / balance 11% / rank 11%.
     """
+    zone_affinity = zone_affinity or {}
     # Mutable per-employee free time
     free_by = {e.id: max(0, e.shift_total_min - 0) for e in employees}
     by_id: dict[int, Employee] = {e.id: e for e in employees}
@@ -399,31 +528,42 @@ def auto_distribute(
         if not candidates:
             candidates = [e for e in employees if free_by.get(e.id, 0) > 0]
 
-        # Balance-aware ranking with affinity tiebreaker
-        def rank_key(e: Employee) -> tuple[float, int]:
-            ratio = (
-                free_by.get(e.id, 0) / e.shift_total_min
-                if e.shift_total_min > 0 else 0.0
-            )
-            aff = affinity.get(e.id, {}).get(task.work_type, 0)
-            return (ratio, aff)
+        # Iter#2 weighted scoring (mirror of TS lib/api/distribution.ts).
+        def zone_aff_for(e: Employee) -> int:
+            if not task.zone:
+                return 0
+            return zone_affinity.get(e.id, {}).get(task.zone, 0)
 
-        # Custom sort: by ratio desc, but if abs diff <= eps, by affinity desc.
-        # Simulate with two-pass: bucket by quantized ratio (eps grid) and sort.
-        # Simpler: sort by ratio desc primarily, then affinity desc.
-        # Strict TS behavior: pairwise compare, but with eps tie window.
-        # Approximate by rounding ratio to nearest eps.
-        def comp_key(e: Employee) -> tuple[int, int]:
-            ratio = (
-                free_by.get(e.id, 0) / e.shift_total_min
-                if e.shift_total_min > 0 else 0.0
-            )
-            # Quantize ratio with eps so rough ties tiebreak via affinity
-            qratio = round(ratio / FREE_RATIO_TIE_EPSILON)
-            aff = affinity.get(e.id, {}).get(task.work_type, 0)
-            return (-qratio, -aff)  # both descending
+        def wt_aff_for(e: Employee) -> int:
+            return affinity.get(e.id, {}).get(task.work_type, 0)
 
-        ranked = sorted(candidates, key=comp_key)
+        def load_for(e: Employee) -> float:
+            if e.shift_total_min <= 0:
+                return 1.0
+            return 1.0 - free_by.get(e.id, 0) / e.shift_total_min
+
+        zone_vals = [zone_aff_for(e) for e in candidates]
+        wt_vals = [wt_aff_for(e) for e in candidates]
+        load_vals = [load_for(e) for e in candidates]
+        rank_vals = [rank_seniority(e.position_name) for e in candidates]
+        z_lo, z_hi = (min(zone_vals), max(zone_vals)) if zone_vals else (0, 0)
+        w_lo, w_hi = (min(wt_vals), max(wt_vals)) if wt_vals else (0, 0)
+        l_lo, l_hi = (min(load_vals), max(load_vals)) if load_vals else (0.0, 0.0)
+        r_lo, r_hi = (min(rank_vals), max(rank_vals)) if rank_vals else (0, 0)
+
+        def score_of(e: Employee) -> float:
+            z = minmax_norm(zone_aff_for(e), z_lo, z_hi)
+            w = minmax_norm(wt_aff_for(e), w_lo, w_hi)
+            l = minmax_norm(load_for(e), l_lo, l_hi)
+            r = minmax_norm(rank_seniority(e.position_name), r_lo, r_hi)
+            return (
+                SCORE_WEIGHT_ZONE * z
+                + SCORE_WEIGHT_WTYPE * w
+                + SCORE_WEIGHT_BALANCE * (1.0 - l)
+                + SCORE_WEIGHT_RANK * r
+            )
+
+        ranked = sorted(candidates, key=lambda e: -score_of(e))
 
         allocated: set[int] = set()
 
@@ -478,6 +618,7 @@ def build_shop_days(
     pool: dict[str, list[int]],
     zones_map: dict[int, list[str]],
     work_types_map: dict[int, list[str]],
+    positions_map: dict[int, str] | None = None,
 ) -> list[ShopDay]:
     """Группирует baseline по (date, shop) и формирует ShopDay объекты.
 
@@ -506,6 +647,7 @@ def build_shop_days(
         for eid in candidate_ids:
             zones = list(zones_map.get(eid, []))
             wts = list(work_types_map.get(eid, []))
+            pos_name = (positions_map or {}).get(eid, "")
             candidates.append(
                 Employee(
                     id=eid,
@@ -513,6 +655,7 @@ def build_shop_days(
                     work_types=wts,
                     shift_total_min=720,
                     free_min=720,
+                    position_name=pos_name,
                 )
             )
 
@@ -613,10 +756,14 @@ def classify_mismatch(
     return "BALANCE_RANKING_DIFFERENCE"
 
 
-def evaluate(shop_days: list[ShopDay], affinity: dict[int, dict[str, int]]) -> list[ShopDayResult]:
+def evaluate(
+    shop_days: list[ShopDay],
+    affinity: dict[int, dict[str, int]],
+    zone_affinity: dict[int, dict[str, int]] | None = None,
+) -> list[ShopDayResult]:
     results: list[ShopDayResult] = []
     for sd in shop_days:
-        plan = auto_distribute(sd.tasks, sd.candidates, affinity)
+        plan = auto_distribute(sd.tasks, sd.candidates, affinity, zone_affinity)
         candidates_by_id = {e.id: e for e in sd.candidates}
         matched = 0
         mismatches: list[Mismatch] = []
@@ -875,20 +1022,25 @@ def main() -> int:
     )
 
     affinity = parse_employee_stats_affinity(stats_text)
+    zone_affinity = parse_employee_stats_zone_affinity(stats_text)
     employee_names = parse_employee_names(stats_text)
     print(
-        f"[backtest] EMPLOYEE_STATS affinities: {len(affinity)}, names: {len(employee_names)}",
+        f"[backtest] EMPLOYEE_STATS wtype-aff: {len(affinity)}, "
+        f"zone-aff: {len(zone_affinity)}, names: {len(employee_names)}",
         file=sys.stderr,
     )
+
+    positions_map = load_employee_positions()
+    print(f"[backtest] Employee positions (from snapshots): {len(positions_map)}", file=sys.stderr)
 
     pool = parse_planning_pool(pool_text)
     print(f"[backtest] Planning pool: {len(pool)} shops", file=sys.stderr)
 
-    shop_days = build_shop_days(records, pool, zones_map, work_types_map)
+    shop_days = build_shop_days(records, pool, zones_map, work_types_map, positions_map)
     print(f"[backtest] Shop-days to evaluate: {len(shop_days)}", file=sys.stderr)
 
-    print("[backtest] Running auto-distribute against ground truth...", file=sys.stderr)
-    results = evaluate(shop_days, affinity)
+    print("[backtest] Running auto-distribute (iter#2) against ground truth...", file=sys.stderr)
+    results = evaluate(shop_days, affinity, zone_affinity)
 
     # Aggregations
     by_shop: dict[str, list[ShopDayResult]] = defaultdict(list)
