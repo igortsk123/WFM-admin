@@ -807,7 +807,10 @@
         },
         "auto": "Auto",
         "auto_running": "Distributing…",
-        "auto_hint": "Propose plan: zone match + free time. Review and confirm before applying."
+        "auto_hint": "Propose plan: zone match + free time. Review and confirm before applying.",
+        "auto_history": "Auto (history)",
+        "auto_history_running": "Computing…",
+        "auto_history_hint": "Propose plan from LAMA history: work-type affinity, load balance, zones and permissions. Each assignment comes with explanation."
       },
       "sections": {
         "unassigned": "Unassigned Tasks",
@@ -913,7 +916,19 @@
         "plan_reset": "Plan reset",
         "confirm_done": "Plan applied: {count, plural, one {# task distributed} other {# tasks distributed}}",
         "confirm_partial": "Applied {ok}, errors: {err}",
-        "confirm_over_shift": "Applied {count}, {over, plural, one {# employee} other {# employees}} over shift > 20% — supervisor notified"
+        "confirm_over_shift": "Applied {count}, {over, plural, one {# employee} other {# employees}} over shift > 20% — supervisor notified",
+        "history_applied": "Plan applied: {count, plural, one {# assignment} other {# assignments}}"
+      },
+      "auto_history": {
+        "title": "Algorithm proposal (LAMA history)",
+        "summary": "Distributed {distributed} of {total} tasks · average score {avg}/100",
+        "empty": "Nothing to distribute — everything is already assigned",
+        "unassigned_title": "Not distributed",
+        "tasks_count": "{count, plural, one {# task} other {# tasks}}",
+        "hours_label": "{h}h",
+        "approve": "Apply plan",
+        "approving": "Applying…",
+        "reject": "Reject"
       },
       "forbidden": {
         "tooltip": "Only store director and above can distribute tasks"
