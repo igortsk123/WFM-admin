@@ -29,6 +29,11 @@ import { MOCK_WORK_TYPES } from "@/lib/mock-data/work-types";
 import { MOCK_PRODUCT_CATEGORIES } from "@/lib/mock-data/product-categories";
 import { MOCK_USERS } from "@/lib/mock-data/users";
 import { MOCK_ASSIGNMENTS } from "@/lib/mock-data/assignments";
+import {
+  STORES_BY_ID,
+  ZONES_BY_ID,
+  WORK_TYPES_BY_ID,
+} from "@/lib/mock-data/_indexes";
 
 // ═══════════════════════════════════════════════════════════════════
 // HELPERS
@@ -403,7 +408,11 @@ export async function getTaskFilters(
 // ═══════════════════════════════════════════════════════════════════
 
 /**
- * Create a new task.
+ * Create a new task. Pushes a fully-resolved Task into MOCK_TASKS so
+ * downstream `getTaskById(newId)` (task detail page, AI suggestion accept
+ * toast link) finds it. Resolves missing store_name / zone_name /
+ * work_type_name via in-memory indexes when caller didn't supply them
+ * (e.g. AI suggestion accept passes only ids).
  * @param data Partial task data
  * @returns Success status with new task ID
  * @endpoint POST /tasks
@@ -426,6 +435,72 @@ export async function createTask(
   }
 
   const newId = `task-${Date.now()}`;
+  const nowIso = new Date().toISOString();
+
+  // Resolve dictionary names defensively — AI suggestion accept supplies
+  // only ids; task-form already supplies names. Fallback to "—" so the
+  // detail page renders without crashing if an id is unknown.
+  const store = STORES_BY_ID.get(store_id);
+  const zone = ZONES_BY_ID.get(zone_id);
+  const workType = WORK_TYPES_BY_ID.get(work_type_id);
+
+  const newTask: Task = {
+    id: newId,
+    title,
+    description: data.description ?? "",
+    type: data.type ?? "PLANNED",
+    kind: data.kind ?? "SINGLE",
+    source: data.source ?? "MANAGER",
+    ai_suggestion_id: data.ai_suggestion_id ?? null,
+    planned_minutes: data.planned_minutes ?? 0,
+    store_id,
+    store_name: data.store_name ?? store?.name ?? "—",
+    zone_id,
+    zone_name: data.zone_name ?? zone?.name ?? "—",
+    work_type_id,
+    work_type_name: data.work_type_name ?? workType?.name ?? "—",
+    product_category_id: data.product_category_id ?? null,
+    product_category_name: data.product_category_name ?? null,
+    creator_id: data.creator_id ?? 0,
+    creator_name: data.creator_name ?? "Система",
+    assignee_id: data.assignee_id ?? null,
+    assignee_name: data.assignee_name ?? null,
+    assigned_to_permission: data.assigned_to_permission ?? null,
+    next_assignee_id: data.next_assignee_id ?? null,
+    next_assignee_name: data.next_assignee_name ?? null,
+    chain_position: data.chain_position,
+    state: data.state ?? "NEW",
+    review_state: data.review_state ?? "NONE",
+    acceptance_policy: data.acceptance_policy ?? "MANUAL",
+    requires_photo: data.requires_photo ?? false,
+    requires_photo_override: data.requires_photo_override,
+    comment: data.comment,
+    review_comment: data.review_comment,
+    report_text: data.report_text,
+    report_image_url: data.report_image_url,
+    time_start: data.time_start,
+    time_end: data.time_end,
+    archived: data.archived ?? false,
+    archive_reason: data.archive_reason,
+    archived_at: data.archived_at,
+    archived_by: data.archived_by,
+    history_brief: data.history_brief,
+    goal_id: data.goal_id ?? null,
+    bonus_points: data.bonus_points ?? null,
+    marketing_channel_target: data.marketing_channel_target ?? null,
+    freelance_application_id: data.freelance_application_id ?? null,
+    freelance_assignment_id: data.freelance_assignment_id ?? null,
+    service_id: data.service_id ?? null,
+    is_overdue: data.is_overdue,
+    priority: data.priority ?? 100,
+    editable_by_store: data.editable_by_store,
+    shift_id: data.shift_id,
+    external_id: data.external_id,
+    created_at: data.created_at ?? nowIso,
+    updated_at: data.updated_at ?? nowIso,
+  };
+
+  MOCK_TASKS.push(newTask);
 
   return {
     success: true,
