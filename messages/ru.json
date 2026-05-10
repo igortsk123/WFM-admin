@@ -4679,6 +4679,44 @@
         "error": "Не удалось выполнить операцию"
       }
     },
+    "goalsHistory": {
+      "page_title": "История целей",
+      "page_subtitle": "Завершённые и архивные цели — что удалось, что нет, и сколько это принесло",
+      "breadcrumb": "История",
+      "summary": {
+        "total": "Всего целей",
+        "success_rate": "Достигнуто",
+        "money_realized": "Денежный эффект",
+        "avg_duration": "Средний срок",
+        "days_value": "{days} дн."
+      },
+      "filters": {
+        "status": "Статус",
+        "status_all": "Все",
+        "status_achieved": "Достигнуты",
+        "status_archived": "В архиве",
+        "period": "Период",
+        "period_30": "Последние 30 дней",
+        "period_90": "Последние 90 дней",
+        "period_365": "Последний год",
+        "period_all": "За всё время",
+        "scope": "Магазин/Сеть",
+        "scope_all": "Все"
+      },
+      "status": {
+        "achieved": "Достигнута",
+        "missed": "Не достигнута",
+        "archived_hint": "Цель снята до завершения периода"
+      },
+      "card": {
+        "money_realized": "Принесло",
+        "money_potential": "Потенциал был",
+        "set_by": "Установил {user}",
+        "open": "Открыть"
+      },
+      "empty_title": "Нет целей по выбранным фильтрам",
+      "empty_description": "Попробуйте сменить статус, период или магазин"
+    },
     "hintsManager": {
       "page_title": "Загрузка подсказок",
       "page_subtitle": "Загрузите Excel-шаблон с подсказками — они появятся у работников в задачах",

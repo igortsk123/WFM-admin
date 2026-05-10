@@ -24,6 +24,7 @@ export const ADMIN_ROUTES = {
   // Goals
   goals: "/goals",
   goalDetail: (id: string) => `/goals/${id}`,
+  goalsHistory: "/goals/history",
   networkGoals: "/goals/network",
 
   // Bonus & Payouts

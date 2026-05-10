@@ -10,13 +10,6 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import {
-  Drawer,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer";
-import {
   Popover,
   PopoverContent,
   PopoverTrigger,
@@ -28,13 +21,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Link } from "@/i18n/navigation";
+import { ADMIN_ROUTES } from "@/lib/constants/routes";
 import type { Locale } from "@/lib/types";
 import { formatDate } from "@/lib/utils/format";
 
-import { HistoryDrawerContent } from "./history-drawer";
 import {
   MOCK_SCOPE_OPTIONS,
-  type GoalWithUser,
   type GoalsT,
   type PeriodFilter,
 } from "./_shared";
@@ -46,7 +39,6 @@ export function GoalsToolbar({
   setScopeId,
   scopeOpen,
   setScopeOpen,
-  allGoals,
   locale,
   t,
 }: {
@@ -56,7 +48,6 @@ export function GoalsToolbar({
   setScopeId: (id: string) => void;
   scopeOpen: boolean;
   setScopeOpen: (open: boolean) => void;
-  allGoals: GoalWithUser[];
   locale: Locale;
   t: GoalsT;
 }) {
@@ -121,22 +112,14 @@ export function GoalsToolbar({
         </PopoverContent>
       </Popover>
 
-      {/* History drawer */}
+      {/* History link */}
       <div className="flex-1 sm:flex-none sm:ml-auto">
-        <Drawer>
-          <DrawerTrigger asChild>
-            <Button variant="outline" className="w-full sm:w-auto">
-              <Clock className="size-4 mr-2" />
-              {t("actions.history")}
-            </Button>
-          </DrawerTrigger>
-          <DrawerContent>
-            <DrawerHeader>
-              <DrawerTitle>{t("actions.history")}</DrawerTitle>
-            </DrawerHeader>
-            <HistoryDrawerContent goals={allGoals} locale={locale} t={t} />
-          </DrawerContent>
-        </Drawer>
+        <Button asChild variant="outline" className="w-full sm:w-auto">
+          <Link href={ADMIN_ROUTES.goalsHistory}>
+            <Clock className="size-4 mr-2" />
+            {t("actions.history")}
+          </Link>
+        </Button>
       </div>
     </div>
   );

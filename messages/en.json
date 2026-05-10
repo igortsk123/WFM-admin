@@ -4679,6 +4679,44 @@
         "error": "Operation failed"
       }
     },
+    "goalsHistory": {
+      "page_title": "Goals history",
+      "page_subtitle": "Completed and archived goals — what landed, what didn't, and the impact in money",
+      "breadcrumb": "History",
+      "summary": {
+        "total": "Total goals",
+        "success_rate": "Achieved",
+        "money_realized": "Money impact",
+        "avg_duration": "Average duration",
+        "days_value": "{days}d"
+      },
+      "filters": {
+        "status": "Status",
+        "status_all": "All",
+        "status_achieved": "Achieved",
+        "status_archived": "Archived",
+        "period": "Period",
+        "period_30": "Last 30 days",
+        "period_90": "Last 90 days",
+        "period_365": "Last year",
+        "period_all": "All time",
+        "scope": "Store/Network",
+        "scope_all": "All"
+      },
+      "status": {
+        "achieved": "Reached",
+        "missed": "Missed",
+        "archived_hint": "Goal removed before period end"
+      },
+      "card": {
+        "money_realized": "Earned",
+        "money_potential": "Potential was",
+        "set_by": "Set by {user}",
+        "open": "Open"
+      },
+      "empty_title": "No goals match the current filters",
+      "empty_description": "Try changing status, period, or store"
+    },
     "hintsManager": {
       "page_title": "Upload hints",
       "page_subtitle": "Upload an Excel template with hints — they will appear for workers in tasks",

@@ -61,7 +61,6 @@ export function GoalsScreen() {
   // Data
   const [activeGoal, setActiveGoal] = useState<GoalWithUser | null>(null);
   const [proposals, setProposals] = useState<GoalProposal[]>([]);
-  const [allGoals, setAllGoals] = useState<GoalWithUser[]>([]);
   const [goalProgress, setGoalProgress] = useState<GoalProgress | null>(null);
 
   // Dialog states
@@ -84,7 +83,6 @@ export function GoalsScreen() {
       const goalsRes = await getGoals({
         store_id: scopeId !== "network" ? parseInt(scopeId) : undefined,
       });
-      setAllGoals(goalsRes.data);
 
       // Find active goal
       const active = goalsRes.data.find((g) => g.status === "ACTIVE") ?? null;
@@ -212,7 +210,6 @@ export function GoalsScreen() {
           setScopeId={setScopeId}
           scopeOpen={scopeOpen}
           setScopeOpen={setScopeOpen}
-          allGoals={allGoals}
           locale={locale}
           t={t}
         />
