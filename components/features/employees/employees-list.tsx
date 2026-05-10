@@ -11,6 +11,7 @@ import type {
   Permission,
   EmployeeType,
   FreelancerStatus,
+  ObjectFormat,
 } from "@/lib/types"
 import type { UserWithAssignment } from "@/lib/api/users"
 import { getUsers, archiveUser } from "@/lib/api/users"
@@ -72,6 +73,13 @@ export function EmployeesList() {
   const [pageParam, setPageParam] = useQueryState(
     "page",
     parseAsInteger.withDefault(1)
+  )
+  // Формат магазина (HYPERMARKET/SUPERMARKET/CONVENIENCE/SMALL_SHOP).
+  // В URL — для опер.директора / супервайзера, чтобы можно было поделиться
+  // ссылкой на «сотрудники гипермаркетов» (нормы по людям отличаются по формату).
+  const [formatParam, setFormatParam] = useQueryState(
+    "format",
+    parseAsString.withDefault("")
   )
 
   // Local filter state (not in URL for brevity — complex multi arrays)
@@ -149,6 +157,7 @@ export function EmployeesList() {
       employment_type: selectedEmploymentType
         ? (selectedEmploymentType as EmployeeType)
         : undefined,
+      object_format: formatParam ? (formatParam as ObjectFormat) : undefined,
       freelancer_status: selectedFreelancerStatus
         ? (selectedFreelancerStatus as FreelancerStatus)
         : undefined,
@@ -186,6 +195,7 @@ export function EmployeesList() {
     selectedEmploymentType,
     selectedFreelancerStatus,
     selectedSource,
+    formatParam,
     pageParam,
     refreshTick,
   ])
@@ -232,7 +242,8 @@ export function EmployeesList() {
     selectedPermissions.length +
     (selectedEmploymentType ? 1 : 0) +
     (selectedFreelancerStatus ? 1 : 0) +
-    (selectedSource ? 1 : 0)
+    (selectedSource ? 1 : 0) +
+    (formatParam ? 1 : 0)
 
   const hasActiveFilters = activeFilterCount > 0 || !!searchParam
 
@@ -243,6 +254,7 @@ export function EmployeesList() {
     setSelectedEmploymentType("")
     setSelectedFreelancerStatus("")
     setSelectedSource("")
+    setFormatParam(null)
     setSearchParam(null)
     setPageParam(null)
   }
@@ -455,6 +467,13 @@ export function EmployeesList() {
         onSourceChange={(v) => {
           startTransition(() => {
             setSelectedSource(v)
+            setPageParam(null)
+          })
+        }}
+        selectedObjectFormat={formatParam}
+        onObjectFormatChange={(v) => {
+          startTransition(() => {
+            setFormatParam(v || null)
             setPageParam(null)
           })
         }}

@@ -3,7 +3,7 @@
 import * as React from "react"
 import { useTranslations } from "next-intl"
 
-import type { Permission } from "@/lib/types"
+import type { ObjectFormat, Permission } from "@/lib/types"
 
 import { Input } from "@/components/ui/input"
 
@@ -20,6 +20,7 @@ import { SingleSelectCombobox } from "@/components/shared/single-select-combobox
 import {
   ALL_FREELANCER_STATUSES,
   ALL_PERMISSIONS,
+  EMPLOYEE_OBJECT_FORMATS,
   POSITION_OPTIONS,
   STORE_OPTIONS,
 } from "./_shared"
@@ -42,6 +43,8 @@ export interface FiltersBarProps {
   onFreelancerStatusChange: (v: string) => void
   selectedSource: string
   onSourceChange: (v: string) => void
+  selectedObjectFormat: string
+  onObjectFormatChange: (v: string) => void
   // flags
   hideStore: boolean
   showSourceFilter: boolean
@@ -67,6 +70,8 @@ export function FiltersBar({
   onFreelancerStatusChange,
   selectedSource,
   onSourceChange,
+  selectedObjectFormat,
+  onObjectFormatChange,
   hideStore,
   showSourceFilter,
   showFreelancerStatusFilter,
@@ -75,6 +80,7 @@ export function FiltersBar({
   permLabelMap,
 }: FiltersBarProps) {
   const t = useTranslations("screen.employees")
+  const tFormat = useTranslations("object_format")
 
   // ── Filter options ───────────────────────────────────────────────
   const storeOptions = STORE_OPTIONS.map((s) => ({
@@ -110,6 +116,10 @@ export function FiltersBar({
     { value: "MANUAL", label: t("source.manual") },
     { value: "EXTERNAL_SYNC", label: t("source.external") },
   ]
+  const objectFormatOptions = EMPLOYEE_OBJECT_FORMATS.map((f) => ({
+    value: f,
+    label: tFormat(f as Parameters<typeof tFormat>[0]),
+  }))
 
   // Shared filter controls (used in both desktop FilterBar and mobile sheet via render-prop wrappers)
   const desktopControls: FilterControl[] = []
@@ -120,6 +130,16 @@ export function FiltersBar({
       onChange: onStoreIdsChange,
       options: storeOptions,
       placeholder: t("filters.store"),
+      className: "w-44",
+    })
+  }
+  if (!hideStore) {
+    desktopControls.push({
+      kind: "single-select",
+      value: selectedObjectFormat,
+      onChange: onObjectFormatChange,
+      options: objectFormatOptions,
+      placeholder: t("filters.format"),
       className: "w-44",
     })
   }
@@ -244,6 +264,17 @@ export function FiltersBar({
     })
   }
 
+  if (selectedObjectFormat && !hideStore) {
+    filterChips.push({
+      key: "format",
+      label: t("filters.format"),
+      value:
+        objectFormatOptions.find((o) => o.value === selectedObjectFormat)?.label
+        ?? selectedObjectFormat,
+      onRemove: () => onObjectFormatChange(""),
+    })
+  }
+
   return (
     <div className="flex flex-col gap-3">
       <div className="flex items-center gap-2">
@@ -277,6 +308,18 @@ export function FiltersBar({
                     selected={selectedStoreIds}
                     onSelectionChange={onStoreIdsChange}
                     placeholder={t("filters.store")}
+                    className="w-full"
+                  />
+                </div>
+              )}
+              {!hideStore && (
+                <div className="space-y-2">
+                  <p className="text-sm font-medium">{t("filters.format")}</p>
+                  <SingleSelectCombobox
+                    options={objectFormatOptions}
+                    value={selectedObjectFormat}
+                    onValueChange={onObjectFormatChange}
+                    placeholder={t("filters.format")}
                     className="w-full"
                   />
                 </div>

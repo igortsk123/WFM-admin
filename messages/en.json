@@ -1550,6 +1550,7 @@
       "filters": {
         "search_placeholder": "Search by name, phone",
         "store": "Store",
+        "format": "Format",
         "position": "Position",
         "zone": "Zone",
         "employment_type": "Employment type",

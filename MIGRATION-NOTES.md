@@ -446,7 +446,7 @@ fallback'ом покажет RU на EN-локали.
 
 | # | Endpoint | Что добавить | Приоритет |
 |---|---|---|---|
-| 1 | `GET /users/list` | Backend нет list-а для users. Admin использует только моки. Если будет — admin сможет показать всех 593+ юзеров через backend. Параметры: `store_id, position_id, role_id, archived, search, page, page_size`. | **HIGH** |
+| 1 | `GET /users/list` | Backend нет list-а для users. Admin использует только моки. Если будет — admin сможет показать всех 593+ юзеров через backend. Параметры: `store_id, position_id, role_id, archived, search, page, page_size, object_format` (последний — срез по формату магазина текущего assignment, нужен опер.директору / супервайзеру для нормирования по формату). | **HIGH** |
 | 2 | `GET /users/stores/list/with-stats` | Stores с counts (tasks/staff/shifts). Иначе admin вынужден делать N+1 запросов. | HIGH |
 | 3 | `GET /tasks/list` | (уже есть!) — admin может подключаться. Гэп: фильтры `assignment_id` обязателен. Хорошо бы сделать org-wide через `?store_id=*`. | LOW (уже есть) |
 | 4 | `GET /tasks/{id}/history` | Полная история событий (start/pause/resume/complete) для task-detail screen. | MEDIUM |

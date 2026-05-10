@@ -2,6 +2,7 @@ import type {
   Permission,
   FunctionalRole,
   FreelancerStatus,
+  ObjectFormat,
 } from "@/lib/types"
 import { DEMO_TOP_STORES } from "@/lib/api/_demo-stores"
 
@@ -36,6 +37,19 @@ export const POSITION_OPTIONS = [
   { id: 6, name: "Мерчендайзер" },
   { id: 7, name: "Директор магазина" },
   { id: 8, name: "Супервайзер" },
+]
+
+/**
+ * Форматы объектов для фильтра «Формат» в employees-list. Включаем только
+ * STORE-форматы (для опер.директора / супервайзера актуальны магазины);
+ * SEWING_WORKSHOP / WAREHOUSE_HUB / OFFICE / PRODUCTION_LINE редко
+ * используются в этом срезе и засоряют список.
+ */
+export const EMPLOYEE_OBJECT_FORMATS: ObjectFormat[] = [
+  "HYPERMARKET",
+  "SUPERMARKET",
+  "CONVENIENCE",
+  "SMALL_SHOP",
 ]
 
 export const ALL_FREELANCER_STATUSES: FreelancerStatus[] = [
