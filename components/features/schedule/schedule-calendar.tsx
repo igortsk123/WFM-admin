@@ -39,7 +39,6 @@ import {
   ConfirmActionDialog,
   type ConfirmActionState,
 } from "./schedule-calendar/confirm-action-dialog";
-import { FutureFeatureBanner } from "./schedule-calendar/future-feature-banner";
 import { LegendRow } from "./schedule-calendar/legend";
 import { ScheduleSkeleton } from "./schedule-calendar/skeleton";
 import { StatsBar } from "./schedule-calendar/stats-bar";
@@ -403,9 +402,6 @@ export function ScheduleCalendar() {
           </AlertDescription>
         </Alert>
       )}
-
-      {/* Future feature banner */}
-      <FutureFeatureBanner />
 
       {/* Toolbar */}
       <Toolbar
