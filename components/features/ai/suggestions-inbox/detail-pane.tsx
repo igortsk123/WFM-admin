@@ -1,12 +1,14 @@
 "use client";
 
 import * as React from "react";
-import { Sparkles } from "lucide-react";
+import { Sparkles, ExternalLink, CheckCircle2 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 
 import { cn } from "@/lib/utils";
+import { ADMIN_ROUTES } from "@/lib/constants/routes";
 import type { AISuggestion, Locale } from "@/lib/types";
 
 import type { TFn, TCommonFn } from "./_shared";
@@ -88,13 +90,28 @@ function DetailContent({
   t,
   tCommon: _tCommon,
 }: DetailContentProps) {
+  const router = useRouter();
   const [localEdits, setLocalEdits] = React.useState<Record<string, unknown>>({});
   const isInsight = suggestion.type === "INSIGHT";
   const isPending =
     suggestion.status === "PENDING" || suggestion.status === "EDITED";
+  const isAccepted = suggestion.status === "ACCEPTED";
   const payload = suggestion.proposed_payload as
     | Record<string, unknown>
     | undefined;
+
+  const linkedRoute = React.useMemo((): string | null => {
+    if (!suggestion.linked_object_type || !suggestion.linked_object_id) {
+      return null;
+    }
+    if (suggestion.linked_object_type === "task") {
+      return ADMIN_ROUTES.taskDetail(suggestion.linked_object_id);
+    }
+    if (suggestion.linked_object_type === "goal") {
+      return ADMIN_ROUTES.goalDetail(suggestion.linked_object_id);
+    }
+    return ADMIN_ROUTES.bonusTasks;
+  }, [suggestion.linked_object_type, suggestion.linked_object_id]);
 
   // Reset local edits when suggestion changes
   React.useEffect(() => {
@@ -136,6 +153,39 @@ function DetailContent({
           {suggestion.rationale}
         </p>
       </div>
+
+      {/* Linked created object (for ACCEPTED suggestions) */}
+      {isAccepted && linkedRoute && suggestion.linked_object_type && (
+        <div className="flex items-center justify-between gap-3 rounded-md border border-success/30 bg-success/10 px-3 py-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <CheckCircle2 className="size-4 text-success shrink-0" aria-hidden="true" />
+            <div className="min-w-0">
+              <p className="text-xs font-medium text-muted-foreground">
+                {t(
+                  `detail.linked.${suggestion.linked_object_type}` as Parameters<
+                    typeof t
+                  >[0]
+                )}
+              </p>
+              <p className="text-sm text-foreground truncate">
+                {suggestion.linked_object_title ?? suggestion.linked_object_id}
+              </p>
+            </div>
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="h-7 gap-1 text-xs shrink-0"
+            onClick={() =>
+              router.push(linkedRoute as Parameters<typeof router.push>[0])
+            }
+          >
+            <ExternalLink className="size-3.5" aria-hidden="true" />
+            {t("detail.linked.open")}
+          </Button>
+        </div>
+      )}
 
       {/* Editable fields (for non-insight pending) */}
       {!isInsight && isPending && payload && (

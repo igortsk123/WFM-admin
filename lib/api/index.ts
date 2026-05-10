@@ -423,12 +423,14 @@ export {
 export {
   type AISuggestionListParams,
   type AcceptResult,
+  type PayloadReadiness,
   getAiSuggestions,
   getSuggestionById,
   acceptAiSuggestion,
   rejectAiSuggestion,
   editAiSuggestion,
   reportAiIssue,
+  checkSuggestionReadiness,
 } from "./ai-suggestions";
 
 // ═══════════════════════════════════════════════════════════════════

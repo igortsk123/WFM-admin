@@ -893,6 +893,12 @@ export interface AISuggestion {
   decided_by?: number;
   decision_reason?: string;
   decision_comment?: string;
+  /** Тип созданной из предложения сущности (заполняется только когда status=ACCEPTED) */
+  linked_object_type?: "task" | "goal" | "bonus_task";
+  /** ID созданной из предложения сущности (заполняется только когда status=ACCEPTED) */
+  linked_object_id?: string;
+  /** Заголовок созданной из предложения сущности — для отображения в карточке */
+  linked_object_title?: string;
 }
 
 export interface AIChatThread {

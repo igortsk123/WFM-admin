@@ -17,6 +17,7 @@ import {
   getAiSuggestions,
   acceptAiSuggestion,
   rejectAiSuggestion,
+  checkSuggestionReadiness,
 } from "@/lib/api/ai-suggestions";
 import type {
   AISuggestion,
@@ -177,17 +178,78 @@ export function AISuggestionsInbox() {
   }, [suggestions]);
 
   // ─── Actions ──────────────────────────────────────────────────────
-  const handleAccept = async (id: string, edits?: Record<string, unknown>) => {
-    try {
-      await acceptAiSuggestion(id, edits);
-      const suggestionType = suggestions.find((s) => s.id === id)?.type;
 
-      if (suggestionType === "GOAL_SUGGESTION") {
-        toast.success(t("toasts.accepted_goal"));
-      } else if (suggestionType === "BONUS_TASK_SUGGESTION") {
-        toast.success(t("toasts.accepted_bonus"));
+  /** Маршрут к созданной из предложения сущности — task / goal / bonus_task. */
+  const routeForCreated = React.useCallback(
+    (entityType: "task" | "goal" | "bonus_task", entityId: string): string => {
+      if (entityType === "task") return ADMIN_ROUTES.taskDetail(entityId);
+      if (entityType === "goal") return ADMIN_ROUTES.goalDetail(entityId);
+      return ADMIN_ROUTES.bonusTasks;
+    },
+    []
+  );
+
+  const handleAccept = async (id: string, edits?: Record<string, unknown>) => {
+    const suggestion = suggestions.find((s) => s.id === id);
+    if (!suggestion) return;
+
+    // ── Edge: тип ещё не поддержан авто-созданием ──
+    // (на текущий момент поддерживаем все 4 type'а, но если в будущем
+    //  появится новый — gracefully degrade.)
+    const supportedTypes = [
+      "TASK_SUGGESTION",
+      "GOAL_SUGGESTION",
+      "BONUS_TASK_SUGGESTION",
+      "INSIGHT",
+    ];
+    if (!supportedTypes.includes(suggestion.type)) {
+      toast.info(t("toasts.unsupported_type"));
+      return;
+    }
+
+    // ── Edge: payload неполный — открыть detail-pane чтобы дозаполнить ──
+    // edits мог дозаполнить пустые поля; проверяем merged readiness.
+    const merged: Record<string, unknown> = {
+      ...suggestion.proposed_payload,
+      ...edits,
+    };
+    const readiness = checkSuggestionReadiness({
+      ...suggestion,
+      proposed_payload: merged,
+    });
+    if (!readiness.ready) {
+      toast.warning(
+        t("toasts.incomplete_data", { fields: readiness.missing.join(", ") })
+      );
+      // Открываем detail pane чтобы пользователь смог заполнить.
+      updateSearchParams({ id: suggestion.id });
+      return;
+    }
+
+    try {
+      const result = await acceptAiSuggestion(id, edits);
+      const { created_entity_type, created_entity_id, created_entity_title } =
+        result.data;
+
+      // INSIGHT не создаёт сущность — отдельный toast.
+      if (suggestion.type === "INSIGHT") {
+        toast.success(t("toasts.remembered"));
       } else {
-        toast.success(t("toasts.accepted"));
+        const route = routeForCreated(created_entity_type, created_entity_id);
+        toast.success(
+          t("toasts.created", { entity: created_entity_title }),
+          {
+            description: t(
+              `toasts.created_description.${created_entity_type}` as Parameters<
+                typeof t
+              >[0]
+            ),
+            action: {
+              label: t("toasts.open_created"),
+              onClick: () => router.push(route as Parameters<typeof router.push>[0]),
+            },
+          }
+        );
       }
 
       fetchSuggestions();
@@ -226,17 +288,39 @@ export function AISuggestionsInbox() {
   };
 
   const handleBulkAccept = async () => {
-    try {
-      for (const id of checkedIds) {
-        await acceptAiSuggestion(id);
+    let createdCount = 0;
+    let skippedCount = 0;
+    let failedCount = 0;
+    for (const id of checkedIds) {
+      const suggestion = suggestions.find((s) => s.id === id);
+      if (!suggestion) {
+        failedCount++;
+        continue;
       }
-      toast.success(t("toasts.bulk_accepted", { count: checkedIds.size }));
-      setCheckedIds(new Set());
-      fetchSuggestions();
-    } catch (err) {
-      console.error("[v0] Error bulk accepting:", err);
-      toast.error(t("toasts.error"));
+      const readiness = checkSuggestionReadiness(suggestion);
+      if (!readiness.ready) {
+        skippedCount++;
+        continue;
+      }
+      try {
+        await acceptAiSuggestion(id);
+        createdCount++;
+      } catch (err) {
+        console.error("[v0] Error bulk accepting:", err);
+        failedCount++;
+      }
     }
+    if (createdCount > 0) {
+      toast.success(t("toasts.bulk_accepted", { count: createdCount }));
+    }
+    if (skippedCount > 0) {
+      toast.warning(t("toasts.bulk_skipped", { count: skippedCount }));
+    }
+    if (failedCount > 0) {
+      toast.error(t("toasts.bulk_failed", { count: failedCount }));
+    }
+    setCheckedIds(new Set());
+    fetchSuggestions();
   };
 
   const handleBulkReject = async () => {

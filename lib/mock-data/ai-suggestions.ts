@@ -425,6 +425,9 @@ export const MOCK_AI_SUGGESTIONS: AISuggestion[] = [
     created_at: daysAgo(5),
     decided_at: daysAgo(5),
     decided_by: 4,
+    linked_object_type: "task",
+    linked_object_id: "task-from-ai-016",
+    linked_object_title: "Доукладка фруктов и овощей",
   },
   {
     id: "ai-sug-017",
@@ -442,6 +445,9 @@ export const MOCK_AI_SUGGESTIONS: AISuggestion[] = [
     decided_at: daysAgo(4),
     decided_by: 4,
     decision_comment: "Принято с правками: время выполнения увеличено до 90 мин",
+    linked_object_type: "task",
+    linked_object_id: "task-from-ai-017",
+    linked_object_title: "Внеплановая инвентаризация кондитерки",
   },
   {
     id: "ai-sug-018",
@@ -457,6 +463,9 @@ export const MOCK_AI_SUGGESTIONS: AISuggestion[] = [
     created_at: daysAgo(32),
     decided_at: daysAgo(32),
     decided_by: 3,
+    linked_object_type: "goal",
+    linked_object_id: "goal-from-ai-018",
+    linked_object_title: "Снизить OOS по заморозке",
   },
   {
     id: "ai-sug-019",
@@ -472,6 +481,9 @@ export const MOCK_AI_SUGGESTIONS: AISuggestion[] = [
     created_at: daysAgo(6),
     decided_at: daysAgo(6),
     decided_by: 6,
+    linked_object_type: "task",
+    linked_object_id: "task-from-ai-019",
+    linked_object_title: "Проверка EGAIS документов перед вечерней продажей",
   },
   {
     id: "ai-sug-020",
@@ -479,7 +491,7 @@ export const MOCK_AI_SUGGESTIONS: AISuggestion[] = [
     title: "Бонус: Выкладка заморозки из остатков",
     description: "Бонусная задача в рамках цели OOS заморозки.",
     rationale: "Есть остатки заморозки на складе, полка OOS. 200 баллов.",
-    proposed_payload: { type: "BONUS", bonus_points: 200, goal_id: "goal-oos-completed", work_type_id: 4 },
+    proposed_payload: { type: "BONUS", bonus_points: 200, goal_id: "goal-oos-completed", work_type_id: 4, store_id: 4, title: "Выкладка заморозки из остатков" },
     status: "ACCEPTED",
     priority: "medium",
     target_object_type: "STORE",
@@ -487,6 +499,9 @@ export const MOCK_AI_SUGGESTIONS: AISuggestion[] = [
     created_at: daysAgo(15),
     decided_at: daysAgo(15),
     decided_by: 4,
+    linked_object_type: "bonus_task",
+    linked_object_id: "bonus-task-from-ai-020",
+    linked_object_title: "Выкладка заморозки из остатков",
   },
 
   // ── REJECTED (8 — with decision_reason) ────────────────────────

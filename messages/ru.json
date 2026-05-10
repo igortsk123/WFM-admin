@@ -5183,9 +5183,20 @@
       },
       "toasts": {
         "accepted": "Создано: {entity}",
+        "created": "Создано: {entity}",
+        "created_description": {
+          "task": "Задача добавлена в общий список задач",
+          "goal": "Цель создана и активна",
+          "bonus_task": "Бонусная задача создана"
+        },
+        "open_created": "Открыть",
+        "incomplete_data": "Дополните данные перед созданием: {fields}",
+        "unsupported_type": "Этот тип предложения пока в разработке",
         "rejected": "Предложение отклонено",
-        "bulk_accepted": "Принято {count} предложений",
+        "bulk_accepted": "Создано {count} объектов из предложений",
         "bulk_rejected": "Отклонено {count} предложений",
+        "bulk_skipped": "{count} пропущено — нужно дополнить данные",
+        "bulk_failed": "Ошибка при создании {count} объектов",
         "remembered": "ИИ запомнит для похожих случаев",
         "error": "Не удалось выполнить операцию",
         "accepted_goal": "Цель создана",
@@ -5207,6 +5218,12 @@
         "changed_indicator": "Изменено",
         "data_sources_section": "Источники данных",
         "related_data_section": "Связанные данные",
+        "linked": {
+          "task": "Создана задача",
+          "goal": "Создана цель",
+          "bonus_task": "Создана бонусная задача",
+          "open": "Открыть"
+        },
         "form": {
           "title": "Название",
           "store": "Магазин",

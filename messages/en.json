@@ -5183,9 +5183,20 @@
       },
       "toasts": {
         "accepted": "Created: {entity}",
+        "created": "Created: {entity}",
+        "created_description": {
+          "task": "Task added to the tasks list",
+          "goal": "Goal created and is now active",
+          "bonus_task": "Bonus task created"
+        },
+        "open_created": "Open",
+        "incomplete_data": "Fill in required data before creating: {fields}",
+        "unsupported_type": "This suggestion type is not yet supported",
         "rejected": "Suggestion rejected",
-        "bulk_accepted": "Accepted {count} suggestions",
+        "bulk_accepted": "Created {count} objects from suggestions",
         "bulk_rejected": "Rejected {count} suggestions",
+        "bulk_skipped": "{count} skipped — data needs to be completed",
+        "bulk_failed": "Failed to create {count} objects",
         "remembered": "AI will remember for similar cases",
         "error": "Operation failed",
         "accepted_goal": "Goal created",
@@ -5207,6 +5218,12 @@
         "changed_indicator": "Changed",
         "data_sources_section": "Data sources",
         "related_data_section": "Related data",
+        "linked": {
+          "task": "Task created",
+          "goal": "Goal created",
+          "bonus_task": "Bonus task created",
+          "open": "Open"
+        },
         "form": {
           "title": "Title",
           "store": "Store",
