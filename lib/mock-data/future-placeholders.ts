@@ -217,6 +217,63 @@ export const MOCK_GOALS: Goal[] = [
     },
   },
   {
+    id: "goal-phantom-oos",
+    category: "OOS_REDUCTION",
+    title: "Проверка подозрительных товаров",
+    title_en: "Check suspicious SKUs",
+    description:
+      "AI каждый день после 14:00 пересекает остатки ERP с продажами по чекам — находит SKU где остаток есть, но за день ноль продаж при норме ≥3/день. Сегодня 14 таких — нужно проверить (на полке / в подсобке / списан / не нашли) до конца смены.",
+    description_en:
+      "Each day after 14:00 AI cross-checks ERP stock with POS sales — finds SKUs with stock but zero today sales against ≥3/day baseline. 14 today — needs locate-and-report (shelf / back-room / written-off / not found) before close.",
+    starting_value: 14,
+    target_value: 0,
+    target_unit: "шт.",
+    current_value: 14,
+    direction: "decrease",
+    status: "PROPOSED",
+    scope: "NETWORK",
+    proposed_by: "AI",
+    period_start: "2026-05-10",
+    period_end: "2026-05-17",
+    ai_signal_source: "mixed",
+    ai_detection_method:
+      "Каждый день после 14:00 AI пересекает остатки ERP с продажами по чекам — SKU с остатком ≥1, продажами 0 за день и базовой нормой ≥3 продаж/день за последние 14 дней попадают в список «подозрительных». На каждый SKU создаётся подзадача: «найти и отчитаться (на полке / в подсобке / списан / не нашли)»",
+    ai_detection_method_en:
+      "Daily after 14:00 AI joins ERP stock with POS sales — SKUs with stock ≥1, zero sales today and ≥3/day baseline over 14d become suspicious. One subtask per SKU: locate (shelf / back-room / written-off / not found) with report",
+    ai_evidence: [
+      {
+        source: "mixed",
+        summary:
+          "14 SKU с остатком ≥1 шт и 0 продаж за сегодня (среднесуточная норма 3-12 шт/день за 14 дней)",
+        summary_en:
+          "14 SKUs with stock ≥1 and 0 sales today (14-day baseline of 3-12 units/day)",
+        observed_from: "2026-05-10T00:00:00+07:00",
+        observed_to: "2026-05-10T14:00:00+07:00",
+        scope_hint: "Молочка (5), бакалея (4), хоз (3), напитки (2)",
+        scope_hint_en: "Dairy (5), groceries (4), household (3), drinks (2)",
+      },
+    ],
+    money_impact: {
+      amount: 1_100_000,
+      period: "week",
+      impact_type: "money",
+      rationale_short: "Phantom OOS детект ≈ +1 100 000 ₽/нед скрытой выручки",
+      rationale_short_en: "Phantom OOS detection ≈ +1,100,000 ₽/week recovered",
+      rationale_breakdown: [
+        "Phantom OOS (товар по системе есть, по факту нет на полке) — 1.5-3% дополнительных скрытых OOS поверх классических",
+        "1.5% phantom × 30% затронутых категорий × 480 млн ₽/нед сеть × 60% recovery × 65% attribution",
+        "≈ 1 100 000 ₽/нед на сети",
+        "Источник: IRI/Nielsen 2023 — phantom OOS невидим для shelf-scan, ловится только cross-check'ом ERP↔POS",
+      ],
+      rationale_breakdown_en: [
+        "Phantom OOS (system says yes, shelf says no) — 1.5-3% hidden OOS on top of classic",
+        "1.5% phantom × 30% affected cats × 480M ₽/week network × 60% recovery × 65% attribution",
+        "≈ 1,100,000 ₽/week network-wide",
+        "Source: IRI/Nielsen 2023 — phantom OOS invisible to shelf-scan, only ERP↔POS cross-check catches it",
+      ],
+    },
+  },
+  {
     id: "goal-writeoffs-1",
     category: "WRITE_OFFS",
     title: "Меньше выбрасываем хлеб",

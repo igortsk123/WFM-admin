@@ -299,6 +299,45 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
       },
     },
 
+    // ────────── Phantom OOS (mixed POS+ERP) — флагман AI-цели ──────────
+    {
+      title: "Проверка подозрительных товаров",
+      title_en: "Check suspicious SKUs",
+      when: "AI заметил что у SKU есть остаток ≥1 шт, но за сегодня 0 продаж при норме ≥3/день",
+      when_en: "AI saw SKUs with stock ≥1 but 0 sales today against ≥3/day baseline",
+      period: "ежедневно",
+      tasks: ["Подзадача на каждый SKU: «найти на полке / в подсобке» с отчётом"],
+      tasks_en: ["Subtask per SKU: locate (shelf/back-room) with status report"],
+      aiSource: "ERP остатки + POS чеки (phantom OOS detection)",
+      aiSource_en: "ERP stock + POS receipts (phantom OOS detection)",
+      ai_signal_source: "mixed",
+      ai_detection_method:
+        "Каждый день после 14:00 AI пересекает остатки ERP с продажами по чекам — SKU с остатком ≥1, продажами 0 за день и базовой нормой ≥3 продаж/день за последние 14 дней попадают в список «подозрительных». На каждый SKU создаётся подзадача: «найти и отчитаться (на полке / в подсобке / списан / не нашли)»",
+      ai_detection_method_en:
+        "Daily after 14:00 AI joins ERP stock with POS sales — SKUs with stock ≥1, zero sales today and ≥3/day baseline over 14d become suspicious. One subtask per SKU: locate (shelf / back-room / written-off / not found) with report",
+      default_money_impact: {
+        amount: 1_100_000,
+        period: "week",
+        impact_type: "money",
+        rationale_short: "Phantom OOS детект ≈ +1 100 000 ₽/нед скрытой выручки",
+        rationale_short_en: "Phantom OOS detection ≈ +1,100,000 ₽/week recovered",
+        rationale_breakdown: [
+          "Phantom OOS (товар по системе есть, по факту нет) — 1.5-3% дополнительных скрытых OOS поверх классических",
+          "Берём 1.5% phantom × 30% затронутых категорий (молочка/бакалея/хоз) × 480 млн ₽/нед сеть",
+          "× 60% recovery (быстрая реакция в день обнаружения, до конца дня товар на полке)",
+          "× 65% attribution магазину ≈ 1 100 000 ₽/нед",
+          "Источник: IRI/Nielsen 2023 — phantom OOS невидим для классического shelf-scan, ловится только cross-check'ом ERP↔POS",
+        ],
+        rationale_breakdown_en: [
+          "Phantom OOS (system says yes, shelf says no) — 1.5-3% hidden OOS on top of classic OOS",
+          "We take 1.5% phantom × 30% affected categories (dairy/bakery/household) × 480M ₽/week network",
+          "× 60% recovery (same-day reaction puts SKU back on shelf before close)",
+          "× 65% store attribution ≈ 1,100,000 ₽/week",
+          "Source: IRI/Nielsen 2023 — phantom OOS is invisible to classic shelf-scan, only caught via ERP↔POS cross-check",
+        ],
+      },
+    },
+
     // ────────── ERP-сигналы (4 штуки) ──────────
     {
       title: "Меньше выбрасываем хлеб (приёмка vs срок)",
