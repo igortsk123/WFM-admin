@@ -90,11 +90,12 @@ def load_employee_positions() -> dict[int, str]:
 
 
 # ─────────────────────────────────────────────────────────────────────
-# Iter#2 scoring weights (mirror of TS lib/api/distribution.ts).
+# Iter#3 scoring weights (mirror of TS lib/api/distribution.ts).
+# Снижен balance с 11% до 5%, перелит в zone+wtype.
 # ─────────────────────────────────────────────────────────────────────
-SCORE_WEIGHT_ZONE = 0.41
-SCORE_WEIGHT_WTYPE = 0.37
-SCORE_WEIGHT_BALANCE = 0.11
+SCORE_WEIGHT_ZONE = 0.44
+SCORE_WEIGHT_WTYPE = 0.40
+SCORE_WEIGHT_BALANCE = 0.05
 SCORE_WEIGHT_RANK = 0.11
 
 

@@ -822,19 +822,17 @@ export async function notifyOverShiftAssignment(
 // ═══════════════════════════════════════════════════════════════════
 
 /**
- * Iter#2 scoring weights — derived from per-store backtest analysis
- * (`tools/lama/PER-STORE-PATTERNS.md`). 5765 реальных decisions:
+ * Iter#3 scoring weights — после iter#2 (43.9%) backtest показал что
+ * BALANCE_RANKING_DIFFERENCE даёт 50% mismatch'ей. Реальность концентрирует
+ * работу на профиле сотрудника, не балансирует. Снижаем balance с 11% до 5%,
+ * перекидываем по 3 п.п. в zone и wtype.
  *
- *   zone_affinity      — 44.6% match rate
- *   work_type_affinity — 40.5% match rate
- *   lowest_load        — 12.0% match rate
- *   top_rank/seniority — 11.7% match rate
- *
- * Нормировано к 100% от aggregate match rates: 41 / 37 / 11 / 11.
+ * iter#2: 41 / 37 / 11 / 11 → 43.9% overall (49.9% после shift-filter)
+ * iter#3: 44 / 40 / 05 / 11 → ожидаем хвост магазинов 20-39% подтянется
  */
-const SCORE_WEIGHT_ZONE = 0.41;
-const SCORE_WEIGHT_WTYPE = 0.37;
-const SCORE_WEIGHT_BALANCE = 0.11;
+const SCORE_WEIGHT_ZONE = 0.44;
+const SCORE_WEIGHT_WTYPE = 0.40;
+const SCORE_WEIGHT_BALANCE = 0.05;
 const SCORE_WEIGHT_RANK = 0.11;
 
 /**
@@ -862,7 +860,7 @@ function minmax(value: number, min: number, max: number): number {
 }
 
 /**
- * Greedy distribution с weighted multi-factor scoring (iter#2).
+ * Greedy distribution с weighted multi-factor scoring (iter#3).
  *
  * Сортируем задачи по priority asc (1 = critical), затем для каждой:
  *
@@ -874,15 +872,15 @@ function minmax(value: number, min: number, max: number): number {
  *
  * 2. **Weighted score** — внутри кандидатов сортируем по убыванию score:
  *
- *    score = 0.41 * zone_affinity_norm
- *          + 0.37 * work_type_affinity_norm
- *          + 0.11 * (1 - load_norm)
+ *    score = 0.44 * zone_affinity_norm
+ *          + 0.40 * work_type_affinity_norm
+ *          + 0.05 * (1 - load_norm)
  *          + 0.11 * rank_seniority_norm
  *
  *    Каждое слагаемое — minmax-norm среди eligible кандидатов task'а.
  *    Веса откалиброваны по 5765 реальным решениям директоров за 4 дня
- *    (см. PER-STORE-PATTERNS.md). Реальность концентрирует работу на
- *    профиле сотрудника (zone+wtype 78%), почти не балансирует (11%).
+ *    (PER-STORE-PATTERNS.md). Реальность концентрирует работу на профиле
+ *    сотрудника (zone+wtype 84%), почти не балансирует (5%).
  *
  * 3. **Two-pass chunk size** — стараемся не дробить 4ч задачу на 8 огрызков:
  *    - Pass 1 (preferred): пропускаем кандидатов у кого free < 60 мин.
