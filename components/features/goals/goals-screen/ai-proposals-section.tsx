@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import {
   AlertCircle,
   ArrowRight,
@@ -33,7 +34,9 @@ import { pickLocalized } from "@/lib/utils/locale-pick";
 
 import { CategoryBadge } from "./category-badge";
 import { AILoadingState } from "./loading-states";
+import { MoneyPill } from "./money-pill";
 import { SelectGoalDialogContent } from "./select-goal-dialog";
+import { compareByMoneyImpact } from "./sort-utils";
 import {
   CATEGORY_ICONS,
   type GoalsT,
@@ -67,6 +70,12 @@ export function AIProposalsSection({
   t: GoalsT;
   tCommon: CommonT;
 }) {
+  // Sort: money desc → significance desc → id (см. sort-utils)
+  const sortedProposals = useMemo(
+    () => [...proposals].sort(compareByMoneyImpact),
+    [proposals],
+  );
+
   return (
     <Card>
       <CardHeader>
@@ -76,9 +85,9 @@ export function AIProposalsSection({
               <Sparkles className="size-5 text-primary" />
               {t("proposals.section_title")}
             </CardTitle>
-            {!aiLoading && proposals.length > 0 && (
+            {!aiLoading && sortedProposals.length > 0 && (
               <CardDescription className="mt-1">
-                {t("proposals.section_subtitle_count", { count: proposals.length })}
+                {t("proposals.section_subtitle_count", { count: sortedProposals.length })}
               </CardDescription>
             )}
           </div>
@@ -93,7 +102,7 @@ export function AIProposalsSection({
       <CardContent>
         {aiLoading ? (
           <AILoadingState message={t("ai_loading")} />
-        ) : proposals.length === 0 ? (
+        ) : sortedProposals.length === 0 ? (
           <EmptyState
             icon={AlertCircle}
             title={t("empty.no_proposals_title")}
@@ -101,7 +110,7 @@ export function AIProposalsSection({
           />
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {proposals.map((proposal) => {
+            {sortedProposals.map((proposal) => {
               const Icon = CATEGORY_ICONS[proposal.category];
               return (
                 <Card key={proposal.id} className="flex flex-col">
@@ -142,9 +151,22 @@ export function AIProposalsSection({
                       </div>
                     </div>
 
-                    <div className="text-xs text-success font-medium mb-4">
-                      {t("proposals.potential_gain")}: {proposal.potential_value}
-                    </div>
+                    {/* Money pill (если есть) или текстовый potential для legacy */}
+                    {proposal.money_impact ? (
+                      <div className="mb-4">
+                        <MoneyPill
+                          impact={proposal.money_impact}
+                          goalId={proposal.id}
+                          locale={locale}
+                          t={t}
+                          size="sm"
+                        />
+                      </div>
+                    ) : (
+                      <div className="text-xs text-success font-medium mb-4">
+                        {t("proposals.potential_gain")}: {proposal.potential_value}
+                      </div>
+                    )}
 
                     <div className="flex gap-2 mt-auto">
                       {canManageGoals ? (

@@ -312,7 +312,15 @@ Admin: `Goal { id, category, title, description, starting_value?, target_value, 
 |---|---|---|
 | `starting_value` | number? | Значение метрики на момент установки цели. Нужно для корректного прогресса для убывающих метрик (OOS, списания): `progress = (starting - current) / (starting - target)`. Без этого поля старый расчёт `current/target` ломается на decreasing-целях (показывает 100% когда реально 33%). |
 | `direction` | "increase" \| "decrease"? | Направление "правильного" движения метрики. Если не задано — выводится из target vs starting. |
-| `money_impact` | object? | Денежный эффект достижения цели: `{ amount, period: week\|month\|quarter\|year, rationale_short, rationale_breakdown[] }`. Используется для UI-пилюли «Денежный эффект» с popover'ом «Как считаем» и кнопкой «Разобрать в ИИ-чате». Backend пока не считает — admin держит как mock. Когда backend подключим — потребуется endpoint `GET /goals/:id/money-impact` с теми же полями. |
+| `money_impact` | object? | Денежный эффект достижения цели: `{ amount, period: week\|month\|quarter\|year, rationale_short, rationale_breakdown[], impact_type, significance_score? }`. Используется для UI-пилюли «Денежный эффект» с popover'ом «Как считаем» и кнопкой «Разобрать в ИИ-чате». Backend пока не считает — admin держит как mock. Когда backend подключим — потребуется endpoint `GET /goals/:id/money-impact` с теми же полями. |
+| `money_impact.impact_type` | "money" \| "compliance" \| "quality" \| "training" | Тип эффекта. `money` = есть прямая монетизация (отображается в ₽). `compliance/quality/training` — без прямого ₽-выхлопа (обучение, инвентаризация, EGAIS). UI скрывает money pill для не-money. Backend при подключении должен возвращать поле; default — `money` для обратной совместимости. |
+| `money_impact.significance_score` | number? (1-10) | Только для не-money целей. Используется как sort tie-breaker на /goals и /goals/history (карточки сортируются: money_impact.amount desc → significance_score desc). Backend может не хранить, admin вычисляет на лету или получает из ML-модели. |
+
+**Коэффициенты монетизации.** Admin держит FMCG cheat-sheet в `lib/utils/goal-monetization.ts`
+(constants `FMCG_COEFFICIENTS` + helper `calcGoalImpact()`). Источники: Gruen/Corsten 2002,
+FMI/NACDS, Nielsen, Wiser, NARMS, BLS 2024 — см. `.memory_bank/_claude/GOALS-MONETIZATION.md`.
+Backend будет считать эти суммы свой стороной (feature flag за ML/finance team) — admin
+может выпилить файл когда `GET /goals/:id/money-impact` появится.
 
 ### Полностью admin-only (пока)
 
