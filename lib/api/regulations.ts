@@ -119,7 +119,9 @@ export async function getRegulations(
     filtered = filtered.filter(
       (r) =>
         r.name.toLowerCase().includes(q) ||
-        (r.description ?? "").toLowerCase().includes(q),
+        (r.description ?? "").toLowerCase().includes(q) ||
+        (r.name_en?.toLowerCase().includes(q) ?? false) ||
+        (r.description_en?.toLowerCase().includes(q) ?? false),
     );
   }
 

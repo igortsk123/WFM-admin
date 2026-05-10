@@ -8,7 +8,8 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-import type { AuditEntry } from "@/lib/types";
+import type { AuditEntry, Locale } from "@/lib/types";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 
 import { ENTITY_TYPE_ICONS, formatTime, getInitials } from "./_shared";
 import { EntityBadge } from "./entity-badge";
@@ -69,9 +70,11 @@ export const EventRow = memo(function EventRow({
         <p className="text-sm leading-snug">
           <span className="font-medium text-foreground">{entry.actor.name}</span>{" "}
           <span className="text-muted-foreground">
-            {entry.action_label.toLowerCase()}
+            {pickLocalized(entry.action_label, entry.action_label_en, locale as Locale).toLowerCase()}
           </span>{" "}
-          <span className="font-medium text-foreground">{entry.entity_name}</span>
+          <span className="font-medium text-foreground">
+            {pickLocalized(entry.entity_name, entry.entity_name_en, locale as Locale)}
+          </span>
         </p>
         {entry.platform_action && (
           <span className="inline-flex items-center gap-1 text-xs text-info font-medium">

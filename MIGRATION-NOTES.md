@@ -337,6 +337,27 @@ Admin: `Goal { id, category, title, description, starting_value?, target_value, 
   backend и так отдаёт (history событий + stores). Если backend позже отдаст
   готовый endpoint `GET /users/{id}/speed` — admin переключится без UI-changes.
 
+### Bilingual mock-fields (frontend-only translations) — `*_en`
+
+Для bilingual demo (RU default + EN через `?en` префикс) в admin-only моках добавлены
+опциональные EN-копии RU-литералов. **Это чистая presentation-layer**, никаких
+backend-changes не требуется — backend отдаёт поля как есть, а UI выбирает текст
+по locale через helper `pickLocalized(ru, en, locale)` из `lib/utils/locale-pick.ts`.
+
+| Тип | Поля |
+|---|---|
+| `Notification` | `title_en?`, `body_en?` |
+| `AuditEntry` | `action_label_en?`, `entity_name_en?` |
+| `Regulation` | `name_en?`, `description_en?` |
+| `Goal` | `title_en?`, `description_en?`, `MoneyImpact.rationale_short_en?`, `rationale_breakdown_en?` |
+| `KpiMetric` (reports-kpi) | `label_en?` |
+| `KpiByDimension` (zones only) | `label_en?` (work-types — RU only, отраслевой стандарт) |
+| `PlanFactSummary.worst_day` | `reason_en?` |
+
+Backend может игнорировать эти поля — если они приходят от admin, его контракт
+терпимо относится к unknown fields. Если backend сам генерирует RU-only — admin
+fallback'ом покажет RU на EN-локали.
+
 Эти модули backend подхватит позже — admin их моделирует чтобы UI работал и спецификация была понятна.
 
 ---

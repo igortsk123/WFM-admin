@@ -60,7 +60,11 @@ export interface PlanFactSummary {
   by_store: PlanFactByStore[];
   by_user: PlanFactByUser[];
   by_work_type: PlanFactByWorkType[];
-  worst_day: { date: string; completion_rate: number; reason: string };
+  /**
+   * `reason` — RU-литерал по умолчанию. `reason_en` — опциональный EN-перевод
+   * для bilingual demo (выбирается через `pickLocalized`).
+   */
+  worst_day: { date: string; completion_rate: number; reason: string; reason_en?: string };
   best_day: { date: string; completion_rate: number };
 }
 
@@ -274,6 +278,7 @@ export const MOCK_PLAN_FACT: PlanFactSummary = {
     date: "2026-04-09",
     completion_rate: aprilDays[8].completion_rate,
     reason: "Праздничный день — нестандартное расписание смен, массовые паузы",
+    reason_en: "Holiday — irregular shift schedule, widespread pauses",
   },
   best_day: {
     date: "2026-04-15",

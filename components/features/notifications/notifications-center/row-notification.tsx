@@ -12,6 +12,7 @@ import {
 
 import type { Notification, Locale } from "@/lib/types";
 import { formatRelative, formatDateTime } from "@/lib/utils/format";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 import { cn } from "@/lib/utils";
 
 import { CategoryIcon } from "./category-icon";
@@ -42,6 +43,8 @@ export function NotificationRow({
     new Date(notification.created_at),
     locale,
   );
+  const titleText = pickLocalized(notification.title, notification.title_en, locale);
+  const bodyText = pickLocalized(notification.body, notification.body_en, locale);
 
   function handleRowClick(e: React.MouseEvent) {
     // Don't navigate if clicking action buttons
@@ -80,7 +83,7 @@ export function NotificationRow({
         <div className="flex items-start justify-between gap-2">
           <div className="flex items-center gap-2 min-w-0">
             <p className="text-sm font-semibold text-foreground truncate">
-              {notification.title}
+              {titleText}
             </p>
             {isUnread && (
               <span
@@ -107,7 +110,7 @@ export function NotificationRow({
         </div>
 
         <p className="mt-0.5 text-sm text-muted-foreground line-clamp-2 leading-relaxed">
-          {notification.body}
+          {bodyText}
         </p>
 
         {/* Meta */}

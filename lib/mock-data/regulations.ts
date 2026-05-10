@@ -4,6 +4,8 @@ import type { Regulation } from "@/lib/types";
  * @endpoint GET /api/regulations
  * 23 Regulation — diverse mix. 3 without tags (warning demo), 2 archived.
  * ai_usage_count_30d — how many times AI loaded this doc in context last 30 days.
+ *
+ * Bilingual demo: каждый regulation имеет `name_en` + `description_en`.
  */
 
 const d = (iso: string) => iso;
@@ -14,7 +16,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-001",
     name: "Регламент выкладки молочной продукции",
+    name_en: "Dairy products merchandising guidelines",
     description: "Стандарт выкладки, фронтинга, ротации и контроля сроков годности в молочном отделе. Включает фото-примеры правильной и неправильной выкладки.",
+    description_en: "Standard for merchandising, fronting, rotation and expiration control in the dairy department. Includes photo examples of correct and incorrect displays.",
     file_url: "/documents/regulation-001.pdf",
     file_type: "PDF",
     file_size_bytes: 2516582, // 2.4 МБ
@@ -30,7 +34,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-002",
     name: "Стандарт переоценки и стикеровки",
+    name_en: "Repricing and labelling standard",
     description: "Процедура замены ценников при изменении цен из 1С: сроки, форматы стикеров, порядок утилизации старых ценников.",
+    description_en: "Procedure for replacing price tags when prices change in 1C: deadlines, sticker formats, disposal of old tags.",
     file_url: "/documents/regulation-002.pdf",
     file_type: "PDF",
     file_size_bytes: 1887437, // 1.8 МБ
@@ -45,7 +51,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-003",
     name: "Инструкция по приёмке товара",
+    name_en: "Goods receiving instructions",
     description: "Пошаговая процедура приёмки: проверка документов, пересчёт, контроль температуры для скоропорта, оформление актов расхождений.",
+    description_en: "Step-by-step receiving procedure: document verification, recount, temperature control for perishables, discrepancy report handling.",
     file_url: "/documents/regulation-003.docx",
     file_type: "WORD",
     file_size_bytes: 876544, // 856 КБ
@@ -60,7 +68,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-004",
     name: "Правила работы с просрочкой и списанием",
+    name_en: "Expired goods and write-off procedure",
     description: "Регламент выявления, изъятия, оформления актов и утилизации просроченной продукции. Юридические требования и ответственность.",
+    description_en: "Procedure for identifying, removing, documenting and disposing of expired products. Legal requirements and responsibilities.",
     file_url: "/documents/regulation-004.pdf",
     file_type: "PDF",
     file_size_bytes: 3249152, // 3.1 МБ
@@ -75,7 +85,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-005",
     name: "Кассовая дисциплина и инкассация",
+    name_en: "Cash handling and collection",
     description: "Порядок открытия/закрытия смены, Z-отчёт, работа с инкассацией, возвраты, обращение с наличными. Требования безопасности.",
+    description_en: "Shift opening/closing procedure, Z-report, cash collection, returns, handling cash. Safety requirements.",
     file_url: "/documents/regulation-005.pdf",
     file_type: "PDF",
     file_size_bytes: 4404019, // 4.2 МБ
@@ -90,7 +102,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-006",
     name: "Стандарт выкладки промо",
+    name_en: "Promo merchandising standard",
     description: "Правила размещения акционных товаров: зоны, дополнительные точки продаж, ценники промо-акций, контроль соответствия плану.",
+    description_en: "Rules for placing promo goods: zones, additional sales points, promo price tags, plan compliance checks.",
     file_url: "/documents/regulation-006.pdf",
     file_type: "PDF",
     file_size_bytes: 1572864, // 1.5 МБ
@@ -105,7 +119,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-007",
     name: "Инвентаризация: пошаговая инструкция",
+    name_en: "Inventory: step-by-step instructions",
     description: "Процедура плановой и внеплановой инвентаризации: подготовка, пересчёт, сверка с системой, оформление актов разногласий.",
+    description_en: "Procedure for planned and unplanned inventory: preparation, recount, system reconciliation, discrepancy reports.",
     file_url: "/documents/regulation-007.docx",
     file_type: "WORD",
     file_size_bytes: 1048576, // 1.0 МБ
@@ -120,7 +136,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-008",
     name: "Работа на самокассе — обучение",
+    name_en: "Self-checkout — operator training",
     description: "Инструкция для операторов КСО: включение, помощь покупателям, типичные ошибки, сброс блокировок. Включает ссылку на обучающее видео.",
+    description_en: "Instructions for SCO operators: turning on, helping customers, common errors, resetting locks. Includes a link to the training video.",
     file_url: "/documents/regulation-008.pdf",
     file_type: "PDF",
     file_size_bytes: 2097152,
@@ -135,7 +153,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-009",
     name: "Уборка торгового зала: чек-лист",
+    name_en: "Sales floor cleaning: checklist",
     description: "Стандарт уборки: зоны ответственности, периодичность, средства, отметки в журнале. Соответствие требованиям СанПиН.",
+    description_en: "Cleaning standard: areas of responsibility, frequency, supplies, log entries. Compliance with sanitary requirements.",
     file_url: "/documents/regulation-009.pdf",
     file_type: "PDF",
     file_size_bytes: 786432,
@@ -150,7 +170,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-010",
     name: "Контроль скоропорта: ежедневный обход",
+    name_en: "Perishables control: daily walkthrough",
     description: "Регламент ежедневного обхода с проверкой сроков годности. Чек-лист по зонам, критерии изъятия, порядок уведомления.",
+    description_en: "Procedure for daily walkthroughs to check expiration dates. Zone checklist, removal criteria, notification process.",
     file_url: "/documents/regulation-010.pdf",
     file_type: "PDF",
     file_size_bytes: 1258291,
@@ -165,7 +187,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-011",
     name: "Стандарт работы с алкоголем и ЕГАИС",
+    name_en: "Alcohol handling and EGAIS standard",
     description: "Порядок приёмки, подтверждения в ЕГАИС, хранения и продажи алкогольной продукции. Требования лицензии.",
+    description_en: "Procedure for receiving, EGAIS confirmation, storage and sale of alcoholic products. Licensing requirements.",
     file_url: "/documents/regulation-011.pdf",
     file_type: "PDF",
     file_size_bytes: 2359296,
@@ -180,7 +204,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-012",
     name: "Инструкция по работе с весовым товаром",
+    name_en: "Loose-weight goods handling instructions",
     description: "Правила взвешивания, маркировки, ценообразования и выкладки весовых продуктов. Настройка весов, калибровка.",
+    description_en: "Rules for weighing, labelling, pricing and merchandising loose-weight products. Scale setup and calibration.",
     file_url: "/documents/regulation-012.pdf",
     file_type: "PDF",
     file_size_bytes: 1048576,
@@ -195,7 +221,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-013",
     name: "Правила складирования и товарного соседства",
+    name_en: "Storage and product adjacency rules",
     description: "Требования к хранению: температурные зоны, несовместимые группы товаров, маркировка паллет, FIFO-принцип.",
+    description_en: "Storage requirements: temperature zones, incompatible product groups, pallet labelling, FIFO principle.",
     file_url: "/documents/regulation-013.docx",
     file_type: "WORD",
     file_size_bytes: 917504,
@@ -210,7 +238,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-014",
     name: "Планограммы — порядок внедрения",
+    name_en: "Planograms — implementation procedure",
     description: "Как читать и внедрять планограмму: расстановка по схеме, отклонения, согласование с супервайзером.",
+    description_en: "How to read and implement a planogram: placement by scheme, deviations, supervisor approval.",
     file_url: "/documents/regulation-014.pdf",
     file_type: "PDF",
     file_size_bytes: 3145728,
@@ -225,7 +255,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-015",
     name: "Работа с рекламациями и жалобами покупателей",
+    name_en: "Customer complaints and claims handling",
     description: "Порядок обработки жалоб: принятие, регистрация, эскалация, компенсация. Скрипты для типовых ситуаций.",
+    description_en: "Complaint handling procedure: intake, logging, escalation, compensation. Scripts for typical situations.",
     file_url: "/documents/regulation-015.pdf",
     file_type: "PDF",
     file_size_bytes: 1310720,
@@ -240,7 +272,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-016",
     name: "Пожарная безопасность и эвакуация",
+    name_en: "Fire safety and evacuation",
     description: "Требования пожарной безопасности для торговых объектов: порядок эвакуации, расположение средств пожаротушения, действия персонала.",
+    description_en: "Fire safety requirements for retail premises: evacuation procedure, fire-extinguishing equipment locations, staff actions.",
     file_url: "/documents/regulation-016.pdf",
     file_type: "PDF",
     file_size_bytes: 2621440,
@@ -255,7 +289,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-017",
     name: "Охрана труда и техника безопасности",
+    name_en: "Occupational health and safety",
     description: "Инструктаж по охране труда для работников торгового зала и склада. Обязательный документ для допуска к работе.",
+    description_en: "Occupational safety briefing for sales floor and warehouse staff. Mandatory document for work permit.",
     file_url: "/documents/regulation-017.pdf",
     file_type: "PDF",
     file_size_bytes: 1835008,
@@ -270,7 +306,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-018",
     name: "Мерчендайзинг fashion: стандарты Альфа",
+    name_en: "Fashion merchandising: Alpha standards",
     description: "Правила выкладки одежды в магазине Альфа: зонирование, фолдинг, развешивание, ценники. Специфика fashion-вертикали.",
+    description_en: "Apparel merchandising rules at Alpha store: zoning, folding, hanging, price tags. Fashion-vertical specifics.",
     file_url: "/documents/regulation-018.pdf",
     file_type: "PDF",
     file_size_bytes: 4194304,
@@ -285,7 +323,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-019",
     name: "Стандарт уценки и markdown (fashion)",
+    name_en: "Markdown standard (fashion)",
     description: "Правила стикеровки уценённых товаров, допустимые диапазоны скидок по категориям, маркетинг-канал после уценки.",
+    description_en: "Rules for labelling marked-down items, allowed discount ranges by category, marketing channel after markdown.",
     file_url: "/documents/regulation-019.pdf",
     file_type: "PDF",
     file_size_bytes: 1048576,
@@ -300,7 +340,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-020",
     name: "Взаимодействие с промоутерами и мерчендайзерами поставщиков",
+    name_en: "Working with promoters and supplier merchandisers",
     description: "Порядок допуска, контроль, согласование действий внешних мерчендайзеров поставщиков в торговом зале.",
+    description_en: "Procedure for admitting, supervising and approving actions of supplier merchandisers on the sales floor.",
     file_url: "/documents/regulation-020.docx",
     file_type: "WORD",
     file_size_bytes: 720896,
@@ -318,7 +360,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-021",
     name: "Приказ о введении новой формы одежды",
+    name_en: "Order introducing the new uniform",
     description: "Внутренний приказ о требованиях к форменной одежде сотрудников с мая 2026.",
+    description_en: "Internal order on uniform requirements for employees, effective May 2026.",
     file_url: "/documents/regulation-021.pdf",
     file_type: "PDF",
     file_size_bytes: 204800,
@@ -333,7 +377,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-022",
     name: "Памятка по корпоративной этике",
+    name_en: "Corporate ethics handbook",
     description: "Общие правила поведения, коммуникации и дресс-кода в компании. Не привязана к конкретным типам работ.",
+    description_en: "General rules of conduct, communication and dress code at the company. Not tied to specific work types.",
     file_url: "/documents/regulation-022.pdf",
     file_type: "PDF",
     file_size_bytes: 409600,
@@ -348,7 +394,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-023",
     name: "Техническое задание на POS-интеграцию",
+    name_en: "Technical spec for POS integration",
     description: "Технический документ для IT-команды. Загружен ошибочно в раздел регламентов вместо документов.",
+    description_en: "Technical document for the IT team. Uploaded to the regulations section by mistake instead of the documents folder.",
     file_url: "/documents/regulation-023.docx",
     file_type: "WORD",
     file_size_bytes: 1572864,
@@ -366,7 +414,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-001-v2",
     name: "Регламент выкладки молочной продукции (v2 — архив)",
+    name_en: "Dairy products merchandising guidelines (v2 — archived)",
     description: "Устаревшая версия. Заменена версией 3 от 01.04.2026.",
+    description_en: "Outdated version. Superseded by version 3 dated 2026-04-01.",
     file_url: "/documents/regulation-001-v2.pdf",
     file_type: "PDF",
     file_size_bytes: 2097152,
@@ -382,7 +432,9 @@ export const MOCK_REGULATIONS: Regulation[] = [
   {
     id: "reg-010-v1",
     name: "Контроль скоропорта: ежедневный обход (v1 — архив)",
+    name_en: "Perishables control: daily walkthrough (v1 — archived)",
     description: "Устаревшая версия. Заменена версией 2 от 20.03.2026.",
+    description_en: "Outdated version. Superseded by version 2 dated 2026-03-20.",
     file_url: "/documents/regulation-010-v1.pdf",
     file_type: "PDF",
     file_size_bytes: 942080,

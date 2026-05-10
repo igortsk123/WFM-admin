@@ -22,7 +22,8 @@ function relativeTime(dateStr: string, locale: string): string {
   if (diffMonth < 12) return rtf.format(-diffMonth, "month");
   return rtf.format(-Math.floor(diffMonth / 12), "year");
 }
-import type { Notification } from "@/lib/types";
+import type { Notification, Locale } from "@/lib/types";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -54,6 +55,8 @@ export const NotificationRow = React.memo(function NotificationRow({
   const [menuOpen, setMenuOpen] = useState(false);
 
   const timeAgo = relativeTime(notification.created_at, locale);
+  const titleText = pickLocalized(notification.title, notification.title_en, locale as Locale);
+  const bodyText = pickLocalized(notification.body, notification.body_en, locale as Locale);
 
   return (
     <div
@@ -98,16 +101,16 @@ export const NotificationRow = React.memo(function NotificationRow({
               href={notification.link as Parameters<typeof Link>[0]["href"]}
               className="hover:underline focus-visible:underline outline-none"
             >
-              {notification.title}
+              {titleText}
             </Link>
           ) : (
-            notification.title
+            titleText
           )}
         </p>
 
         {/* Body */}
         <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed line-clamp-2">
-          {notification.body}
+          {bodyText}
         </p>
       </div>
 

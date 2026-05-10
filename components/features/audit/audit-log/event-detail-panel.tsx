@@ -31,7 +31,8 @@ import {
 
 import { RoleBadge } from "@/components/shared/role-badge";
 
-import type { AuditEntry, FunctionalRole } from "@/lib/types";
+import type { AuditEntry, FunctionalRole, Locale } from "@/lib/types";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 
 import { detectDeviceType, formatDateFull, getInitials } from "./_shared";
 import { DiffTable } from "./diff-table";
@@ -144,18 +145,20 @@ export function EventDetailPanel({
               {t("detail_sheet.what_section")}
             </p>
             <p className="text-base font-medium text-foreground">
-              {entry.action_label}
+              {pickLocalized(entry.action_label, entry.action_label_en, locale as Locale)}
             </p>
             {entry.entity_url ? (
               <a
                 href={entry.entity_url}
                 className="text-sm text-primary hover:underline inline-flex items-center gap-1"
               >
-                {entry.entity_name}
+                {pickLocalized(entry.entity_name, entry.entity_name_en, locale as Locale)}
                 <ArrowUpRight className="size-3.5 shrink-0" />
               </a>
             ) : (
-              <p className="text-sm text-muted-foreground">{entry.entity_name}</p>
+              <p className="text-sm text-muted-foreground">
+                {pickLocalized(entry.entity_name, entry.entity_name_en, locale as Locale)}
+              </p>
             )}
           </section>
 

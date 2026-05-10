@@ -92,7 +92,11 @@ export async function getNotifications(
   if (search) {
     const q = search.toLowerCase();
     filtered = filtered.filter(
-      (n) => n.title.toLowerCase().includes(q) || n.body.toLowerCase().includes(q)
+      (n) =>
+        n.title.toLowerCase().includes(q) ||
+        n.body.toLowerCase().includes(q) ||
+        (n.title_en?.toLowerCase().includes(q) ?? false) ||
+        (n.body_en?.toLowerCase().includes(q) ?? false),
     );
   }
 

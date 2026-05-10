@@ -2,9 +2,10 @@
 
 import { memo } from "react";
 import { Sparkles } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
-import type { Regulation } from "@/lib/types";
+import type { Regulation, Locale } from "@/lib/types";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 
 import { Badge } from "@/components/ui/badge";
 import { EntityMobileCard } from "@/components/shared/entity-mobile-card";
@@ -33,6 +34,8 @@ export const RegulationsMobileCard = memo(function RegulationsMobileCard({
   onDownload,
 }: RegulationsMobileCardProps) {
   const t = useTranslations("screen.regulations");
+  const locale = useLocale() as Locale;
+  const nameText = pickLocalized(reg.name, reg.name_en, locale);
 
   return (
     <EntityMobileCard
@@ -47,7 +50,7 @@ export const RegulationsMobileCard = memo(function RegulationsMobileCard({
           className="text-sm font-medium text-foreground hover:text-primary text-left line-clamp-2 block w-full"
           onClick={() => onView(reg.id)}
         >
-          {reg.name}
+          {nameText}
         </button>
       }
       actions={

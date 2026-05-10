@@ -16,7 +16,12 @@ const genSparklineInt = (base: number, variance: number, len = 30): number[] =>
 
 export interface KpiMetric {
   key: string;
+  /**
+   * RU-литерал. `label_en` — опциональный EN-перевод для bilingual demo
+   * (выбирается через `pickLocalized(label, label_en, locale)`).
+   */
   label: string;
+  label_en?: string;
   value: number;
   unit: string;
   change_pct: number;
@@ -25,7 +30,9 @@ export interface KpiMetric {
 
 export interface KpiPerformer {
   user_id: number;
+  /** Реальные ФИО (LAMA данные) — KEEP RU. */
   user_name: string;
+  /** Реальные названия магазинов (LAMA данные) — KEEP RU. */
   store_name: string;
   completion_rate: number;
   tasks_completed: number;
@@ -35,7 +42,12 @@ export interface KpiPerformer {
 
 export interface KpiByDimension {
   id: number;
+  /**
+   * Для work_types — отраслевой стандарт LAMA (RU only, KEEP).
+   * Для zones — синтетические наименования; `label_en` для bilingual demo.
+   */
   label: string;
+  label_en?: string;
   completion_rate: number;
   tasks_total: number;
   on_time_rate: number;
@@ -67,6 +79,7 @@ export const MOCK_KPI_NETWORK: KpiReport = {
     {
       key: "completion_rate",
       label: "Выполнение задач",
+      label_en: "Task completion",
       value: 87.3,
       unit: "%",
       change_pct: +2.1,
@@ -75,6 +88,7 @@ export const MOCK_KPI_NETWORK: KpiReport = {
     {
       key: "return_rate",
       label: "Возврат на доработку",
+      label_en: "Returned for rework",
       value: 5.8,
       unit: "%",
       change_pct: -0.7,
@@ -83,6 +97,7 @@ export const MOCK_KPI_NETWORK: KpiReport = {
     {
       key: "on_time_rate",
       label: "Выполнено вовремя",
+      label_en: "Completed on time",
       value: 91.2,
       unit: "%",
       change_pct: +1.4,
@@ -91,6 +106,7 @@ export const MOCK_KPI_NETWORK: KpiReport = {
     {
       key: "hours_plan",
       label: "Плановые часы",
+      label_en: "Planned hours",
       value: 4840,
       unit: "ч",
       change_pct: 0,
@@ -99,6 +115,7 @@ export const MOCK_KPI_NETWORK: KpiReport = {
     {
       key: "hours_actual",
       label: "Фактические часы",
+      label_en: "Actual hours",
       value: 4712,
       unit: "ч",
       change_pct: -2.6,
@@ -107,6 +124,7 @@ export const MOCK_KPI_NETWORK: KpiReport = {
     {
       key: "fot_ratio",
       label: "ФОТ факт / план",
+      label_en: "Payroll actual / plan",
       value: 97.4,
       unit: "%",
       change_pct: -2.6,
@@ -147,12 +165,12 @@ export const MOCK_KPI_NETWORK: KpiReport = {
     { id: 7, label: "Другие работы", completion_rate: 79.6, tasks_total: 44, on_time_rate: 77.1 },
   ],
   by_zone: [
-    { id: 1, label: "Торговый зал", completion_rate: 90.4, tasks_total: 842, on_time_rate: 89.1 },
-    { id: 2, label: "Склад", completion_rate: 84.7, tasks_total: 287, on_time_rate: 83.2 },
-    { id: 3, label: "Касса", completion_rate: 97.1, tasks_total: 634, on_time_rate: 96.7 },
-    { id: 4, label: "Самокассы", completion_rate: 96.3, tasks_total: 214, on_time_rate: 95.9 },
-    { id: 5, label: "Прикассовая зона", completion_rate: 93.8, tasks_total: 178, on_time_rate: 93.4 },
-    { id: 6, label: "Холодильники", completion_rate: 88.2, tasks_total: 223, on_time_rate: 87.1 },
+    { id: 1, label: "Торговый зал", label_en: "Sales floor", completion_rate: 90.4, tasks_total: 842, on_time_rate: 89.1 },
+    { id: 2, label: "Склад", label_en: "Warehouse", completion_rate: 84.7, tasks_total: 287, on_time_rate: 83.2 },
+    { id: 3, label: "Касса", label_en: "Checkout", completion_rate: 97.1, tasks_total: 634, on_time_rate: 96.7 },
+    { id: 4, label: "Самокассы", label_en: "Self-checkout", completion_rate: 96.3, tasks_total: 214, on_time_rate: 95.9 },
+    { id: 5, label: "Прикассовая зона", label_en: "Checkout area", completion_rate: 93.8, tasks_total: 178, on_time_rate: 93.4 },
+    { id: 6, label: "Холодильники", label_en: "Fridges", completion_rate: 88.2, tasks_total: 223, on_time_rate: 87.1 },
   ],
 };
 
@@ -165,12 +183,12 @@ export const MOCK_KPI_STORE_1: KpiReport = {
   period_start: PERIOD_START,
   period_end: PERIOD_END,
   metrics: [
-    { key: "completion_rate", label: "Выполнение задач", value: 89.1, unit: "%", change_pct: +3.2, sparkline: genSparkline(89.1, 5) },
-    { key: "return_rate", label: "Возврат на доработку", value: 4.9, unit: "%", change_pct: -1.1, sparkline: genSparkline(4.9, 1.2) },
-    { key: "on_time_rate", label: "Выполнено вовремя", value: 92.7, unit: "%", change_pct: +1.9, sparkline: genSparkline(92.7, 4) },
-    { key: "hours_plan", label: "Плановые часы", value: 1240, unit: "ч", change_pct: 0, sparkline: genSparklineInt(41, 5) },
-    { key: "hours_actual", label: "Фактические часы", value: 1198, unit: "ч", change_pct: -3.4, sparkline: genSparklineInt(40, 6) },
-    { key: "fot_ratio", label: "ФОТ факт / план", value: 96.6, unit: "%", change_pct: -3.4, sparkline: genSparkline(96.6, 2) },
+    { key: "completion_rate", label: "Выполнение задач", label_en: "Task completion", value: 89.1, unit: "%", change_pct: +3.2, sparkline: genSparkline(89.1, 5) },
+    { key: "return_rate", label: "Возврат на доработку", label_en: "Returned for rework", value: 4.9, unit: "%", change_pct: -1.1, sparkline: genSparkline(4.9, 1.2) },
+    { key: "on_time_rate", label: "Выполнено вовремя", label_en: "Completed on time", value: 92.7, unit: "%", change_pct: +1.9, sparkline: genSparkline(92.7, 4) },
+    { key: "hours_plan", label: "Плановые часы", label_en: "Planned hours", value: 1240, unit: "ч", change_pct: 0, sparkline: genSparklineInt(41, 5) },
+    { key: "hours_actual", label: "Фактические часы", label_en: "Actual hours", value: 1198, unit: "ч", change_pct: -3.4, sparkline: genSparklineInt(40, 6) },
+    { key: "fot_ratio", label: "ФОТ факт / план", label_en: "Payroll actual / plan", value: 96.6, unit: "%", change_pct: -3.4, sparkline: genSparkline(96.6, 2) },
   ],
   top_performers: [
     { user_id: 19, user_name: "Захарова Наталья Петровна", store_name: "СПАР Томск, пр. Ленина 80", completion_rate: 97.4, tasks_completed: 38, on_time_rate: 96.2, rating: 4.8 },
@@ -210,12 +228,12 @@ export const MOCK_KPI_STORE_7: KpiReport = {
   period_start: PERIOD_START,
   period_end: PERIOD_END,
   metrics: [
-    { key: "completion_rate", label: "Выполнение задач", value: 91.5, unit: "%", change_pct: +4.1, sparkline: genSparkline(91.5, 4) },
-    { key: "return_rate", label: "Возврат на доработку", value: 4.2, unit: "%", change_pct: -1.4, sparkline: genSparkline(4.2, 1) },
-    { key: "on_time_rate", label: "Выполнено вовремя", value: 93.8, unit: "%", change_pct: +2.3, sparkline: genSparkline(93.8, 3.5) },
-    { key: "hours_plan", label: "Плановые часы", value: 1580, unit: "ч", change_pct: 0, sparkline: genSparklineInt(53, 7) },
-    { key: "hours_actual", label: "Фактические часы", value: 1543, unit: "ч", change_pct: -2.3, sparkline: genSparklineInt(51, 8) },
-    { key: "fot_ratio", label: "ФОТ факт / план", value: 97.7, unit: "%", change_pct: -2.3, sparkline: genSparkline(97.7, 1.5) },
+    { key: "completion_rate", label: "Выполнение задач", label_en: "Task completion", value: 91.5, unit: "%", change_pct: +4.1, sparkline: genSparkline(91.5, 4) },
+    { key: "return_rate", label: "Возврат на доработку", label_en: "Returned for rework", value: 4.2, unit: "%", change_pct: -1.4, sparkline: genSparkline(4.2, 1) },
+    { key: "on_time_rate", label: "Выполнено вовремя", label_en: "Completed on time", value: 93.8, unit: "%", change_pct: +2.3, sparkline: genSparkline(93.8, 3.5) },
+    { key: "hours_plan", label: "Плановые часы", label_en: "Planned hours", value: 1580, unit: "ч", change_pct: 0, sparkline: genSparklineInt(53, 7) },
+    { key: "hours_actual", label: "Фактические часы", label_en: "Actual hours", value: 1543, unit: "ч", change_pct: -2.3, sparkline: genSparklineInt(51, 8) },
+    { key: "fot_ratio", label: "ФОТ факт / план", label_en: "Payroll actual / plan", value: 97.7, unit: "%", change_pct: -2.3, sparkline: genSparkline(97.7, 1.5) },
   ],
   top_performers: [
     { user_id: 25, user_name: "Соловьева Ирина Дмитриевна", store_name: "Г-1 Котовского 19/3 (ГМ)", completion_rate: 98.2, tasks_completed: 52, on_time_rate: 97.6, rating: 4.9 },
@@ -245,12 +263,12 @@ export const MOCK_KPI_STORE_4: KpiReport = {
   period_start: PERIOD_START,
   period_end: PERIOD_END,
   metrics: [
-    { key: "completion_rate", label: "Выполнение задач", value: 83.8, unit: "%", change_pct: -1.2, sparkline: genSparkline(83.8, 6) },
-    { key: "return_rate", label: "Возврат на доработку", value: 7.1, unit: "%", change_pct: +1.8, sparkline: genSparkline(7.1, 2) },
-    { key: "on_time_rate", label: "Выполнено вовремя", value: 87.4, unit: "%", change_pct: -0.9, sparkline: genSparkline(87.4, 5) },
-    { key: "hours_plan", label: "Плановые часы", value: 1120, unit: "ч", change_pct: 0, sparkline: genSparklineInt(37, 6) },
-    { key: "hours_actual", label: "Фактические часы", value: 1071, unit: "ч", change_pct: -4.4, sparkline: genSparklineInt(36, 7) },
-    { key: "fot_ratio", label: "ФОТ факт / план", value: 95.6, unit: "%", change_pct: -4.4, sparkline: genSparkline(95.6, 2.5) },
+    { key: "completion_rate", label: "Выполнение задач", label_en: "Task completion", value: 83.8, unit: "%", change_pct: -1.2, sparkline: genSparkline(83.8, 6) },
+    { key: "return_rate", label: "Возврат на доработку", label_en: "Returned for rework", value: 7.1, unit: "%", change_pct: +1.8, sparkline: genSparkline(7.1, 2) },
+    { key: "on_time_rate", label: "Выполнено вовремя", label_en: "Completed on time", value: 87.4, unit: "%", change_pct: -0.9, sparkline: genSparkline(87.4, 5) },
+    { key: "hours_plan", label: "Плановые часы", label_en: "Planned hours", value: 1120, unit: "ч", change_pct: 0, sparkline: genSparklineInt(37, 6) },
+    { key: "hours_actual", label: "Фактические часы", label_en: "Actual hours", value: 1071, unit: "ч", change_pct: -4.4, sparkline: genSparklineInt(36, 7) },
+    { key: "fot_ratio", label: "ФОТ факт / план", label_en: "Payroll actual / plan", value: 95.6, unit: "%", change_pct: -4.4, sparkline: genSparkline(95.6, 2.5) },
   ],
   top_performers: [
     { user_id: 23, user_name: "Волкова Марина Олеговна", store_name: "СПАР Новосибирск, ул. Ленина 55", completion_rate: 96.1, tasks_completed: 46, on_time_rate: 94.7, rating: 4.8 },

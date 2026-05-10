@@ -2,8 +2,11 @@
 
 import * as React from "react";
 import { AlertTriangle, Download, FileText, SearchX, Upload } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { toast } from "sonner";
+
+import type { Locale } from "@/lib/types";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 
 import {
   archiveRegulation,
@@ -32,6 +35,7 @@ import { useRegulationsData } from "./regulations-list/use-regulations-data";
 export function RegulationsList() {
   const t = useTranslations("screen.regulations");
   const tc = useTranslations("common");
+  const locale = useLocale() as Locale;
 
   // useTransition — фильтры/поиск как non-urgent.
   const [, startTransition] = React.useTransition();
@@ -132,7 +136,7 @@ export function RegulationsList() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement("a");
         a.href = url;
-        a.download = reg.name;
+        a.download = pickLocalized(reg.name, reg.name_en, locale);
         a.click();
         URL.revokeObjectURL(url);
         toast.success(t("toasts.downloaded"));
@@ -140,7 +144,7 @@ export function RegulationsList() {
         toast.error(t("toasts.error"));
       }
     },
-    [regulations, t],
+    [regulations, t, locale],
   );
 
   const handleArchive = React.useCallback(

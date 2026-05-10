@@ -1,11 +1,12 @@
 "use client";
 
 import * as React from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import type { ColumnDef } from "@tanstack/react-table";
 
 import { MOCK_USERS } from "@/lib/mock-data/users";
-import type { Regulation } from "@/lib/types";
+import type { Regulation, Locale } from "@/lib/types";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 
 import { Badge } from "@/components/ui/badge";
 import { UserCell } from "@/components/shared/user-cell";
@@ -33,6 +34,7 @@ export function useRegulationsColumns({
   onDownload,
 }: BuildColumnsArgs): ColumnDef<Regulation>[] {
   const t = useTranslations("screen.regulations");
+  const locale = useLocale() as Locale;
 
   return React.useMemo<ColumnDef<Regulation>[]>(
     () => [
@@ -55,7 +57,7 @@ export function useRegulationsColumns({
             className="text-sm font-medium text-foreground hover:text-primary text-left line-clamp-2 max-w-xs transition-colors"
             onClick={() => onView(row.original.id)}
           >
-            {row.original.name}
+            {pickLocalized(row.original.name, row.original.name_en, locale)}
           </button>
         ),
       },
@@ -136,6 +138,6 @@ export function useRegulationsColumns({
         ),
       },
     ],
-    [t, onView, onEditTags, onReplace, onArchive, onDownload],
+    [t, locale, onView, onEditTags, onReplace, onArchive, onDownload],
   );
 }

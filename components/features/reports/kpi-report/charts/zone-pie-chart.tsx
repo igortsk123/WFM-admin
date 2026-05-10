@@ -1,4 +1,5 @@
-import type { useTranslations } from "next-intl";
+import { useMemo } from "react";
+import { useLocale, type useTranslations } from "next-intl";
 import { BarChart2 } from "lucide-react";
 import {
   PieChart,
@@ -11,6 +12,8 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { EmptyState } from "@/components/shared/empty-state";
 import type { KpiReportData } from "@/lib/api/reports";
+import type { Locale } from "@/lib/types";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 
 import { ChartAiButton } from "../chart-ai-button";
 import { PIE_COLORS } from "../_shared";
@@ -21,6 +24,16 @@ interface ZonePieChartProps {
 }
 
 export function ZonePieChart({ t, data }: ZonePieChartProps) {
+  const locale = useLocale() as Locale;
+  const localizedData = useMemo(
+    () =>
+      data.map((d) => ({
+        ...d,
+        label: pickLocalized(d.label, d.label_en, locale),
+      })),
+    [data, locale],
+  );
+
   return (
     <Card className="rounded-xl">
       <CardHeader className="pb-2">
@@ -36,7 +49,7 @@ export function ZonePieChart({ t, data }: ZonePieChartProps) {
         </div>
       </CardHeader>
       <CardContent>
-        {data.length === 0 ? (
+        {localizedData.length === 0 ? (
           <EmptyState
             icon={BarChart2}
             title={t("empty.no_data_title")}
@@ -48,7 +61,7 @@ export function ZonePieChart({ t, data }: ZonePieChartProps) {
               <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
                   <Pie
-                    data={data}
+                    data={localizedData}
                     dataKey="tasks_total"
                     nameKey="label"
                     cx="50%"
@@ -57,7 +70,7 @@ export function ZonePieChart({ t, data }: ZonePieChartProps) {
                     outerRadius={88}
                     paddingAngle={2}
                   >
-                    {data.map((_, index) => (
+                    {localizedData.map((_, index) => (
                       <Cell
                         key={index}
                         fill={PIE_COLORS[index % PIE_COLORS.length]}
@@ -79,7 +92,7 @@ export function ZonePieChart({ t, data }: ZonePieChartProps) {
               </ResponsiveContainer>
             </div>
             <div className="flex flex-col gap-2 w-full md:w-1/2">
-              {data.map((zone, index) => (
+              {localizedData.map((zone, index) => (
                 <div
                   key={zone.id}
                   className="flex items-center justify-between gap-2 text-sm"

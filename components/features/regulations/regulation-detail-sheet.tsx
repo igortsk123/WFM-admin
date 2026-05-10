@@ -15,8 +15,11 @@ import {
   BarChart2,
 } from "lucide-react";
 import dynamic from "next/dynamic";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { toast } from "sonner";
+
+import type { Locale } from "@/lib/types";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 
 const RegulationUsageChart = dynamic(
   () =>
@@ -123,6 +126,7 @@ export function RegulationDetailSheet({
   onReplaceRequest,
 }: RegulationDetailSheetProps) {
   const t = useTranslations("screen.regulations");
+  const locale = useLocale() as Locale;
 
   const [data, setData] = React.useState<RegulationDetail | null>(null);
   const [loading, setLoading] = React.useState(false);
@@ -149,7 +153,7 @@ export function RegulationDetailSheet({
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = data.name;
+      a.download = pickLocalized(data.name, data.name_en, locale);
       a.click();
       URL.revokeObjectURL(url);
       toast.success(t("toasts.downloaded"));
@@ -243,7 +247,7 @@ export function RegulationDetailSheet({
               </div>
               <div className="flex-1 min-w-0 space-y-1">
                 <SheetTitle className="text-sm font-semibold leading-tight text-foreground line-clamp-2">
-                  {data.name}
+                  {pickLocalized(data.name, data.name_en, locale)}
                 </SheetTitle>
                 <div className="flex items-center gap-2 flex-wrap">
                   <Badge
@@ -309,7 +313,9 @@ export function RegulationDetailSheet({
                 {/* Description */}
                 {data.description && (
                   <div>
-                    <p className="text-sm text-foreground leading-relaxed">{data.description}</p>
+                    <p className="text-sm text-foreground leading-relaxed">
+                      {pickLocalized(data.description, data.description_en, locale)}
+                    </p>
                   </div>
                 )}
 

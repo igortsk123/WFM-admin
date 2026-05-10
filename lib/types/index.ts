@@ -757,8 +757,14 @@ export interface Notification {
   id: string;
   user_id: number;
   category: NotificationCategory;
+  /**
+   * RU-литерал по умолчанию. `title_en`/`body_en` — опциональные EN-переводы
+   * для bilingual demo. UI выбирает текст через `pickLocalized(title, title_en, locale)`.
+   */
   title: string;
   body: string;
+  title_en?: string;
+  body_en?: string;
   data: Record<string, unknown>;
   link?: string;
   is_read: boolean;
@@ -778,9 +784,13 @@ export interface AuditEntry {
   };
   action: string;
   action_label: string;
+  /** Опциональный EN-перевод `action_label` для bilingual demo. */
+  action_label_en?: string;
   entity_type: string;
   entity_id: string;
   entity_name: string;
+  /** Опциональный EN-перевод `entity_name` для bilingual demo (если сущность синтетическая). */
+  entity_name_en?: string;
   entity_url?: string;
   payload: Record<string, unknown>;
   diff?: Array<{
@@ -988,8 +998,14 @@ export interface AIChatMessage {
 /** Загруженные регламенты, ИИ грузит в контекст когда работник просит «подробнее» */
 export interface Regulation {
   id: string;
+  /**
+   * RU-литерал по умолчанию. `name_en`/`description_en` — опциональные EN-переводы
+   * для bilingual demo. UI выбирает текст через `pickLocalized(name, name_en, locale)`.
+   */
   name: string;
   description?: string;
+  name_en?: string;
+  description_en?: string;
   file_url: string;
   file_type: "PDF" | "WORD" | "TXT";
   file_size_bytes: number;
