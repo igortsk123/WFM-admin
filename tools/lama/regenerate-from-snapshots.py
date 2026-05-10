@@ -346,22 +346,36 @@ export const LAMA_EMPLOYEE_WORK_TYPES: Record<number, string[]> = {{
     OUT_WORK_TYPES.write_text("".join(lines), encoding="utf-8")
 
 
-def write_zones_file(zones_by_user: dict[int, list[str]]) -> None:
+def write_zones_file(
+    zones_by_user: dict[int, list[str]],
+    inferred_ids: set[int] | None = None,
+) -> None:
+    inferred_ids = inferred_ids or set()
     n_users = len(zones_by_user)
+    n_inferred = sum(1 for uid in zones_by_user if uid in inferred_ids)
+    n_real = n_users - n_inferred
     all_zones = set()
     for zs in zones_by_user.values():
         all_zones.update(zs)
     n_zones = len(all_zones)
+    avg_zones = (
+        sum(len(zs) for zs in zones_by_user.values()) / max(n_users, 1)
+    )
 
     header = f'''/**
  * Зоны сотрудников из LAMA-истории — какие зоны человек реально
  * выполнял (хоть 1 task в зоне → значит работает там).
  *
  * Сгенерировано из всех snapshot'ов в .lama_snapshots/.
- * Используется в getStoreEmployeesUtilization для проставления
- * реальных зон вместо fallback'а на дефолтные.
+ * Ключ — admin user_id когда сотрудник есть в `_lama-real.ts`,
+ * иначе LAMA employee_id (для shop'ов вне выборки REAL_LAMA_USERS).
+ * Используется в getStoreEmployeesUtilization для проставления реальных
+ * зон вместо fallback'а на дефолтные. Включает peer-inferred entries
+ * для сотрудников без собственной истории — на основе зон, которые
+ * выполняли peers того же `position_name` в том же магазине (cap 6 зон).
  *
- * {n_users} сотрудников, {n_zones} уникальных зон.
+ * {n_users} сотрудников ({n_real} с реальной историей, {n_inferred} peer-inferred),
+ * {n_zones} уникальных зон, среднее {avg_zones:.1f} зон/сотрудник.
  */
 export const LAMA_EMPLOYEE_ZONES: Record<number, string[]> = {{
 '''
@@ -369,7 +383,8 @@ export const LAMA_EMPLOYEE_ZONES: Record<number, string[]> = {{
     for user_id in sorted(zones_by_user.keys()):
         zs = zones_by_user[user_id]
         zs_literal = ", ".join(ts_string_literal(z) for z in zs)
-        lines.append(f"  {user_id}: [{zs_literal}],\n")
+        marker = " // inferred" if user_id in inferred_ids else ""
+        lines.append(f"  {user_id}: [{zs_literal}],{marker}\n")
     lines.append("};\n")
     OUT_ZONES.write_text("".join(lines), encoding="utf-8")
 
@@ -481,41 +496,130 @@ def main() -> None:
             "priority": calc_priority(minutes),
         })
 
-    # 6. Агрегация зон + work_types по сотрудникам — по ВСЕМ snapshot'ам.
-    # work_types нужны как fallback для фильтра «только подходящие сотрудники»
-    # в DistributionSheet — если у задачи нет зоны (Касса/КСО/Менеджерские),
-    # ищем по тому что человек уже делал такой work_type.
-    zones_by_employee: dict[int, set[str]] = defaultdict(set)
-    work_types_by_employee: dict[int, set[str]] = defaultdict(set)
+    # 6. Агрегация зон + work_types по сотрудникам — по ВСЕМ snapshot'ам, по ВСЕМ статусам.
+    # Ключ — `resolved_id`: admin user_id если есть в user_map, иначе LAMA employee_id.
+    # Это покрывает все 132 магазина (включая те которых нет в `_lama-real.ts`
+    # как REAL_LAMA_USERS — там только 593 user'а из stores 200-229).
+    # Используется в getStoreEmployeesUtilization (по shift.user_id) и в
+    # toUtilizationFromPlanning (по resolved id из planning pool).
+    #
+    # Дополнительно: после прохода по реальной истории — peer-inference:
+    # для сотрудника без личной истории зон берём пересечение зон same-position-name
+    # peers в том же shop (директор/универсал в same shop ≈ same зон ассортимент).
+    # Помечаем такие записи как `inferred` через отдельный set.
+    #
+    # Также собираем positions_by_emp + emp_to_shop для peer-inference.
+    zones_by_resolved: dict[int, set[str]] = defaultdict(set)
+    work_types_by_resolved: dict[int, set[str]] = defaultdict(set)
+    emp_to_shop: dict[int, str] = {}
+    emp_to_position: dict[int, str] = {}
+    emp_resolved_id: dict[int, int] = {}
+    shop_to_emps: dict[str, set[int]] = defaultdict(set)
     unmapped_employees: dict[int, int] = defaultdict(int)
-    for date, snap in snaps:
+
+    # 6.1 Сбор position/shop из employees секции snapshot'ов (latest wins)
+    for _, snap in snaps:
+        for e in snap.get("employees", []):
+            emp_id = e.get("employee_id")
+            sc = e.get("shop_code")
+            if emp_id is None or not sc:
+                continue
+            emp_to_shop[emp_id] = sc
+            emp_to_position[emp_id] = _normalize(e.get("position_name") or "")
+            emp_resolved_id[emp_id] = user_map.get(emp_id, emp_id)
+            shop_to_emps[sc].add(emp_id)
+
+    # 6.2 Реальная история назначений — zones + work_types по фактическому
+    # `_employee_id` task'ов (все статусы: `responsible_id` валидно везде).
+    for _, snap in snaps:
         for t in snap.get("tasks", []):
             emp_id = t.get("_employee_id")
             if emp_id is None:
                 continue
+            # Resolve id: admin user_id если есть, иначе LAMA employee_id
             if emp_id not in user_map:
                 unmapped_employees[emp_id] += 1
-                continue
-            user_id = user_map[emp_id]
+            resolved_id = user_map.get(emp_id, emp_id)
+            # Бэкфилл shop/position если employee есть в task'ах но не было в employees секции
+            if emp_id not in emp_resolved_id:
+                emp_resolved_id[emp_id] = resolved_id
+                sc = t.get("_shop_code")
+                if sc:
+                    emp_to_shop[emp_id] = sc
+                    shop_to_emps[sc].add(emp_id)
 
             zone_raw = t.get("operation_zone")
             if zone_raw and zone_raw != "N/A":
-                zones_by_employee[user_id].add(_normalize(zone_raw))
+                zones_by_resolved[resolved_id].add(_normalize(zone_raw))
 
             work_raw = t.get("operation_work")
             if work_raw:
-                work_types_by_employee[user_id].add(_normalize(work_raw))
+                work_types_by_resolved[resolved_id].add(_normalize(work_raw))
+
+    # 6.3 Peer-inference для сотрудников БЕЗ собственной истории зон.
+    # Идея: same-position-name peers в same shop ≈ same зон ассортимент.
+    # «Продавец-универсал» в shop X выкладывает примерно те же зоны что и
+    # другие продавцы-универсалы того же shop. Мы НЕ даём ВСЕ зоны магазина —
+    # только те которые реально работали peers того же position_name.
+    # Ограничение: max 6 inferred zones per emp (чтобы фильтр не стал no-op).
+    #
+    # Helper: per-shop-per-position → union of peer zones
+    INFERENCE_CAP = 6
+    inferred_emps: set[int] = set()
+    # peer_zone_pool[(shop_code, position_name)] = set[str]
+    peer_zone_pool: dict[tuple[str, str], set[str]] = defaultdict(set)
+    for emp_id, resolved_id in emp_resolved_id.items():
+        sc = emp_to_shop.get(emp_id)
+        pos = emp_to_position.get(emp_id, "")
+        if not sc or not pos:
+            continue
+        z = zones_by_resolved.get(resolved_id, set())
+        if z:
+            peer_zone_pool[(sc, pos)].update(z)
+
+    # Применяем pool к employees без zones
+    inferred_count = 0
+    for emp_id, resolved_id in emp_resolved_id.items():
+        if zones_by_resolved.get(resolved_id):
+            continue  # уже есть собственная история
+        sc = emp_to_shop.get(emp_id)
+        pos = emp_to_position.get(emp_id, "")
+        if not sc:
+            continue
+        # Сначала пробуем same-position-in-same-shop pool
+        pool = peer_zone_pool.get((sc, pos), set())
+        if not pool and pos:
+            # Фолбэк: same-shop любые peers (если ни один peer того же position
+            # не работал — например уникальная роль в магазине). Это даёт хотя
+            # бы какой-то signal, иначе фильтр всё равно сломается.
+            pool = set()
+            for (psc, _ppos), pz in peer_zone_pool.items():
+                if psc == sc:
+                    pool.update(pz)
+        if not pool:
+            continue
+        # Cap inferred zones
+        z_sorted = sorted(pool)[:INFERENCE_CAP]
+        zones_by_resolved[resolved_id].update(z_sorted)
+        inferred_emps.add(resolved_id)
+        inferred_count += 1
+
+    print(
+        f"Zone inference: {inferred_count} employees got peer-inferred zones "
+        f"(same-position-in-same-shop)",
+        file=sys.stderr,
+    )
 
     zones_by_user_sorted = {
-        uid: sorted(z) for uid, z in zones_by_employee.items()
+        uid: sorted(z) for uid, z in zones_by_resolved.items()
     }
     work_types_by_user_sorted = {
-        uid: sorted(w) for uid, w in work_types_by_employee.items()
+        uid: sorted(w) for uid, w in work_types_by_resolved.items()
     }
 
     # 7. Запись файлов
     write_blocks_file(blocks, latest_date, len(snaps))
-    write_zones_file(zones_by_user_sorted)
+    write_zones_file(zones_by_user_sorted, inferred_emps)
     write_work_types_file(work_types_by_user_sorted)
     write_medians_file(per_day_minutes, shop_dates)
 
