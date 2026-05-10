@@ -51,6 +51,8 @@ export { ResponsiveDataTable } from "./responsive-data-table"
 export { MobileFilterSheet } from "./mobile-filter-sheet"
 export { MobileBottomNav } from "./mobile-bottom-nav"
 export { TouchInlineEdit } from "./touch-inline-edit"
+export { BulkActionBar } from "./bulk-action-bar"
+export type { BulkActionBarProps, BulkActionBarVariant } from "./bulk-action-bar"
 
 // Admin shell components
 export { AdminSidebar } from "./admin-sidebar"

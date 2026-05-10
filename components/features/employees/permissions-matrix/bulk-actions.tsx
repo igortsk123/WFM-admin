@@ -22,6 +22,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { BulkActionBar as SharedBulkActionBar } from "@/components/shared/bulk-action-bar";
 
 import type { Permission } from "@/lib/types";
 
@@ -191,31 +192,31 @@ export function BulkActionBar({
 }) {
   const t = useTranslations("screen.permissions");
 
-  if (selectedCount === 0) return null;
-
   return (
-    <div className="flex items-center gap-3 rounded-lg border bg-card px-4 py-3 shadow-sm flex-wrap">
-      <span className="text-sm font-medium text-foreground">
-        {t("bulk.selected", { count: selectedCount })}
-      </span>
-      <div className="flex items-center gap-2 ml-auto flex-wrap">
-        <Button size="sm" variant="outline" className="h-9" onClick={onBulkAssign}>
-          <CheckCheck className="size-4 mr-1.5" />
-          <span className="hidden md:inline">{t("bulk.assign_permission")}</span>
-        </Button>
-        <Button
-          size="sm"
-          variant="outline"
-          className="h-9 border-destructive text-destructive hover:bg-destructive/5"
-          onClick={onBulkRevoke}
-        >
-          <XCircle className="size-4 mr-1.5" />
-          <span className="hidden md:inline">{t("bulk.revoke_permission")}</span>
-        </Button>
-        <Button size="sm" variant="ghost" className="h-9" onClick={onClear}>
-          {t("bulk.clear")}
-        </Button>
-      </div>
-    </div>
+    <SharedBulkActionBar
+      variant="inline"
+      selectedCount={selectedCount}
+      countLabel={t("bulk.selected", { count: selectedCount })}
+      actions={
+        <>
+          <Button size="sm" variant="outline" className="h-9" onClick={onBulkAssign}>
+            <CheckCheck className="size-4 mr-1.5" />
+            <span className="hidden md:inline">{t("bulk.assign_permission")}</span>
+          </Button>
+          <Button
+            size="sm"
+            variant="outline"
+            className="h-9 border-destructive text-destructive hover:bg-destructive/5"
+            onClick={onBulkRevoke}
+          >
+            <XCircle className="size-4 mr-1.5" />
+            <span className="hidden md:inline">{t("bulk.revoke_permission")}</span>
+          </Button>
+          <Button size="sm" variant="ghost" className="h-9" onClick={onClear}>
+            {t("bulk.clear")}
+          </Button>
+        </>
+      }
+    />
   );
 }
