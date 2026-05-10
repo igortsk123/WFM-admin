@@ -831,15 +831,45 @@ export interface ProductCategory {
   org_id?: string;
 }
 
+/** Направление метрики цели — растущая (увеличение good) или убывающая (снижение good). */
+export type GoalDirection = "increase" | "decrease";
+
+/** Период расчёта денежного эффекта. */
+export type MoneyImpactPeriod = "week" | "month" | "quarter" | "year";
+
+/**
+ * Денежная выгода от достижения цели.
+ * `amount` в рублях за `period`. `rationale_short` — 1 строка для пилюли.
+ * `rationale_breakdown` — пункты для popover/sheet «Подробнее».
+ */
+export interface MoneyImpact {
+  amount: number;
+  period: MoneyImpactPeriod;
+  rationale_short: string;
+  rationale_breakdown: string[];
+}
+
 /** AI-Assistant цель + ручная */
 export interface Goal {
   id: string;
   category: GoalCategory;
   title: string;
   description: string;
+  /**
+   * Значение метрики на момент установки цели — нужно для прогресса
+   * (closedGap = |starting - current| при decrease, current - starting при increase).
+   * Optional для backward compat — если не задано, прогресс считаем как
+   * `current_value / target_value` (старая логика для растущих метрик).
+   */
+  starting_value?: number;
   target_value: number;
   target_unit: string;
   current_value: number;
+  /**
+   * Направление метрики. Если не задано — выводим из target vs starting:
+   * target < starting → "decrease", иначе "increase".
+   */
+  direction?: GoalDirection;
   status: GoalStatus;
   store_id?: number | null;
   scope: "STORE" | "NETWORK";
@@ -848,6 +878,11 @@ export interface Goal {
   selected_at?: string;
   period_start: string;
   period_end: string;
+  /**
+   * Денежная выгода от достижения цели. Optional —
+   * не у всех целей оценка есть (новые / custom).
+   */
+  money_impact?: MoneyImpact;
 }
 
 /** Источник бонуса. GOAL_LINKED — бонус привязан к active Goal */

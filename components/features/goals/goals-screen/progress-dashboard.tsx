@@ -13,6 +13,7 @@ import { Progress } from "@/components/ui/progress";
 import type { GoalProgress } from "@/lib/api/goals";
 import type { Locale } from "@/lib/types";
 import { formatDate } from "@/lib/utils/format";
+import { computeGoalProgressWithCurrent } from "@/lib/utils/goals-progress";
 
 import {
   SPARKLINE_DATA,
@@ -70,11 +71,10 @@ export function ProgressDashboard({
             <CardContent className="p-4 space-y-3">
               <p className="text-sm font-medium">{t("progress_dashboard.q2_title")}</p>
               <Progress
-                value={
-                  ((activeGoal.target_value - goalProgress.current_value) /
-                    (activeGoal.target_value - activeGoal.current_value)) *
-                  100
-                }
+                value={computeGoalProgressWithCurrent(
+                  activeGoal,
+                  goalProgress.current_value
+                )}
                 className="h-3"
               />
               <p className="text-xs text-muted-foreground">

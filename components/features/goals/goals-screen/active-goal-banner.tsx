@@ -1,4 +1,5 @@
 import {
+  Coins,
   Gift,
   MessageSquare,
   Sparkles,
@@ -13,6 +14,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Progress } from "@/components/ui/progress";
 import {
   Tooltip,
@@ -27,6 +33,7 @@ import { ADMIN_ROUTES } from "@/lib/constants/routes";
 import type { Locale } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { formatDate, formatDateTime } from "@/lib/utils/format";
+import { computeGoalProgressWithCurrent } from "@/lib/utils/goals-progress";
 
 import { CategoryBadge } from "./category-badge";
 import { RemoveGoalDialogContent } from "./remove-goal-dialog";
@@ -58,6 +65,13 @@ export function ActiveGoalBanner({
   t: GoalsT;
   tCommon: CommonT;
 }) {
+  const progressPct = activeGoal
+    ? computeGoalProgressWithCurrent(
+        activeGoal,
+        goalProgress?.current_value ?? activeGoal.current_value
+      )
+    : 0;
+
   return (
     <Card className={cn("border-2", activeGoal ? "border-primary" : "border-border")}>
       <CardContent className="p-6">
@@ -89,25 +103,9 @@ export function ActiveGoalBanner({
                     {t("active_goal.stats.progress")}
                   </p>
                   <p className="text-2xl font-semibold">
-                    {goalProgress
-                      ? Math.round(
-                          ((activeGoal.target_value - goalProgress.current_value) /
-                            (activeGoal.target_value - activeGoal.current_value)) *
-                            100
-                        )
-                      : 42}
-                    %
+                    {progressPct}%
                   </p>
-                  <Progress
-                    value={
-                      goalProgress
-                        ? ((activeGoal.target_value - goalProgress.current_value) /
-                            (activeGoal.target_value - activeGoal.current_value)) *
-                          100
-                        : 42
-                    }
-                    className="h-2"
-                  />
+                  <Progress value={progressPct} className="h-2" />
                 </CardContent>
               </Card>
 
@@ -158,6 +156,16 @@ export function ActiveGoalBanner({
                 </CardContent>
               </Card>
             </div>
+
+            {/* Money impact */}
+            {activeGoal.money_impact && (
+              <MoneyImpactPill
+                impact={activeGoal.money_impact}
+                goalId={activeGoal.id}
+                locale={locale}
+                t={t}
+              />
+            )}
 
             {/* Set by hint */}
             {activeGoal.selected_at && activeGoal.selected_by_user && (
@@ -229,5 +237,97 @@ export function ActiveGoalBanner({
         )}
       </CardContent>
     </Card>
+  );
+}
+
+// ─────────────────────────────────────────────────────────────────────
+// Money impact — пилюля с popover'ом «Подробнее»
+// ─────────────────────────────────────────────────────────────────────
+
+function MoneyImpactPill({
+  impact,
+  goalId,
+  locale,
+  t,
+}: {
+  impact: NonNullable<GoalWithUser["money_impact"]>;
+  goalId: string;
+  locale: Locale;
+  t: GoalsT;
+}) {
+  const formattedAmount = new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: "RUB",
+    maximumFractionDigits: 0,
+  }).format(impact.amount);
+
+  const periodLabel = t(`active_goal.money.period.${impact.period}`);
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className={cn(
+            "inline-flex w-full items-start gap-3 rounded-lg border border-success/30 bg-success/10 p-3 text-left",
+            "hover:bg-success/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-success",
+            "transition-colors"
+          )}
+          aria-label={t("active_goal.money.aria_open_breakdown")}
+        >
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-success/20">
+            <Coins className="size-4 text-success" aria-hidden="true" />
+          </span>
+          <span className="flex flex-col gap-0.5 min-w-0 flex-1">
+            <span className="flex flex-wrap items-baseline gap-x-2">
+              <span className="text-xs font-medium text-success">
+                {t("active_goal.money.label")}
+              </span>
+              <span className="text-base font-semibold tabular-nums">
+                +{formattedAmount}/{periodLabel}
+              </span>
+            </span>
+            <span className="text-xs text-muted-foreground line-clamp-2">
+              {impact.rationale_short}
+            </span>
+          </span>
+          <span className="text-xs font-medium text-success shrink-0 self-center">
+            {t("active_goal.money.details")}
+          </span>
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-[min(420px,calc(100vw-2rem))] p-4 space-y-3">
+        <div className="space-y-1">
+          <p className="text-xs font-medium text-muted-foreground">
+            {t("active_goal.money.label")}
+          </p>
+          <p className="text-xl font-semibold tabular-nums">
+            +{formattedAmount}/{periodLabel}
+          </p>
+          <p className="text-sm text-muted-foreground">
+            {impact.rationale_short}
+          </p>
+        </div>
+        <div className="space-y-2 border-t border-border pt-3">
+          <p className="text-xs font-medium uppercase text-muted-foreground tracking-wide">
+            {t("active_goal.money.breakdown_title")}
+          </p>
+          <ul className="space-y-1.5 text-sm">
+            {impact.rationale_breakdown.map((line, i) => (
+              <li key={i} className="flex gap-2">
+                <span className="text-success mt-1.5 size-1 rounded-full bg-success shrink-0" aria-hidden="true" />
+                <span className="text-foreground leading-relaxed">{line}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        <Button asChild variant="default" size="sm" className="w-full">
+          <Link href={`${ADMIN_ROUTES.aiChat}?context_type=goal&context_id=${goalId}`}>
+            <MessageSquare className="size-4 mr-1.5" aria-hidden="true" />
+            {t("active_goal.money.details_in_ai_chat")}
+          </Link>
+        </Button>
+      </PopoverContent>
+    </Popover>
   );
 }

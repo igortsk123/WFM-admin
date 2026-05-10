@@ -4568,7 +4568,20 @@
         },
         "set_by_hint": "Установлена {date} {user}",
         "no_active_title": "На эту неделю цель не установлена",
-        "no_active_cta": "Выбрать цель из предложений ниже"
+        "no_active_cta": "Выбрать цель из предложений ниже",
+        "money": {
+          "label": "Денежный эффект",
+          "details": "Подробнее",
+          "details_in_ai_chat": "Разобрать в ИИ-чате",
+          "breakdown_title": "Как считаем",
+          "aria_open_breakdown": "Открыть подробный расчёт денежного эффекта",
+          "period": {
+            "week": "неделю",
+            "month": "месяц",
+            "quarter": "квартал",
+            "year": "год"
+          }
+        }
       },
       "proposals": {
         "section_title": "Предложения ИИ",

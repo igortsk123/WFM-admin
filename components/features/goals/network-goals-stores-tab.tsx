@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { getNetworkGoals, type NetworkGoalStore } from "@/lib/api/ai-performance";
+import { computeGoalProgress } from "@/lib/utils/goals-progress";
 
 const NetworkGoalsSparkline = dynamic(
   () =>
@@ -160,9 +161,7 @@ export function StoresTab() {
           const goal = row.original.active_goal;
           if (!goal) return <span className="text-muted-foreground">—</span>;
 
-          const progress = Math.round(
-            (goal.current_value / goal.target_value) * 100
-          );
+          const progress = computeGoalProgress(goal);
           return (
             <div className="flex items-center gap-2 w-24">
               <Progress value={progress} className="h-2 flex-1" />
@@ -447,9 +446,7 @@ interface StoreRowCardProps {
 function StoreRowCard({ store, onRowClick }: StoreRowCardProps) {
   const t = useTranslations("screen.networkGoals.stores_tab");
   const goal = store.active_goal;
-  const progress = goal
-    ? Math.round((goal.current_value / goal.target_value) * 100)
-    : 0;
+  const progress = goal ? computeGoalProgress(goal) : 0;
 
   return (
     <div

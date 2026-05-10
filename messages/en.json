@@ -4568,7 +4568,20 @@
         },
         "set_by_hint": "Set on {date} by {user}",
         "no_active_title": "No goal set for this week",
-        "no_active_cta": "Pick a goal from the suggestions below"
+        "no_active_cta": "Pick a goal from the suggestions below",
+        "money": {
+          "label": "Money impact",
+          "details": "Details",
+          "details_in_ai_chat": "Explore in AI Chat",
+          "breakdown_title": "How we calculate it",
+          "aria_open_breakdown": "Open detailed money-impact breakdown",
+          "period": {
+            "week": "week",
+            "month": "month",
+            "quarter": "quarter",
+            "year": "year"
+          }
+        }
       },
       "proposals": {
         "section_title": "AI suggestions",
