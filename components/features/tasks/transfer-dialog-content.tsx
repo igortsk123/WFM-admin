@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useTranslations } from "next-intl"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { cn } from "@/lib/utils"
-import { MOCK_USERS } from "@/lib/mock-data/users"
+import { getUsers, type UserWithAssignment } from "@/lib/api"
 
 interface TransferDialogContentProps {
   currentAssigneeId?: number | null
@@ -23,10 +23,30 @@ export function TransferDialogContent({ currentAssigneeId, onTransfer, onClose, 
   const tCommon = useTranslations("common")
   const [open, setOpen] = useState(false)
   const [selectedId, setSelectedId] = useState<number | null>(null)
+  const [candidates, setCandidates] = useState<UserWithAssignment[]>([])
 
-  const candidates = MOCK_USERS.filter(
-    (u) => !u.archived && u.type === "STAFF" && u.id !== currentAssigneeId
-  ).slice(0, 20)
+  useEffect(() => {
+    let cancelled = false
+    getUsers({
+      employment_type: "STAFF",
+      archived: false,
+      page: 1,
+      page_size: 30,
+    })
+      .then((res) => {
+        if (cancelled) return
+        setCandidates(
+          res.data.filter((u) => u.id !== currentAssigneeId).slice(0, 20),
+        )
+      })
+      .catch(() => {
+        if (cancelled) return
+        setCandidates([])
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [currentAssigneeId])
 
   const selected = candidates.find((u) => u.id === selectedId)
 
@@ -55,7 +75,7 @@ export function TransferDialogContent({ currentAssigneeId, onTransfer, onClose, 
                 className="w-full justify-between font-normal"
               >
                 {selected
-                  ? `${selected.last_name} ${selected.first_name} ${selected.middle_name ?? ""}`
+                  ? `${selected.last_name} ${selected.first_name} ${selected.middle_name ?? ""}`.trim()
                   : t("transfer_assignee_placeholder")}
                 <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
               </Button>

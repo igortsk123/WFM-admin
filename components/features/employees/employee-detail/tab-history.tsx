@@ -1,9 +1,11 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { useTranslations } from "next-intl"
 import { CheckCircle2, FileText } from "lucide-react"
 
-import type { UserDetail } from "@/lib/api/users"
+import type { UserDetail, UserHistoryEvent } from "@/lib/api"
+import { getUserHistoryEvents } from "@/lib/api"
 
 import { Card, CardContent } from "@/components/ui/card"
 import { EmptyState } from "@/components/shared"
@@ -17,32 +19,56 @@ interface EmployeeHistoryTabProps {
   t: ReturnType<typeof useTranslations<"screen.employeeDetail">>
 }
 
-const MOCK_HISTORY = [
-  { id: "h1", occurred_at: "2026-04-15T10:22:00Z", actor: "Романов И. А.", action_label: "Назначена привилегия SELF_CHECKOUT", type: "permission_granted" },
-  { id: "h2", occurred_at: "2024-09-01T09:00:00Z", actor: "Иванов А. С.",  action_label: "Назначена привилегия SELF_CHECKOUT", type: "permission_granted" },
-  { id: "h3", occurred_at: "2024-03-20T08:30:00Z", actor: "Романов И. А.", action_label: "Назначены привилегии CASHIER, SALES_FLOOR", type: "permission_granted" },
-  { id: "h4", occurred_at: "2024-03-15T07:00:00Z", actor: "Системная миграция", action_label: "Сотрудник добавлен в систему", type: "system" },
-]
+export function EmployeeHistoryTab({ user, locale, formatTime, t }: EmployeeHistoryTabProps) {
+  const [events, setEvents] = useState<UserHistoryEvent[]>([])
+  const [loading, setLoading] = useState(true)
 
-export function EmployeeHistoryTab({ user: _user, locale, formatTime, t }: EmployeeHistoryTabProps) {
-  if (MOCK_HISTORY.length === 0) {
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    getUserHistoryEvents(user.id)
+      .then((res) => {
+        if (cancelled) return
+        setEvents(res.data)
+      })
+      .finally(() => {
+        if (cancelled) return
+        setLoading(false)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [user.id])
+
+  if (loading) {
+    return (
+      <Card>
+        <CardContent className="p-4 md:p-6">
+          <div className="text-sm text-muted-foreground">…</div>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  if (events.length === 0) {
     return <EmptyState icon={FileText} title={t("history.empty")} description="" />
   }
+
   return (
     <Card>
       <CardContent className="p-4 md:p-6">
         <ol className="flex flex-col">
-          {MOCK_HISTORY.map((item, idx) => (
+          {events.map((item, idx) => (
             <li key={item.id} className="flex gap-3 group">
               <div className="flex flex-col items-center shrink-0">
                 <span className="flex size-7 items-center justify-center rounded-full bg-muted mt-0.5">
                   <CheckCircle2 className="size-3.5 text-success" aria-hidden="true" />
                 </span>
-                {idx < MOCK_HISTORY.length - 1 && (
+                {idx < events.length - 1 && (
                   <div className="w-px flex-1 bg-border mt-1 mb-1" aria-hidden="true" />
                 )}
               </div>
-              <div className={`flex flex-col gap-0.5 pb-4 min-w-0 flex-1 ${idx === MOCK_HISTORY.length - 1 ? "pb-0" : ""}`}>
+              <div className={`flex flex-col gap-0.5 pb-4 min-w-0 flex-1 ${idx === events.length - 1 ? "pb-0" : ""}`}>
                 <p className="text-sm text-foreground">
                   <span className="font-medium">{item.actor}</span>
                   {" — "}

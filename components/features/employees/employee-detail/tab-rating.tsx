@@ -36,7 +36,12 @@ export function EmployeeRatingTab({ user, t }: EmployeeRatingTabProps) {
     )
   }
 
-  const ratingData = MOCK_FREELANCE_RATING
+  // Use user's actual LAMA rating if present; criteria breakdown пока synthetic
+  // (backend ещё не отдаёт per-criteria scores — TODO: backend provides this on real swap).
+  const ratingData = {
+    ...MOCK_FREELANCE_RATING,
+    overall: user.rating ?? MOCK_FREELANCE_RATING.overall,
+  }
 
   return (
     <div className="flex flex-col gap-6">

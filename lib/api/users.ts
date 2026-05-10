@@ -25,6 +25,8 @@ import { MOCK_FUNCTIONAL_ROLES } from "@/lib/mock-data/functional-roles";
 import { MOCK_SHIFTS } from "@/lib/mock-data/shifts";
 import { MOCK_FREELANCE_AGENTS } from "@/lib/mock-data/freelance-agents";
 import { MOCK_ORGANIZATIONS } from "@/lib/mock-data/organizations";
+import { LAMA_EMPLOYEE_WORK_TYPES } from "@/lib/mock-data/_lama-employee-work-types";
+import { REAL_LAMA_POSITIONS } from "@/lib/mock-data/_lama-real";
 
 /** Сегодняшняя дата в моках — синхронизируем с MOCK_SHIFTS / MOCK_TASKS. */
 const TODAY = "2026-05-01";
@@ -34,6 +36,68 @@ const TODAY = "2026-05-01";
 // ═══════════════════════════════════════════════════════════════════
 
 const delay = (ms: number = 300) => new Promise((r) => setTimeout(r, ms));
+
+// ───────────────────────────────────────────────────────────────────
+// LAMA derivation helpers — для 1850+ реальных сотрудников у которых
+// MOCK_PERMISSIONS / MOCK_FUNCTIONAL_ROLES / scope не заполнены вручную.
+// Используем то что реально дала LAMA: типы работ из истории + позицию.
+// При swap на real backend эти fallback'и удаляются — backend отдаст
+// реальные granted permissions (см. MIGRATION-NOTES.md).
+// ───────────────────────────────────────────────────────────────────
+
+/** Маппинг LAMA work_type → admin Permission. */
+const LAMA_WORKTYPE_TO_PERMISSION: Record<string, Permission> = {
+  "Касса": "CASHIER",
+  "КСО": "SELF_CHECKOUT",
+  "Выкладка": "SALES_FLOOR",
+  "Переоценка": "SALES_FLOOR",
+  "Менеджерские операции": "SALES_FLOOR",
+  "Инвентаризация": "WAREHOUSE",
+  "Другие работы": "SALES_FLOOR",
+};
+
+/** Position id → functional_role default (через REAL_LAMA_POSITIONS). */
+const LAMA_POSITION_FROLE: Map<number, FunctionalRole> = new Map(
+  REAL_LAMA_POSITIONS.map((p) => [
+    p.id,
+    (p.functional_role_default as FunctionalRole | undefined) ?? "WORKER",
+  ]),
+);
+
+/** Derive permissions из LAMA work-types (deduped, отсортирован). */
+function deriveLamaPermissions(userId: number): Permission[] {
+  const workTypes = LAMA_EMPLOYEE_WORK_TYPES[userId];
+  if (!workTypes) return [];
+  const set = new Set<Permission>();
+  for (const wt of workTypes) {
+    const p = LAMA_WORKTYPE_TO_PERMISSION[wt];
+    if (p) set.add(p);
+  }
+  return Array.from(set).sort();
+}
+
+/** Derive functional role из active assignment + position default. */
+function deriveLamaFunctionalRole(userId: number): FunctionalRole | undefined {
+  const a = MOCK_ASSIGNMENTS.find((x) => x.user_id === userId && x.active);
+  if (!a) return undefined;
+  return LAMA_POSITION_FROLE.get(a.position_id);
+}
+
+/** Build WorkerPermission[] из LAMA-derived (для UserDetail.permissions). */
+function buildLamaWorkerPermissions(
+  userId: number,
+  hiredAt: string,
+): WorkerPermission[] {
+  const perms = deriveLamaPermissions(userId);
+  // Стабильные id в негативном диапазоне чтобы не пересекались с MOCK_PERMISSIONS.
+  return perms.map((p, idx) => ({
+    id: -(userId * 10 + idx),
+    user_id: userId,
+    permission: p,
+    granted_at: hiredAt,
+    granted_by_name: "LAMA импорт",
+  }));
+}
 
 /** User with embedded assignment, permissions, и текущая смена (если есть). */
 export interface UserWithAssignment extends User {
@@ -190,8 +254,11 @@ export async function getUsers(
     archived = false,
     page = 1,
     page_size = 20,
+    // Default: id desc → реальные LAMA сотрудники (id 300+) идут первыми,
+    // демка показывает живые ФИО Томск/Северск/Новосибирск, а не синтетических
+    // персонажей-логинов 1-29. Synthetic personas остаются доступны через поиск.
     sort_by = "id",
-    sort_dir = "asc",
+    sort_dir = "desc",
   } = params;
 
   let filtered = [...MOCK_USERS];
@@ -199,12 +266,18 @@ export async function getUsers(
   // Filter by archived status
   filtered = filtered.filter((u) => u.archived === archived);
 
-  // Filter by role (using functional roles)
+  // Filter by role (using functional roles + LAMA fallback)
   if (role) {
-    const roleUserIds = MOCK_FUNCTIONAL_ROLES
-      .filter((r) => r.functional_role === role)
-      .map((r) => r.user_id);
-    filtered = filtered.filter((u) => roleUserIds.includes(u.id));
+    const explicitRoleUserIds = new Set(
+      MOCK_FUNCTIONAL_ROLES
+        .filter((r) => r.functional_role === role)
+        .map((r) => r.user_id),
+    );
+    filtered = filtered.filter((u) => {
+      if (explicitRoleUserIds.has(u.id)) return true;
+      // LAMA fallback: derive role из позиции в active assignment.
+      return deriveLamaFunctionalRole(u.id) === role;
+    });
   }
 
   // Filter by store(s) — multi takes precedence over single
@@ -238,12 +311,17 @@ export async function getUsers(
     ? permissions
     : (permission ? [permission] : null);
   if (effectivePermissions) {
-    const permUserIds = new Set(
+    const grantedSet = new Set(
       MOCK_PERMISSIONS
         .filter((p) => !p.revoked_at && effectivePermissions.includes(p.permission))
         .map((p) => p.user_id),
     );
-    filtered = filtered.filter((u) => permUserIds.has(u.id));
+    filtered = filtered.filter((u) => {
+      if (grantedSet.has(u.id)) return true;
+      // LAMA fallback: derive permissions из истории work_types.
+      const lamaPerms = deriveLamaPermissions(u.id);
+      return lamaPerms.some((p) => effectivePermissions.includes(p));
+    });
   }
 
   // Filter by employment type
@@ -286,7 +364,12 @@ export async function getUsers(
     const bVal = b[sort_by as keyof User];
     if (aVal === undefined) return 1;
     if (bVal === undefined) return -1;
-    const cmp = String(aVal).localeCompare(String(bVal));
+    let cmp: number;
+    if (typeof aVal === "number" && typeof bVal === "number") {
+      cmp = aVal - bVal;
+    } else {
+      cmp = String(aVal).localeCompare(String(bVal));
+    }
     return sort_dir === "asc" ? cmp : -cmp;
   });
 
@@ -301,13 +384,19 @@ export async function getUsers(
       (a) => a.user_id === user.id && a.active
     ) ?? MOCK_ASSIGNMENTS.find((a) => a.user_id === user.id)!;
 
-    const userPerms = MOCK_PERMISSIONS
+    const explicitPerms = MOCK_PERMISSIONS
       .filter((p) => p.user_id === user.id && !p.revoked_at)
       .map((p) => p.permission);
+    // LAMA fallback: если нет явных permissions, выводим из истории work_types.
+    // (1850+ LAMA сотрудников не имеют записей в MOCK_PERMISSIONS — без этого
+    // в employees-list был бы пустой столбец «Привилегии».)
+    const userPerms = explicitPerms.length > 0
+      ? explicitPerms
+      : deriveLamaPermissions(user.id);
 
-    const funcRole = MOCK_FUNCTIONAL_ROLES.find(
-      (r) => r.user_id === user.id,
-    )?.functional_role;
+    const funcRole =
+      MOCK_FUNCTIONAL_ROLES.find((r) => r.user_id === user.id)?.functional_role
+      ?? deriveLamaFunctionalRole(user.id);
 
     // Сегодняшняя смена пользователя — берём первую (план или факт) на TODAY.
     const todayShift = MOCK_SHIFTS.find(
@@ -359,9 +448,14 @@ export async function getUserById(
   }
 
   const assignments = MOCK_ASSIGNMENTS.filter((a) => a.user_id === id);
-  const permissions = MOCK_PERMISSIONS.filter((p) => p.user_id === id);
+  const explicitPermissions = MOCK_PERMISSIONS.filter((p) => p.user_id === id);
+  // LAMA fallback: если нет явных permissions — генерируем из work-types истории.
+  const permissions: WorkerPermission[] =
+    explicitPermissions.length > 0
+      ? explicitPermissions
+      : buildLamaWorkerPermissions(id, user.hired_at ?? TODAY);
 
-  // Resolve functional scope
+  // Resolve functional scope (с LAMA fallback)
   const roleAssignment = MOCK_FUNCTIONAL_ROLES.find((r) => r.user_id === id);
   let functional_scope: UserFunctionalScope | undefined;
   if (roleAssignment) {
@@ -370,6 +464,18 @@ export async function getUserById(
       scope_type: roleAssignment.scope_type,
       scope_ids: roleAssignment.scope_ids,
     };
+  } else {
+    // LAMA fallback: scope_type=STORE, scope = active assignment store.
+    const lamaRole = deriveLamaFunctionalRole(id);
+    const activeAssignment = assignments.find((a) => a.active);
+    if (lamaRole && activeAssignment) {
+      functional_scope = {
+        functional_role: lamaRole,
+        scope_type: "STORE",
+        scope_ids: [activeAssignment.store_id],
+        scope_store_names: [activeAssignment.store_name],
+      };
+    }
   }
 
   // Current shift
@@ -377,7 +483,8 @@ export async function getUserById(
     (s) => s.user_id === id && s.shift_date === TODAY,
   ) ?? null;
 
-  // Mock realistic stats for demo user 101, generic fallback for others
+  // Mock realistic stats for demo user 101, deterministic-by-id для остальных
+  // (Math.random на каждый запрос → цифры скакали бы при reload — плохо для демо.)
   const stats: UserStats =
     id === 101
       ? {
@@ -389,15 +496,24 @@ export async function getUserById(
           avg_completion_min: 42,
           avg_completion_diff_min: -3,
         }
-      : {
-          tasks_total: Math.floor(20 + Math.random() * 60),
-          tasks_diff_pct: Math.floor(-10 + Math.random() * 25),
-          tasks_accepted: Math.floor(15 + Math.random() * 50),
-          tasks_rejected: Math.floor(Math.random() * 8),
-          paused_now: Math.floor(Math.random() * 3),
-          avg_completion_min: Math.floor(30 + Math.random() * 40),
-          avg_completion_diff_min: Math.floor(-8 + Math.random() * 16),
-        };
+      : (() => {
+          // Detrm seed: используем id чтобы цифры были стабильны между загрузками.
+          const seed = (n: number) => (id * 9301 + n * 49297) % 233280;
+          const rng = (n: number, lo: number, hi: number) =>
+            lo + (seed(n) % (hi - lo + 1));
+          const total = rng(1, 30, 95);
+          const accepted = Math.floor(total * (0.78 + (seed(2) % 15) / 100));
+          const rejected = Math.max(0, Math.min(total - accepted, rng(3, 0, 7)));
+          return {
+            tasks_total: total,
+            tasks_diff_pct: rng(4, -8, 18),
+            tasks_accepted: accepted,
+            tasks_rejected: rejected,
+            paused_now: rng(5, 0, 2),
+            avg_completion_min: rng(6, 28, 68),
+            avg_completion_diff_min: rng(7, -7, 9),
+          };
+        })();
 
   // Freelance documents (only for FREELANCE type)
   const freelance_documents: FreelanceDocument[] | undefined =
@@ -776,6 +892,111 @@ export async function getMyAssignments(
   assignments.sort((a, b) => (b.active ? 1 : 0) - (a.active ? 1 : 0));
 
   return { data: assignments };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// EMPLOYEE HISTORY EVENTS (для employee-detail tab «История»)
+// ═══════════════════════════════════════════════════════════════════
+
+export type UserHistoryEventType =
+  | "system"
+  | "permission_granted"
+  | "permission_revoked"
+  | "assignment_created"
+  | "assignment_archived";
+
+/** Один event истории сотрудника. */
+export interface UserHistoryEvent {
+  id: string;
+  occurred_at: string;
+  actor: string;
+  action_label: string;
+  type: UserHistoryEventType;
+}
+
+/**
+ * Get derived history events for a user (assignment creation + permission
+ * grants/revokes + system import). Используем существующие данные —
+ * MOCK_PERMISSIONS / MOCK_ASSIGNMENTS / LAMA-derived permissions / hired_at.
+ *
+ * При swap на real backend — эндпоинт `GET /users/{id}/history` возвращает
+ * полный audit log; пока деривируем из доступных данных.
+ *
+ * @endpoint GET /users/{id}/history (derived/admin-only)
+ */
+export async function getUserHistoryEvents(
+  id: number,
+): Promise<ApiResponse<UserHistoryEvent[]>> {
+  await delay(220);
+
+  const user = MOCK_USERS.find((u) => u.id === id);
+  if (!user) {
+    return { data: [] };
+  }
+
+  const events: UserHistoryEvent[] = [];
+  const hiredAt = user.hired_at ?? TODAY;
+
+  // 1. Hired event — дата приёма на работу.
+  events.push({
+    id: `u-${id}-hired`,
+    occurred_at: `${hiredAt}T07:00:00Z`,
+    actor: "Системный импорт",
+    action_label: "Сотрудник добавлен в систему",
+    type: "system",
+  });
+
+  // 2. Assignment events — все назначения.
+  const assignments = MOCK_ASSIGNMENTS.filter((a) => a.user_id === id);
+  for (const a of assignments) {
+    events.push({
+      id: `u-${id}-asg-${a.id}`,
+      occurred_at: `${hiredAt}T07:30:00Z`,
+      actor: "HR-менеджер",
+      action_label: `Назначен(а) на должность «${a.position_name}» в магазине ${a.store_name}`,
+      type: "assignment_created",
+    });
+  }
+
+  // 3. Explicit permission events из MOCK_PERMISSIONS.
+  const explicitPerms = MOCK_PERMISSIONS.filter((p) => p.user_id === id);
+  for (const p of explicitPerms) {
+    events.push({
+      id: `u-${id}-perm-${p.id}-granted`,
+      occurred_at: `${p.granted_at}T09:00:00Z`,
+      actor: p.granted_by_name,
+      action_label: `Назначена привилегия ${p.permission}`,
+      type: "permission_granted",
+    });
+    if (p.revoked_at) {
+      events.push({
+        id: `u-${id}-perm-${p.id}-revoked`,
+        occurred_at: `${p.revoked_at}T09:00:00Z`,
+        actor: p.revoked_by_name ?? "Система",
+        action_label: `Отозвана привилегия ${p.permission}`,
+        type: "permission_revoked",
+      });
+    }
+  }
+
+  // 4. Если не было explicit perms — добавим LAMA-derived (как «импорт из LAMA»).
+  if (explicitPerms.length === 0) {
+    const lamaPerms = deriveLamaPermissions(id);
+    for (const p of lamaPerms) {
+      events.push({
+        id: `u-${id}-lama-perm-${p}`,
+        occurred_at: `${hiredAt}T08:00:00Z`,
+        actor: "LAMA импорт",
+        action_label: `Назначена привилегия ${p} (по истории работ)`,
+        type: "permission_granted",
+      });
+    }
+  }
+
+  // Newest first.
+  events.sort((a, b) => b.occurred_at.localeCompare(a.occurred_at));
+
+  return { data: events };
 }
 
 // ═══════════════════════════════════════════════════════════════════

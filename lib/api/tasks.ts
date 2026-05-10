@@ -28,6 +28,7 @@ import { MOCK_ZONES } from "@/lib/mock-data/zones";
 import { MOCK_WORK_TYPES } from "@/lib/mock-data/work-types";
 import { MOCK_PRODUCT_CATEGORIES } from "@/lib/mock-data/product-categories";
 import { MOCK_USERS } from "@/lib/mock-data/users";
+import { MOCK_ASSIGNMENTS } from "@/lib/mock-data/assignments";
 
 // ═══════════════════════════════════════════════════════════════════
 // HELPERS
@@ -380,15 +381,19 @@ export async function getTaskFilters(
   await delay(250);
 
   // For now, return all options (in real app, would scope by assignment)
-  // Using assignmentId to log — will be used for scoping when connected to backend
-  const assignees = MOCK_USERS.filter((u) => !u.archived && u.type === "STAFF");
+  // Using assignmentId to log — will be used for scoping when connected to backend.
+  // Sort: real LAMA сотрудники (id 300+) первыми чтобы demo-фильтр показывал
+  // живые ФИО Томск/Северск/Новосибирск, а не synthetic 1-29.
+  const assignees = MOCK_USERS
+    .filter((u) => !u.archived && u.type === "STAFF")
+    .sort((a, b) => b.id - a.id);
 
   return {
     data: {
       zones: MOCK_ZONES.filter((z) => z.approved),
       work_types: MOCK_WORK_TYPES.filter((w) => w.id < 20), // Retail only
       product_categories: MOCK_PRODUCT_CATEGORIES,
-      assignees: assignees.slice(0, 20), // Limit for demo
+      assignees: assignees.slice(0, 30),
     },
   };
 }
@@ -783,38 +788,41 @@ export async function getPendingOperations(
   const daysBack = (d: number) =>
     new Date(new Date("2026-05-01T10:00:00+07:00").getTime() - d * 24 * 60 * 60 * 1000).toISOString();
 
-  // Worker names mapped by subtask id (from prompt spec)
-  const workerBySubtaskId: Record<number, { id: number; first_name: string; last_name: string; middle_name?: string; position_name: string }> = {
-    200: { id: 15, first_name: "Иван",    last_name: "Иванов",    middle_name: "Иванович",  position_name: "Универсал" },
-    201: { id: 16, first_name: "Сергей",  last_name: "Петров",    middle_name: "Иванович",  position_name: "Кладовщик" },
-    202: { id: 17, first_name: "Ольга",   last_name: "Сидорова",  middle_name: "Алексеевна", position_name: "Уборщик" },
-    203: { id: 18, first_name: "Алексей", last_name: "Козлов",    middle_name: "Васильевич", position_name: "Кассир" },
-    204: { id: 19, first_name: "Елена",   last_name: "Васильева", middle_name: "Алексеевна", position_name: "Продавец" },
-    205: { id: 20, first_name: "Алексей", last_name: "Морозов",   middle_name: "Сергеевич",  position_name: "Продавец" },
-    206: { id: 21, first_name: "Дмитрий", last_name: "Смирнов",   middle_name: "Олегович",   position_name: "Грузчик" },
-    207: { id: 22, first_name: "Анна",    last_name: "Соколова",  middle_name: "Викторовна", position_name: "Продавец" },
-  };
+  // proposed_by теперь деривируется из task.assignee_id (real LAMA worker
+  // на задаче). Раньше тут был hardcoded mapping subtask.id → синтетические
+  // ФИО ("Иван Иванов", "Сергей Петров") — заменено на лукап в MOCK_USERS
+  // чтобы demo показывал реальных ЛАМА сотрудников Томск/Северск/Новосибирск.
 
-  const createdAtBySubtaskId: Record<number, string> = {
-    200: daysBack(1),
-    201: daysBack(2),
-    202: daysBack(0),
-    203: daysBack(3),
-    204: daysBack(1),
-    205: daysBack(4),
-    206: daysBack(2),
-    207: daysBack(1),
-    // existing PENDING ids from original mock
-    15: daysBack(5),
-    28: daysBack(7),
-    46: daysBack(6),
-    58: daysBack(8),
-    104: daysBack(3),
+  // created_at: для каждого subtask — стабильный псевдослучайный days back
+  // на основе id (не Math.random — нам нужно стабильно между загрузками).
+  const stableDaysBack = (subtaskId: number): string => {
+    const days = (subtaskId * 17) % 9; // 0-8 days back, deterministic
+    return daysBack(days);
   };
 
   // Build enriched list
   const enrichedAll: OperationWithTaskTitle[] = pending.map((subtask) => {
     const task = MOCK_TASKS.find((t) => t.id === subtask.task_id);
+    const assigneeUser = task?.assignee_id
+      ? MOCK_USERS.find((u) => u.id === task.assignee_id)
+      : undefined;
+    const assigneeAssignment = assigneeUser
+      ? MOCK_ASSIGNMENTS.find(
+          (a) => a.user_id === assigneeUser.id && a.active,
+        )
+      : undefined;
+
+    const proposedBy = assigneeUser
+      ? {
+          id: assigneeUser.id,
+          first_name: assigneeUser.first_name,
+          last_name: assigneeUser.last_name,
+          middle_name: assigneeUser.middle_name,
+          position_name: assigneeAssignment?.position_name ?? "—",
+          avatar_url: assigneeUser.avatar_url,
+        }
+      : undefined;
+
     return {
       ...subtask,
       task_title: task?.title ?? "—",
@@ -826,8 +834,8 @@ export async function getPendingOperations(
       zone_name: task?.zone_name ?? "—",
       work_type_id: task?.work_type_id ?? 0,
       work_type_name: task?.work_type_name ?? "—",
-      proposed_by: workerBySubtaskId[subtask.id],
-      created_at: createdAtBySubtaskId[subtask.id] ?? nowIso,
+      proposed_by: proposedBy,
+      created_at: stableDaysBack(subtask.id),
     };
   });
 
@@ -1081,7 +1089,10 @@ export async function getTaskTabCounts(): Promise<TaskTabCounts> {
 export async function getTaskListFilterOptions(): Promise<TaskFiltersResponse> {
   await delay(200);
 
-  const assignees = MOCK_USERS.filter((u) => !u.archived && u.type === "STAFF");
+  // Sort: real LAMA сотрудники первыми (см. getTaskFilters).
+  const assignees = MOCK_USERS
+    .filter((u) => !u.archived && u.type === "STAFF")
+    .sort((a, b) => b.id - a.id);
 
   return {
     zones: MOCK_ZONES.filter((z) => z.approved),

@@ -84,6 +84,10 @@ export {
   // Permissions coverage (matrix stats)
   type PermissionCoverageRow,
   getPermissionsCoverage,
+  // History events (employee detail tab «История»)
+  type UserHistoryEvent,
+  type UserHistoryEventType,
+  getUserHistoryEvents,
 } from "./users";
 
 // ═══════════════════════════════════════════════════════════════════

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useTranslations } from "next-intl"
 import { Check, ChevronsUpDown } from "lucide-react"
 import { DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { cn } from "@/lib/utils"
-import { MOCK_USERS } from "@/lib/mock-data/users"
+import { getUsers, type UserWithAssignment } from "@/lib/api"
 
 interface AssignDialogContentProps {
   onAssign: (userId: number) => Promise<void>
@@ -22,8 +22,29 @@ export function AssignDialogContent({ onAssign, onClose, isPending }: AssignDial
   const tCommon = useTranslations("common")
   const [open, setOpen] = useState(false)
   const [selectedId, setSelectedId] = useState<number | null>(null)
+  const [candidates, setCandidates] = useState<UserWithAssignment[]>([])
 
-  const candidates = MOCK_USERS.filter((u) => !u.archived && u.type === "STAFF").slice(0, 20)
+  useEffect(() => {
+    let cancelled = false
+    getUsers({
+      employment_type: "STAFF",
+      archived: false,
+      page: 1,
+      page_size: 30,
+    })
+      .then((res) => {
+        if (cancelled) return
+        setCandidates(res.data.slice(0, 20))
+      })
+      .catch(() => {
+        if (cancelled) return
+        setCandidates([])
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   const selected = candidates.find((u) => u.id === selectedId)
 
   async function handleSubmit() {
