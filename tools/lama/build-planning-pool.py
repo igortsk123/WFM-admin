@@ -82,28 +82,22 @@ def ts_optional_number(n) -> str:
 def build_pool(snapshot: dict) -> tuple[dict, dict]:
     """Строит planning pool по shop_code → {shop_name, tasks, employees}.
 
-    Сотрудники:
-      * Если у магазина есть tasks сегодня → только те кто на смене
-        (есть task с `_employee_id == emp_id` и `_shop_code == sc`).
-      * Если у магазина 0 tasks → все числящиеся (fallback, чтобы UI
-        не показывал пустоту).
+    Сотрудник попадает в pool только если у него есть task в snapshot
+    с `_employee_id == emp_id` и `_shop_code == sc`. Без данных за день
+    — пустой массив; UI покажет «нет данных», ничего не достраиваем.
 
     Returns:
         (pool, stats)
     """
-    # 1. Pre-pass tasks → today_emp_ids_per_shop + shops_with_tasks
+    # 1. Pre-pass tasks → today_emp_ids_per_shop = {sc: {emp_id, ...}}
     today_emp_ids_per_shop: dict[str, set[int]] = defaultdict(set)
-    shops_with_tasks: set[str] = set()
     for t in snapshot.get("tasks", []):
         sc = t.get("_shop_code")
         eid = t.get("_employee_id")
-        if sc:
-            shops_with_tasks.add(sc)
         if sc and isinstance(eid, int):
             today_emp_ids_per_shop[sc].add(eid)
 
-    # 2. Сотрудники по магазину — на смене сегодня (или fallback на всех
-    #    если у магазина 0 tasks → выходной).
+    # 2. Сотрудники по магазину — только те у кого есть task сегодня.
     employees_by_shop: dict[str, list[dict]] = defaultdict(list)
     seen_emp_ids_per_shop: dict[str, set[int]] = defaultdict(set)
     skipped_not_on_shift = 0
@@ -112,12 +106,9 @@ def build_pool(snapshot: dict) -> tuple[dict, dict]:
         emp_id = e.get("employee_id")
         if not sc or emp_id is None:
             continue
-        has_tasks_today = sc in shops_with_tasks
-        if has_tasks_today:
-            if emp_id not in today_emp_ids_per_shop.get(sc, set()):
-                skipped_not_on_shift += 1
-                continue
-        # Дедуп: один сотрудник может фигурировать дважды (теоретически).
+        if emp_id not in today_emp_ids_per_shop.get(sc, set()):
+            skipped_not_on_shift += 1
+            continue
         if emp_id in seen_emp_ids_per_shop[sc]:
             continue
         seen_emp_ids_per_shop[sc].add(emp_id)
