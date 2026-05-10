@@ -74,7 +74,10 @@ export function TasksPanel({
   const totalCovered = totalDistributed + totalPlanMin
   const remaining = Math.max(0, totalPlanned - totalCovered)
 
-  const subtitle = `на ${formattedDate} · ${tasks.length} ${taskNoun(tasks.length)} на сегодня${
+  const totalHoursLabel = t("utilization.tasks_total_label", {
+    time: formatHM(totalPlanned, t),
+  })
+  const subtitle = `на ${formattedDate} · ${tasks.length} ${taskNoun(tasks.length)} на сегодня · ${totalHoursLabel}${
     plan.size > 0 ? ` · ${plan.size} в плане` : ""
   }${subtitleSuffix ? ` · ${subtitleSuffix}` : ""}`
 

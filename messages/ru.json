@@ -1044,6 +1044,8 @@
         "title": "Сводка по команде",
         "date_label": "на {date}",
         "employees_count": "{count, plural, one {# сотрудник на смене} few {# сотрудника на смене} other {# сотрудников на смене}}",
+        "available_label": "доступно {time}",
+        "tasks_total_label": "{time} всего",
         "hours_format": "{assigned} / {total} смены",
         "bonus_badge": "+бонус",
         "summary": "Свободно: {free} / Всего: {total}",

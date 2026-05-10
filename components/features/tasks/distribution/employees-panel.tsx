@@ -120,7 +120,7 @@ export function EmployeesPanel({
           {title}
         </CardTitle>
         <p className="text-xs text-muted-foreground">
-          {t("utilization.date_label", { date: formattedDate })} · {t("utilization.employees_count", { count: employees.length })}
+          {t("utilization.date_label", { date: formattedDate })} · {t("utilization.employees_count", { count: employees.length })} · {t("utilization.available_label", { time: formatHM(freeMinutes, t) })}
         </p>
       </CardHeader>
       <CardContent>

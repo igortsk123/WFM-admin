@@ -889,6 +889,8 @@
         "title": "Team Summary",
         "date_label": "on {date}",
         "employees_count": "{count, plural, one {# employee on shift} other {# employees on shift}}",
+        "available_label": "{time} available",
+        "tasks_total_label": "{time} total",
         "hours_format": "{assigned} / {total} shift",
         "bonus_badge": "+bonus",
         "summary": "Available: {free} / Total: {total}",
