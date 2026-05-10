@@ -844,6 +844,70 @@ export interface ProductCategory {
 /** Направление метрики цели — растущая (увеличение good) или убывающая (снижение good). */
 export type GoalDirection = "increase" | "decrease";
 
+/**
+ * Источник AI-сигнала, на основании которого создана цель / proposal.
+ *
+ * Прозрачность: директор должен видеть, ОТКУДА AI взял основание для цели.
+ * 3 главных источника + смешанный режим:
+ *
+ * - `pos-cheque`       — анализ POS-чеков (anomaly detection, basket analysis,
+ *                        RFM cohorts, time-series gaps по SKU/категории)
+ * - `erp-stock`        — движения в ERP: остатки, приёмки, сроки годности
+ * - `erp-price-master` — расхождение ERP master-цены и POS-цены на чеке
+ * - `photo-bonus`      — фото от сотрудника через бонусную задачу
+ *                        (crowdsourced shelf monitoring, паттерн Trax/Pensa
+ *                        но дешевле: камеру не ставим, сотрудник снимает)
+ * - `wfm-schedule`     — график смен vs пики продаж (covered slots vs traffic)
+ * - `egais`            — ЕГАИС / Честный знак / маркировка
+ * - `mixed`            — несколько источников одновременно
+ *
+ * Используется в `Goal.ai_signal_source` и `AIEvidenceItem.source`.
+ */
+export type AISignalSource =
+  | "pos-cheque"
+  | "erp-stock"
+  | "erp-price-master"
+  | "photo-bonus"
+  | "wfm-schedule"
+  | "egais"
+  | "mixed";
+
+/**
+ * Конкретный signal — кусок «доказательства», что AI заметил проблему.
+ *
+ * Один сигнал = один факт из одного источника. Goal обычно агрегирует
+ * 1-3 таких item'а в `Goal.ai_evidence` для рендера в expandable секции
+ * «Откуда AI это взял?» на странице цели.
+ *
+ * Photo-bonus паттерн (★ инновация WFM):
+ *  - AI генерит бонусную задачу «иди сфоткай витрину Молочка в 14:00»
+ *  - Сотрудник снимает на телефон → получает бонус
+ *  - AI прогоняет фото через CV → детектит проблему → создаёт основную задачу
+ *  - Директор видит на странице цели: «выявил по фото от Иванова И.И.
+ *    от 5 мая 09:15» с photo_url и photo_taken_by для audit-trail.
+ */
+export interface AIEvidenceItem {
+  source: AISignalSource;
+  /** 1-2 строки описания самого signal'а (рендерится в expandable списке). */
+  summary: string;
+  /** EN-перевод summary для bilingual demo. */
+  summary_en?: string;
+  /** Начало периода наблюдения (ISO date или ISO datetime). */
+  observed_from?: string;
+  /** Конец периода наблюдения. */
+  observed_to?: string;
+  /** SKU / категория / зона / магазин где детектится. */
+  scope_hint?: string;
+  /** EN-перевод scope_hint. */
+  scope_hint_en?: string;
+  /** Ссылка на фото (только для photo-bonus). */
+  photo_url?: string;
+  /** Имя сотрудника, снявшего фото (для photo-bonus, audit trail). */
+  photo_taken_by?: string;
+  /** ISO datetime когда сделано фото (для photo-bonus). */
+  photo_taken_at?: string;
+}
+
 /** Период расчёта денежного эффекта. */
 export type MoneyImpactPeriod = "week" | "month" | "quarter" | "year";
 
@@ -922,6 +986,28 @@ export interface Goal {
    * не у всех целей оценка есть (новые / custom).
    */
   money_impact?: MoneyImpact;
+  /**
+   * Главный источник AI-сигнала (для compact-чипа в карточке цели).
+   * Если signal'ов несколько разных источников — ставим `"mixed"` и
+   * детали отдаём через `ai_evidence`.
+   */
+  ai_signal_source?: AISignalSource;
+  /**
+   * 1-2 строки про конкретный механизм детекции — что именно AI «смотрит».
+   * Пример: «AI смотрит почасовые продажи молочки за 30 дней и ищет провалы
+   * больше 4 часов при норме 6 продаж/час».
+   *
+   * Рендерится в expandable секции «Откуда AI это взял?» как заголовок.
+   */
+  ai_detection_method?: string;
+  /** EN-перевод `ai_detection_method` для bilingual demo. */
+  ai_detection_method_en?: string;
+  /**
+   * Список конкретных signal'ов (≤3 штук обычно), которые AI использовал.
+   * Каждый item — отдельный факт с источником, scope'ом и (для photo-bonus)
+   * фото-thumbnail'ом + ФИО снявшего сотрудника.
+   */
+  ai_evidence?: AIEvidenceItem[];
 }
 
 /** Источник бонуса. GOAL_LINKED — бонус привязан к active Goal */

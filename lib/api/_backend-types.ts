@@ -479,3 +479,99 @@ export interface BackendCurrentShift {
   external_id?: number | null;
   duration?: number | null;
 }
+
+// ── Goals (admin-only feature, see MIGRATION-NOTES для контракта) ────
+//
+// Goals не существуют в текущем backend. Admin держит карту ожидаемого
+// REST контракта здесь — backend подтянется когда будем swap'ать.
+//
+// Главное: AI-evidence транспорт. 3 источника signal'ов (POS / ERP / Photo)
+// + поля прозрачности (`ai_signal_source`, `ai_detection_method`,
+// `ai_evidence`) — это наша админ-надстройка над «голым» backend Goal.
+//
+// См. `lib/api/goals.ts::getGoalsOnBackend()` (raw wrapper, готов к swap).
+
+export type BackendAISignalSource =
+  | "pos-cheque"
+  | "erp-stock"
+  | "erp-price-master"
+  | "photo-bonus"
+  | "wfm-schedule"
+  | "egais"
+  | "mixed";
+
+export interface BackendAIEvidenceItem {
+  source: BackendAISignalSource;
+  summary: string;
+  summary_en?: string | null;
+  observed_from?: string | null;
+  observed_to?: string | null;
+  scope_hint?: string | null;
+  scope_hint_en?: string | null;
+  /** Только для source="photo-bonus": URL фото в S3. */
+  photo_url?: string | null;
+  /** Только для photo-bonus: ФИО снявшего сотрудника. */
+  photo_taken_by?: string | null;
+  photo_taken_at?: string | null;
+}
+
+export type BackendGoalCategory =
+  | "OOS_REDUCTION"
+  | "WRITE_OFFS"
+  | "PROMO_QUALITY"
+  | "PRICE_ACCURACY"
+  | "IMPULSE_ZONES"
+  | "PRODUCTIVITY"
+  | "CUSTOM";
+
+export type BackendGoalStatus = "PROPOSED" | "ACTIVE" | "COMPLETED" | "ARCHIVED";
+export type BackendGoalDirection = "increase" | "decrease";
+export type BackendMoneyImpactPeriod = "week" | "month" | "quarter" | "year";
+export type BackendMoneyImpactType =
+  | "money"
+  | "compliance"
+  | "quality"
+  | "training";
+
+export interface BackendMoneyImpact {
+  amount: number;
+  period: BackendMoneyImpactPeriod;
+  rationale_short: string;
+  rationale_breakdown: string[];
+  rationale_short_en?: string | null;
+  rationale_breakdown_en?: string[] | null;
+  impact_type: BackendMoneyImpactType;
+  significance_score?: number | null;
+}
+
+export interface BackendGoal {
+  id: string;
+  category: BackendGoalCategory;
+  title: string;
+  description: string;
+  title_en?: string | null;
+  description_en?: string | null;
+  starting_value?: number | null;
+  target_value: number;
+  target_unit: string;
+  current_value: number;
+  direction?: BackendGoalDirection | null;
+  status: BackendGoalStatus;
+  store_id?: number | null;
+  scope: "STORE" | "NETWORK";
+  proposed_by: "AI" | "MANAGER";
+  selected_by?: number | null;
+  selected_at?: string | null;
+  period_start: string;
+  period_end: string;
+  money_impact?: BackendMoneyImpact | null;
+  /** AI-evidence транспорт (см. raw wrapper goals.ts). */
+  ai_signal_source?: BackendAISignalSource | null;
+  ai_detection_method?: string | null;
+  ai_detection_method_en?: string | null;
+  ai_evidence?: BackendAIEvidenceItem[] | null;
+}
+
+export interface BackendGoalListData {
+  goals: BackendGoal[];
+}

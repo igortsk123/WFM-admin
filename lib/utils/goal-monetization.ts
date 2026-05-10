@@ -5,10 +5,11 @@
  * Sources are cited in JSDoc on each constant. Full playbook with formulas
  * lives in `.memory_bank/_claude/GOALS-MONETIZATION.md`.
  *
- * Network parameters (current SPAR/LAMA tenant):
- *   132 stores (CONVENIENCE / SUPERMARKET / HYPERMARKET)
- *   reference SUPERMARKET revenue ≈ 3M ₽/week
- *   network revenue ≈ 396M ₽/week ≈ 17.2B ₽/year
+ * Network parameters (current SPAR/LAMA tenant — обновлено по факту заказчика 2026-05):
+ *   132 stores (CONVENIENCE / SUPERMARKET / HYPERMARKET) — Томск/Северск/Новосибирск
+ *   network revenue ≈ 25B ₽/year (заказчик зафиксировал 2026-05)
+ *   ≈ 480M ₽/week ≈ 190M ₽/store/year ≈ 3.6M ₽/store/week (среднее)
+ *   HYPERMARKET ≈ 2.5× SUPERMARKET / CONVENIENCE ≈ 0.6× SUPERMARKET
  *
  * IMPORTANT: in real backend integration these coefficients live server-side
  * (ML/finance team owns them). Admin keeps a mirror so demos work without
@@ -64,6 +65,100 @@ export const FMCG_COEFFICIENTS = {
   ATTRIBUTION_NETWORK: 0.65,
   /** Russian fully-loaded labor rate per hour (2026 estimate). */
   RU_LABOR_FULL_RATE_PER_HR: 350,
+
+  // ─── Network revenue baseline (заказчик 2026-05) ───────────────────
+  /** Annual network revenue, ₽ — official customer figure 2026-05. */
+  NETWORK_REVENUE_PER_YEAR: 25_000_000_000,
+  /** Weekly network revenue, ₽ — derived from 25B/52w. */
+  NETWORK_REVENUE_PER_WEEK: 480_000_000,
+  /** Average store weekly revenue, ₽ — 480M / 132 stores. */
+  AVG_STORE_REVENUE_PER_WEEK: 3_640_000,
+  /** Total stores in the network. */
+  NETWORK_STORE_COUNT: 132,
+
+  // ─── AI signal × goal — новые коэффициенты ─────────────────────────
+  // Источники и обоснование — JSDoc на каждом константе (см. ниже).
+
+  /**
+   * Demand-forecast accuracy lift из ML (vs SAP / классические методы).
+   * Lenta заявила +40% по точности vs SAP при переключении на ML
+   * (vc.ru/sfera.fm 2024-2025). Берём консервативно 0.30 как realistic для
+   * среднего ритейлера. POS+ERP-сигнал → точность спроса на SKU/день.
+   */
+  AI_DEMAND_FORECAST_ACCURACY_LIFT: 0.30,
+
+  /**
+   * Снижение списаний после внедрения ML-прогноза спроса (POS+ERP сигнал).
+   * Lenta: -4 п.п. списаний по гастрономии (sfera.fm 2024).
+   * Берём -1.5 п.п. как realistic базу для нашей сети (мы не Lenta).
+   */
+  AI_WASTE_REDUCTION_PP: 0.015,
+
+  /**
+   * Снижение OOS на бонусных промо-SKU после внедрения ML availability.
+   * Lenta: +5 п.п. доступности на акционных товарах (vc.ru 2024).
+   * Применяем 0.025 (2.5 п.п.) для нашего масштаба.
+   */
+  AI_AVAILABILITY_LIFT_PP: 0.025,
+
+  /**
+   * Cross-sell uplift от basket analysis (POS чеки → MBA → planogram tweak).
+   * Mastercard: +30% promotional ROI у retailer'а (LatentView/Quantzig 2024).
+   * Берём 0.05 (5%) как realistic incremental basket-size, не тащим 30%.
+   */
+  AI_BASKET_CROSS_SELL_UPLIFT: 0.05,
+
+  /**
+   * RFM-cohort retention эффект — частота визитов loyal cohort.
+   * Industry норма (Harte-Hanks / LatentView): -8% retention у local FMCG
+   * cohort при недостатке товаров → goal: вернуть -3% разрыв.
+   */
+  AI_RFM_RETENTION_LIFT_PCT: 0.03,
+
+  /**
+   * Точность распознавания planogram-compliance по фото от сотрудника.
+   * Goodschecker (RU SaaS) заявляет 95%+ accuracy на shelf images.
+   * Магнит: пилот в 20 магазинах с 98% accuracy (new-retail.ru 2023).
+   * Используем как weight при подсчёте photo-detected issues.
+   */
+  AI_PHOTO_AUDIT_ACCURACY: 0.95,
+
+  /**
+   * Лифт detection latency из crowdsourced photo-bonus loop vs manual rounds.
+   * Trax/Pensa: -10× раз быстрее обнаружения OOS vs daily manager round
+   * (traxretail.com case studies). Photo-bonus loop ≈ -5× (мы не CV cameras).
+   * Используется в OOS lead-time goals — каждый сэкономленный час до фикса.
+   */
+  AI_PHOTO_LEAD_TIME_FACTOR: 5,
+
+  /**
+   * Контроль расхождений ERP master vs POS price (ERP-сигнал).
+   * Wiser: 6%/нед потерь на каждом неверном ценнике. Реальная частота
+   * расхождений после переоценки в РФ-сети ≈ 2-4% от SKU first 24h.
+   */
+  AI_PRICE_MISMATCH_RATE_AFTER_REPRICE: 0.03,
+
+  /**
+   * Promo execution gap — от benchmark group по чекам.
+   * IRI/Nielsen: средний ритейл держит 40% promo compliance, лидеры 91%.
+   * AI вычисляет gap по сравнению promo-SKU sales[store X] vs
+   * benchmark group[similar-format avg].
+   */
+  AI_PROMO_EXECUTION_GAP_DETECTABLE_PP: 15,
+
+  /**
+   * Shrinkage detection (inventory delta − sales = неучтённая потеря).
+   * FMI: 1.6% средний shrink, лидеры 0.7%. AI находит anomalies (ERP delta
+   * без чека). Realistic recovery ≈ 0.3 п.п. за квартал внимания.
+   */
+  AI_SHRINKAGE_RECOVERY_PP: 0.003,
+
+  /**
+   * SLA на подтверждение фото-задачи (бонус-loop).
+   * 30-90 сек на CV pipeline (Goodschecker заявляет ≤30 сек).
+   * Используется в UI для расчёта «когда придёт ответ».
+   */
+  PHOTO_BONUS_SLA_SECONDS: 60,
 } as const;
 
 // ─────────────────────────────────────────────────────────────────────

@@ -1,5 +1,138 @@
 # MIGRATION NOTES — admin ↔ backend
 
+## 🆕 AI-driven goals: 3 источника signal'ов + photo-bonus loop + 25B revenue baseline
+
+**Что это.** Каталог целей и mock-goals переписаны под реальные AI-возможности
+FMCG-сети (заказчик 2026-05). Зафиксированы 3 источника AI-сигналов и
+прозрачность их в UI (директор видит, ОТКУДА AI взял основание).
+
+**Новые поля в admin model (admin = source of truth).**
+
+```ts
+// lib/types/index.ts
+export type AISignalSource =
+  | "pos-cheque"        // анализ чеков (продажи / средний чек / RFM cohorts)
+  | "erp-stock"         // остатки / приёмки / shelf-life
+  | "erp-price-master"  // расхождение ERP цены и POS цены
+  | "photo-bonus"       // ★ фото от сотрудника через бонус-задачу
+  | "wfm-schedule"      // график смен vs пики продаж
+  | "egais"             // ЕГАИС / маркировка
+  | "mixed"
+
+export interface AIEvidenceItem {
+  source: AISignalSource
+  summary: string             // короткое описание signal'а
+  observed_from?: string      // ISO datetime
+  observed_to?: string
+  scope_hint?: string         // SKU / категория / магазин
+  photo_url?: string          // только для photo-bonus
+  photo_taken_by?: string     // ФИО сотрудника снявшего фото
+  photo_taken_at?: string
+  // + EN-переводы для bilingual demo
+}
+
+// Goal extension:
+//   ai_signal_source?: AISignalSource
+//   ai_detection_method?: string  (1-2 строки про конкретный механизм)
+//   ai_evidence?: AIEvidenceItem[]
+```
+
+**Где это в admin.**
+- Types: `lib/types/index.ts` (`AISignalSource`, `AIEvidenceItem`, Goal extension)
+- Backend wrapper: `lib/api/_backend-types.ts` (`BackendAISignalSource`,
+  `BackendAIEvidenceItem`, `BackendGoal`, `BackendGoalListData`)
+- Raw wrappers: `lib/api/goals.ts` (`goalFromBackend()`, `aiEvidenceFromBackend()`,
+  `getGoalsOnBackend()`) — готовы к swap'у когда backend завезёт `/goals`
+- UI: `components/features/goals/goals-screen/ai-evidence-section.tsx`
+  (новый компонент «Откуда AI это взял?» — expandable секция с детектом и
+  фото-thumbnail'ами; SignalSourceChip — компактный chip для AI proposal cards)
+- Wired in: `active-goal-banner.tsx` (full section) + `ai-proposals-section.tsx`
+  (компактный chip)
+
+**Photo-bonus loop (★ инновация).** Crowdsourced shelf monitoring дешевле
+стационарных Trax/Pensa CV-камер:
+1. AI генерит бонусную задачу «Сфоткай витрину Молочки в 14:00, +50 баллов»
+2. Сотрудник снимает на телефон в WFM-mobile → получает бонус
+3. Backend прогоняет фото через CV (Goodschecker SaaS / собств. ML)
+4. Если детектит проблему → создаётся основная задача для директора
+5. Директор видит на странице цели: «AI выявил по фото от Иванова И.И.
+   от 5 мая 09:15» — с photo_url + photo_taken_by для audit-trail
+
+Industry references: Trax Retail, Pensa Systems, Focal Systems,
+Goodschecker (RU SaaS, 95%+ accuracy), Магнит pilot 98% accuracy на 20
+магазинах. Walmart Spark Reviewers / Tesco mobile audits — косвенные аналоги.
+
+**Network revenue baseline.** Заказчик зафиксировал 2026-05:
+- **25 млрд ₽/год** (было 17.2B в playbook'е до этого)
+- ≈ 480M ₽/нед сетевая выручка
+- 132 магазина → ~3.6M ₽/магазин/нед среднее
+
+Все money_impact в `MOCK_GOALS` и `CATALOG_GOALS.fmcg.default_money_impact`
+пересчитаны на новой baseline. Подробности — `lib/utils/goal-monetization.ts`
+(`FMCG_COEFFICIENTS`) + `.memory_bank/_claude/GOALS-MONETIZATION.md`.
+
+**Запрос на endpoint'ы.** Backend пока не имеет /goals. Когда завезёт,
+swap'аем через `NEXT_PUBLIC_USE_REAL_API`.
+
+| Endpoint | Назначение |
+|---|---|
+| `GET /goals/list?store_id=&status=&period_start=&period_end=` | Все цели с AI-evidence |
+| `GET /goals/ai-proposals?store_id=` | AI-сгенерированные предложения целей с evidence |
+| `POST /goals/{id}/select` | Установить как активную |
+| `POST /goals/{id}/remove` | Снять (с reason) |
+| `POST /goals` | Создать ручную цель |
+| `GET /goals/{id}/progress` | Прогресс + ETA + рекомендации |
+| `POST /ai/evidence/photo` | Загрузить фото от бонус-задачи (multipart/form-data) — backend прогоняет через CV pipeline и возвращает detection result |
+
+**Pydantic schema (предлагаемая):**
+
+```python
+class AIEvidenceItem(BaseModel):
+    source: Literal["pos-cheque","erp-stock","erp-price-master","photo-bonus","wfm-schedule","egais","mixed"]
+    summary: str
+    summary_en: str | None = None
+    observed_from: datetime | None = None
+    observed_to: datetime | None = None
+    scope_hint: str | None = None
+    scope_hint_en: str | None = None
+    photo_url: str | None = None
+    photo_taken_by: str | None = None
+    photo_taken_at: datetime | None = None
+
+class Goal(BaseModel):
+    # ... существующие поля Goal
+    ai_signal_source: str | None = None
+    ai_detection_method: str | None = None
+    ai_detection_method_en: str | None = None
+    ai_evidence: list[AIEvidenceItem] | None = None
+```
+
+**Что admin использует поверх backend (admin-only extras).**
+- `ai_signal_source` / `ai_detection_method` / `ai_detection_method_en` /
+  `ai_evidence` в Goal — для прозрачности «откуда AI взял основание»
+- `MoneyImpact.rationale_breakdown` — pre-computed в admin через
+  `lib/utils/goal-monetization.ts` (на 25B baseline). Когда backend завезёт
+  ML-модель монетизации, перенесём в backend.
+
+**Источники research для коэффициентов** (см. полный список в
+`.memory_bank/_claude/GOALS-MONETIZATION.md`):
+- Lenta — ML reduced waste 4pp / +5pp availability (sfera.fm 2024, vc.ru)
+- Перекрёсток — точность прогноза >70% (TAdviser)
+- Магнит — pilot CV 98% accuracy (new-retail.ru)
+- X5 — компьютерное зрение −10% уход без покупок, −20% потери (Retail.ru)
+- Goodschecker (RU SaaS) — 95%+ shelf accuracy
+- Trax / Pensa / Focal Systems — international shelf monitoring
+- Gruen/Corsten 2002 — 1pp OOS = 4% sales loss
+- Mastercard / LatentView — basket analysis +5-30% promo ROI
+- IEEE 2024 — anomaly detection in association rule mining
+- Wiser — price-tag 6%/wk loss
+- NARMS — planogram compliance +8.1% profit
+- BLS 2024 — grocery productivity statistics
+
+---
+
+
+
 ## 🆕 LAMA review-queue mock — hourly refresh (admin-only, без backend changes)
 
 **Что это.** Реальные LAMA-задачи в статусе `Completed`/`Accepted`/`Rejected`

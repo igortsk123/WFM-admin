@@ -4659,6 +4659,23 @@
         "no_proposals_title": "Not enough data for this period",
         "no_proposals_subtitle": "AI couldn't generate suggestions. Try a different period or store"
       },
+      "ai_evidence": {
+        "section_title": "Where did AI get this?",
+        "detection_method_label": "What AI actually looks at",
+        "facts_label": "Specific facts",
+        "facts_count": "{count, plural, one {# fact} other {# facts}}",
+        "photo_taken_by": "Snapped by: {name}, {date}",
+        "photo_thumb_aria": "Photo evidence preview",
+        "source": {
+          "pos-cheque": "POS receipts",
+          "erp-stock": "ERP stock",
+          "erp-price-master": "ERP prices",
+          "photo-bonus": "Employee photo",
+          "wfm-schedule": "WFM shifts",
+          "egais": "EGAIS",
+          "mixed": "Multiple sources"
+        }
+      },
       "ai_loading": "AI is analysing data…",
       "history": {
         "status_completed": "Reached",
