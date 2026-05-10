@@ -82,16 +82,35 @@ def ts_optional_number(n) -> str:
 def build_pool(snapshot: dict) -> tuple[dict, dict]:
     """Строит planning pool по shop_code → {shop_name, tasks, employees}.
 
+    Сотрудники = только те кто СЕГОДНЯ на смене: у них есть хоть одна
+    task в snapshot с `_employee_id == emp_id` и `_shop_code == sc`.
+    «На смене» определяется через факт назначения task — если LAMA дала
+    тебе задачу сегодня, значит ты в shift сегодня. Не показываем всех
+    числящихся за магазином (это для /stores), только активных за день.
+
     Returns:
         (pool, stats)
     """
-    # Сотрудники по магазину — все из снимка, из их же магазина.
+    # 1. Pre-pass tasks → today_emp_ids_per_shop = {sc: {emp_id, ...}}
+    today_emp_ids_per_shop: dict[str, set[int]] = defaultdict(set)
+    for t in snapshot.get("tasks", []):
+        sc = t.get("_shop_code")
+        eid = t.get("_employee_id")
+        if sc and isinstance(eid, int):
+            today_emp_ids_per_shop[sc].add(eid)
+
+    # 2. Сотрудники по магазину — только те у кого есть activity сегодня.
     employees_by_shop: dict[str, list[dict]] = defaultdict(list)
     seen_emp_ids_per_shop: dict[str, set[int]] = defaultdict(set)
+    skipped_not_on_shift = 0
     for e in snapshot.get("employees", []):
         sc = e.get("shop_code")
         emp_id = e.get("employee_id")
         if not sc or emp_id is None:
+            continue
+        # Filter: на смене сегодня?
+        if emp_id not in today_emp_ids_per_shop.get(sc, set()):
+            skipped_not_on_shift += 1
             continue
         # Дедуп: один сотрудник может фигурировать дважды (теоретически).
         if emp_id in seen_emp_ids_per_shop[sc]:
@@ -171,6 +190,7 @@ def build_pool(snapshot: dict) -> tuple[dict, dict]:
         "total_tasks": total_tasks,
         "skipped_status": dict(skipped_status),
         "skipped_no_shop": skipped_no_shop,
+        "skipped_not_on_shift": skipped_not_on_shift,
         "n_shops": len(pool),
         "n_tasks": sum(len(p["tasks_to_distribute"]) for p in pool.values()),
         "n_employees": sum(len(p["available_employees"]) for p in pool.values()),
@@ -321,10 +341,11 @@ def main() -> None:
     print(f"Total tasks in snapshot: {stats['total_tasks']}", file=sys.stderr)
     print(f"  Skipped by status: {stats['skipped_status']}", file=sys.stderr)
     print(f"  Skipped (no _shop_code): {stats['skipped_no_shop']}", file=sys.stderr)
+    print(f"  Filtered employees (not on shift today): {stats['skipped_not_on_shift']}", file=sys.stderr)
     print("", file=sys.stderr)
     print(
         f"{stats['n_shops']} shops, {stats['n_tasks']} tasks-to-distribute, "
-        f"{stats['n_employees']} available-employees",
+        f"{stats['n_employees']} available-employees (только сегодня на смене)",
         file=sys.stderr,
     )
     print(f"Wrote: {OUT_FILE.relative_to(ROOT)}", file=sys.stderr)
