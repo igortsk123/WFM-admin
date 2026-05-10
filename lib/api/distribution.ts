@@ -278,11 +278,12 @@ function buildEmployeesFromPlanningPool(
         }
       : splitPlanningName(pe.name);
 
-    // Зоны/work_types из LAMA snapshot history (по admin user.id если есть).
-    const zones = adminUser ? LAMA_EMPLOYEE_ZONES[adminUser.id] : undefined;
-    const workTypes = adminUser
-      ? LAMA_EMPLOYEE_WORK_TYPES[adminUser.id]
-      : undefined;
+    // Зоны/work_types из LAMA snapshot history. Ключ — `userId` (admin user.id
+    // когда есть в USERS_BY_EXTERNAL_ID, иначе LAMA employee_id). regenerate-
+    // from-snapshots.py пишет map с тем же resolved-id ключом, так что
+    // unmapped employees тоже находят свои зоны (включая peer-inferred).
+    const zones = LAMA_EMPLOYEE_ZONES[userId];
+    const workTypes = LAMA_EMPLOYEE_WORK_TYPES[userId];
 
     return {
       user: {
