@@ -13,7 +13,9 @@ import type {
   AISignalSource,
   Goal,
   GoalCategory,
+  GoalTier,
   MoneyImpact,
+  PilotWave,
   User,
 } from "@/lib/types";
 
@@ -88,11 +90,297 @@ export interface CatalogGoal {
    * `impact_type: 'compliance' | 'quality'` со significance_score.
    */
   default_money_impact?: MoneyImpact;
+  /**
+   * Уровень приоритета в портфеле AI-целей (deep-research отчёт).
+   *  - `priority`  — одна из 5 foundation-целей (OOS, phantom, fresh,
+   *                  post-promo, slow-moving). Идут наверх каталога.
+   *  - `secondary` — расширенные сценарии (cross-sell, RFM, ЕГАИС и т.п.)
+   *
+   * Если не задано — UI считает `secondary`.
+   */
+  tier?: GoalTier;
+  /**
+   * Волна пилотирования (A/B/C/D) из roadmap'а. Только для `tier: "priority"`.
+   * См. `.memory_bank/_claude/AI-GOALS-ROADMAP.md`.
+   */
+  pilot_wave?: PilotWave;
 }
 
 export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoal[]> = {
   fmcg: [
-    // ────────── POS-cheque сигналы (6 штук) ──────────
+    // ════════════════════════════════════════════════════════════════════
+    // PRIORITY-5 (deep-research foundation, Wave A/B/C/D)
+    // Источник: .memory_bank/business/deep-research-report.md
+    // Сетевая выручка 25 млрд ₽/год = 480,8 млн ₽/нед.
+    // ════════════════════════════════════════════════════════════════════
+
+    // ────────── Wave A — OOS в high-velocity SKU ──────────
+    {
+      title: "Меньше пустых полок в ходовом ассортименте",
+      title_en: "Fewer empty shelves in fast-movers",
+      when: "AI заметил по чекам провалы продаж в ходовых товарах больше 4 часов",
+      when_en: "AI saw 4+ hour POS sales gaps in fast-moving SKUs",
+      period: "8 нед",
+      tasks: [
+        "Обход полки",
+        "Вынос из подсобки",
+        "Срочная коррекция остатка",
+        "Перенос между магазинами",
+      ],
+      tasks_en: [
+        "Shelf walk-through",
+        "Pull from back-room",
+        "Urgent stock correction",
+        "Inter-store transfer",
+      ],
+      aiSource: "Чеки + остатки + поставки",
+      aiSource_en: "POS + stock + delivery logs",
+      ai_signal_source: "mixed",
+      ai_detection_method:
+        "AI каждый день смотрит почасовые продажи по 600 ходовым товарам, остатки на полке и недопоставки. Если ожидаемый спрос есть, а продаж нет — выдвигает гипотезу «нет товара на полке» и приоритизирует по сумме упущенной выручки.",
+      ai_detection_method_en:
+        "Each day AI reviews hourly sales for 600 fast-movers, on-hand stock and delivery shortfalls. When demand is expected but sales are absent, it flags ‘shelf out-of-stock’ and ranks by revenue at risk.",
+      tier: "priority",
+      pilot_wave: "A",
+      default_money_impact: {
+        amount: 810_000,
+        period: "week",
+        impact_type: "money",
+        rationale_short: "Меньше пустых полок в ходовых ≈ +810 000 ₽/нед по сети",
+        rationale_short_en: "Fewer empty fast-mover shelves ≈ +810,000 ₽/week network-wide",
+        rationale_breakdown: [
+          "Сетевая выручка 25 млрд ₽/год → 480,8 млн ₽/нед",
+          "Берём 35% выручки — это ходовые товары (600 SKU)",
+          "Снижаем долю пустых полок на 1 п.п. (с 6,0% до 5,0%)",
+          "Возвращаем 0,482 от потерь (мировая норма 4,0% упущенных продаж при 8,3% пустых полок, Gruen/Corsten 2002)",
+          "480,8 млн × 35% × 1 п.п. × 0,482 ≈ 810 000 ₽/нед",
+        ],
+        rationale_breakdown_en: [
+          "Network revenue 25B ₽/year → 480.8M ₽/week",
+          "35% of revenue comes from fast-movers (600 SKUs)",
+          "Cut empty-shelf rate by 1pp (6.0% → 5.0%)",
+          "Recover 0.482 of the loss (global norm 4.0% lost sales at 8.3% empty shelves, Gruen/Corsten 2002)",
+          "480.8M × 35% × 1pp × 0.482 ≈ 810,000 ₽/week",
+        ],
+      },
+    },
+
+    // ────────── Wave A — Phantom stock (скрытое отсутствие на полке) ──────────
+    {
+      title: "Скрытое отсутствие на полке (по системе есть, на полке нет)",
+      title_en: "Hidden out-of-stock (system says yes, shelf says no)",
+      when: "AI заметил товары с остатком ≥1 шт и нулевыми продажами при норме ≥3 шт/день",
+      when_en: "AI saw SKUs with stock ≥1 and zero sales against ≥3/day baseline",
+      period: "10 нед",
+      tasks: [
+        "Точечный пересчёт",
+        "Поиск в подсобке",
+        "Корректировка остатка в учётной системе",
+        "Тикет на причину расхождения",
+      ],
+      tasks_en: [
+        "Targeted recount",
+        "Search the back-room",
+        "Adjust book stock in ERP",
+        "Root-cause ticket",
+      ],
+      aiSource: "Учётная система + чеки + аудиты",
+      aiSource_en: "ERP + POS + audit feedback",
+      ai_signal_source: "mixed",
+      ai_detection_method:
+        "AI каждый день после 14:00 сверяет остатки в учётной системе с продажами по чекам. Если у товара есть остаток, ожидаемая норма ≥3 шт/день, а продаж за день ноль — товар попадает в список «скрытое отсутствие». На каждый создаётся подзадача: «найти и отчитаться (на полке / в подсобке / списан / не нашли)».",
+      ai_detection_method_en:
+        "Each day after 14:00 AI reconciles ERP stock against POS sales. SKUs with stock, a ≥3/day baseline and zero sales today become ‘hidden out-of-stock’. One subtask per SKU: locate (shelf / back-room / written-off / not found).",
+      tier: "priority",
+      pilot_wave: "A",
+      default_money_impact: {
+        amount: 280_000,
+        period: "week",
+        impact_type: "money",
+        rationale_short: "Скрытое отсутствие на полке ≈ +280 000 ₽/нед восстановленной выручки",
+        rationale_short_en: "Hidden out-of-stock ≈ +280,000 ₽/week recovered",
+        rationale_breakdown: [
+          "Сетевая выручка 480,8 млн ₽/нед",
+          "Берём 25% выручки — топ-1 000 самых ходовых товаров",
+          "Норма скрытого отсутствия = 0,8% упущенных продаж",
+          "Снижаем на 28,9% (с 4,5% до 3,2% подозрительных товаро-дней)",
+          "480,8 млн × 25% × 0,8% × 28,9% ≈ 280 000 ₽/нед",
+          "Источник: исследования по точности остатков (ECR Retail Loss, INFORMS), классическая работа по phantom stockout",
+        ],
+        rationale_breakdown_en: [
+          "Network revenue 480.8M ₽/week",
+          "25% scope (top-1,000 fast-movers)",
+          "Hidden out-of-stock baseline = 0.8% lost sales",
+          "Reduce by 28.9% (4.5% → 3.2% suspicious SKU-store-days)",
+          "480.8M × 25% × 0.8% × 28.9% ≈ 280,000 ₽/week",
+          "Source: inventory-accuracy studies (ECR Retail Loss, INFORMS), phantom stockout literature",
+        ],
+      },
+    },
+
+    // ────────── Wave B — Списания во fresh ──────────
+    {
+      title: "Меньше списаний в свежих категориях",
+      title_en: "Less waste in fresh categories",
+      when: "AI заметил по приёмкам и срокам, что свежие категории лежат слишком долго",
+      when_en: "AI saw fresh items sitting on shelf past target",
+      period: "12 нед",
+      tasks: [
+        "Первый пришёл — первый ушёл",
+        "Ранняя уценка",
+        "Снижение следующего заказа",
+        "Перенос в магазин с лучшими продажами",
+      ],
+      tasks_en: [
+        "FIFO rotation",
+        "Earlier markdown",
+        "Cut next order",
+        "Move to a higher-velocity store",
+      ],
+      aiSource: "Учётная система + сроки + чеки",
+      aiSource_en: "ERP + expiry + POS",
+      ai_signal_source: "erp-stock",
+      ai_detection_method:
+        "AI смотрит остатки свежих категорий по дате приёмки и сроку годности, считает сколько товар лежит на полке и сравнивает со скоростью продаж. Если запас закроет спрос дольше срока годности — рекомендует уценку или меньший следующий заказ.",
+      ai_detection_method_en:
+        "AI tracks fresh stock by receipt date and expiry, computes shelf-time and compares with sell-through. If cover exceeds shelf life, it recommends markdown or a smaller next order.",
+      tier: "priority",
+      pilot_wave: "B",
+      default_money_impact: {
+        amount: 350_000,
+        period: "week",
+        impact_type: "money",
+        rationale_short: "Снижение списаний в свежих ≈ −350 000 ₽/нед потерь",
+        rationale_short_en: "Less fresh waste ≈ −350,000 ₽/week saved",
+        rationale_breakdown: [
+          "Сетевая выручка 480,8 млн ₽/нед",
+          "Берём 18% выручки — свежие категории (хлеб, молочка, готовая еда, овощи-фрукты)",
+          "Снижаем списания на 0,4 п.п. (с 2,2% до 1,8% от продаж этих категорий)",
+          "480,8 млн × 18% × 0,4 п.п. ≈ 350 000 ₽/нед",
+          "Источник: ECR Retail Loss (27 магазинов Европа), INFORMS по 10 000 магазинов",
+        ],
+        rationale_breakdown_en: [
+          "Network revenue 480.8M ₽/week",
+          "18% fresh scope (bakery, dairy, ready-to-eat, produce)",
+          "Cut write-offs by 0.4pp (2.2% → 1.8% of fresh sales)",
+          "480.8M × 18% × 0.4pp ≈ 350,000 ₽/week",
+          "Source: ECR Retail Loss (27 stores in Europe), INFORMS 10,000-store study",
+        ],
+      },
+    },
+
+    // ────────── Wave C — Остатки после промо ──────────
+    {
+      title: "Остатки после акции",
+      title_en: "Post-promo leftovers",
+      when: "AI заметил по продажам и поставкам, что после акций остаётся слишком много товара",
+      when_en: "AI saw too much stock left over after promos",
+      period: "8-10 нед",
+      tasks: [
+        "Коррекция распределения до старта акции",
+        "Ребаланс на 2-й день",
+        "Ранняя уценка после акции",
+        "Перенос остатка в другой магазин",
+      ],
+      tasks_en: [
+        "Pre-promo allocation correction",
+        "D+2 rebalance",
+        "Early post-promo markdown",
+        "Transfer leftover to another store",
+      ],
+      aiSource: "Чеки + поставки + календарь акций",
+      aiSource_en: "POS + deliveries + promo calendar",
+      ai_signal_source: "mixed",
+      ai_detection_method:
+        "AI заранее прогнозирует продажи акционных товаров по магазину, учитывает докупки в нагрузку и сдвиг покупательских моментов. После старта смотрит как фактические продажи отличаются от плана и предлагает скорректировать распределение, пока остаток ещё можно успеть продать без уценки.",
+      ai_detection_method_en:
+        "AI forecasts promo sell-through per store, accounts for cross-sell uplift and shifted purchase timing, then tracks fact vs plan during the campaign and recommends re-allocation while leftover can still sell without markdown.",
+      tier: "priority",
+      pilot_wave: "C",
+      default_money_impact: {
+        amount: 2_000_000,
+        period: "month",
+        impact_type: "money",
+        rationale_short: "Остатки после акции ≈ +2,00 млн ₽/мес спасённой выручки",
+        rationale_short_en: "Post-promo leftovers ≈ +2.00M ₽/month preserved",
+        rationale_breakdown: [
+          "Сетевая выручка 480,8 млн ₽/нед",
+          "Берём 12% выручки — товары в централизованных акциях",
+          "Снижаем непроданные остатки на 4 п.п. (с 16% до 12% к D+7)",
+          "Эта часть остатков обычно теряет 20% маржи на уценке",
+          "480,8 млн × 12% × 4 п.п. × 20% ≈ 0,46 млн ₽/нед = 2,00 млн ₽/мес",
+          "Источник: исследования по cannibalization/halo в акциях, McKinsey по совместной оптимизации цены и заказа",
+        ],
+        rationale_breakdown_en: [
+          "Network revenue 480.8M ₽/week",
+          "12% promo scope (centrally managed campaigns)",
+          "Cut residual stock by 4pp (16% → 12% at D+7)",
+          "Residual typically loses 20% margin to markdown",
+          "480.8M × 12% × 4pp × 20% ≈ 0.46M ₽/week = 2.00M ₽/month",
+          "Source: cannibalization/halo studies in promo, McKinsey on joint price + replenishment optimization",
+        ],
+      },
+    },
+
+    // ────────── Wave D — Slow-moving inventory ──────────
+    {
+      title: "Залежавшийся товар",
+      title_en: "Slow-moving stock",
+      when: "AI заметил товары, которые лежат больше 45 дней без сезонной причины",
+      when_en: "AI saw SKUs sitting over 45 days with no seasonal reason",
+      period: "16 нед",
+      tasks: [
+        "Уценка",
+        "Перевод в другой магазин",
+        "Заморозка автозаказа",
+        "Вывод из ассортимента",
+      ],
+      tasks_en: [
+        "Markdown",
+        "Inter-store transfer",
+        "Freeze auto-reorder",
+        "Delist review",
+      ],
+      aiSource: "Учётная система + чеки + сезонный календарь",
+      aiSource_en: "ERP + POS + seasonal calendar",
+      ai_signal_source: "erp-stock",
+      ai_detection_method:
+        "AI каждую неделю смотрит остатки которые лежат больше 45 дней без сезонной причины и считает: сколько денег заморожено, какие товары можно уценить, что перевести в другой магазин, что вывести из ассортимента.",
+      ai_detection_method_en:
+        "Each week AI scans stock sitting over 45 days with no seasonal reason and computes: capital frozen, what to mark down, what to transfer between stores, what to delist.",
+      tier: "priority",
+      pilot_wave: "D",
+      default_money_impact: {
+        amount: 110_000,
+        period: "week",
+        impact_type: "money",
+        rationale_short: "Залежавшийся товар ≈ +110 000 ₽/нед + единоразовое высвобождение 12 млн ₽",
+        rationale_short_en: "Slow-moving stock ≈ +110,000 ₽/week + 12M ₽ one-off capital release",
+        rationale_breakdown: [
+          "У сети залежавшегося товара на ~42 млн ₽ (по моделированию: 1,33 млрд ₽ среднего запаса × 3,2% старше 45 дней)",
+          "Цель — сократить до 30 млн ₽, то есть высвободить 12 млн ₽ оборотных средств одним махом",
+          "Стоимость хранения 15% годовых от объёма пула: 42 млн × 15% / 52 нед ≈ 0,12 млн ₽/нед",
+          "Избежание уценки на новых поступлениях: 42 млн × 10% / 16 нед ≈ 0,26 млн ₽/нед, в среднем по горизонту 110 000 ₽/нед",
+          "Итого: 110 000 ₽/нед постоянной экономии + 12 млн ₽ единоразового высвобождения капитала",
+          "Источник: IHL по inventory distortion, peer gross margin 22,3% (X5/Магнит 2025)",
+        ],
+        rationale_breakdown_en: [
+          "Network slow-moving stock pool ≈ 42M ₽ (modelled: 1.33B ₽ avg inventory × 3.2% over 45 days)",
+          "Goal: cut to 30M ₽, releasing 12M ₽ of working capital one-off",
+          "Carrying cost 15% p.a. on the pool: 42M × 15% / 52w ≈ 0.12M ₽/week",
+          "Avoided markdown on new receipts: 42M × 10% / 16w ≈ 0.26M ₽/week, averaging 110,000 ₽/week across the horizon",
+          "Total: 110,000 ₽/week recurring + 12M ₽ one-off capital release",
+          "Source: IHL inventory distortion studies; peer gross margin 22.3% (X5/Magnit 2025)",
+        ],
+      },
+    },
+
+    // ════════════════════════════════════════════════════════════════════
+    // SECONDARY (расширенные сценарии — catalog для клиента, не пилотируем
+    // первой волной). Цифры оставлены как есть, добавлен `tier: "secondary"`.
+    // ════════════════════════════════════════════════════════════════════
+
+    // ────────── POS-cheque сигналы ──────────
     {
       title: "Реже пустые полки в молочке",
       title_en: "Fewer empty dairy shelves",
@@ -101,13 +389,14 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
       period: "4 нед",
       tasks: ["Обход полки", "Вынос со склада", "Пересчёт"],
       tasks_en: ["Shelf walk-through", "Pull from back-room", "Recount"],
-      aiSource: "POS-чеки (anomaly detection)",
+      aiSource: "POS-чеки (поиск необычных провалов)",
       aiSource_en: "POS receipts (anomaly detection)",
       ai_signal_source: "pos-cheque",
       ai_detection_method:
         "AI смотрит почасовые продажи молочки за 30 дней и ищет провалы больше 4 часов при норме 6 продаж/час",
       ai_detection_method_en:
         "AI scans hourly dairy sales over 30 days and flags 4h+ gaps when the baseline is 6 sales/hour",
+      tier: "secondary",
       default_money_impact: {
         amount: 900_000,
         period: "week",
@@ -129,64 +418,66 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
       },
     },
     {
-      title: "Больше товаров в чеке (basket cross-sell)",
+      title: "Больше товаров в чеке (продажа в нагрузку)",
       title_en: "Bigger basket (cross-sell)",
-      when: "AI выявил по чекам сильную пару SKU без размещения рядом",
-      when_en: "AI found strongly-correlated SKU pair without adjacency",
+      when: "AI выявил по чекам сильную пару товаров без размещения рядом",
+      when_en: "AI found a strong product pair without shelf adjacency",
       period: "4 нед",
-      tasks: ["Перевыкладка по планограмме", "Тест BTL-стикеров"],
-      tasks_en: ["Planogram re-layout", "BTL sticker test"],
-      aiSource: "POS-чеки (basket analysis)",
+      tasks: ["Перевыкладка по схеме", "Тест дополнительных стикеров"],
+      tasks_en: ["Re-layout per planogram", "BTL sticker test"],
+      aiSource: "Чеки (анализ корзины)",
       aiSource_en: "POS receipts (basket analysis)",
       ai_signal_source: "pos-cheque",
       ai_detection_method:
-        "AI ищет в 90-дневной выборке чеков пары SKU встречающиеся вместе в 18%+ чеков и проверяет, рядом ли они на полке",
+        "AI ищет в чеках за 90 дней пары товаров которые встречаются вместе в 18%+ корзин и проверяет, рядом ли они на полке",
       ai_detection_method_en:
-        "AI scans 90 days of receipts for SKU pairs in 18%+ baskets and checks if they share shelf adjacency",
+        "AI scans 90 days of receipts for product pairs in 18%+ baskets and checks shelf adjacency",
+      tier: "secondary",
       default_money_impact: {
         amount: 140_000,
         period: "month",
         impact_type: "money",
-        rationale_short: "Cross-sell после перевыкладки ≈ +140 000 ₽/мес по сети",
+        rationale_short: "Продажа в нагрузку после перевыкладки ≈ +140 000 ₽/мес по сети",
         rationale_short_en: "Cross-sell after re-layout ≈ +140,000 ₽/month network-wide",
         rationale_breakdown: [
-          "Mastercard/LatentView: basket analysis даёт +5% incremental basket-size",
-          "5% × средний чек 850 ₽ × ~110k транзакций/нед на магазин × 4 нед",
-          "× 132 магазина × 65% атрибуции ≈ 140 000 ₽/мес",
+          "Mastercard/LatentView: анализ корзины даёт +5% к среднему чеку",
+          "5% × средний чек 850 ₽ × ~110k чеков/нед на магазин × 4 нед",
+          "× 132 магазина × 65% вклад магазина ≈ 140 000 ₽/мес",
         ],
         rationale_breakdown_en: [
-          "Mastercard/LatentView: MBA delivers +5% incremental basket size",
+          "Mastercard/LatentView: market-basket analysis delivers +5% basket size",
           "5% × avg receipt 850 ₽ × ~110k tx/week per store × 4 weeks",
           "× 132 stores × 65% attribution ≈ 140,000 ₽/month",
         ],
       },
     },
     {
-      title: "Промо-выкладка по стандарту (gap к benchmark)",
-      title_en: "Promo display by the benchmark",
-      when: "AI заметил что продажи промо-SKU магазина X на 27 п.п. ниже benchmark group",
-      when_en: "AI saw promo-SKU sales 27pp below benchmark group",
+      title: "Промо-выкладка по стандарту (плохо исполняют)",
+      title_en: "Promo display by the standard (execution gap)",
+      when: "AI заметил что продажи акционных товаров магазина X на 27 п.п. ниже похожих магазинов",
+      when_en: "AI saw promo sales 27pp below comparable stores",
       period: "2-3 нед",
-      tasks: ["Контроль старта промо", "Выкладка к 10:00"],
+      tasks: ["Контроль старта акции", "Выкладка к 10:00"],
       tasks_en: ["Verify promo start", "Stocking complete by 10:00"],
-      aiSource: "POS-чеки (lift comparison)",
+      aiSource: "Чеки (сравнение продаж)",
       aiSource_en: "POS receipts (lift comparison)",
       ai_signal_source: "pos-cheque",
       ai_detection_method:
-        "AI сравнивает продажи промо-SKU магазина с benchmark-группой (магазины того же формата) — gap >15 п.п. = execution problem",
+        "AI сравнивает продажи акционных товаров магазина с похожими магазинами (того же формата) — разрыв >15 п.п. = плохо исполняют",
       ai_detection_method_en:
-        "AI compares promo-SKU sales to a benchmark group (same-format stores); a 15pp+ gap signals execution problem",
+        "AI compares promo-SKU sales vs comparable stores (same format); a 15pp+ gap signals an execution problem",
+      tier: "secondary",
       default_money_impact: {
         amount: 260_000,
         period: "month",
         impact_type: "money",
-        rationale_short: "Промо по стандарту ≈ +260 000 ₽/мес конверсии",
+        rationale_short: "Промо по стандарту ≈ +260 000 ₽/мес",
         rationale_short_en: "On-standard promo ≈ +260,000 ₽/month",
         rationale_breakdown: [
-          "Hyper-store промо-зона = 15% × 18 млн ₽/мес = 2.7 млн ₽/мес",
-          "Nielsen: каждый 1 п.п. compliance = +0.7% sales lift",
-          "27 п.п. gap × 0.7% × 2.7 млн × 65% атрибуции ≈ 260 000 ₽/мес",
-          "Лидеры держат 91% compliance, средний ритейл — 40%",
+          "Промо-зона гипермаркета = 15% × 18 млн ₽/мес = 2.7 млн ₽/мес",
+          "Nielsen: каждый 1 п.п. соблюдения стандарта = +0.7% продаж",
+          "27 п.п. разрыв × 0.7% × 2.7 млн × 65% вклад магазина ≈ 260 000 ₽/мес",
+          "Лидеры держат 91% соблюдения, средний ритейл — 40%",
         ],
         rationale_breakdown_en: [
           "Hyper-store promo zone = 15% × 18M ₽/mo = 2.7M ₽/mo",
@@ -197,89 +488,92 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
       },
     },
     {
-      title: "Удержание лояльных покупателей (RFM cohort)",
-      title_en: "Retain loyal customers (RFM cohort)",
-      when: "AI выявил падение visit frequency на -8% у local-cohort за 4 недели",
-      when_en: "AI saw -8% visit frequency drop in local cohort over 4 weeks",
+      title: "Удержание постоянных покупателей",
+      title_en: "Retain loyal customers",
+      when: "AI выявил падение частоты визитов на 8% у группы постоянных покупателей за 4 недели",
+      when_en: "AI saw an 8% drop in visit frequency among loyal shoppers over 4 weeks",
       period: "8 нед",
-      tasks: ["Анализ последних чеков cohort'а", "Целевой push"],
-      tasks_en: ["Analyse recent cohort receipts", "Targeted push"],
-      aiSource: "POS-чеки (RFM cohorts)",
-      aiSource_en: "POS receipts (RFM cohorts)",
+      tasks: ["Анализ последних чеков группы", "Целевой push"],
+      tasks_en: ["Analyse recent receipts of the group", "Targeted push"],
+      aiSource: "Чеки (группы постоянных покупателей)",
+      aiSource_en: "POS receipts (loyal shopper cohorts)",
       ai_signal_source: "pos-cheque",
       ai_detection_method:
-        "AI разрезает покупателей по RFM (recency / frequency / monetary) за 12 недель и ищет cohort с падением частоты визитов",
+        "AI делит покупателей на группы по давности, частоте и сумме покупок за 12 недель и ищет группу с падением частоты визитов",
       ai_detection_method_en:
-        "AI segments shoppers by RFM (recency/frequency/monetary) across 12 weeks and finds cohorts with dropping visit frequency",
+        "AI segments shoppers by recency, frequency and spend over 12 weeks and finds groups with dropping visit frequency",
+      tier: "secondary",
       default_money_impact: {
         amount: 195_000,
         period: "month",
         impact_type: "money",
-        rationale_short: "Возврат RFM cohort'а ≈ +195 000 ₽/мес на магазин",
-        rationale_short_en: "Restoring RFM cohort ≈ +195,000 ₽/month per store",
+        rationale_short: "Возврат группы постоянных ≈ +195 000 ₽/мес на магазин",
+        rationale_short_en: "Restoring loyal cohort ≈ +195,000 ₽/month per store",
         rationale_breakdown: [
-          "Loyal cohort ≈ 25% от eligible visits, средний чек 1 100 ₽",
-          "AI_RFM_RETENTION_LIFT_PCT = 3% возврата × cohort_size × 4 нед",
-          "Применяется к топ-10 магазинам сети, attribution 65%",
+          "Постоянные покупатели ≈ 25% подходящих визитов, средний чек 1 100 ₽",
+          "3% возврата × размер группы × 4 нед",
+          "Применяется к топ-10 магазинам сети, вклад магазина 65%",
         ],
         rationale_breakdown_en: [
           "Loyal cohort ≈ 25% of eligible visits, avg ticket 1,100 ₽",
-          "AI_RFM_RETENTION_LIFT_PCT = 3% × cohort × 4 weeks",
+          "3% retention × cohort size × 4 weeks",
           "Applied to top-10 network stores, attribution 65%",
         ],
       },
     },
     {
-      title: "Скорость работы кассира (slow checkout)",
-      title_en: "Cashier scanning speed (slow checkout)",
-      when: "AI заметил что у кассира X время сканирования / чек выше median смены на 35%",
-      when_en: "AI saw cashier X scanning time/receipt 35% above shift median",
+      title: "Скорость работы кассира",
+      title_en: "Cashier scanning speed",
+      when: "AI заметил что у кассира время на чек выше среднего по смене на 35%",
+      when_en: "AI saw cashier scanning time 35% above shift average",
       period: "4 нед",
-      tasks: ["Coaching session", "Перенаправление трафика на КС"],
+      tasks: ["Разбор с сотрудником", "Перенаправление трафика на кассу самообслуживания"],
       tasks_en: ["Coaching session", "Redirect traffic to self-checkout"],
-      aiSource: "POS-чеки (per-cashier time-stamps)",
+      aiSource: "Чеки (время по каждому кассиру)",
       aiSource_en: "POS receipts (per-cashier timestamps)",
       ai_signal_source: "pos-cheque",
       ai_detection_method:
-        "AI смотрит таймстемпы открытие→закрытие чека по каждому кассиру и сравнивает с median смены — outliers выше 25% = подозрение",
+        "AI смотрит время от открытия до закрытия каждого чека по каждому кассиру и сравнивает со среднесменным — отставание выше 25% = подозрение",
       ai_detection_method_en:
-        "AI checks per-cashier open→close timestamps vs shift median; outliers >25% above are flagged",
+        "AI checks per-cashier open→close timestamps vs shift median; >25% above is flagged",
+      tier: "secondary",
       default_money_impact: {
         amount: 0,
         period: "month",
         impact_type: "training",
         significance_score: 6,
         rationale_short:
-          "Coaching: качественный эффект, прямой ₽ через продуктивность смены",
+          "Разбор с сотрудником: качественный эффект, прямой ₽ через скорость очереди",
         rationale_short_en:
           "Coaching: quality effect, indirect ₽ via shift productivity",
         rationale_breakdown: [
-          "ScanQueue 2026: +1 минута на чек = +23% abandonment при пиках",
-          "Прямой ₽ считается через ускорение очереди (см. PRODUCTIVITY)",
-          "BLS 2024 productivity coefficient — позже",
+          "ScanQueue 2026: +1 минута на чек = +23% покупателей уходят без покупки в пик",
+          "Прямой ₽ считается через ускорение очереди (см. цель «Больше задач за смену»)",
+          "Сколько успевают за смену — норма из BLS 2024",
         ],
         rationale_breakdown_en: [
           "ScanQueue 2026: +1 min per receipt = +23% abandonment at peaks",
-          "Direct ₽ flows via queue speedup (see PRODUCTIVITY goal)",
+          "Direct ₽ flows via queue speedup (see ‘More tasks per shift’ goal)",
           "BLS 2024 productivity coefficient applies",
         ],
       },
     },
     {
-      title: "Восстановление среднего чека (basket-size trend)",
-      title_en: "Restore basket size (trend reversal)",
+      title: "Восстановление среднего чека",
+      title_en: "Restore basket size",
       when: "AI заметил что средний чек упал на 7% за 3 недели",
       when_en: "AI saw 7% basket-size drop over 3 weeks",
       period: "6 нед",
-      tasks: ["Аудит выкладки промо", "Тест выкладки на эндах"],
+      tasks: ["Проверка выкладки акций", "Тест выкладки на торцевых полках"],
       tasks_en: ["Promo display audit", "End-cap test"],
-      aiSource: "POS-чеки (time-series mean)",
+      aiSource: "Чеки (среднее значение по дням)",
       aiSource_en: "POS receipts (time-series mean)",
       ai_signal_source: "pos-cheque",
       ai_detection_method:
-        "AI отслеживает rolling-7d среднего чека и flag'ает падение >5% от 30-дневного baseline'а",
+        "AI отслеживает средний чек за 7 дней и помечает падение больше 5% от обычного уровня за 30 дней",
       ai_detection_method_en:
-        "AI tracks rolling-7d basket size and flags >5% drop from 30-day baseline",
+        "AI tracks rolling-7d basket size and flags >5% drop from the 30-day baseline",
+      tier: "secondary",
       default_money_impact: {
         amount: 320_000,
         period: "month",
@@ -287,9 +581,9 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
         rationale_short: "Восстановление чека ≈ +320 000 ₽/мес по сети",
         rationale_short_en: "Basket restoration ≈ +320,000 ₽/month network-wide",
         rationale_breakdown: [
-          "Возврат 7% basket-size: 7% × средний чек 850 ₽ × кол-во транзакций",
-          "Применяем к топ-30 магазинам где детект сработал, attribution 65%",
-          "Realistic recovery 60% от gap'а за 6 недель",
+          "Возврат 7% среднего чека: 7% × средний чек 850 ₽ × кол-во чеков",
+          "Применяем к топ-30 магазинам где сработал детект, вклад магазина 65%",
+          "Реалистичный возврат — 60% от падения за 6 недель",
         ],
         rationale_breakdown_en: [
           "Recovering 7% basket: 7% × avg receipt 850 ₽ × tx count",
@@ -299,34 +593,35 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
       },
     },
 
-    // ────────── Phantom OOS (mixed POS+ERP) — флагман AI-цели ──────────
+    // ────────── Скрытое отсутствие (mixed POS+ERP) — оставлено как catalog ──────────
     {
       title: "Проверка подозрительных товаров",
       title_en: "Check suspicious SKUs",
-      when: "AI заметил что у SKU есть остаток ≥1 шт, но за сегодня 0 продаж при норме ≥3/день",
+      when: "AI заметил что у товара есть остаток ≥1 шт, но за сегодня 0 продаж при норме ≥3/день",
       when_en: "AI saw SKUs with stock ≥1 but 0 sales today against ≥3/day baseline",
       period: "ежедневно",
-      tasks: ["Подзадача на каждый SKU: «найти на полке / в подсобке» с отчётом"],
+      tasks: ["Подзадача на каждый товар: «найти на полке / в подсобке» с отчётом"],
       tasks_en: ["Subtask per SKU: locate (shelf/back-room) with status report"],
-      aiSource: "ERP остатки + POS чеки (phantom OOS detection)",
+      aiSource: "Учётная система + чеки (скрытое отсутствие)",
       aiSource_en: "ERP stock + POS receipts (phantom OOS detection)",
       ai_signal_source: "mixed",
       ai_detection_method:
-        "Каждый день после 14:00 AI пересекает остатки ERP с продажами по чекам — SKU с остатком ≥1, продажами 0 за день и базовой нормой ≥3 продаж/день за последние 14 дней попадают в список «подозрительных». На каждый SKU создаётся подзадача: «найти и отчитаться (на полке / в подсобке / списан / не нашли)»",
+        "Каждый день после 14:00 AI сверяет остатки с продажами по чекам — товары с остатком ≥1, нулевыми продажами за день и нормой ≥3 шт/день за последние 14 дней попадают в список «подозрительных». На каждый создаётся подзадача: «найти и отчитаться (на полке / в подсобке / списан / не нашли)»",
       ai_detection_method_en:
         "Daily after 14:00 AI joins ERP stock with POS sales — SKUs with stock ≥1, zero sales today and ≥3/day baseline over 14d become suspicious. One subtask per SKU: locate (shelf / back-room / written-off / not found) with report",
+      tier: "secondary",
       default_money_impact: {
         amount: 1_100_000,
         period: "week",
         impact_type: "money",
-        rationale_short: "Phantom OOS детект ≈ +1 100 000 ₽/нед скрытой выручки",
+        rationale_short: "Скрытое отсутствие на полке ≈ +1 100 000 ₽/нед скрытой выручки",
         rationale_short_en: "Phantom OOS detection ≈ +1,100,000 ₽/week recovered",
         rationale_breakdown: [
-          "Phantom OOS (товар по системе есть, по факту нет) — 1.5-3% дополнительных скрытых OOS поверх классических",
-          "Берём 1.5% phantom × 30% затронутых категорий (молочка/бакалея/хоз) × 480 млн ₽/нед сеть",
-          "× 60% recovery (быстрая реакция в день обнаружения, до конца дня товар на полке)",
-          "× 65% attribution магазину ≈ 1 100 000 ₽/нед",
-          "Источник: IRI/Nielsen 2023 — phantom OOS невидим для классического shelf-scan, ловится только cross-check'ом ERP↔POS",
+          "Скрытое отсутствие (по системе есть, на полке нет) — 1.5-3% дополнительных потерь сверху обычных пустых полок",
+          "Берём 1.5% × 30% затронутых категорий (молочка/бакалея/хоз) × 480 млн ₽/нед сеть",
+          "× 60% возврата (быстрая реакция в день обнаружения)",
+          "× 65% вклад магазина ≈ 1 100 000 ₽/нед",
+          "Источник: IRI/Nielsen 2023 — обычный обход полки скрытое отсутствие не видит, ловится только сверкой учётной системы с чеками",
         ],
         rationale_breakdown_en: [
           "Phantom OOS (system says yes, shelf says no) — 1.5-3% hidden OOS on top of classic OOS",
@@ -338,22 +633,23 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
       },
     },
 
-    // ────────── ERP-сигналы (4 штуки) ──────────
+    // ────────── Учётная система (расширенные сценарии) ──────────
     {
-      title: "Меньше выбрасываем хлеб (приёмка vs срок)",
+      title: "Меньше выбрасываем хлеб (приёмка и срок)",
       title_en: "Less bakery thrown away (receipt vs expiry)",
       when: "AI заметил по приёмкам что хлеб залёживается на 1.5 дня больше нормы",
       when_en: "AI saw bakery sitting 1.5 days past target",
       period: "4-6 нед",
-      tasks: ["Ротация FIFO", "Уценка к порогу", "Контроль скоропорта"],
+      tasks: ["Первый пришёл — первый ушёл", "Уценка к порогу", "Контроль свежести"],
       tasks_en: ["FIFO rotation", "Threshold-based markdowns", "Perishables check"],
-      aiSource: "ERP остатки + сроки годности + POS",
+      aiSource: "Учётная система + сроки годности + чеки",
       aiSource_en: "ERP stock + expiry + POS",
       ai_signal_source: "erp-stock",
       ai_detection_method:
-        "AI сопоставляет приёмки → остатки → продажи на 14-дневном окне и считает avg shelf-time на SKU vs срок годности",
+        "AI сопоставляет приёмки → остатки → продажи на 14-дневном окне и считает, сколько товар лежит на полке относительно срока годности",
       ai_detection_method_en:
-        "AI joins receipts → stock → sales over 14d and computes avg shelf-time per SKU vs expiry",
+        "AI joins receipts → stock → sales over 14d and computes shelf-time per SKU vs expiry",
+      tier: "secondary",
       default_money_impact: {
         amount: 450_000,
         period: "week",
@@ -361,8 +657,8 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
         rationale_short: "−1.3 п.п. списаний хлеба ≈ −450 000 ₽/нед",
         rationale_short_en: "−1.3pp bakery write-offs ≈ −450,000 ₽/week saved",
         rationale_breakdown: [
-          "Хлеб = 6% выручки сети (Cybake bakery norm)",
-          "1.3% × 6% × 480 млн ₽ × 78% себестоимости × 65% × 1.3 fresh-bonus",
+          "Хлеб = 6% выручки сети (норма Cybake)",
+          "1.3% × 6% × 480 млн ₽ × 78% себестоимости × 65% × 1.3 (свежесть)",
           "Свежий хлеб даёт +30% защиты маржи (нельзя восстановить как сухой)",
           "≈ 450 000 ₽/нед экономии на сети",
         ],
@@ -375,20 +671,21 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
       },
     },
     {
-      title: "Точность приёмки vs заявка",
+      title: "Точность приёмки и заявок",
       title_en: "Receiving accuracy (request vs delivery)",
       when: "AI заметил что приёмка от поставщика расходится с заявкой больше 3% по штукам",
       when_en: "AI saw delivery vs request gap exceed 3% by units",
       period: "4 нед",
-      tasks: ["Сверка с накладной", "Эскалация поставщику"],
+      tasks: ["Сверка с накладной", "Передать поставщику"],
       tasks_en: ["Reconcile invoice", "Escalate to supplier"],
-      aiSource: "ERP приёмки + заявки",
+      aiSource: "Приёмки + заявки",
       aiSource_en: "ERP delivery + request data",
       ai_signal_source: "erp-stock",
       ai_detection_method:
-        "AI сравнивает заявку (PO) с фактической приёмкой по каждому SKU и flag'ает delta >3%",
+        "AI сравнивает заявку с фактической приёмкой по каждому товару и помечает расхождение >3%",
       ai_detection_method_en:
         "AI compares PO vs actual receiving per SKU and flags >3% delta",
+      tier: "secondary",
       default_money_impact: {
         amount: 85_000,
         period: "month",
@@ -396,8 +693,8 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
         rationale_short: "Точная приёмка ≈ −85 000 ₽/мес недопоставок",
         rationale_short_en: "Accurate receiving ≈ −85,000 ₽/month",
         rationale_breakdown: [
-          "Industry: 1-2% PO discrepancy на средней сети, наша оценка 2.5%",
-          "0.5% × 480 млн / 4 нед × COGS 78% × 65% attribution ≈ 85 000 ₽/мес",
+          "По индустрии — 1-2% расхождения по заявкам в средней сети, наша оценка 2.5%",
+          "0.5% × 480 млн / 4 нед × 78% себестоимости × 65% вклад магазина ≈ 85 000 ₽/мес",
         ],
         rationale_breakdown_en: [
           "Industry: 1-2% PO discrepancy in mid-size networks, we estimate 2.5%",
@@ -406,30 +703,31 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
       },
     },
     {
-      title: "Recovery shrinkage (потери без чека)",
-      title_en: "Shrinkage recovery (no-receipt loss)",
-      when: "AI заметил по ERP что delta остатков − sales > shrinkage normа",
-      when_en: "AI saw ERP delta stock − sales above shrink norm",
+      title: "Возврат потерь без чека",
+      title_en: "Recover no-receipt losses",
+      when: "AI заметил что разница остатков и продаж по чекам больше нормы потерь",
+      when_en: "AI saw stock-vs-sales delta above the shrink norm",
       period: "8 нед",
-      tasks: ["Внеплановая инвентаризация", "Видео-аудит зоны"],
+      tasks: ["Внеплановая инвентаризация", "Видео-проверка зоны"],
       tasks_en: ["Off-cycle inventory", "Zone video audit"],
-      aiSource: "ERP остатки + POS",
+      aiSource: "Учётная система + чеки",
       aiSource_en: "ERP stock + POS",
       ai_signal_source: "erp-stock",
       ai_detection_method:
-        "AI считает (остаток_начала − остаток_конца) − продажи_по_чекам = неучтённая потеря; сравнивает со SHRINK_NORM по категории",
+        "AI считает (остаток начала − остаток конца − продажи по чекам) = неучтённая потеря; сравнивает с нормой потерь по категории",
       ai_detection_method_en:
-        "AI computes (start_stock − end_stock) − POS_sales = unaccounted loss; compares to SHRINK_NORM per category",
+        "AI computes (start_stock − end_stock − POS_sales) = unaccounted loss; compares to category shrink norm",
+      tier: "secondary",
       default_money_impact: {
         amount: 230_000,
         period: "month",
         impact_type: "money",
-        rationale_short: "Возврат 0.3 п.п. shrinkage ≈ −230 000 ₽/мес",
+        rationale_short: "Возврат 0.3 п.п. потерь ≈ −230 000 ₽/мес",
         rationale_short_en: "Recovering 0.3pp shrinkage ≈ −230,000 ₽/month",
         rationale_breakdown: [
-          "FMI: 1.6% средний shrink, лидеры 0.7% — recovery 0.3 п.п. realistic",
-          "0.3% × 480 млн ₽/нед × 4 нед × 78% COGS × 65% ≈ 230 000 ₽/мес",
-          "Применимо к категориям с высокой shrink-rate (косметика, алкоголь)",
+          "FMI: 1.6% средняя норма потерь, лидеры 0.7% — реалистичный возврат 0.3 п.п.",
+          "0.3% × 480 млн ₽/нед × 4 нед × 78% себестоимости × 65% ≈ 230 000 ₽/мес",
+          "Применимо к категориям с высокими потерями (косметика, алкоголь)",
         ],
         rationale_breakdown_en: [
           "FMI: 1.6% avg shrink, leaders 0.7% — recovery 0.3pp realistic",
@@ -439,20 +737,21 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
       },
     },
     {
-      title: "Точность ценников (ERP master vs POS)",
+      title: "Точность ценников (учётная система и кассы)",
       title_en: "Price-tag accuracy (ERP master vs POS)",
-      when: "AI выявил расхождение ERP master-цены и цены пробитой на чеке",
+      when: "AI выявил расхождение цены в учётной системе и цены пробитой на чеке",
       when_en: "AI found ERP master vs POS price mismatch",
       period: "4 нед",
-      tasks: ["Обход ценников после переоценки", "Тест пробития"],
+      tasks: ["Обход ценников после переоценки", "Тестовая проверка кассы"],
       tasks_en: ["Price-tag walk after repricing", "POS test scan"],
-      aiSource: "ERP price master + POS",
+      aiSource: "Цены в учётной системе + чеки",
       aiSource_en: "ERP price master + POS",
       ai_signal_source: "erp-price-master",
       ai_detection_method:
-        "AI ежечасно sравнивает ERP master price с ценой на чеке после первой продажи SKU; alert если price_pos != price_erp",
+        "AI каждый час сравнивает цену в учётной системе с ценой на чеке после первой продажи товара; алерт если цена на чеке не равна цене в системе",
       ai_detection_method_en:
         "AI hourly compares ERP master price vs POS receipt price after first sale; alerts on mismatch",
+      tier: "secondary",
       default_money_impact: {
         amount: 75_000,
         period: "month",
@@ -461,47 +760,48 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
         rationale_short_en: "No price-tag errors ≈ −75,000 ₽/month",
         rationale_breakdown: [
           "Каждая жалоба = ~5 400 ₽ компенсации (чек + сертификат лояльности)",
-          "Wiser: каждый неверный ценник = 6% продаж SKU теряются за неделю",
-          "7 жалоб × 5 400 + 6%-loss × 7 SKU × 4 нед на 25B-baseline ≈ 75 000 ₽/мес",
+          "Wiser: каждый неверный ценник = 6% продаж товара теряются за неделю",
+          "7 жалоб × 5 400 + 6%-потери × 7 товаров × 4 нед на сети 25 млрд ₽ ≈ 75 000 ₽/мес",
         ],
         rationale_breakdown_en: [
           "Each complaint = ~5,400 ₽ (refund + voucher)",
           "Wiser: every wrong tag loses 6% SKU sales/week",
-          "7 complaints × 5,400 + 6%-loss × 7 SKU × 4 weeks on 25B baseline ≈ 75,000 ₽/month",
+          "7 complaints × 5,400 + 6%-loss × 7 SKUs × 4 weeks on 25B baseline ≈ 75,000 ₽/month",
         ],
       },
     },
 
     // ────────── Photo-bonus сигналы (4 штуки) ──────────
     {
-      title: "Полки прикассы по фото от сотрудника",
-      title_en: "Prikassa shelves via employee photos",
+      title: "Полки у касс по фото от сотрудника",
+      title_en: "Checkout-side shelves via employee photos",
       when: "AI выявил по фото от сотрудника пустые места в импульсной зоне",
       when_en: "AI detected empty spots in impulse zone from employee photo",
       period: "4 нед",
-      tasks: ["Бонус-задача «Сфоткай прикассу»", "Выкладка по детектам"],
-      tasks_en: ["Bonus task ‘Snap prikassa’", "Restock per detection"],
-      aiSource: "Фото от сотрудника + CV (Goodschecker / собств.)",
+      tasks: ["Бонус-задача «Сфоткай зону у касс»", "Выкладка по детектам"],
+      tasks_en: ["Bonus task ‘Snap checkout zone’", "Restock per detection"],
+      aiSource: "Фото от сотрудника + распознавание (Goodschecker / собств.)",
       aiSource_en: "Employee photo + CV (Goodschecker / own)",
       ai_signal_source: "photo-bonus",
       ai_detection_method:
-        "AI генерит бонус-задачу «Сфоткай прикассу в 14:00»; CV прогоняет фото и детектит пустые ячейки vs планограмма (Goodschecker accuracy 95%)",
+        "AI создаёт бонус-задачу «Сфоткай зону у касс в 14:00»; распознавание прогоняет фото и находит пустые ячейки по схеме выкладки (точность Goodschecker 95%)",
       ai_detection_method_en:
-        "AI issues a bonus task ‘Snap prikassa at 14:00’; CV scans the photo for empty cells vs planogram (Goodschecker 95% accuracy)",
+        "AI issues a bonus task ‘Snap checkout zone at 14:00’; CV scans the photo for empty cells vs planogram (Goodschecker 95% accuracy)",
+      tier: "secondary",
       default_money_impact: {
         amount: 85_000,
         period: "month",
         impact_type: "money",
-        rationale_short: "Прикасса по фото ≈ +85 000 ₽/мес",
-        rationale_short_en: "Photo-driven prikassa ≈ +85,000 ₽/month",
+        rationale_short: "Зона у касс по фото ≈ +85 000 ₽/мес",
+        rationale_short_en: "Photo-driven checkout zone ≈ +85,000 ₽/month",
         rationale_breakdown: [
-          "Прикасса = ~5% выручки магазина (импульсная зона)",
-          "NARMS: соблюдение планограммы +8.1% прибыли по зоне",
-          "8.1% × 5% × 480 млн × 65% × 95% photo-accuracy / 12 мес ≈ 85 000 ₽/мес",
-          "+ ускорение detection в 5× vs daily round (Trax/Pensa)",
+          "Зона у касс = ~5% выручки магазина (импульсная)",
+          "NARMS: соблюдение схемы выкладки +8.1% прибыли по зоне",
+          "8.1% × 5% × 480 млн × 65% × 95% точность фото / 12 мес ≈ 85 000 ₽/мес",
+          "+ ускорение в 5 раз против ежедневного обхода (Trax/Pensa)",
         ],
         rationale_breakdown_en: [
-          "Prikassa ≈ 5% of store revenue (impulse zone)",
+          "Checkout zone ≈ 5% of store revenue (impulse)",
           "NARMS: planogram compliance +8.1% zone profit",
           "8.1% × 5% × 480M × 65% × 95% photo-accuracy / 12 mo ≈ 85,000 ₽/month",
           "+ 5× faster detection vs daily round (Trax/Pensa)",
@@ -516,13 +816,14 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
       period: "4 нед",
       tasks: ["Бонус-задача «Сфоткай молочку утром»", "Выкладка"],
       tasks_en: ["Bonus task ‘Snap dairy in AM’", "Restock"],
-      aiSource: "Фото + CV + ERP остатки",
+      aiSource: "Фото + распознавание + остатки",
       aiSource_en: "Photo + CV + ERP stock",
       ai_signal_source: "mixed",
       ai_detection_method:
-        "AI комбинирует CV-результат фото + ERP-остаток: пустота на полке + остаток >40 = backroom задача (вынести); пустота + остаток 0 = заявка/приёмка проблема",
+        "AI комбинирует результат распознавания фото и остаток в системе: пустота на полке + остаток >40 = задача на подсобку (вынести); пустота + остаток 0 = проблема с заявкой/приёмкой",
       ai_detection_method_en:
-        "AI combines CV photo result + ERP stock: empty + stock>40 = backroom task; empty + stock=0 = ordering/receiving problem",
+        "AI combines CV photo result + ERP stock: empty + stock>40 = back-room task; empty + stock=0 = ordering/receiving problem",
+      tier: "secondary",
       default_money_impact: {
         amount: 380_000,
         period: "week",
@@ -531,41 +832,42 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
         rationale_short_en: "Photo-driven dairy ≈ +380,000 ₽/week network-wide",
         rationale_breakdown: [
           "Молочка = 30% выручки × 480 млн ₽/нед = 144 млн ₽/нед",
-          "0.4 п.п. ускорение reaction × 4% elasticity × 144 млн × 65% × 22%",
-          "× AI_PHOTO_AUDIT_ACCURACY 95% ≈ 380 000 ₽/нед",
+          "0.4 п.п. ускорение реакции × 4% эластичность × 144 млн × 65% × 22%",
+          "× точность распознавания фото 95% ≈ 380 000 ₽/нед",
         ],
         rationale_breakdown_en: [
           "Dairy = 30% revenue × 480M ₽/week = 144M ₽/week",
           "0.4pp faster reaction × 4% elasticity × 144M × 65% × 22%",
-          "× AI_PHOTO_AUDIT_ACCURACY 95% ≈ 380,000 ₽/week",
+          "× 95% photo accuracy ≈ 380,000 ₽/week",
         ],
       },
     },
     {
-      title: "Соответствие планограмме (CV-аудит фото)",
-      title_en: "Planogram compliance (photo CV audit)",
-      when: "AI выявил по фото отклонения от планограммы в выкладке акционных SKU",
+      title: "Соответствие схеме выкладки (проверка по фото)",
+      title_en: "Planogram compliance (photo audit)",
+      when: "AI выявил по фото отклонения от схемы выкладки на акционных товарах",
       when_en: "AI detected planogram deviations on promo SKUs from photos",
       period: "6 нед",
-      tasks: ["Бонус «Сфоткай эндкэп»", "Корректировка по детектам"],
+      tasks: ["Бонус «Сфоткай торцевую полку»", "Корректировка по детектам"],
       tasks_en: ["Bonus ‘Snap end-cap’", "Adjust per detections"],
-      aiSource: "Фото + CV vs планограмма",
+      aiSource: "Фото + распознавание против схемы выкладки",
       aiSource_en: "Photo + CV vs planogram",
       ai_signal_source: "photo-bonus",
       ai_detection_method:
-        "AI сравнивает CV-распознавание SKU на фото с эталонной планограммой — gap >10% items = задача мерчендайзеру (Магнит pilot 98% accuracy)",
+        "AI сравнивает распознанные на фото товары с эталонной схемой выкладки — разрыв >10% позиций = задача мерчендайзеру (Магнит pilot 98% точности)",
       ai_detection_method_en:
         "AI compares CV-recognised SKUs on photo vs reference planogram — 10%+ gap = merchandiser task (Magnit pilot 98% accuracy)",
+      tier: "secondary",
       default_money_impact: {
         amount: 165_000,
         period: "month",
         impact_type: "money",
-        rationale_short: "Планограмма по фото ≈ +165 000 ₽/мес",
+        rationale_short: "Схема выкладки по фото ≈ +165 000 ₽/мес",
         rationale_short_en: "Photo-driven planogram ≈ +165,000 ₽/month",
         rationale_breakdown: [
-          "NARMS: planogram compliance +8.1% profit по зоне",
+          "NARMS: соблюдение схемы выкладки +8.1% прибыли по зоне",
           "Промо-зона = 15% × 480 млн × 4.33 нед/мес = 311 млн ₽/мес",
-          "Realistic recovery 0.5% × 311 млн × 65% × 95% photo-accuracy ≈ 165 000 ₽/мес",
+          "Реалистичный возврат 0.5% × 311 млн × 65% × 95% точность фото ≈ 165 000 ₽/мес",
         ],
         rationale_breakdown_en: [
           "NARMS: planogram compliance +8.1% zone profit",
@@ -580,26 +882,27 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
       when: "AI обнаружил по фото препятствие в проходе или мокрый пол",
       when_en: "AI detected aisle obstruction or wet floor from photo",
       period: "4 нед",
-      tasks: ["Бонус «Обход зоны»", "Уборка / эвакуация препятствия"],
+      tasks: ["Бонус «Обход зоны»", "Уборка / убрать препятствие"],
       tasks_en: ["Bonus ‘Zone walk-through’", "Clean / clear obstacle"],
-      aiSource: "Фото + CV (детект мусора/жидкости)",
+      aiSource: "Фото + распознавание (мусор/жидкость)",
       aiSource_en: "Photo + CV (debris/liquid detection)",
       ai_signal_source: "photo-bonus",
       ai_detection_method:
-        "CV модель детектит на фото мусор, разлитую жидкость, упавшие коробки — alert директору + бонус-баллы сотруднику за обнаружение",
+        "Модель распознавания находит на фото мусор, разлитую жидкость, упавшие коробки — алерт директору + бонус-баллы сотруднику за обнаружение",
       ai_detection_method_en:
         "CV detects debris, spilled liquid, fallen boxes on photo — alerts director + bonus points for the employee",
+      tier: "secondary",
       default_money_impact: {
         amount: 0,
         period: "month",
         impact_type: "compliance",
         significance_score: 9,
-        rationale_short: "Compliance: безопасность покупателя",
+        rationale_short: "Соблюдение нормы: безопасность покупателя",
         rationale_short_en: "Compliance: customer safety",
         rationale_breakdown: [
-          "Avoided fines: до 50 000 ₽ за случай травмы (Роспотребнадзор)",
+          "Избежание штрафов: до 50 000 ₽ за случай травмы (Роспотребнадзор)",
           "Реальный ₽-эффект: предотвращённые иски (~1 млн ₽ среднее)",
-          "Сортируется по significance, не money_impact",
+          "Сортируется по значимости, не по ₽-эффекту",
         ],
         rationale_breakdown_en: [
           "Avoided fines: up to 50,000 ₽ per injury case (Rospotrebnadzor)",
@@ -609,22 +912,23 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
       },
     },
 
-    // ────────── WFM telemetry / mixed (2 штуки) ──────────
+    // ────────── График смен / mixed ──────────
     {
       title: "Больше задач за смену",
       title_en: "More tasks per shift",
-      when: "AI заметил низкий процент закрытия задач + пики продаж покрыты слабо",
+      when: "AI заметил низкий процент закрытия задач — пики продаж покрыты слабо",
       when_en: "AI saw low task closure rate + weak peak coverage",
       period: "4-8 нед",
-      tasks: ["Скоростные задачи", "Маршруты обхода"],
+      tasks: ["Быстрые задачи", "Маршруты обхода"],
       tasks_en: ["Quick-win tasks", "Walk-through routes"],
-      aiSource: "WFM telemetry + POS пики",
+      aiSource: "График смен + пики продаж по чекам",
       aiSource_en: "WFM telemetry + POS peaks",
       ai_signal_source: "wfm-schedule",
       ai_detection_method:
-        "AI сопоставляет график смен с почасовым traffic'ом по чекам — flag'ает часы где coverage <0.7×traffic",
+        "AI сопоставляет график смен с почасовым потоком покупателей по чекам — помечает часы где покрытие меньше 70% от потока",
       ai_detection_method_en:
         "AI matches shift schedule against hourly POS traffic — flags hours where coverage <0.7× traffic",
+      tier: "secondary",
       default_money_impact: {
         amount: 128_000,
         period: "month",
@@ -633,8 +937,8 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
         rationale_short_en: "+5pp completion ≈ +128,000 ₽/month",
         rationale_breakdown: [
           "Полная стоимость часа = 350 ₽ (РФ 2026)",
-          "BLS 2024: +0.6% от ФОТ на каждый п.п. выполнения",
-          "Сэкономленные часы × ставка + продуктивность смены на 25B baseline ≈ 128 000 ₽/мес",
+          "BLS 2024: +0.6% к фонду оплаты труда на каждый п.п. выполнения",
+          "Сэкономленные часы × ставка + сколько успевают за смену на сети 25 млрд ₽ ≈ 128 000 ₽/мес",
         ],
         rationale_breakdown_en: [
           "Fully-loaded hour = 350 ₽ (RU 2026)",
@@ -646,29 +950,30 @@ export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoa
     {
       title: "Контроль ЕГАИС / Честный знак",
       title_en: "EGAIS / Chestny Znak compliance",
-      when: "AI обнаружил расхождение между ЕГАИС-документом и физическим остатком",
+      when: "AI обнаружил расхождение между документом ЕГАИС и физическим остатком",
       when_en: "AI found mismatch between EGAIS doc and physical stock",
       period: "2 нед",
       tasks: ["Сверка алкоголь-зала", "Корректировка ЕГАИС"],
       tasks_en: ["Reconcile alcohol section", "Update EGAIS"],
-      aiSource: "ЕГАИС + ERP + сверка",
+      aiSource: "ЕГАИС + учётная система + сверка",
       aiSource_en: "EGAIS + ERP + reconciliation",
       ai_signal_source: "egais",
       ai_detection_method:
-        "AI ежедневно сверяет ЕГАИС-балансы с ERP остатками; flag при delta >2 бутылки",
+        "AI каждый день сверяет балансы ЕГАИС с остатками учётной системы; помечает при расхождении >2 бутылки",
       ai_detection_method_en:
         "AI daily reconciles EGAIS balances vs ERP stock; flags >2-bottle delta",
+      tier: "secondary",
       default_money_impact: {
         amount: 0,
         period: "month",
         impact_type: "compliance",
         significance_score: 10,
-        rationale_short: "Compliance ЕГАИС: avoid штрафы 150-300k ₽",
+        rationale_short: "Соблюдение нормы ЕГАИС: избегаем штрафы 150-300 тыс ₽",
         rationale_short_en: "EGAIS compliance: avoid 150-300k ₽ fines",
         rationale_breakdown: [
           "ФЗ-171: штраф за расхождение 150 000 — 300 000 ₽ за инцидент",
-          "Real ₽-effect: 1-2 случая в год на сеть = ~500 000 ₽/год avoided",
-          "Сортируется по significance",
+          "Реальный ₽-эффект: 1-2 случая в год на сеть = ~500 000 ₽/год избежанных штрафов",
+          "Сортируется по значимости",
         ],
         rationale_breakdown_en: [
           "Federal Law 171: 150,000 — 300,000 ₽ fine per incident",

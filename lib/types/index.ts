@@ -945,6 +945,31 @@ export interface MoneyImpact {
   significance_score?: number;
 }
 
+/**
+ * Уровень приоритета цели в портфеле AI-целей.
+ *  - `priority`  — одна из 5 foundation-целей (deep-research отчёт): OOS,
+ *                  phantom stock, fresh write-offs, post-promo leftovers,
+ *                  slow-moving inventory. Идут наверх каталога.
+ *  - `secondary` — расширенные сценарии (basket cross-sell, RFM, planogram,
+ *                  productivity, ЕГАИС и т.п.) — полезны как catalog, но
+ *                  ниже priority-5 по приоритету пилотирования.
+ *
+ * Если поле не задано — UI считает цель `secondary`.
+ */
+export type GoalTier = "priority" | "secondary";
+
+/**
+ * Какая волна пилотирования из deep-research roadmap'а.
+ *  - `A` — OOS + Phantom (foundation, 4 нед baseline + 8 нед test)
+ *  - `B` — Fresh write-offs (4 нед baseline + 12 нед test)
+ *  - `C` — Promo allocation optimizer (8-10 нед, 3 промо-цикла)
+ *  - `D` — Slow stock cleanup (12-16 нед)
+ *
+ * Только у `tier: "priority"` целей; secondary получают undefined.
+ * См. `.memory_bank/_claude/AI-GOALS-ROADMAP.md`.
+ */
+export type PilotWave = "A" | "B" | "C" | "D";
+
 /** AI-Assistant цель + ручная */
 export interface Goal {
   id: string;
@@ -1008,6 +1033,17 @@ export interface Goal {
    * фото-thumbnail'ом + ФИО снявшего сотрудника.
    */
   ai_evidence?: AIEvidenceItem[];
+  /**
+   * Уровень приоритета в портфеле (deep-research отчёт). Если не задан —
+   * UI считает цель `secondary`. См. `GoalTier`.
+   */
+  tier?: GoalTier;
+  /**
+   * Волна пилотирования (`A`/`B`/`C`/`D`) из roadmap'а.
+   * Заполняется только для `tier: "priority"`; для `secondary` — undefined.
+   * См. `PilotWave` и `.memory_bank/_claude/AI-GOALS-ROADMAP.md`.
+   */
+  pilot_wave?: PilotWave;
 }
 
 /** Источник бонуса. GOAL_LINKED — бонус привязан к active Goal */

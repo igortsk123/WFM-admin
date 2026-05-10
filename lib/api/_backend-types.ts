@@ -526,6 +526,8 @@ export type BackendGoalCategory =
 
 export type BackendGoalStatus = "PROPOSED" | "ACTIVE" | "COMPLETED" | "ARCHIVED";
 export type BackendGoalDirection = "increase" | "decrease";
+export type BackendGoalTier = "priority" | "secondary";
+export type BackendPilotWave = "A" | "B" | "C" | "D";
 export type BackendMoneyImpactPeriod = "week" | "month" | "quarter" | "year";
 export type BackendMoneyImpactType =
   | "money"
@@ -570,6 +572,17 @@ export interface BackendGoal {
   ai_detection_method?: string | null;
   ai_detection_method_en?: string | null;
   ai_evidence?: BackendAIEvidenceItem[] | null;
+  /**
+   * Уровень приоритета цели в портфеле (deep-research отчёт).
+   * 5 priority-целей (foundation) + остальные secondary. См. admin
+   * `GoalTier`. Если backend не вернёт — admin считает `secondary`.
+   */
+  tier?: BackendGoalTier | null;
+  /**
+   * Волна пилотирования (A/B/C/D) из deep-research roadmap'а. Только
+   * для `tier: "priority"`. См. admin `PilotWave`.
+   */
+  pilot_wave?: BackendPilotWave | null;
 }
 
 export interface BackendGoalListData {
