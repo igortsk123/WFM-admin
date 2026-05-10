@@ -17,8 +17,10 @@ import type {
   FreelancerStatus,
   Shift,
   PaymentMode,
+  ObjectFormat,
 } from "@/lib/types";
 import { MOCK_USERS } from "@/lib/mock-data";
+import { MOCK_STORES } from "@/lib/mock-data/stores";
 import { MOCK_ASSIGNMENTS } from "@/lib/mock-data/assignments";
 import { MOCK_PERMISSIONS } from "@/lib/mock-data/permissions";
 import { MOCK_FUNCTIONAL_ROLES } from "@/lib/mock-data/functional-roles";
@@ -176,6 +178,13 @@ export interface UserListParams extends ApiListParams {
   permissions?: Permission[];
   /** Тип занятости: STAFF | FREELANCE. */
   employment_type?: EmployeeType;
+  /**
+   * Формат магазина текущего active assignment. Используется операционным
+   * директором / супервайзером для срезов по формату (норма по людям на зону
+   * у HYPERMARKET / SUPERMARKET / CONVENIENCE / DISCOUNTER различается).
+   * Resolved через MOCK_STORES.object_format по active assignment.store_id.
+   */
+  object_format?: ObjectFormat;
   /** Статус внештатника. Активен только при employment_type=FREELANCE. */
   freelancer_status?: FreelancerStatus;
   /** Фильтр по agent_id. Scope=organization. Скрыт при payment_mode=CLIENT_DIRECT. */
@@ -248,6 +257,7 @@ export async function getUsers(
     permission,
     permissions,
     employment_type,
+    object_format,
     freelancer_status,
     agent_ids,
     source,
@@ -327,6 +337,23 @@ export async function getUsers(
   // Filter by employment type
   if (employment_type) {
     filtered = filtered.filter((u) => u.type === employment_type);
+  }
+
+  // Filter by store object_format (через active assignment.store_id → MOCK_STORES).
+  // Норма по людям на зону отличается между форматами — операционный директор
+  // и супервайзер используют этот срез для планирования.
+  if (object_format) {
+    const matchingStoreIds = new Set(
+      MOCK_STORES
+        .filter((s) => s.object_format === object_format)
+        .map((s) => s.id),
+    );
+    const matchingUserIds = new Set(
+      MOCK_ASSIGNMENTS
+        .filter((a) => a.active && matchingStoreIds.has(a.store_id))
+        .map((a) => a.user_id),
+    );
+    filtered = filtered.filter((u) => matchingUserIds.has(u.id));
   }
 
   // Filter by freelancer status (only relevant for FREELANCE users)

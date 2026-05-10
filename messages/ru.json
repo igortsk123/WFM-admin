@@ -1550,6 +1550,7 @@
       "filters": {
         "search_placeholder": "Поиск по ФИО, телефону",
         "store": "Магазин",
+        "format": "Формат",
         "position": "Должность",
         "zone": "Зона",
         "employment_type": "Тип занятости",
