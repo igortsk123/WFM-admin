@@ -6,10 +6,7 @@ import type { StoreWithStats } from "@/lib/api/stores"
 
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
-import { cn } from "@/lib/utils"
-import { UserCell } from "@/components/shared/user-cell"
 
-import { LamaSyncCell } from "./lama-sync-cell"
 import { RowActions } from "./row-actions"
 
 interface BuildColumnsParams {
@@ -23,6 +20,23 @@ interface BuildColumnsParams {
   onChangeDirector: (store: StoreWithStats) => void
   onSync: (store: StoreWithStats) => void
   onArchive: (store: StoreWithStats) => void
+}
+
+/**
+ * Собирает «Город, адрес» в одну строку без дубликатов.
+ * - LAMA-магазины: address = «г. Томск» = тот же city → возвращаем только city.
+ * - Base-моки: address = «пр. Ленина, 80», city = «Томск» → «Томск, пр. Ленина, 80».
+ */
+function buildFullAddress(store: StoreWithStats): string {
+  const city = store.city?.trim() ?? ""
+  const address = store.address?.trim() ?? ""
+  if (!address) return city
+  if (!city) return address
+  // LAMA shape: «г. <city>» — содержит только city, без улицы
+  const stripped = address.replace(/^г\.\s*/i, "").trim()
+  if (stripped.toLowerCase() === city.toLowerCase()) return address
+  if (address.toLowerCase().startsWith(city.toLowerCase())) return address
+  return `${city}, ${address}`
 }
 
 export function buildStoreColumns({
@@ -75,7 +89,7 @@ export function buildStoreColumns({
       id: "name",
       header: t("columns.name"),
       cell: ({ row }) => (
-        <span className="text-sm font-medium text-primary hover:underline cursor-pointer truncate max-w-[180px] block">
+        <span className="text-sm font-medium text-primary hover:underline cursor-pointer">
           {row.original.name}
         </span>
       ),
@@ -84,43 +98,10 @@ export function buildStoreColumns({
       id: "address",
       header: t("columns.address"),
       cell: ({ row }) => (
-        <span className="text-sm text-muted-foreground truncate max-w-[160px] block">
-          {row.original.address}
+        <span className="text-sm text-muted-foreground whitespace-normal break-words">
+          {buildFullAddress(row.original)}
         </span>
       ),
-    },
-    {
-      id: "city",
-      header: t("columns.city"),
-      cell: ({ row }) => <span className="text-sm">{row.original.city}</span>,
-    },
-    {
-      id: "director",
-      header: t("columns.director"),
-      cell: ({ row }) => {
-        const store = row.original
-        if (store.manager_id && store.manager_name) {
-          const nameParts = store.manager_name.split(" ")
-          return (
-            <UserCell
-              user={{
-                first_name: nameParts[1] ?? "",
-                last_name: nameParts[0] ?? store.manager_name,
-              }}
-            />
-          )
-        }
-        return (
-          <div className="flex items-center gap-2">
-            <span className="text-sm italic text-muted-foreground">
-              {t("director.unassigned")}
-            </span>
-            <button className="text-xs text-primary hover:underline shrink-0">
-              {t("director.assign")}
-            </button>
-          </div>
-        )
-      },
     },
     {
       id: "staff",
@@ -136,25 +117,6 @@ export function buildStoreColumns({
       header: t("columns.tasks_today"),
       cell: ({ row }) => (
         <span className="text-sm tabular-nums">{row.original.tasks_today_count}</span>
-      ),
-    },
-    {
-      id: "lama_sync",
-      header: t("columns.lama_sync"),
-      cell: ({ row }) => <LamaSyncCell lama_synced_at={row.original.lama_synced_at} />,
-    },
-    {
-      id: "status",
-      header: t("columns.status"),
-      cell: ({ row }) => (
-        <Badge
-          variant={row.original.archived ? "secondary" : "outline"}
-          className={cn(
-            !row.original.archived && "text-success border-success/30 bg-success/10",
-          )}
-        >
-          {row.original.archived ? t("status.archived") : t("status.active")}
-        </Badge>
       ),
     },
     {

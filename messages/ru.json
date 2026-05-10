@@ -2286,23 +2286,12 @@
         "city": "Город",
         "region": "Регион",
         "format": "Формат",
-        "director": "Директор",
         "staff": "Сотрудников",
         "active_shifts": "Активных смен",
         "shifts_today": "Смен сегодня",
         "tasks_today": "Задач сегодня",
         "permissions_coverage": "Покрытие привилегий",
-        "lama_sync": "LAMA синхр.",
-        "status": "Статус",
         "shifts_ratio": "{open} из {total}"
-      },
-      "director": {
-        "unassigned": "Не назначен",
-        "assign": "Назначить"
-      },
-      "status": {
-        "active": "Активен",
-        "archived": "В архиве"
       },
       "format_label": {
         "SUPERMARKET": "Супермаркет",

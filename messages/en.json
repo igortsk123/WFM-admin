@@ -2286,23 +2286,12 @@
         "city": "City",
         "region": "Region",
         "format": "Format",
-        "director": "Director",
         "staff": "Staff",
         "active_shifts": "Active shifts",
         "shifts_today": "Shifts today",
         "tasks_today": "Tasks today",
         "permissions_coverage": "Permissions coverage",
-        "lama_sync": "LAMA sync",
-        "status": "Status",
         "shifts_ratio": "{open} of {total}"
-      },
-      "director": {
-        "unassigned": "Not assigned",
-        "assign": "Assign"
-      },
-      "status": {
-        "active": "Active",
-        "archived": "Archived"
       },
       "format_label": {
         "SUPERMARKET": "Supermarket",

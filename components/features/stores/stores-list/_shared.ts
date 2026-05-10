@@ -1,6 +1,4 @@
 import type { ObjectFormat } from "@/lib/types"
-import { formatDistanceToNow } from "date-fns"
-import { ru } from "date-fns/locale"
 
 // ─────────────────────────────────────────────────────────────────
 // CONSTANTS
@@ -49,21 +47,3 @@ export const MAP_PINS: MapPin[] = [
   { id: 6, label: "ALFA-TOM-001", name: "Магазин одежды Альфа", top: "43%", left: "30%" },
 ]
 
-// ─────────────────────────────────────────────────────────────────
-// HELPERS
-// ─────────────────────────────────────────────────────────────────
-
-export type LamaSyncLevel = "fresh" | "stale" | "critical" | "never"
-
-export function formatLamaSync(isoDate: string | undefined): {
-  label: string
-  level: LamaSyncLevel
-} {
-  if (!isoDate) return { label: "Не синхронизировано", level: "never" }
-  const synced = new Date(isoDate)
-  const diffHours = (Date.now() - synced.getTime()) / (1000 * 60 * 60)
-  const when = formatDistanceToNow(synced, { locale: ru, addSuffix: true })
-  if (diffHours <= 6) return { label: when, level: "fresh" }
-  if (diffHours <= 24) return { label: when, level: "stale" }
-  return { label: when, level: "critical" }
-}
