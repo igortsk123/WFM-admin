@@ -3,6 +3,7 @@ import {
   ArrowUp,
   Coins,
   Gift,
+  Info,
   MessageSquare,
   Sparkles,
   Target,
@@ -452,23 +453,30 @@ function MoneyPotentialPill({
   );
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          className={cn(
-            "inline-flex items-center gap-2 rounded-full border border-success/30 bg-success/10 px-3 py-1.5",
-            "text-sm font-semibold text-success tabular-nums",
-            "hover:bg-success/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-success",
-            "transition-colors"
-          )}
-          aria-label={t("active_goal.money.aria_open_breakdown")}
-        >
-          <Coins className="size-4" aria-hidden="true" />
-          +{formattedAmount}/{periodLabel}
-        </button>
-      </PopoverTrigger>
-      <PopoverContent align="end" className="w-[min(420px,calc(100vw-2rem))] p-4 space-y-3">
+    <div
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full border border-success/30 bg-success/10 pl-3 pr-1.5 py-1",
+        "text-sm font-semibold text-success tabular-nums"
+      )}
+    >
+      <Coins className="size-4" aria-hidden="true" />
+      <span>+{formattedAmount}/{periodLabel}</span>
+      <Popover>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            className={cn(
+              "inline-flex items-center justify-center rounded-full size-6",
+              "text-success/70 hover:text-success hover:bg-success/15",
+              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-success",
+              "transition-colors"
+            )}
+            aria-label={t("active_goal.money.aria_open_breakdown")}
+          >
+            <Info className="size-4" aria-hidden="true" />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent align="end" className="w-[min(420px,calc(100vw-2rem))] p-4 space-y-3">
         <div className="space-y-1">
           <p className="text-xs font-medium text-muted-foreground">
             {t("active_goal.money.label")}
@@ -500,7 +508,8 @@ function MoneyPotentialPill({
             {t("active_goal.money.details_in_ai_chat")}
           </Link>
         </Button>
-      </PopoverContent>
-    </Popover>
+        </PopoverContent>
+      </Popover>
+    </div>
   );
 }
