@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 
 import { cn } from "@/lib/utils";
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 import type { AISuggestion, Locale } from "@/lib/types";
 
 import type { TFn, TCommonFn } from "./_shared";
@@ -85,7 +86,7 @@ function DetailContent({
   onAskAi,
   canTakeAction,
   isReadOnly,
-  locale: _locale,
+  locale,
   stores: _stores,
   t,
   tCommon: _tCommon,
@@ -140,8 +141,12 @@ function DetailContent({
     <div className="space-y-4">
       {/* Header */}
       <div>
-        <h3 className="font-semibold text-foreground mb-1">{suggestion.title}</h3>
-        <p className="text-sm text-muted-foreground">{suggestion.description}</p>
+        <h3 className="font-semibold text-foreground mb-1">
+          {pickLocalized(suggestion.title, suggestion.title_en, locale)}
+        </h3>
+        <p className="text-sm text-muted-foreground">
+          {pickLocalized(suggestion.description, suggestion.description_en, locale)}
+        </p>
       </div>
 
       {/* Rationale */}
@@ -150,7 +155,7 @@ function DetailContent({
           {t("detail.rationale_section")}
         </p>
         <p className="text-sm text-foreground leading-relaxed">
-          {suggestion.rationale}
+          {pickLocalized(suggestion.rationale, suggestion.rationale_en, locale)}
         </p>
       </div>
 

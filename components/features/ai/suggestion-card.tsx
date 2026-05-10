@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
 import { formatRelative } from "@/lib/utils/format";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 import type { AISuggestion, AISuggestionType, AISuggestionPriority, Locale } from "@/lib/types";
 
 // ═══════════════════════════════════════════════════════════════════
@@ -170,7 +171,7 @@ export function SuggestionCard({
 
             {/* Title */}
             <h3 className="text-base font-medium text-foreground leading-snug line-clamp-2">
-              {suggestion.title}
+              {pickLocalized(suggestion.title, suggestion.title_en, locale)}
             </h3>
 
             {/* Target + Time estimate / Bonus points */}
@@ -197,13 +198,13 @@ export function SuggestionCard({
 
             {/* Description (line-clamp-2) */}
             <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-              {suggestion.description}
+              {pickLocalized(suggestion.description, suggestion.description_en, locale)}
             </p>
 
             {/* Rationale (short, text-xs) */}
             <div className="text-xs text-muted-foreground bg-muted/50 rounded-md px-3 py-2 line-clamp-2">
               <span className="font-medium">{t("card.rationale")}:</span>{" "}
-              {suggestion.rationale}
+              {pickLocalized(suggestion.rationale, suggestion.rationale_en, locale)}
             </div>
 
             {/* Action buttons (only if pending and can take action) */}

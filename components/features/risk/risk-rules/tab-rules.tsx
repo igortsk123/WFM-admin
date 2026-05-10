@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Plus, ShieldCheck, Search, ChevronDown, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -31,6 +31,8 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 
 import type { RiskRuleConfig } from "@/lib/api/risk";
+import type { Locale } from "@/lib/types";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 
 import { formatDate } from "./_shared";
 import { ModeBadge } from "./mode-badge";
@@ -47,6 +49,7 @@ interface RulesTabProps {
 
 export function RulesTab({ rules, loading, onEdit, onDuplicate, onDelete, onCreateNew }: RulesTabProps) {
   const t = useTranslations("screen.riskRules");
+  const locale = useLocale() as Locale;
   const [search, setSearch] = useState("");
   const [categoryOpen, setCategoryOpen] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<string>("");
@@ -57,10 +60,13 @@ export function RulesTab({ rules, loading, onEdit, onDuplicate, onDelete, onCrea
   const categories = Array.from(new Set(rules.map((r) => r.work_type_name)));
 
   const filtered = rules.filter((r) => {
+    const search_lc = search.toLowerCase();
+    const ruleName = pickLocalized(r.name, r.name_en, locale).toLowerCase();
     const matchSearch =
       !search ||
-      r.work_type_name.toLowerCase().includes(search.toLowerCase()) ||
-      r.name.toLowerCase().includes(search.toLowerCase());
+      r.work_type_name.toLowerCase().includes(search_lc) ||
+      r.name.toLowerCase().includes(search_lc) ||
+      ruleName.includes(search_lc);
     const matchCategory = !categoryFilter || r.work_type_name === categoryFilter;
     return matchSearch && matchCategory;
   });

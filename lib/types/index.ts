@@ -922,8 +922,14 @@ export interface AISuggestion {
   id: string;
   type: AISuggestionType;
   title: string;
+  /** EN-перевод заголовка для билингв-демо. Если пусто — fallback на RU. */
+  title_en?: string;
   description: string;
+  /** EN-перевод описания для билингв-демо. */
+  description_en?: string;
   rationale: string;
+  /** EN-перевод обоснования для билингв-демо. */
+  rationale_en?: string;
   proposed_payload: Record<string, unknown>;
   context_data?: {
     chart_data?: unknown;
@@ -964,6 +970,8 @@ export interface AIChatMessage {
   thread_id: string;
   role: AIChatRole;
   content: string;
+  /** EN-перевод текста сообщения для билингв-демо. */
+  content_en?: string;
   attached_data?: {
     data_type:
       | "chart"

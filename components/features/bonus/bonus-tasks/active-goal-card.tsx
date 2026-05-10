@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import Link from "next/link";
 import { ArrowRight, Sparkles, Target } from "lucide-react";
 
@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
-import type { Goal } from "@/lib/types";
+import type { Goal, Locale } from "@/lib/types";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 
 interface ActiveGoalCardProps {
   goal: Goal;
@@ -18,6 +19,7 @@ interface ActiveGoalCardProps {
 
 export function ActiveGoalCard({ goal, proposalsCount }: ActiveGoalCardProps) {
   const t = useTranslations("screen.bonusTasks");
+  const locale = useLocale() as Locale;
 
   return (
     <Card className="rounded-xl bg-primary/5 border-primary/20">
@@ -40,7 +42,7 @@ export function ActiveGoalCard({ goal, proposalsCount }: ActiveGoalCardProps) {
               </Badge>
             </div>
             <span className="text-sm font-semibold text-foreground truncate">
-              {goal.title}
+              {pickLocalized(goal.title, goal.title_en, locale)}
             </span>
             <span className="text-xs text-muted-foreground">
               {t("active_goal_card.proposals_count", { count: proposalsCount })}

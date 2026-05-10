@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { toast } from "sonner";
 import {
   CheckCircle,
@@ -32,6 +32,8 @@ import {
   type AbTest,
 } from "@/lib/api/ai-coach";
 import { cn } from "@/lib/utils";
+import { pickLocalized } from "@/lib/utils/locale-pick";
+import type { Locale } from "@/lib/types";
 
 import { getDaysDiff } from "./_shared";
 
@@ -45,6 +47,7 @@ interface HistoryTabProps {
 
 export function HistoryTab({ hints }: HistoryTabProps) {
   const t = useTranslations("screen.aiCoach");
+  const locale = useLocale() as Locale;
 
   const [rollbackVersion, setRollbackVersion] = useState<number | null>(null);
   const [rollbackOpen, setRollbackOpen] = useState(false);
@@ -102,7 +105,9 @@ export function HistoryTab({ hints }: HistoryTabProps) {
                         rate: Math.round(hint.stats.helpful_rate * 100),
                       })}
                     </p>
-                    <p className="text-sm line-clamp-2 mt-1">{hint.text}</p>
+                    <p className="text-sm line-clamp-2 mt-1">
+                      {pickLocalized(hint.text, hint.text_en, locale)}
+                    </p>
                   </div>
                   <div className="flex flex-col gap-1.5 shrink-0">
                     <Button

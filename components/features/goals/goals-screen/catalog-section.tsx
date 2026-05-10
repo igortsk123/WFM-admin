@@ -5,6 +5,7 @@ import {
   Shirt,
   ShoppingCart,
 } from "lucide-react";
+import { useLocale } from "next-intl";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -27,7 +28,8 @@ import {
 
 import { Link } from "@/i18n/navigation";
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
-import type { Goal } from "@/lib/types";
+import type { Goal, Locale } from "@/lib/types";
+import { pickLocalized, pickLocalizedList } from "@/lib/utils/locale-pick";
 
 import { CreateGoalDialogContent } from "./create-goal-dialog";
 import {
@@ -51,6 +53,7 @@ export function CatalogSection({
   t: GoalsT;
   tCommon: CommonT;
 }) {
+  const locale = useLocale() as Locale;
   return (
     <Card>
       <CardHeader>
@@ -76,38 +79,43 @@ export function CatalogSection({
           {(["fmcg", "fashion", "production"] as const).map((tab) => (
             <TabsContent key={tab} value={tab} className="mt-4">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {CATALOG_GOALS[tab].map((goal, i) => (
-                  <Card key={i} className="flex flex-col">
-                    <CardContent className="p-4 flex-1 flex flex-col">
-                      <h4 className="font-medium text-sm mb-2">{goal.title}</h4>
+                {CATALOG_GOALS[tab].map((goal, i) => {
+                  const tasks = pickLocalizedList(goal.tasks, goal.tasks_en, locale);
+                  return (
+                    <Card key={i} className="flex flex-col">
+                      <CardContent className="p-4 flex-1 flex flex-col">
+                        <h4 className="font-medium text-sm mb-2">
+                          {pickLocalized(goal.title, goal.title_en, locale)}
+                        </h4>
 
-                      <div className="space-y-2 text-xs flex-1">
-                        <div>
-                          <span className="text-muted-foreground">{t("catalog.when_to_use")}: </span>
-                          <span>{goal.when}</span>
-                        </div>
-                        <div>
-                          <span className="text-muted-foreground">{t("catalog.typical_period")}: </span>
-                          <span>{goal.period}</span>
-                        </div>
-                        <div>
-                          <span className="text-muted-foreground">{t("catalog.key_tasks")}: </span>
-                          <div className="flex flex-wrap gap-1 mt-1">
-                            {goal.tasks.map((task, j) => (
-                              <Badge key={j} variant="secondary" className="text-xs">
-                                {task}
-                              </Badge>
-                            ))}
+                        <div className="space-y-2 text-xs flex-1">
+                          <div>
+                            <span className="text-muted-foreground">{t("catalog.when_to_use")}: </span>
+                            <span>{pickLocalized(goal.when, goal.when_en, locale)}</span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">{t("catalog.typical_period")}: </span>
+                            <span>{goal.period}</span>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">{t("catalog.key_tasks")}: </span>
+                            <div className="flex flex-wrap gap-1 mt-1">
+                              {tasks.map((task, j) => (
+                                <Badge key={j} variant="secondary" className="text-xs">
+                                  {task}
+                                </Badge>
+                              ))}
+                            </div>
+                          </div>
+                          <div>
+                            <span className="text-muted-foreground">{t("catalog.ai_analyzes_via")}: </span>
+                            <span>{pickLocalized(goal.aiSource, goal.aiSource_en, locale)}</span>
                           </div>
                         </div>
-                        <div>
-                          <span className="text-muted-foreground">{t("catalog.ai_analyzes_via")}: </span>
-                          <span>{goal.aiSource}</span>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
               </div>
             </TabsContent>
           ))}

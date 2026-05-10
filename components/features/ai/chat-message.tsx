@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import {
   Sparkles,
   ThumbsUp,
@@ -19,8 +19,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 import { toast } from "sonner";
-import type { AIChatMessage } from "@/lib/types";
+import type { AIChatMessage, Locale } from "@/lib/types";
 
 const InlineChart = dynamic(
   () => import("./inline-chart").then((m) => m.InlineChart),
@@ -142,11 +143,17 @@ export function ChatMessage({
   showActions = true,
 }: ChatMessageProps) {
   const t = useTranslations("screen.aiChat.messages.actions");
+  const locale = useLocale() as Locale;
 
   const isAssistant = message.role === "assistant";
+  const displayContent = pickLocalized(
+    message.content,
+    message.content_en,
+    locale
+  );
 
   const handleCopy = async () => {
-    await navigator.clipboard.writeText(message.content);
+    await navigator.clipboard.writeText(displayContent);
     toast.success(t("copy"));
   };
 
@@ -172,7 +179,7 @@ export function ChatMessage({
     return (
       <div className="flex justify-end">
         <div className="max-w-[90%] rounded-lg bg-primary px-4 py-3 text-primary-foreground md:max-w-[75%]">
-          <p className="whitespace-pre-wrap text-sm">{message.content}</p>
+          <p className="whitespace-pre-wrap text-sm">{displayContent}</p>
         </div>
       </div>
     );
@@ -190,7 +197,7 @@ export function ChatMessage({
       <div className="flex max-w-[90%] flex-col md:max-w-[75%]">
         <div className="rounded-lg border bg-card p-4">
           <div className="whitespace-pre-wrap text-sm">
-            {formatContent(message.content)}
+            {formatContent(displayContent)}
           </div>
           {renderAttachedData()}
         </div>
@@ -248,7 +255,8 @@ export function ChatMessage({
               </Tooltip>
 
               {/* Show create task button for actionable messages */}
-              {message.content.toLowerCase().includes("задач") && onCreateTask && (
+              {(message.content.toLowerCase().includes("задач") ||
+                message.content.toLowerCase().includes("task")) && onCreateTask && (
                 <Button
                   variant="ghost"
                   size="sm"

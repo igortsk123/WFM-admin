@@ -15,6 +15,8 @@ export interface AIHint {
   work_type_name: string;
   version: number;
   text: string;
+  /** EN-перевод текста подсказки для билингв-демо. Fallback на `text`. */
+  text_en?: string;
   stats: {
     impressions: number;
     applications: number;
@@ -30,6 +32,8 @@ export const MOCK_AI_HINTS: AIHint[] = [
     work_type_name: "Выкладка",
     version: 1,
     text: "Начинайте выкладку с дальней полки. Следите за ротацией: новые товары — назад, старые — вперёд. Фотофиксация после завершения обязательна.",
+    text_en:
+      "Start stocking from the back shelf. Watch rotation: new items go to the back, older items move forward. A photo report is required after you finish.",
     stats: { impressions: 312, applications: 187, helpful_rate: 0.71 },
     created_at: "2026-03-15T09:00:00+07:00",
   },
@@ -39,6 +43,8 @@ export const MOCK_AI_HINTS: AIHint[] = [
     work_type_name: "Выкладка",
     version: 2,
     text: "При выкладке молочки: первый ряд — ближайшие сроки. Зазоры между пачками — не более 2 мм. Фасинг строго к покупателю. Полки без пыли до начала.",
+    text_en:
+      "When stocking dairy: the front row holds the nearest expiry dates. Keep gaps between packs under 2 mm. Facing strictly toward the customer. Shelves must be dust-free before you start.",
     stats: { impressions: 228, applications: 163, helpful_rate: 0.82 },
     created_at: "2026-04-02T09:00:00+07:00",
   },
@@ -48,6 +54,8 @@ export const MOCK_AI_HINTS: AIHint[] = [
     work_type_name: "Выкладка",
     version: 3,
     text: "Excel-шаблон v3 загружен 28 апр. Включён новый чек-лист: контроль ценников во время выкладки (не отдельная задача). Сокращает возвраты на 30%.",
+    text_en:
+      "Excel template v3 was uploaded on Apr 28. It adds a new checklist: verify price tags during stocking (not as a separate task). Cuts returns by 30%.",
     stats: { impressions: 74, applications: 58, helpful_rate: 0.88 },
     created_at: "2026-04-28T09:00:00+07:00",
   },
@@ -62,7 +70,11 @@ export interface RiskRule {
   work_type_id: number;
   work_type_name: string;
   name: string;
+  /** EN-перевод имени правила для билингв-демо. */
+  name_en?: string;
   description: string;
+  /** EN-перевод описания правила для билингв-демо. */
+  description_en?: string;
   triggers: Array<{
     metric: string;
     operator: "gt" | "lt" | "gte" | "lte";
@@ -79,7 +91,10 @@ export const MOCK_RISK_RULES: RiskRule[] = [
     work_type_id: 11,
     work_type_name: "Контроль качества",
     name: "Контроль скоропорта — без проверки >24ч",
+    name_en: "Perishables check — no inspection for >24h",
     description: "Если контроль сроков годности молочки не выполнялся более 24 часов — создать задачу автоматически.",
+    description_en:
+      "If dairy expiry-date checks have not been performed for over 24 hours, automatically create a task.",
     triggers: [{ metric: "hours_since_last_quality_check", operator: "gt", threshold: 24, unit: "ч" }],
     severity: "high",
     active: true,
@@ -89,7 +104,10 @@ export const MOCK_RISK_RULES: RiskRule[] = [
     work_type_id: 4,
     work_type_name: "Выкладка",
     name: "OOS в категории выше нормы",
+    name_en: "Category OOS above target",
     description: "Если OOS по категории превысил установленный стандарт (из настроек) — предложить задачу на доукладку.",
+    description_en:
+      "If the category OOS exceeds the configured standard (from settings), propose a restocking task.",
     triggers: [{ metric: "oos_pct", operator: "gt", threshold: 4, unit: "%" }],
     severity: "medium",
     active: true,
@@ -99,7 +117,10 @@ export const MOCK_RISK_RULES: RiskRule[] = [
     work_type_id: 5,
     work_type_name: "Переоценка",
     name: "Ценники не обновлены после выгрузки",
+    name_en: "Price tags not updated after export",
     description: "После выгрузки изменений цен из 1С — если за 4 часа задача на переоценку не создана, триггер.",
+    description_en:
+      "After a price-change export from 1C, trigger if no repricing task is created within 4 hours.",
     triggers: [{ metric: "hours_since_reprice_export", operator: "gt", threshold: 4, unit: "ч" }],
     severity: "medium",
     active: true,
@@ -109,7 +130,10 @@ export const MOCK_RISK_RULES: RiskRule[] = [
     work_type_id: 6,
     work_type_name: "Инвентаризация",
     name: "Расхождение остатков выше допустимого",
+    name_en: "Inventory discrepancy above tolerance",
     description: "Если расхождение по результатам инвентаризации превысило 2% — эскалация SUPERVISOR.",
+    description_en:
+      "If the inventory discrepancy exceeds 2%, escalate to SUPERVISOR.",
     triggers: [{ metric: "inventory_discrepancy_pct", operator: "gt", threshold: 2, unit: "%" }],
     severity: "high",
     active: false,
@@ -432,7 +456,11 @@ export const MOCK_BONUS_BUDGETS: BonusBudget[] = [
 export interface BonusTask {
   id: string;
   title: string;
+  /** EN-перевод заголовка задачи для билингв-демо. */
+  title_en?: string;
   description: string;
+  /** EN-перевод описания задачи для билингв-демо. */
+  description_en?: string;
   store_id: number;
   store_name: string;
   work_type_id: number;
@@ -452,7 +480,10 @@ export const MOCK_BONUS_TASKS: BonusTask[] = [
   {
     id: "bonus-task-001",
     title: "Срочная доукладка молочки — холодильник 5",
+    title_en: "Urgent dairy restock — fridge 5",
     description: "OOS молочки в холодильнике 5 превысил норму. Выполнить доукладку и обновить ценники до 13:00.",
+    description_en:
+      "Dairy OOS in fridge 5 has exceeded the target. Restock and refresh price tags before 13:00.",
     store_id: 1,
     store_name: "СПАР Томск, пр. Ленина 80",
     work_type_id: 4,
@@ -469,7 +500,10 @@ export const MOCK_BONUS_TASKS: BonusTask[] = [
   {
     id: "bonus-task-002",
     title: "Контроль скоропорта в молочном отделе",
+    title_en: "Perishables check in the dairy section",
     description: "Внеплановый обход холодильников 1–4, изъятие товаров с остатком срока ≤1 день, фотофиксация.",
+    description_en:
+      "Unplanned walk-through of fridges 1–4: pull items with ≤1 day shelf life left and submit a photo report.",
     store_id: 200,
     store_name: "Г-1 Котовского 19/3 (ГМ)",
     work_type_id: 11,
@@ -486,7 +520,10 @@ export const MOCK_BONUS_TASKS: BonusTask[] = [
   {
     id: "bonus-task-003",
     title: "Выкладка промо-товаров после поставки",
+    title_en: "Stock promo items after delivery",
     description: "Акционный товар «Майские хиты» прибыл. Срочная выкладка на выделенные позиции по промо-схеме.",
+    description_en:
+      "The “May Hits” promo shipment has arrived. Urgent stocking onto designated positions per the promo planogram.",
     store_id: 1,
     store_name: "СПАР Томск, пр. Ленина 80",
     work_type_id: 4,
@@ -504,7 +541,10 @@ export const MOCK_BONUS_TASKS: BonusTask[] = [
   {
     id: "bonus-task-004",
     title: "Инвентаризация зоны Fresh по итогам дня",
+    title_en: "End-of-day Fresh-zone inventory",
     description: "Сверка остатков Fresh-зоны по системе после закрытия. Исправить расхождения до начала ночной приёмки.",
+    description_en:
+      "Reconcile Fresh-zone stock against the system after close. Fix discrepancies before the night receiving shift starts.",
     store_id: 200,
     store_name: "Г-1 Котовского 19/3 (ГМ)",
     work_type_id: 6,
@@ -522,7 +562,10 @@ export const MOCK_BONUS_TASKS: BonusTask[] = [
   {
     id: "bonus-task-005",
     title: "Проверка ценников молочки после утренней приёмки",
+    title_en: "Verify dairy price tags after morning delivery",
     description: "AI предлагает бонусную задачу в рамках цели OOS: убедиться что все ценники на молочке актуальны после приёмки.",
+    description_en:
+      "AI proposes this bonus task under the OOS goal: confirm every dairy price tag is up to date after the delivery.",
     store_id: 1,
     store_name: "СПАР Томск, пр. Ленина 80",
     work_type_id: 10,

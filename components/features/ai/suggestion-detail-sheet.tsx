@@ -50,6 +50,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { formatRelative } from "@/lib/utils/format";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 import type {
   AISuggestion,
   AISuggestionType,
@@ -233,7 +234,7 @@ export function SuggestionDetailSheet({
             </span>
           </div>
           <SheetTitle className="text-lg leading-snug text-left">
-            {suggestion.title}
+            {pickLocalized(suggestion.title, suggestion.title_en, locale)}
           </SheetTitle>
         </SheetHeader>
 
@@ -263,7 +264,7 @@ export function SuggestionDetailSheet({
                 {t("detail.rationale_section")}
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                {suggestion.rationale}
+                {pickLocalized(suggestion.rationale, suggestion.rationale_en, locale)}
               </p>
             </section>
 
@@ -489,7 +490,7 @@ export function SuggestionDetailSheet({
                   {t("detail.proposed_section")}
                 </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  {suggestion.description}
+                  {pickLocalized(suggestion.description, suggestion.description_en, locale)}
                 </p>
               </section>
             )}
