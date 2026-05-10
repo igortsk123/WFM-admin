@@ -18,7 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ShiftStateBadge } from "@/components/shared";
+import { ShiftStateBadge, StatTile } from "@/components/shared";
 
 import { type ShiftDetailData, calcDurationMin, formatDuration, formatTime } from "./_shared";
 
@@ -135,40 +135,25 @@ export function KpiRow({ shift }: { shift: ShiftDetailData }) {
 
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
-      <div className="rounded-xl border border-border bg-card p-4 space-y-1">
-        <p className="text-xs text-muted-foreground">{t("kpi.planned_min")}</p>
-        <p className="text-xl font-semibold">{plannedDurationMin}</p>
-      </div>
-      <div className="rounded-xl border border-border bg-card p-4 space-y-1">
-        <p className="text-xs text-muted-foreground">{t("kpi.actual_min")}</p>
-        <p className="text-xl font-semibold">{actualDurationMin ?? "—"}</p>
-      </div>
-      <div className="rounded-xl border border-border bg-card p-4 space-y-1">
-        <p className="text-xs text-muted-foreground">{t("kpi.late_min")}</p>
-        <p
-          className={
-            "text-xl font-semibold " + (shift.late_minutes > 0 ? "text-warning" : "")
-          }
-        >
-          {shift.late_minutes || "—"}
-        </p>
-      </div>
-      <div className="rounded-xl border border-border bg-card p-4 space-y-1">
-        <p className="text-xs text-muted-foreground">{t("kpi.overtime_min")}</p>
-        <p
-          className={
-            "text-xl font-semibold " + (shift.overtime_minutes > 0 ? "text-info" : "")
-          }
-        >
-          {shift.overtime_minutes || "—"}
-        </p>
-      </div>
-      <div className="rounded-xl border border-border bg-card p-4 space-y-1">
-        <p className="text-xs text-muted-foreground">{t("kpi.tasks_completed")}</p>
-        <p className="text-xl font-semibold">
-          {completedTasks}/{shift.tasks?.length ?? 0}
-        </p>
-      </div>
+      <StatTile label={t("kpi.planned_min")} value={plannedDurationMin} size="md" />
+      <StatTile label={t("kpi.actual_min")} value={actualDurationMin ?? "—"} size="md" />
+      <StatTile
+        label={t("kpi.late_min")}
+        value={shift.late_minutes || "—"}
+        colorClass={shift.late_minutes > 0 ? "text-warning" : undefined}
+        size="md"
+      />
+      <StatTile
+        label={t("kpi.overtime_min")}
+        value={shift.overtime_minutes || "—"}
+        colorClass={shift.overtime_minutes > 0 ? "text-info" : undefined}
+        size="md"
+      />
+      <StatTile
+        label={t("kpi.tasks_completed")}
+        value={`${completedTasks}/${shift.tasks?.length ?? 0}`}
+        size="md"
+      />
     </div>
   );
 }

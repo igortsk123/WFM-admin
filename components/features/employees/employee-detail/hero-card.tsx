@@ -168,22 +168,13 @@ export function HeroCard({
         diff={stats.tasks_diff_pct}
         icon={Briefcase}
       />
-      <div className="flex flex-col gap-1 rounded-xl border bg-card p-5">
-        <div className="flex items-center gap-2">
-          <span className="flex size-8 items-center justify-center rounded-md bg-muted">
-            <CheckCircle2 className="size-4 text-muted-foreground" aria-hidden="true" />
-          </span>
-          <span className="text-sm font-medium text-muted-foreground truncate">
-            {t("stats.accepted_rejected")}
-          </span>
-        </div>
-        <span className="text-2xl font-semibold tracking-tight text-foreground">
-          {stats.tasks_accepted}
-          {" / "}
-          {stats.tasks_rejected}
-        </span>
-      </div>
+      <KpiCard
+        label={t("stats.accepted_rejected")}
+        value={`${stats.tasks_accepted} / ${stats.tasks_rejected}`}
+        icon={CheckCircle2}
+      />
       <KpiCard label={t("stats.paused_now")} value={stats.paused_now} icon={Clock} />
+      {/* Custom: minutes-with-unit diff (not %), can't use KpiCard.diff */}
       <div className="flex flex-col gap-1 rounded-xl border bg-card p-5">
         <div className="flex items-center gap-2">
           <span className="flex size-8 items-center justify-center rounded-md bg-muted">

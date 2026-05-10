@@ -2,9 +2,7 @@
 
 import { useTranslations } from "next-intl"
 
-import { Card, CardContent } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
-import { cn } from "@/lib/utils"
+import { StatTile } from "@/components/shared"
 
 interface StatsRowProps {
   total: number
@@ -25,54 +23,41 @@ export function StatsRow({
 }: StatsRowProps) {
   const t = useTranslations("screen.stores")
 
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, i) => (
-          <Skeleton key={i} className="h-20 w-full rounded-lg" />
-        ))}
-      </div>
-    )
-  }
-
   return (
     <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-      <Card>
-        <CardContent className="p-4">
-          <p className="text-xs text-muted-foreground leading-tight">{t("stats.total")}</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums">{total}</p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent className="p-4">
-          <p className="text-xs text-muted-foreground leading-tight">{t("stats.active")}</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums text-success">{active}</p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent className="p-4">
-          <p className="text-xs text-muted-foreground leading-tight">{t("stats.archived")}</p>
-          <p className="mt-1 text-2xl font-semibold tabular-nums">{archived}</p>
-        </CardContent>
-      </Card>
-      <Card>
-        <CardContent className="p-4">
-          <p className="text-xs text-muted-foreground leading-tight">{t("stats.no_director")}</p>
-          <div className="mt-1 flex items-center gap-2">
-            <p className={cn("text-2xl font-semibold tabular-nums", noDirector > 0 && "text-warning")}>
-              {noDirector}
-            </p>
+      <StatTile label={t("stats.total")} value={total} loading={isLoading} size="md" />
+      <StatTile
+        label={t("stats.active")}
+        value={active}
+        loading={isLoading}
+        colorClass="text-success"
+        size="md"
+      />
+      <StatTile
+        label={t("stats.archived")}
+        value={archived}
+        loading={isLoading}
+        size="md"
+      />
+      <StatTile
+        label={t("stats.no_director")}
+        value={
+          <span className="inline-flex items-center gap-2">
+            {noDirector}
             {noDirector > 0 && (
               <button
                 onClick={onOpenNoDirector}
-                className="text-xs text-primary hover:underline"
+                className="text-xs font-normal text-primary hover:underline"
               >
                 {t("stats.open_link")}
               </button>
             )}
-          </div>
-        </CardContent>
-      </Card>
+          </span>
+        }
+        loading={isLoading}
+        colorClass={noDirector > 0 ? "text-warning" : undefined}
+        size="md"
+      />
     </div>
   )
 }

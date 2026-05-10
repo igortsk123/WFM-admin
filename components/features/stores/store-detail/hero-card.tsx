@@ -30,9 +30,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { DetailPageHero } from "@/components/shared"
+import { DetailPageHero, StatTile } from "@/components/shared"
 
-import { KpiMiniCard } from "./kpi-mini-card"
 import { formatRelative } from "./_shared"
 
 interface StoreHeroCardProps {
@@ -156,17 +155,17 @@ export function StoreHeroCard({
 
   const statsSlot = (
     <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
-      <KpiMiniCard label={t("hero.kpi.team")} value={data.team_count} icon={<Users className="size-3.5" />} />
-      <KpiMiniCard label={t("hero.kpi.team_active")} value={data.team_active_count} icon={<Activity className="size-3.5" />} />
-      <KpiMiniCard label={t("hero.kpi.tasks_today")} value={data.kpi.tasks_today} icon={<Clock className="size-3.5" />} />
-      <KpiMiniCard
+      <StatTile label={t("hero.kpi.team")} value={data.team_count} icon={<Users className="size-3.5" />} />
+      <StatTile label={t("hero.kpi.team_active")} value={data.team_active_count} icon={<Activity className="size-3.5" />} />
+      <StatTile label={t("hero.kpi.tasks_today")} value={data.kpi.tasks_today} icon={<Clock className="size-3.5" />} />
+      <StatTile
         label={t("hero.kpi.on_review")}
         value={data.kpi.on_review_today}
         icon={<AlertCircle className="size-3.5" />}
         warn={data.kpi.on_review_today > 0}
       />
-      <KpiMiniCard label={t("hero.kpi.zones")} value={data.zones.length} icon={<LayoutGrid className="size-3.5" />} />
-      <KpiMiniCard
+      <StatTile label={t("hero.kpi.zones")} value={data.zones.length} icon={<LayoutGrid className="size-3.5" />} />
+      <StatTile
         label={t("hero.kpi.lama_sync")}
         value={data.last_synced_at ? formatRelative(data.last_synced_at, locale) : "—"}
         icon={<RefreshCw className="size-3.5" />}
