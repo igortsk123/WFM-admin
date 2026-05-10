@@ -1,5 +1,35 @@
 # MIGRATION NOTES — admin ↔ backend
 
+## 🆕 LAMA review-queue mock — hourly refresh (admin-only, без backend changes)
+
+**Что это.** Реальные LAMA-задачи в статусе `Completed`/`Accepted`/`Rejected`
+вытаскиваются из daily snapshot'а и hourly refresh'ятся отдельным cron'ом
+(LAMA `/tasks/?shift_id=X`). Маппинг status → WFM (state, review_state):
+
+| LAMA status | WFM state    | WFM review_state |
+|-------------|--------------|------------------|
+| Completed   | COMPLETED    | ON_REVIEW        |
+| Accepted    | COMPLETED    | ACCEPTED         |
+| Rejected    | PAUSED       | REJECTED         |
+
+**Где это в admin.**
+- Mock: `lib/mock-data/_lama-review-tasks.ts` (auto-generated)
+- Generator: `tools/lama/build-review-tasks.py` (читает snapshot, пишет TS)
+- Hourly refresh: `tools/lama/refresh-review-statuses.py` + `.sh` cron-wrapper
+- Подключено в `lib/mock-data/tasks.ts` через spread `...REAL_LAMA_REVIEW_TASKS`
+- UI: `/tasks/review` — `getTasks({review_state: "ON_REVIEW"})` уже фильтрует
+
+**Запуск hourly cron на сервере:**
+```
+0 * * * * /opt/wfm-admin/tools/lama/refresh-review-statuses.sh
+```
+
+**Backend changes:** не требуются. Это admin-only обновление mock-логики
+поверх существующего `/tasks/?shift_id=X` endpoint'а LAMA. Когда backend
+завезёт собственный review-queue, переключим `getTasks` на real API.
+
+---
+
 ## 🆕 UnassignedTaskBlock — концепция распределения (HIGH)
 
 **Что это.** В реальности LAMA отдаёт сводки трудозатрат на магазин блоками,

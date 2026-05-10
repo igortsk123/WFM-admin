@@ -1,6 +1,7 @@
 import type { Task } from "@/lib/types";
 import { TPZ_TASKS } from "./_tpz-tasks";
 import { REAL_LAMA_TASKS } from "./_lama-real";
+import { REAL_LAMA_REVIEW_TASKS } from "./_lama-review-tasks";
 
 /**
  * @endpoint GET /api/tasks
@@ -1537,6 +1538,12 @@ export const MOCK_TASKS: Task[] = [
   // https://wfm-smart.lama70.ru/api fetched 2026-05-07 для shop 0120
   // «С-12 Некрасова, 41 (ИР)»). См. _lama-real.ts.
   ...REAL_LAMA_TASKS,
+
+  // ─── ЛАМА review queue — задачи в статусе Completed/Accepted/Rejected
+  // из последнего snapshot'а. Регенерируется ежедневно (cron-daily.sh) и
+  // ежечасно (refresh-review-statuses.sh). См. _lama-review-tasks.ts.
+  // ON_REVIEW из этого списка показывается на /tasks/review.
+  ...REAL_LAMA_REVIEW_TASKS,
 
   // ─── ТехПродЗдрав — 32 task-операции конвейера для производства
   // «Подушка 12-модульная 40×50». См. _tpz-tasks.ts.
