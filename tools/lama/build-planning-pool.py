@@ -134,19 +134,22 @@ def build_pool(snapshot: dict) -> tuple[dict, dict]:
         })
 
     # Финальная сборка.
+    # Магазин попадает в pool если у него есть ЛИБО планируемые задачи,
+    # ЛИБО хотя бы один сотрудник со сменой сегодня. Это нужно чтобы
+    # /tasks/distribute показывал команду даже если задачи на день уже
+    # распределены/завершены — пустая таблица «нет смен» путает директора.
     pool: dict[str, dict] = {}
     all_shop_codes = set(tasks_by_shop.keys()) | set(employees_by_shop.keys())
     for sc in sorted(all_shop_codes):
-        # Магазин попадает в pool только если у него есть планируемые задачи.
-        # Иначе нечего распределять.
         tasks = tasks_by_shop.get(sc, [])
-        if not tasks:
-            continue
+        emps_raw = employees_by_shop.get(sc, [])
+        if not tasks and not emps_raw:
+            continue  # ни задач, ни команды — магазин неактивен сегодня
         # Сортировка задач: priority asc (1=critical), потом time_start.
         tasks.sort(key=lambda x: (x["priority"], x["time_start"], x["id"]))
         # Сотрудники: Administrator первым, потом Executor, потом по name.
         emps = sorted(
-            employees_by_shop.get(sc, []),
+            emps_raw,
             key=lambda e: (
                 0 if e["position_role"] == "Administrator" else 1,
                 e["name"],
