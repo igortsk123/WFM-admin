@@ -848,12 +848,25 @@ export type GoalDirection = "increase" | "decrease";
 export type MoneyImpactPeriod = "week" | "month" | "quarter" | "year";
 
 /**
- * Денежная выгода от достижения цели.
+ * Тип эффекта от достижения цели.
+ *  - `money`      — есть монетизация (отображается в ₽).
+ *  - `compliance` — регуляторное / hygiene (EGAIS, инвентаризация); сортируется по significance.
+ *  - `quality`    — качество (audit-streak, KPI lever без прямого ₽).
+ *  - `training`   — обучение / онбординг (риск ухода кадра).
+ */
+export type MoneyImpactType = "money" | "compliance" | "quality" | "training";
+
+/**
+ * Денежная выгода (или другой эффект) от достижения цели.
  * `amount` в рублях за `period`. `rationale_short` — 1 строка для пилюли.
  * `rationale_breakdown` — пункты для popover/sheet «Подробнее».
  *
  * `*_en` — опциональные EN-переводы для bilingual demo. Если не заданы —
  * fallback на `rationale_short` / `rationale_breakdown` (RU).
+ *
+ * Для целей где прямого ₽-эффекта нет (`impact_type !== "money"`):
+ *  - `amount` ставим 0 (или smallest meaningful)
+ *  - `significance_score` 1-10 — tie-breaker для сортировки на UI
  */
 export interface MoneyImpact {
   amount: number;
@@ -862,6 +875,10 @@ export interface MoneyImpact {
   rationale_breakdown: string[];
   rationale_short_en?: string;
   rationale_breakdown_en?: string[];
+  /** Тип эффекта. Default 'money' для обратной совместимости. */
+  impact_type: MoneyImpactType;
+  /** 1-10, для не-money целей. Используется как sort tie-breaker. */
+  significance_score?: number;
 }
 
 /** AI-Assistant цель + ручная */

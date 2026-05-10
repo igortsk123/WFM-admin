@@ -3,7 +3,6 @@ import {
   ArrowUp,
   Coins,
   Gift,
-  Info,
   MessageSquare,
   Sparkles,
   Target,
@@ -17,11 +16,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
 import { Progress } from "@/components/ui/progress";
 import {
   Tooltip,
@@ -37,9 +31,10 @@ import type { Locale } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { formatDate, formatDateTime } from "@/lib/utils/format";
 import { computeGoalProgressWithCurrent, inferGoalDirection } from "@/lib/utils/goals-progress";
-import { pickLocalized, pickLocalizedList } from "@/lib/utils/locale-pick";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 
 import { CategoryBadge } from "./category-badge";
+import { MoneyPill } from "./money-pill";
 import { RemoveGoalDialogContent } from "./remove-goal-dialog";
 import {
   type GoalWithUser,
@@ -140,7 +135,7 @@ export function ActiveGoalBanner({
             <CategoryBadge category={activeGoal.category} t={t} />
           </div>
           {activeGoal.money_impact && (
-            <MoneyPotentialPill
+            <MoneyPill
               impact={activeGoal.money_impact}
               goalId={activeGoal.id}
               locale={locale}
@@ -423,93 +418,3 @@ function EarnedSoFarBadge({
   );
 }
 
-// ─────────────────────────────────────────────────────────────────────
-// Money potential pill — compact в шапке (ex MoneyImpactPill)
-// Сохраняем popover «Подробнее» с полным breakdown.
-// ─────────────────────────────────────────────────────────────────────
-
-function MoneyPotentialPill({
-  impact,
-  goalId,
-  locale,
-  t,
-}: {
-  impact: NonNullable<GoalWithUser["money_impact"]>;
-  goalId: string;
-  locale: Locale;
-  t: GoalsT;
-}) {
-  const formattedAmount = formatRubleAmount(impact.amount, locale);
-  const periodLabel = t(`active_goal.money.period.${impact.period}` as Parameters<typeof t>[0]);
-  const localizedShort = pickLocalized(
-    impact.rationale_short,
-    impact.rationale_short_en,
-    locale
-  );
-  const localizedBreakdown = pickLocalizedList(
-    impact.rationale_breakdown,
-    impact.rationale_breakdown_en,
-    locale
-  );
-
-  return (
-    <div
-      className={cn(
-        "inline-flex items-center gap-1.5 rounded-full border border-success/30 bg-success/10 pl-3 pr-1.5 py-1",
-        "text-sm font-semibold text-success tabular-nums"
-      )}
-    >
-      <Coins className="size-4" aria-hidden="true" />
-      <span>+{formattedAmount}/{periodLabel}</span>
-      <Popover>
-        <PopoverTrigger asChild>
-          <button
-            type="button"
-            className={cn(
-              "inline-flex items-center justify-center rounded-full size-6",
-              "text-success/70 hover:text-success hover:bg-success/15",
-              "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-success",
-              "transition-colors"
-            )}
-            aria-label={t("active_goal.money.aria_open_breakdown")}
-          >
-            <Info className="size-4" aria-hidden="true" />
-          </button>
-        </PopoverTrigger>
-        <PopoverContent align="end" className="w-[min(420px,calc(100vw-2rem))] p-4 space-y-3">
-        <div className="space-y-1">
-          <p className="text-xs font-medium text-muted-foreground">
-            {t("active_goal.money.label")}
-          </p>
-          <p className="text-xl font-semibold tabular-nums">
-            +{formattedAmount}/{periodLabel}
-          </p>
-          <p className="text-sm text-muted-foreground">{localizedShort}</p>
-        </div>
-        <div className="space-y-2 border-t border-border pt-3">
-          <p className="text-xs font-medium uppercase text-muted-foreground tracking-wide">
-            {t("active_goal.money.breakdown_title")}
-          </p>
-          <ul className="space-y-1.5 text-sm">
-            {localizedBreakdown.map((line, i) => (
-              <li key={i} className="flex gap-2">
-                <span
-                  className="text-success mt-1.5 size-1 rounded-full bg-success shrink-0"
-                  aria-hidden="true"
-                />
-                <span className="text-foreground leading-relaxed">{line}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <Button asChild variant="default" size="sm" className="w-full">
-          <Link href={`${ADMIN_ROUTES.aiChat}?context_type=goal&context_id=${goalId}`}>
-            <MessageSquare className="size-4 mr-1.5" aria-hidden="true" />
-            {t("active_goal.money.details_in_ai_chat")}
-          </Link>
-        </Button>
-        </PopoverContent>
-      </Popover>
-    </div>
-  );
-}

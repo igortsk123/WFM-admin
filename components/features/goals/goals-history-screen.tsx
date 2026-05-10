@@ -44,6 +44,7 @@ import {
 import { pickLocalized } from "@/lib/utils/locale-pick";
 
 import { CategoryBadge } from "./goals-screen/category-badge";
+import { compareByMoneyImpact } from "./goals-screen/sort-utils";
 import { MOCK_SCOPE_OPTIONS, type GoalsT } from "./goals-screen/_shared";
 
 // ═══════════════════════════════════════════════════════════════════
@@ -139,7 +140,7 @@ export function GoalsHistoryScreen() {
   // ═══════════════════════════════════════════════════════════════════
 
   const filteredGoals = useMemo(() => {
-    return goals.filter((g) => {
+    const filtered = goals.filter((g) => {
       // Status filter
       if (statusFilter === "achieved" && !isGoalAchieved(g)) return false;
       if (statusFilter === "archived" && g.status !== "ARCHIVED") return false;
@@ -164,6 +165,8 @@ export function GoalsHistoryScreen() {
 
       return true;
     });
+    // Sort by money desc → significance desc → id (см. sort-utils)
+    return [...filtered].sort(compareByMoneyImpact);
   }, [goals, statusFilter, periodFilter, scopeFilter]);
 
   // ═══════════════════════════════════════════════════════════════════
