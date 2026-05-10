@@ -369,6 +369,10 @@ export {
   removeGoal,
   createManualGoal,
   getGoalProgress,
+  // Backend wrappers (готовы к swap'у когда backend завезёт /goals)
+  goalFromBackend,
+  aiEvidenceFromBackend,
+  getGoalsOnBackend,
 } from "./goals";
 
 // ═══════════════════════════════════════════════════════════════════

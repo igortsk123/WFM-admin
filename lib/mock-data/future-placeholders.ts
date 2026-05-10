@@ -150,8 +150,10 @@ export const MOCK_GOALS: Goal[] = [
     category: "OOS_REDUCTION",
     title: "Реже пустые полки в молочке",
     title_en: "Fewer empty dairy shelves",
-    description: "Сейчас по сети 6.2% пустых полок в молочке. Цель — 5.3% за неделю.",
-    description_en: "Network-wide 6.2% empty dairy shelves now. Goal: 5.3% in a week.",
+    description:
+      "AI заметил по чекам последних 30 дней, что йогурт «Чудо» не продавался 4 часа при норме 6 продаж/час. По сети сейчас 6.2% пустых полок в молочке — цель 5.3% за неделю.",
+    description_en:
+      "AI saw on POS that ‘Chudo’ yoghurt did not sell for 4 hours despite a 6 sales/hour baseline. Network-wide 6.2% empty dairy shelves — goal 5.3% in a week.",
     starting_value: 6.2,
     target_value: 5.3,
     target_unit: "%",
@@ -164,23 +166,53 @@ export const MOCK_GOALS: Goal[] = [
     selected_at: "2026-04-28T10:00:00+07:00",
     period_start: "2026-04-28",
     period_end: "2026-05-05",
+    ai_signal_source: "pos-cheque",
+    ai_detection_method:
+      "AI смотрит почасовые продажи молочки за 30 дней и ищет провалы больше 4 часов при норме 6 продаж/час. Если SKU не продавался 4+ часа в 3+ магазинах одновременно — выдвигает гипотезу OOS.",
+    ai_detection_method_en:
+      "AI scans hourly dairy sales over 30 days and flags 4h+ gaps when baseline is 6 sales/hour. SKU silent for 4+ hours in 3+ stores simultaneously triggers an OOS hypothesis.",
+    ai_evidence: [
+      {
+        source: "pos-cheque",
+        summary:
+          "Йогурт «Чудо клубника 130г» молчал 4ч 12мин в 7 магазинах одновременно (28 апр, 11:00–15:12)",
+        summary_en:
+          "‘Chudo strawberry 130g’ silent for 4h 12min in 7 stores simultaneously (Apr 28, 11:00–15:12)",
+        observed_from: "2026-04-28T11:00:00+07:00",
+        observed_to: "2026-04-28T15:12:00+07:00",
+        scope_hint: "SKU 102345 / Молочная зона / 7 магазинов",
+        scope_hint_en: "SKU 102345 / Dairy zone / 7 stores",
+      },
+      {
+        source: "erp-stock",
+        summary:
+          "ERP показывает остаток 0 в 5 из 7 магазинов; в остальных >40, но полка пустая — backroom-задача",
+        summary_en:
+          "ERP shows 0 stock in 5 of 7 stores; the other 2 have >40 but the shelf is empty — backroom task",
+        observed_from: "2026-04-28T11:00:00+07:00",
+        scope_hint: "Молочная зона",
+        scope_hint_en: "Dairy zone",
+      },
+    ],
     money_impact: {
-      amount: 620_000,
+      amount: 900_000,
       period: "week",
       impact_type: "money",
-      rationale_short: "Меньше пустых полок в молочке ≈ +620 000 ₽/нед",
-      rationale_short_en: "Fewer empty dairy shelves ≈ +620,000 ₽/week",
+      rationale_short: "Меньше пустых полок в молочке ≈ +900 000 ₽/нед",
+      rationale_short_en: "Fewer empty dairy shelves ≈ +900,000 ₽/week",
       rationale_breakdown: [
-        "Молочка даёт 30% выручки магазина (≈ 3 млн ₽/нед)",
+        "Молочка даёт 30% выручки магазина (≈ 1.1 млн ₽/нед на магазин)",
         "Каждый 1% пустой полки = 4% потерянных продаж (Gruen/Corsten 2002)",
         "Возвращаем 22% потерь — остальное покупатель уносит к конкуренту (FMI/NACDS)",
-        "0.9 п.п. × 4% × 30% × 3 млн × 132 магазина × 65% ответственности магазина × 22% возврата ≈ 620 000 ₽/нед",
+        "0.9 п.п. × 4% × 30% × 3.6 млн × 132 магазина × 65% ответственности × 22% возврата ≈ 900 000 ₽/нед",
+        "Сетевая выручка 25 млрд ₽/год (заказчик 2026-05) → ≈ 480 млн ₽/нед",
       ],
       rationale_breakdown_en: [
-        "Dairy is 30% of store revenue (≈ 3M ₽/week)",
+        "Dairy = 30% store revenue (≈ 1.1M ₽/week per store)",
         "Every 1% empty shelf = 4% lost sales (Gruen/Corsten 2002)",
         "Only 22% of lost sales return — the rest goes to competitors (FMI/NACDS)",
-        "0.9 pp × 4% × 30% × 3M × 132 stores × 65% store-controllable × 22% recapture ≈ 620,000 ₽/week",
+        "0.9pp × 4% × 30% × 3.6M × 132 stores × 65% store-controllable × 22% recapture ≈ 900,000 ₽/week",
+        "Network revenue 25B ₽/year (customer 2026-05) → ≈ 480M ₽/week",
       ],
     },
   },
@@ -189,8 +221,10 @@ export const MOCK_GOALS: Goal[] = [
     category: "WRITE_OFFS",
     title: "Меньше выбрасываем хлеб",
     title_en: "Less bakery thrown away",
-    description: "Списания хлеба сейчас 3.8% — при норме 2.5%. Цель — выйти на 2.5% за две недели.",
-    description_en: "Bakery write-offs at 3.8% vs the 2.5% target. Goal: reach 2.5% in two weeks.",
+    description:
+      "AI заметил по остаткам и приёмкам, что хлеб в среднем залёживается на 1.5 дня больше нормы. Списания сейчас 3.8% — при норме 2.5%. Цель — 2.5% за 2 недели.",
+    description_en:
+      "AI saw on stock + receipts that bakery sits on shelves 1.5 days past target. Write-offs at 3.8% vs 2.5% norm. Goal: 2.5% in 2 weeks.",
     starting_value: 3.8,
     target_value: 2.5,
     target_unit: "%",
@@ -201,23 +235,52 @@ export const MOCK_GOALS: Goal[] = [
     proposed_by: "AI",
     period_start: "2026-05-01",
     period_end: "2026-05-15",
+    ai_signal_source: "erp-stock",
+    ai_detection_method:
+      "AI сопоставляет приёмки → остатки → продажи на 14-дневном окне и считает avg shelf-time на SKU vs срок годности. Если shelf-time > 70% срока годности — выдвигает goal на снижение списаний.",
+    ai_detection_method_en:
+      "AI joins receipts → stock → sales over 14d and computes avg shelf-time per SKU vs expiry. shelf-time > 70% of expiry triggers a write-off-reduction goal.",
+    ai_evidence: [
+      {
+        source: "erp-stock",
+        summary:
+          "Хлеб «Бородинский 700г» в среднем 1д 12ч на полке при сроке годности 3д (40 магазинов)",
+        summary_en:
+          "‘Borodinsky 700g’ avg 1d 12h on shelf vs 3d expiry (40 stores)",
+        observed_from: "2026-04-15",
+        observed_to: "2026-04-29",
+        scope_hint: "SKU 230111 / Хлебобулочка / 40 магазинов",
+        scope_hint_en: "SKU 230111 / Bakery / 40 stores",
+      },
+      {
+        source: "pos-cheque",
+        summary:
+          "Продажи хлеба после 19:00 падают на 60% — backroom не успевает вынести fresh",
+        summary_en:
+          "Bakery sales drop 60% after 19:00 — backroom can't keep up",
+        observed_from: "2026-04-15",
+        observed_to: "2026-04-29",
+        scope_hint: "Хлебобулочка / вечерние пики",
+        scope_hint_en: "Bakery / evening peaks",
+      },
+    ],
     money_impact: {
-      amount: 310_000,
+      amount: 450_000,
       period: "week",
       impact_type: "money",
-      rationale_short: "−1.3 п.п. списаний хлеба ≈ −310 000 ₽/нед",
-      rationale_short_en: "−1.3 pp bakery write-offs ≈ −310,000 ₽/week saved",
+      rationale_short: "−1.3 п.п. списаний хлеба ≈ −450 000 ₽/нед",
+      rationale_short_en: "−1.3 pp bakery write-offs ≈ −450,000 ₽/week saved",
       rationale_breakdown: [
-        "Хлеб даёт 6% выручки сети (Cybake bakery norm)",
-        "Снижение списаний с 3.8% до 2.5% = высвобождение 1.3 п.п. от категорийной выручки",
-        "Свежий хлеб = +30% защиты маржи (нельзя восстановить как сухой товар)",
-        "1.3% × 6% × 396 млн ₽ × 78% себестоимости × 65% ответственности × 1.3 fresh-bonus ≈ 310 000 ₽/нед",
+        "Хлеб = 6% выручки сети (Cybake bakery norm)",
+        "Снижение списаний с 3.8% до 2.5% = 1.3 п.п. от категорийной выручки",
+        "Свежий хлеб = +30% защиты маржи (нельзя восстановить как сухой)",
+        "1.3% × 6% × 480 млн ₽/нед × 78% себестоимости × 65% × 1.3 fresh-bonus ≈ 450 000 ₽/нед",
       ],
       rationale_breakdown_en: [
-        "Bakery is 6% of network revenue (Cybake bakery norm)",
+        "Bakery = 6% network revenue (Cybake bakery norm)",
         "Cutting write-offs from 3.8% to 2.5% frees 1.3pp of category revenue",
         "Fresh bakery = +30% margin protection (can't be restored like ambient)",
-        "1.3% × 6% × 396M ₽ × 78% COGS × 65% attribution × 1.3 fresh-bonus ≈ 310,000 ₽/week",
+        "1.3% × 6% × 480M ₽/week × 78% COGS × 65% × 1.3 fresh-bonus ≈ 450,000 ₽/week",
       ],
     },
   },
@@ -226,8 +289,10 @@ export const MOCK_GOALS: Goal[] = [
     category: "PROMO_QUALITY",
     title: "Промо-выкладка по стандарту",
     title_en: "Promo display by the book",
-    description: "Проверка нашла 42% отклонений от промо-стандарта в Г-1 Котовского. Цель — 15% и ниже к концу мая.",
-    description_en: "Audit found 42% deviations from the promo standard at G-1 Kotovskogo. Goal: 15% or lower by end of May.",
+    description:
+      "AI выявил по фото от Ивановой М.А. (5 мая, 09:15, эндкэп Г-1) и сравнению с benchmark group по чекам, что промо-выкладка отклоняется от стандарта на 42%. Цель — 15% к концу мая.",
+    description_en:
+      "AI detected via photo from M.A. Ivanova (May 5, 09:15, end-cap G-1) and POS benchmark-group comparison: promo deviates 42% from standard. Goal: 15% by end of May.",
     starting_value: 42,
     target_value: 15,
     target_unit: "%",
@@ -239,23 +304,54 @@ export const MOCK_GOALS: Goal[] = [
     proposed_by: "AI",
     period_start: "2026-05-01",
     period_end: "2026-05-31",
+    ai_signal_source: "mixed",
+    ai_detection_method:
+      "AI комбинирует две метрики: (1) CV-распознавание фото эндкэпа от сотрудника vs эталонная планограмма; (2) POS lift-comparison промо-SKU магазина vs benchmark группа. Совпадение detection > 0.7 = problem confirmed.",
+    ai_detection_method_en:
+      "AI combines two signals: (1) CV-recognised end-cap photo vs reference planogram; (2) POS lift-comparison of promo-SKU vs benchmark group. Detection match > 0.7 = problem confirmed.",
+    ai_evidence: [
+      {
+        source: "photo-bonus",
+        summary:
+          "Иванова М.А. сняла фото эндкэпа в 09:15 — CV нашёл 8 из 14 SKU не на местах vs планограмма",
+        summary_en:
+          "M.A. Ivanova snapped end-cap photo at 09:15 — CV found 8 of 14 SKUs misplaced vs planogram",
+        observed_from: "2026-05-05T09:15:00+07:00",
+        scope_hint: "Эндкэп зона G-1 / Промо-выкладка май",
+        scope_hint_en: "End-cap zone G-1 / May promo display",
+        photo_url: "/mock-photos/g1-endcap-2026-05-05.jpg",
+        photo_taken_by: "Иванова Мария Александровна",
+        photo_taken_at: "2026-05-05T09:15:00+07:00",
+      },
+      {
+        source: "pos-cheque",
+        summary:
+          "Продажи 8 промо-SKU в Г-1 на 27 п.п. ниже benchmark group (хайперы того же формата)",
+        summary_en:
+          "Sales of 8 promo SKUs in G-1 are 27pp below benchmark group (same-format hypers)",
+        observed_from: "2026-04-29",
+        observed_to: "2026-05-05",
+        scope_hint: "8 промо-SKU / Г-1 Котовского / эндкэп",
+        scope_hint_en: "8 promo SKUs / G-1 Kotovskogo / end-cap",
+      },
+    ],
     money_impact: {
-      amount: 180_000,
+      amount: 260_000,
       period: "month",
       impact_type: "money",
-      rationale_short: "Промо по стандарту ≈ +180 000 ₽/мес конверсии",
-      rationale_short_en: "On-standard promo ≈ +180,000 ₽/month conversion",
+      rationale_short: "Промо по стандарту ≈ +260 000 ₽/мес конверсии",
+      rationale_short_en: "On-standard promo ≈ +260,000 ₽/month conversion",
       rationale_breakdown: [
-        "Промо-зона = 15% выручки магазина (≈ 4.2 млн ₽/мес для гипера)",
-        "Каждый 1 п.п. соответствия даёт +0.7% продаж промо-зоны (Nielsen 2024)",
-        "27 п.п. × 0.7% × 4.2 млн × 65% ответственности магазина ≈ 180 000 ₽/мес",
-        "Сейчас в Г-1 Котовского 58% соответствие, у лидеров отрасли — 91%",
+        "Гипер-store промо-зона = 15% × 18 млн ₽/мес = 2.7 млн ₽/мес",
+        "Nielsen: каждый 1 п.п. compliance = +0.7% sales lift",
+        "27 п.п. × 0.7% × 2.7 млн × 65% атрибуции ≈ 260 000 ₽/мес",
+        "Сейчас в Г-1 Котовского 58% compliance, у лидеров — 91% (Nielsen 2024)",
       ],
       rationale_breakdown_en: [
-        "Promo zone = 15% of store revenue (≈ 4.2M ₽/month for a hypermarket)",
-        "Each 1pp compliance lifts promo sales by 0.7% (Nielsen 2024)",
-        "27pp × 0.7% × 4.2M × 65% attribution ≈ 180,000 ₽/month",
-        "Current G-1 Kotovskogo compliance: 58%; industry leaders: 91%",
+        "Hyper-store promo zone = 15% × 18M ₽/mo = 2.7M ₽/mo",
+        "Nielsen: each 1pp compliance = +0.7% lift",
+        "27pp × 0.7% × 2.7M × 65% attribution ≈ 260,000 ₽/month",
+        "G-1 Kotovskogo compliance 58%; leaders 91% (Nielsen 2024)",
       ],
     },
   },
@@ -264,8 +360,10 @@ export const MOCK_GOALS: Goal[] = [
     category: "PRICE_ACCURACY",
     title: "Ноль ошибок в ценниках на алкоголь",
     title_en: "Zero alcohol price-tag mismatches",
-    description: "В апрельской проверке нашли 7 несовпадений цены на полке и на кассе. Цель — 0.",
-    description_en: "April audit found 7 mismatches between shelf and POS price. Goal: zero.",
+    description:
+      "AI выявил по сверке ERP master-цен с пробитыми ценами на чеках, что 7 SKU в алкогольной зоне расходятся (полка vs касса). Цель — 0 расхождений.",
+    description_en:
+      "AI found 7 alcohol SKUs where ERP master price ≠ POS receipt price (shelf vs checkout). Goal: zero mismatches.",
     starting_value: 7,
     target_value: 0,
     target_unit: "шт.",
@@ -279,23 +377,41 @@ export const MOCK_GOALS: Goal[] = [
     selected_at: "2026-04-25T14:00:00+07:00",
     period_start: "2026-05-01",
     period_end: "2026-05-31",
+    ai_signal_source: "erp-price-master",
+    ai_detection_method:
+      "AI ежечасно сравнивает ERP master price с ценой на чеке после первой продажи каждого SKU. Mismatch = ценник на полке устарел и/или БД cash-системы не обновилась.",
+    ai_detection_method_en:
+      "AI hourly compares ERP master price vs POS receipt price after first sale per SKU. Mismatch = shelf tag outdated and/or cash-system DB not updated.",
+    ai_evidence: [
+      {
+        source: "erp-price-master",
+        summary:
+          "Водка «Зимняя дорога 0.5л»: ERP master 369 ₽, на чеке пробивается 415 ₽ — 9 расхождений",
+        summary_en:
+          "‘Zimnyaya doroga 0.5L’ vodka: ERP master 369 ₽, POS rings 415 ₽ — 9 mismatches",
+        observed_from: "2026-04-22",
+        observed_to: "2026-04-25",
+        scope_hint: "SKU 408712 / Алкоголь / СПАР Томск Ленина 80",
+        scope_hint_en: "SKU 408712 / Alcohol / SPAR Tomsk Lenina 80",
+      },
+    ],
     money_impact: {
-      amount: 52_000,
+      amount: 75_000,
       period: "month",
       impact_type: "money",
-      rationale_short: "Без ошибок в ценниках ≈ −52 000 ₽/мес",
-      rationale_short_en: "No price-tag errors ≈ −52,000 ₽/month",
+      rationale_short: "Без ошибок в ценниках ≈ −75 000 ₽/мес",
+      rationale_short_en: "No price-tag errors ≈ −75,000 ₽/month",
       rationale_breakdown: [
         "Каждая жалоба на ценник = ~5 400 ₽ компенсации (чек + сертификат лояльности)",
         "7 жалоб × 5 400 ₽ = 37 800 ₽ прямой экономии",
         "Wiser: каждый неверный ценник = 6% продаж SKU теряются за неделю",
-        "+ потери продаж по 7 SKU за 4 недели ≈ 52 000 ₽/мес итого",
+        "+ потери продаж по 7 SKU за 4 недели на 25B-baseline ≈ 75 000 ₽/мес итого",
       ],
       rationale_breakdown_en: [
-        "Each price complaint costs ~5,400 ₽ (refund + loyalty voucher)",
+        "Each price complaint = ~5,400 ₽ (refund + voucher)",
         "7 complaints × 5,400 ₽ = 37,800 ₽ direct savings",
-        "Wiser: each wrong tag loses 6% SKU sales per week",
-        "+ sales-loss across 7 SKUs over 4 weeks ≈ 52,000 ₽/month total",
+        "Wiser: every wrong tag loses 6% SKU sales/week",
+        "+ sales-loss across 7 SKUs over 4 weeks on 25B baseline ≈ 75,000 ₽/month",
       ],
     },
   },
@@ -304,8 +420,10 @@ export const MOCK_GOALS: Goal[] = [
     category: "PRODUCTIVITY",
     title: "Больше задач за смену в СПАР Новосибирск",
     title_en: "More tasks per shift at SPAR Novosibirsk",
-    description: "В апреле магазин закрывал 82.6% задач. Цель — 88% к концу мая.",
-    description_en: "April task completion: 82.6%. Goal: 88% by end of May.",
+    description:
+      "AI заметил по WFM-телеметрии, что в магазине закрывается 82.6% задач при пиковом traffic'е недостаточное coverage. Цель — 88% к концу мая.",
+    description_en:
+      "AI saw on WFM telemetry that the store closes 82.6% of tasks while peak-traffic coverage is insufficient. Goal: 88% by end of May.",
     starting_value: 82.6,
     target_value: 88,
     target_unit: "%",
@@ -317,23 +435,52 @@ export const MOCK_GOALS: Goal[] = [
     proposed_by: "AI",
     period_start: "2026-05-01",
     period_end: "2026-05-31",
+    ai_signal_source: "wfm-schedule",
+    ai_detection_method:
+      "AI сопоставляет график смен с почасовым traffic'ом по чекам — flag'ает часы где coverage <0.7×traffic; находит избыток на спадах и недобор на пиках.",
+    ai_detection_method_en:
+      "AI matches shift schedule against hourly POS traffic — flags hours where coverage <0.7× traffic; finds overage on dips, shortage on peaks.",
+    ai_evidence: [
+      {
+        source: "wfm-schedule",
+        summary:
+          "Закрытие задач 82.6% при apr-baseline'е сети 89.4% — discrepancy 6.8 п.п.",
+        summary_en:
+          "Task closure 82.6% vs network apr-baseline 89.4% — discrepancy 6.8pp",
+        observed_from: "2026-04-01",
+        observed_to: "2026-04-30",
+        scope_hint: "СПАР Новосибирск, ул. Ленина 55",
+        scope_hint_en: "SPAR Novosibirsk, Lenina 55",
+      },
+      {
+        source: "pos-cheque",
+        summary:
+          "Пиковый traffic 17:00-19:00 покрыт 60% от нормы — 4 кассира при норме 6",
+        summary_en:
+          "Peak traffic 17:00-19:00 covered at 60% of norm — 4 cashiers vs 6",
+        scope_hint: "Кассовая зона / будни 17-19",
+        scope_hint_en: "Cash zone / weekdays 17-19",
+      },
+    ],
     money_impact: {
-      amount: 88_000,
+      amount: 128_000,
       period: "month",
       impact_type: "money",
-      rationale_short: "+5.4 п.п. выполнения ≈ +88 000 ₽/мес",
-      rationale_short_en: "+5.4 pp completion ≈ +88,000 ₽/month",
+      rationale_short: "+5.4 п.п. выполнения ≈ +128 000 ₽/мес",
+      rationale_short_en: "+5.4 pp completion ≈ +128,000 ₽/month",
       rationale_breakdown: [
-        "+5.4 п.п. выполнения = ~32 человеко-часа экономии в месяц",
+        "+5.4 п.п. выполнения = ~46 человеко-часов экономии в месяц",
         "Полная стоимость часа сотрудника = 350 ₽ (с ФОТ-нагрузкой 2026)",
-        "32 ч × 350 ₽ = 11 200 ₽ прямая экономия",
+        "46 ч × 350 ₽ = 16 100 ₽ прямая экономия",
         "+ продуктивность смены: BLS 2024 даёт +0.6% от ФОТ на каждый п.п. выполнения",
+        "На 25B-baseline (480M ₽/нед) и hyper-store эффект ≈ 128 000 ₽/мес",
       ],
       rationale_breakdown_en: [
-        "+5.4 pp completion = ~32 person-hours saved per month",
-        "Fully-loaded hour cost = 350 ₽ (RU 2026 estimate)",
-        "32h × 350 ₽ = 11,200 ₽ direct savings",
-        "+ shift productivity: BLS 2024 reports +0.6% labor uplift per pp completion",
+        "+5.4pp completion = ~46 person-hours saved/month",
+        "Fully-loaded hour = 350 ₽ (RU 2026)",
+        "46h × 350 ₽ = 16,100 ₽ direct savings",
+        "+ BLS 2024: +0.6% labor uplift per pp completion",
+        "On 25B baseline (480M ₽/week) for a hyper-store ≈ 128,000 ₽/month",
       ],
     },
   },
@@ -342,8 +489,10 @@ export const MOCK_GOALS: Goal[] = [
     category: "OOS_REDUCTION",
     title: "Меньше пустых полок в заморозке",
     title_en: "Fewer empty frozen shelves",
-    description: "Завершено: пустые полки в заморозке снизились с 8.1% до 4.7%. Цель была 5%.",
-    description_en: "Completed: empty frozen shelves dropped from 8.1% to 4.7%. Target was 5%.",
+    description:
+      "Завершено: пустые полки в заморозке снизились с 8.1% до 4.7%. Цель была 5%. Главным сигналом стали фото от мерчендайзеров через бонус-задачи (CV-анализ).",
+    description_en:
+      "Completed: empty frozen shelves dropped from 8.1% to 4.7% (target 5%). Key signal: merchandiser bonus-task photos analysed by CV.",
     starting_value: 8.1,
     target_value: 5.0,
     target_unit: "%",
@@ -356,23 +505,54 @@ export const MOCK_GOALS: Goal[] = [
     selected_at: "2026-04-01T09:00:00+07:00",
     period_start: "2026-04-01",
     period_end: "2026-04-28",
+    ai_signal_source: "photo-bonus",
+    ai_detection_method:
+      "AI генерирует бонус-задачи «сфоткай витрину Заморозки в утренний slot» 3 раза в неделю по сети; CV модель прогоняет фото и flag'ает пустые ячейки vs планограмма (Goodschecker accuracy 95%, Магнит pilot 98%).",
+    ai_detection_method_en:
+      "AI issues bonus tasks ‘snap frozen display in AM slot’ 3×/week network-wide; CV scans photos for empty cells vs planogram (Goodschecker 95% accuracy, Magnit pilot 98%).",
+    ai_evidence: [
+      {
+        source: "photo-bonus",
+        summary:
+          "Соколова Н.И. сняла фото витрины «Заморозка-3» в 08:42 — CV нашёл 12 пустых ячеек (баклажаны, креветки)",
+        summary_en:
+          "N.I. Sokolova snapped frozen-3 display at 08:42 — CV found 12 empty cells (eggplant, shrimp)",
+        observed_from: "2026-04-15T08:42:00+07:00",
+        scope_hint: "Заморозка / категория овощи+морепродукты / 1 магазин",
+        scope_hint_en: "Frozen / vegetables+seafood / 1 store",
+        photo_url: "/mock-photos/frozen-display-2026-04-15.jpg",
+        photo_taken_by: "Соколова Наталья Игоревна",
+        photo_taken_at: "2026-04-15T08:42:00+07:00",
+      },
+      {
+        source: "pos-cheque",
+        summary:
+          "Доступность заморозки выросла с 91.9% до 95.3% за 4 недели — потерь продаж на ~12 млн ₽/мес меньше",
+        summary_en:
+          "Frozen availability rose 91.9% → 95.3% over 4 weeks — ~12M ₽/month fewer lost sales",
+        observed_from: "2026-04-01",
+        observed_to: "2026-04-28",
+        scope_hint: "Заморозка / вся сеть",
+        scope_hint_en: "Frozen / network-wide",
+      },
+    ],
     money_impact: {
-      amount: 1_950_000,
+      amount: 2_800_000,
       period: "month",
       impact_type: "money",
-      rationale_short: "−3.4 п.п. в заморозке ≈ +1.95 млн ₽/мес",
-      rationale_short_en: "−3.4 pp frozen OOS ≈ +1.95M ₽/month",
+      rationale_short: "−3.4 п.п. в заморозке ≈ +2.8 млн ₽/мес",
+      rationale_short_en: "−3.4 pp frozen OOS ≈ +2.8M ₽/month",
       rationale_breakdown: [
-        "Заморозка даёт 12% выручки сети (≈ 1.7 млрд ₽/мес)",
+        "Заморозка = 12% выручки сети (≈ 2.5 млрд ₽/мес на 25B baseline)",
         "1 п.п. пустых полок = 4% потерянных продаж в категории (Gruen/Corsten 2002)",
         "Цель перевыполнена: 4.7% < 5%, поэтому возврат продаж выше планового 22%",
-        "3.4 п.п. × 4% × 12% × 1.7 млрд × 50% × 20% возврата ≈ 1.95 млн ₽/мес",
+        "3.4 п.п. × 4% × 12% × 2.5 млрд × 50% × 20% возврата ≈ 2.8 млн ₽/мес",
       ],
       rationale_breakdown_en: [
-        "Frozen products = 12% of network revenue (≈ 1.7B ₽/month)",
+        "Frozen = 12% of network revenue (≈ 2.5B ₽/month on 25B baseline)",
         "1pp empty shelf = 4% lost category sales (Gruen/Corsten 2002)",
-        "Goal overshot (4.7% < 5%), so recapture above the planned 22%",
-        "3.4pp × 4% × 12% × 1.7B × 50% × 20% recapture ≈ 1.95M ₽/month",
+        "Goal overshot (4.7% < 5%), so recapture above 22%",
+        "3.4pp × 4% × 12% × 2.5B × 50% × 20% recapture ≈ 2.8M ₽/month",
       ],
     },
   },

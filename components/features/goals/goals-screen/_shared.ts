@@ -9,7 +9,13 @@ import {
 } from "lucide-react";
 
 import { DEMO_TOP_STORES } from "@/lib/api/_demo-stores";
-import type { Goal, GoalCategory, MoneyImpact, User } from "@/lib/types";
+import type {
+  AISignalSource,
+  Goal,
+  GoalCategory,
+  MoneyImpact,
+  User,
+} from "@/lib/types";
 
 // ═══════════════════════════════════════════════════════════════════
 // TYPES
@@ -63,6 +69,19 @@ export interface CatalogGoal {
   /** EN-перевод источника данных ИИ. */
   aiSource_en?: string;
   /**
+   * Главный источник AI-сигнала для этой цели — для compact-чипа.
+   * Если signal'ов несколько (mixed) — указываем mixed и в `aiSource` пишем
+   * текстом «POS + ERP + фото». Используется в UI для рендера иконки.
+   */
+  ai_signal_source?: AISignalSource;
+  /**
+   * Конкретный механизм детекции (1-2 строки) — что именно AI «смотрит»,
+   * чтобы предложить эту цель. Рендерится в expandable секции «Откуда AI это взял?».
+   */
+  ai_detection_method?: string;
+  /** EN-перевод ai_detection_method. */
+  ai_detection_method_en?: string;
+  /**
    * Дефолтный money_impact для тира «когда юзер кликает в каталоге».
    * Цифры — типовые для среднего магазина из FMCG monetization playbook.
    * Для производства/fashion пока нет полноценной модели — ставим
@@ -73,171 +92,549 @@ export interface CatalogGoal {
 
 export const CATALOG_GOALS: Record<"fmcg" | "fashion" | "production", CatalogGoal[]> = {
   fmcg: [
+    // ────────── POS-cheque сигналы (6 штук) ──────────
     {
-      title: "Реже пустые полки на топовых товарах",
-      title_en: "Fewer empty shelves on top SKUs",
-      when: "Пустые полки при нормальных поставках",
-      when_en: "Empty shelves despite normal deliveries",
+      title: "Реже пустые полки в молочке",
+      title_en: "Fewer empty dairy shelves",
+      when: "AI заметил по чекам провалы продаж по молочке больше 4 часов",
+      when_en: "AI saw 4+ hour gaps in dairy POS sales",
       period: "4 нед",
       tasks: ["Обход полки", "Вынос со склада", "Пересчёт"],
       tasks_en: ["Shelf walk-through", "Pull from back-room", "Recount"],
-      aiSource: "POS + Остатки",
-      aiSource_en: "POS + Stock data",
+      aiSource: "POS-чеки (anomaly detection)",
+      aiSource_en: "POS receipts (anomaly detection)",
+      ai_signal_source: "pos-cheque",
+      ai_detection_method:
+        "AI смотрит почасовые продажи молочки за 30 дней и ищет провалы больше 4 часов при норме 6 продаж/час",
+      ai_detection_method_en:
+        "AI scans hourly dairy sales over 30 days and flags 4h+ gaps when the baseline is 6 sales/hour",
       default_money_impact: {
-        amount: 620_000,
+        amount: 900_000,
         period: "week",
         impact_type: "money",
-        rationale_short: "Меньше пустых полок ≈ +620 000 ₽/нед по сети",
-        rationale_short_en: "Fewer empty shelves ≈ +620,000 ₽/week network-wide",
+        rationale_short: "Меньше пустых полок в молочке ≈ +900 000 ₽/нед по сети",
+        rationale_short_en: "Fewer empty dairy shelves ≈ +900,000 ₽/week network-wide",
         rationale_breakdown: [
-          "Каждый 1 п.п. пустых полок = 4% потерянных продаж (Gruen/Corsten 2002)",
-          "Возвращаем 22% потерь — остальное уходит к конкуренту (FMI/NACDS)",
-          "Сеть из 132 магазинов × средний эффект на категорию ≈ 620 000 ₽/нед",
+          "Молочка = 30% выручки магазина (≈ 1.1 млн ₽/нед на магазин)",
+          "Каждый 1 п.п. пустой полки = 4% потерянных продаж (Gruen/Corsten 2002)",
+          "Возвращаем 22% потерь (FMI/NACDS)",
+          "0.9 п.п. × 4% × 30% × 3.6 млн × 132 магазина × 65% × 22% ≈ 900 000 ₽/нед",
         ],
         rationale_breakdown_en: [
-          "Every 1pp empty shelf = 4% lost sales (Gruen/Corsten 2002)",
-          "22% of lost sales return — the rest goes to competitors (FMI/NACDS)",
-          "132 stores × average per-category effect ≈ 620,000 ₽/week",
+          "Dairy = 30% store revenue (≈ 1.1M ₽/week per store)",
+          "Each 1pp empty shelf = 4% lost sales (Gruen/Corsten 2002)",
+          "We recapture 22% (FMI/NACDS)",
+          "0.9pp × 4% × 30% × 3.6M × 132 stores × 65% × 22% ≈ 900,000 ₽/week",
         ],
       },
     },
     {
-      title: "Меньше выбрасываем и списываем",
-      title_en: "Less written off and expired",
-      when: "Списания выше нормы категории",
-      when_en: "Write-offs above the category target",
-      period: "4-6 нед",
-      tasks: ["Ротация FIFO", "Уценка к порогу", "Контроль скоропорта"],
-      tasks_en: ["FIFO rotation", "Threshold-based markdowns", "Perishables check"],
-      aiSource: "POS + Остатки + сроки годности",
-      aiSource_en: "POS + Stock + expiry dates",
+      title: "Больше товаров в чеке (basket cross-sell)",
+      title_en: "Bigger basket (cross-sell)",
+      when: "AI выявил по чекам сильную пару SKU без размещения рядом",
+      when_en: "AI found strongly-correlated SKU pair without adjacency",
+      period: "4 нед",
+      tasks: ["Перевыкладка по планограмме", "Тест BTL-стикеров"],
+      tasks_en: ["Planogram re-layout", "BTL sticker test"],
+      aiSource: "POS-чеки (basket analysis)",
+      aiSource_en: "POS receipts (basket analysis)",
+      ai_signal_source: "pos-cheque",
+      ai_detection_method:
+        "AI ищет в 90-дневной выборке чеков пары SKU встречающиеся вместе в 18%+ чеков и проверяет, рядом ли они на полке",
+      ai_detection_method_en:
+        "AI scans 90 days of receipts for SKU pairs in 18%+ baskets and checks if they share shelf adjacency",
       default_money_impact: {
-        amount: 310_000,
-        period: "week",
+        amount: 140_000,
+        period: "month",
         impact_type: "money",
-        rationale_short: "−1.3 п.п. списаний ≈ −310 000 ₽/нед",
-        rationale_short_en: "−1.3 pp write-offs ≈ −310,000 ₽/week",
+        rationale_short: "Cross-sell после перевыкладки ≈ +140 000 ₽/мес по сети",
+        rationale_short_en: "Cross-sell after re-layout ≈ +140,000 ₽/month network-wide",
         rationale_breakdown: [
-          "Категорийная выручка × 1.3 п.п. × 78% себестоимости (FMI norm)",
-          "Свежие категории (молочка, хлеб) дают +30% защиты маржи",
-          "65% эффекта зависит от магазина (остальное — поставщик/плановик)",
+          "Mastercard/LatentView: basket analysis даёт +5% incremental basket-size",
+          "5% × средний чек 850 ₽ × ~110k транзакций/нед на магазин × 4 нед",
+          "× 132 магазина × 65% атрибуции ≈ 140 000 ₽/мес",
         ],
         rationale_breakdown_en: [
-          "Category revenue × 1.3 pp × 78% COGS (FMI norm)",
-          "Fresh categories (dairy, bakery) = +30% margin protection",
-          "65% of effect is store-controllable (rest = supplier/planner)",
+          "Mastercard/LatentView: MBA delivers +5% incremental basket size",
+          "5% × avg receipt 850 ₽ × ~110k tx/week per store × 4 weeks",
+          "× 132 stores × 65% attribution ≈ 140,000 ₽/month",
         ],
       },
     },
     {
-      title: "Промо-выкладка по стандарту",
-      title_en: "Promo display by the book",
-      when: "Промо не выставляется вовремя",
-      when_en: "Promos are not set up on time",
+      title: "Промо-выкладка по стандарту (gap к benchmark)",
+      title_en: "Promo display by the benchmark",
+      when: "AI заметил что продажи промо-SKU магазина X на 27 п.п. ниже benchmark group",
+      when_en: "AI saw promo-SKU sales 27pp below benchmark group",
       period: "2-3 нед",
       tasks: ["Контроль старта промо", "Выкладка к 10:00"],
       tasks_en: ["Verify promo start", "Stocking complete by 10:00"],
-      aiSource: "Промо + Остатки",
-      aiSource_en: "Promo data + Stock",
+      aiSource: "POS-чеки (lift comparison)",
+      aiSource_en: "POS receipts (lift comparison)",
+      ai_signal_source: "pos-cheque",
+      ai_detection_method:
+        "AI сравнивает продажи промо-SKU магазина с benchmark-группой (магазины того же формата) — gap >15 п.п. = execution problem",
+      ai_detection_method_en:
+        "AI compares promo-SKU sales to a benchmark group (same-format stores); a 15pp+ gap signals execution problem",
       default_money_impact: {
-        amount: 180_000,
+        amount: 260_000,
         period: "month",
         impact_type: "money",
-        rationale_short: "Промо по стандарту ≈ +180 000 ₽/мес конверсии",
-        rationale_short_en: "On-standard promo ≈ +180,000 ₽/month",
+        rationale_short: "Промо по стандарту ≈ +260 000 ₽/мес конверсии",
+        rationale_short_en: "On-standard promo ≈ +260,000 ₽/month",
         rationale_breakdown: [
-          "Промо-зона = 15% выручки магазина",
-          "Каждый 1 п.п. соответствия = +0.7% продаж промо (Nielsen 2024)",
-          "Лидеры отрасли держат 91%, средний ритейл — 40%",
+          "Hyper-store промо-зона = 15% × 18 млн ₽/мес = 2.7 млн ₽/мес",
+          "Nielsen: каждый 1 п.п. compliance = +0.7% sales lift",
+          "27 п.п. gap × 0.7% × 2.7 млн × 65% атрибуции ≈ 260 000 ₽/мес",
+          "Лидеры держат 91% compliance, средний ритейл — 40%",
         ],
         rationale_breakdown_en: [
-          "Promo zone = 15% of store revenue",
-          "Each 1pp compliance = +0.7% promo sales (Nielsen 2024)",
-          "Industry leaders hold 91%, average retail — 40%",
+          "Hyper-store promo zone = 15% × 18M ₽/mo = 2.7M ₽/mo",
+          "Nielsen: each 1pp compliance = +0.7% lift",
+          "27pp gap × 0.7% × 2.7M × 65% attribution ≈ 260,000 ₽/month",
+          "Leaders hold 91% compliance, average retail — 40%",
         ],
       },
     },
     {
-      title: "Ноль ошибок в ценниках",
-      title_en: "Zero price-tag errors",
-      when: "Жалобы на кассе на расхождения",
-      when_en: "Checkout complaints about mismatches",
-      period: "4 нед",
-      tasks: ["Обход ценников после переоценки"],
-      tasks_en: ["Price-tag walk-through after repricing"],
-      aiSource: "Промо",
-      aiSource_en: "Promo data",
+      title: "Удержание лояльных покупателей (RFM cohort)",
+      title_en: "Retain loyal customers (RFM cohort)",
+      when: "AI выявил падение visit frequency на -8% у local-cohort за 4 недели",
+      when_en: "AI saw -8% visit frequency drop in local cohort over 4 weeks",
+      period: "8 нед",
+      tasks: ["Анализ последних чеков cohort'а", "Целевой push"],
+      tasks_en: ["Analyse recent cohort receipts", "Targeted push"],
+      aiSource: "POS-чеки (RFM cohorts)",
+      aiSource_en: "POS receipts (RFM cohorts)",
+      ai_signal_source: "pos-cheque",
+      ai_detection_method:
+        "AI разрезает покупателей по RFM (recency / frequency / monetary) за 12 недель и ищет cohort с падением частоты визитов",
+      ai_detection_method_en:
+        "AI segments shoppers by RFM (recency/frequency/monetary) across 12 weeks and finds cohorts with dropping visit frequency",
       default_money_impact: {
-        amount: 52_000,
+        amount: 195_000,
         period: "month",
         impact_type: "money",
-        rationale_short: "Без ошибок в ценниках ≈ −52 000 ₽/мес",
-        rationale_short_en: "No price-tag errors ≈ −52,000 ₽/month",
+        rationale_short: "Возврат RFM cohort'а ≈ +195 000 ₽/мес на магазин",
+        rationale_short_en: "Restoring RFM cohort ≈ +195,000 ₽/month per store",
         rationale_breakdown: [
-          "Каждая жалоба = ~5 400 ₽ компенсации (чек + сертификат)",
-          "Wiser: каждый неверный ценник теряет 6% продаж SKU за неделю",
-          "Прямая экономия + потери продаж за 4 недели",
+          "Loyal cohort ≈ 25% от eligible visits, средний чек 1 100 ₽",
+          "AI_RFM_RETENTION_LIFT_PCT = 3% возврата × cohort_size × 4 нед",
+          "Применяется к топ-10 магазинам сети, attribution 65%",
         ],
         rationale_breakdown_en: [
-          "Each complaint costs ~5,400 ₽ (refund + voucher)",
-          "Wiser: every wrong tag loses 6% SKU sales per week",
-          "Direct savings + 4-week sales-loss component",
+          "Loyal cohort ≈ 25% of eligible visits, avg ticket 1,100 ₽",
+          "AI_RFM_RETENTION_LIFT_PCT = 3% × cohort × 4 weeks",
+          "Applied to top-10 network stores, attribution 65%",
         ],
       },
     },
     {
-      title: "Больше товаров в чеке через импульсные зоны",
-      title_en: "Bigger basket via impulse zones",
-      when: "Низкий средний чек",
-      when_en: "Low average basket size",
+      title: "Скорость работы кассира (slow checkout)",
+      title_en: "Cashier scanning speed (slow checkout)",
+      when: "AI заметил что у кассира X время сканирования / чек выше median смены на 35%",
+      when_en: "AI saw cashier X scanning time/receipt 35% above shift median",
       period: "4 нед",
-      tasks: ["Выкладка по планограмме"],
-      tasks_en: ["Planogram-driven stocking"],
-      aiSource: "POS — анализ среднего чека",
-      aiSource_en: "POS — basket-size analysis",
+      tasks: ["Coaching session", "Перенаправление трафика на КС"],
+      tasks_en: ["Coaching session", "Redirect traffic to self-checkout"],
+      aiSource: "POS-чеки (per-cashier time-stamps)",
+      aiSource_en: "POS receipts (per-cashier timestamps)",
+      ai_signal_source: "pos-cheque",
+      ai_detection_method:
+        "AI смотрит таймстемпы открытие→закрытие чека по каждому кассиру и сравнивает с median смены — outliers выше 25% = подозрение",
+      ai_detection_method_en:
+        "AI checks per-cashier open→close timestamps vs shift median; outliers >25% above are flagged",
       default_money_impact: {
-        amount: 95_000,
+        amount: 0,
         period: "month",
-        impact_type: "money",
-        rationale_short: "Импульсные зоны по планограмме ≈ +95 000 ₽/мес",
-        rationale_short_en: "Planogram-compliant impulse zones ≈ +95,000 ₽/month",
+        impact_type: "training",
+        significance_score: 6,
+        rationale_short:
+          "Coaching: качественный эффект, прямой ₽ через продуктивность смены",
+        rationale_short_en:
+          "Coaching: quality effect, indirect ₽ via shift productivity",
         rationale_breakdown: [
-          "NARMS: соблюдение планограммы даёт +8.1% прибыли по зоне",
-          "Импульсные зоны магазина = ~5% выручки",
-          "8.1% × 5% × месячная выручка магазина × ответственность",
+          "ScanQueue 2026: +1 минута на чек = +23% abandonment при пиках",
+          "Прямой ₽ считается через ускорение очереди (см. PRODUCTIVITY)",
+          "BLS 2024 productivity coefficient — позже",
         ],
         rationale_breakdown_en: [
-          "NARMS: planogram compliance lifts zone profit by 8.1%",
-          "Impulse zones = ~5% of store revenue",
-          "8.1% × 5% × monthly store revenue × attribution",
+          "ScanQueue 2026: +1 min per receipt = +23% abandonment at peaks",
+          "Direct ₽ flows via queue speedup (see PRODUCTIVITY goal)",
+          "BLS 2024 productivity coefficient applies",
         ],
       },
     },
+    {
+      title: "Восстановление среднего чека (basket-size trend)",
+      title_en: "Restore basket size (trend reversal)",
+      when: "AI заметил что средний чек упал на 7% за 3 недели",
+      when_en: "AI saw 7% basket-size drop over 3 weeks",
+      period: "6 нед",
+      tasks: ["Аудит выкладки промо", "Тест выкладки на эндах"],
+      tasks_en: ["Promo display audit", "End-cap test"],
+      aiSource: "POS-чеки (time-series mean)",
+      aiSource_en: "POS receipts (time-series mean)",
+      ai_signal_source: "pos-cheque",
+      ai_detection_method:
+        "AI отслеживает rolling-7d среднего чека и flag'ает падение >5% от 30-дневного baseline'а",
+      ai_detection_method_en:
+        "AI tracks rolling-7d basket size and flags >5% drop from 30-day baseline",
+      default_money_impact: {
+        amount: 320_000,
+        period: "month",
+        impact_type: "money",
+        rationale_short: "Восстановление чека ≈ +320 000 ₽/мес по сети",
+        rationale_short_en: "Basket restoration ≈ +320,000 ₽/month network-wide",
+        rationale_breakdown: [
+          "Возврат 7% basket-size: 7% × средний чек 850 ₽ × кол-во транзакций",
+          "Применяем к топ-30 магазинам где детект сработал, attribution 65%",
+          "Realistic recovery 60% от gap'а за 6 недель",
+        ],
+        rationale_breakdown_en: [
+          "Recovering 7% basket: 7% × avg receipt 850 ₽ × tx count",
+          "Applied to top-30 detected stores, attribution 65%",
+          "Realistic recovery: 60% of the gap over 6 weeks",
+        ],
+      },
+    },
+
+    // ────────── ERP-сигналы (4 штуки) ──────────
+    {
+      title: "Меньше выбрасываем хлеб (приёмка vs срок)",
+      title_en: "Less bakery thrown away (receipt vs expiry)",
+      when: "AI заметил по приёмкам что хлеб залёживается на 1.5 дня больше нормы",
+      when_en: "AI saw bakery sitting 1.5 days past target",
+      period: "4-6 нед",
+      tasks: ["Ротация FIFO", "Уценка к порогу", "Контроль скоропорта"],
+      tasks_en: ["FIFO rotation", "Threshold-based markdowns", "Perishables check"],
+      aiSource: "ERP остатки + сроки годности + POS",
+      aiSource_en: "ERP stock + expiry + POS",
+      ai_signal_source: "erp-stock",
+      ai_detection_method:
+        "AI сопоставляет приёмки → остатки → продажи на 14-дневном окне и считает avg shelf-time на SKU vs срок годности",
+      ai_detection_method_en:
+        "AI joins receipts → stock → sales over 14d and computes avg shelf-time per SKU vs expiry",
+      default_money_impact: {
+        amount: 450_000,
+        period: "week",
+        impact_type: "money",
+        rationale_short: "−1.3 п.п. списаний хлеба ≈ −450 000 ₽/нед",
+        rationale_short_en: "−1.3pp bakery write-offs ≈ −450,000 ₽/week saved",
+        rationale_breakdown: [
+          "Хлеб = 6% выручки сети (Cybake bakery norm)",
+          "1.3% × 6% × 480 млн ₽ × 78% себестоимости × 65% × 1.3 fresh-bonus",
+          "Свежий хлеб даёт +30% защиты маржи (нельзя восстановить как сухой)",
+          "≈ 450 000 ₽/нед экономии на сети",
+        ],
+        rationale_breakdown_en: [
+          "Bakery = 6% network revenue (Cybake norm)",
+          "1.3% × 6% × 480M ₽ × 78% COGS × 65% × 1.3 fresh-bonus",
+          "Fresh bakery: +30% margin protection",
+          "≈ 450,000 ₽/week network-wide savings",
+        ],
+      },
+    },
+    {
+      title: "Точность приёмки vs заявка",
+      title_en: "Receiving accuracy (request vs delivery)",
+      when: "AI заметил что приёмка от поставщика расходится с заявкой больше 3% по штукам",
+      when_en: "AI saw delivery vs request gap exceed 3% by units",
+      period: "4 нед",
+      tasks: ["Сверка с накладной", "Эскалация поставщику"],
+      tasks_en: ["Reconcile invoice", "Escalate to supplier"],
+      aiSource: "ERP приёмки + заявки",
+      aiSource_en: "ERP delivery + request data",
+      ai_signal_source: "erp-stock",
+      ai_detection_method:
+        "AI сравнивает заявку (PO) с фактической приёмкой по каждому SKU и flag'ает delta >3%",
+      ai_detection_method_en:
+        "AI compares PO vs actual receiving per SKU and flags >3% delta",
+      default_money_impact: {
+        amount: 85_000,
+        period: "month",
+        impact_type: "money",
+        rationale_short: "Точная приёмка ≈ −85 000 ₽/мес недопоставок",
+        rationale_short_en: "Accurate receiving ≈ −85,000 ₽/month",
+        rationale_breakdown: [
+          "Industry: 1-2% PO discrepancy на средней сети, наша оценка 2.5%",
+          "0.5% × 480 млн / 4 нед × COGS 78% × 65% attribution ≈ 85 000 ₽/мес",
+        ],
+        rationale_breakdown_en: [
+          "Industry: 1-2% PO discrepancy in mid-size networks, we estimate 2.5%",
+          "0.5% × 480M / 4 weeks × 78% COGS × 65% attribution ≈ 85,000 ₽/month",
+        ],
+      },
+    },
+    {
+      title: "Recovery shrinkage (потери без чека)",
+      title_en: "Shrinkage recovery (no-receipt loss)",
+      when: "AI заметил по ERP что delta остатков − sales > shrinkage normа",
+      when_en: "AI saw ERP delta stock − sales above shrink norm",
+      period: "8 нед",
+      tasks: ["Внеплановая инвентаризация", "Видео-аудит зоны"],
+      tasks_en: ["Off-cycle inventory", "Zone video audit"],
+      aiSource: "ERP остатки + POS",
+      aiSource_en: "ERP stock + POS",
+      ai_signal_source: "erp-stock",
+      ai_detection_method:
+        "AI считает (остаток_начала − остаток_конца) − продажи_по_чекам = неучтённая потеря; сравнивает со SHRINK_NORM по категории",
+      ai_detection_method_en:
+        "AI computes (start_stock − end_stock) − POS_sales = unaccounted loss; compares to SHRINK_NORM per category",
+      default_money_impact: {
+        amount: 230_000,
+        period: "month",
+        impact_type: "money",
+        rationale_short: "Возврат 0.3 п.п. shrinkage ≈ −230 000 ₽/мес",
+        rationale_short_en: "Recovering 0.3pp shrinkage ≈ −230,000 ₽/month",
+        rationale_breakdown: [
+          "FMI: 1.6% средний shrink, лидеры 0.7% — recovery 0.3 п.п. realistic",
+          "0.3% × 480 млн ₽/нед × 4 нед × 78% COGS × 65% ≈ 230 000 ₽/мес",
+          "Применимо к категориям с высокой shrink-rate (косметика, алкоголь)",
+        ],
+        rationale_breakdown_en: [
+          "FMI: 1.6% avg shrink, leaders 0.7% — recovery 0.3pp realistic",
+          "0.3% × 480M ₽/week × 4 weeks × 78% COGS × 65% ≈ 230,000 ₽/month",
+          "Applies to high-shrink categories (cosmetics, alcohol)",
+        ],
+      },
+    },
+    {
+      title: "Точность ценников (ERP master vs POS)",
+      title_en: "Price-tag accuracy (ERP master vs POS)",
+      when: "AI выявил расхождение ERP master-цены и цены пробитой на чеке",
+      when_en: "AI found ERP master vs POS price mismatch",
+      period: "4 нед",
+      tasks: ["Обход ценников после переоценки", "Тест пробития"],
+      tasks_en: ["Price-tag walk after repricing", "POS test scan"],
+      aiSource: "ERP price master + POS",
+      aiSource_en: "ERP price master + POS",
+      ai_signal_source: "erp-price-master",
+      ai_detection_method:
+        "AI ежечасно sравнивает ERP master price с ценой на чеке после первой продажи SKU; alert если price_pos != price_erp",
+      ai_detection_method_en:
+        "AI hourly compares ERP master price vs POS receipt price after first sale; alerts on mismatch",
+      default_money_impact: {
+        amount: 75_000,
+        period: "month",
+        impact_type: "money",
+        rationale_short: "Без ошибок в ценниках ≈ −75 000 ₽/мес",
+        rationale_short_en: "No price-tag errors ≈ −75,000 ₽/month",
+        rationale_breakdown: [
+          "Каждая жалоба = ~5 400 ₽ компенсации (чек + сертификат лояльности)",
+          "Wiser: каждый неверный ценник = 6% продаж SKU теряются за неделю",
+          "7 жалоб × 5 400 + 6%-loss × 7 SKU × 4 нед на 25B-baseline ≈ 75 000 ₽/мес",
+        ],
+        rationale_breakdown_en: [
+          "Each complaint = ~5,400 ₽ (refund + voucher)",
+          "Wiser: every wrong tag loses 6% SKU sales/week",
+          "7 complaints × 5,400 + 6%-loss × 7 SKU × 4 weeks on 25B baseline ≈ 75,000 ₽/month",
+        ],
+      },
+    },
+
+    // ────────── Photo-bonus сигналы (4 штуки) ──────────
+    {
+      title: "Полки прикассы по фото от сотрудника",
+      title_en: "Prikassa shelves via employee photos",
+      when: "AI выявил по фото от сотрудника пустые места в импульсной зоне",
+      when_en: "AI detected empty spots in impulse zone from employee photo",
+      period: "4 нед",
+      tasks: ["Бонус-задача «Сфоткай прикассу»", "Выкладка по детектам"],
+      tasks_en: ["Bonus task ‘Snap prikassa’", "Restock per detection"],
+      aiSource: "Фото от сотрудника + CV (Goodschecker / собств.)",
+      aiSource_en: "Employee photo + CV (Goodschecker / own)",
+      ai_signal_source: "photo-bonus",
+      ai_detection_method:
+        "AI генерит бонус-задачу «Сфоткай прикассу в 14:00»; CV прогоняет фото и детектит пустые ячейки vs планограмма (Goodschecker accuracy 95%)",
+      ai_detection_method_en:
+        "AI issues a bonus task ‘Snap prikassa at 14:00’; CV scans the photo for empty cells vs planogram (Goodschecker 95% accuracy)",
+      default_money_impact: {
+        amount: 85_000,
+        period: "month",
+        impact_type: "money",
+        rationale_short: "Прикасса по фото ≈ +85 000 ₽/мес",
+        rationale_short_en: "Photo-driven prikassa ≈ +85,000 ₽/month",
+        rationale_breakdown: [
+          "Прикасса = ~5% выручки магазина (импульсная зона)",
+          "NARMS: соблюдение планограммы +8.1% прибыли по зоне",
+          "8.1% × 5% × 480 млн × 65% × 95% photo-accuracy / 12 мес ≈ 85 000 ₽/мес",
+          "+ ускорение detection в 5× vs daily round (Trax/Pensa)",
+        ],
+        rationale_breakdown_en: [
+          "Prikassa ≈ 5% of store revenue (impulse zone)",
+          "NARMS: planogram compliance +8.1% zone profit",
+          "8.1% × 5% × 480M × 65% × 95% photo-accuracy / 12 mo ≈ 85,000 ₽/month",
+          "+ 5× faster detection vs daily round (Trax/Pensa)",
+        ],
+      },
+    },
+    {
+      title: "Витрина молочки по фото от сотрудника",
+      title_en: "Dairy display via employee photos",
+      when: "AI заметил по фото пустые места в холодильнике молочки",
+      when_en: "AI detected empty cells in dairy fridge from photo",
+      period: "4 нед",
+      tasks: ["Бонус-задача «Сфоткай молочку утром»", "Выкладка"],
+      tasks_en: ["Bonus task ‘Snap dairy in AM’", "Restock"],
+      aiSource: "Фото + CV + ERP остатки",
+      aiSource_en: "Photo + CV + ERP stock",
+      ai_signal_source: "mixed",
+      ai_detection_method:
+        "AI комбинирует CV-результат фото + ERP-остаток: пустота на полке + остаток >40 = backroom задача (вынести); пустота + остаток 0 = заявка/приёмка проблема",
+      ai_detection_method_en:
+        "AI combines CV photo result + ERP stock: empty + stock>40 = backroom task; empty + stock=0 = ordering/receiving problem",
+      default_money_impact: {
+        amount: 380_000,
+        period: "week",
+        impact_type: "money",
+        rationale_short: "Молочка по фото ≈ +380 000 ₽/нед на сети",
+        rationale_short_en: "Photo-driven dairy ≈ +380,000 ₽/week network-wide",
+        rationale_breakdown: [
+          "Молочка = 30% выручки × 480 млн ₽/нед = 144 млн ₽/нед",
+          "0.4 п.п. ускорение reaction × 4% elasticity × 144 млн × 65% × 22%",
+          "× AI_PHOTO_AUDIT_ACCURACY 95% ≈ 380 000 ₽/нед",
+        ],
+        rationale_breakdown_en: [
+          "Dairy = 30% revenue × 480M ₽/week = 144M ₽/week",
+          "0.4pp faster reaction × 4% elasticity × 144M × 65% × 22%",
+          "× AI_PHOTO_AUDIT_ACCURACY 95% ≈ 380,000 ₽/week",
+        ],
+      },
+    },
+    {
+      title: "Соответствие планограмме (CV-аудит фото)",
+      title_en: "Planogram compliance (photo CV audit)",
+      when: "AI выявил по фото отклонения от планограммы в выкладке акционных SKU",
+      when_en: "AI detected planogram deviations on promo SKUs from photos",
+      period: "6 нед",
+      tasks: ["Бонус «Сфоткай эндкэп»", "Корректировка по детектам"],
+      tasks_en: ["Bonus ‘Snap end-cap’", "Adjust per detections"],
+      aiSource: "Фото + CV vs планограмма",
+      aiSource_en: "Photo + CV vs planogram",
+      ai_signal_source: "photo-bonus",
+      ai_detection_method:
+        "AI сравнивает CV-распознавание SKU на фото с эталонной планограммой — gap >10% items = задача мерчендайзеру (Магнит pilot 98% accuracy)",
+      ai_detection_method_en:
+        "AI compares CV-recognised SKUs on photo vs reference planogram — 10%+ gap = merchandiser task (Magnit pilot 98% accuracy)",
+      default_money_impact: {
+        amount: 165_000,
+        period: "month",
+        impact_type: "money",
+        rationale_short: "Планограмма по фото ≈ +165 000 ₽/мес",
+        rationale_short_en: "Photo-driven planogram ≈ +165,000 ₽/month",
+        rationale_breakdown: [
+          "NARMS: planogram compliance +8.1% profit по зоне",
+          "Промо-зона = 15% × 480 млн × 4.33 нед/мес = 311 млн ₽/мес",
+          "Realistic recovery 0.5% × 311 млн × 65% × 95% photo-accuracy ≈ 165 000 ₽/мес",
+        ],
+        rationale_breakdown_en: [
+          "NARMS: planogram compliance +8.1% zone profit",
+          "Promo zone = 15% × 480M × 4.33 wks/mo = 311M ₽/mo",
+          "Realistic recovery 0.5% × 311M × 65% × 95% photo-accuracy ≈ 165,000 ₽/mo",
+        ],
+      },
+    },
+    {
+      title: "Безопасность зоны (фото от сотрудника)",
+      title_en: "Zone safety (employee photo)",
+      when: "AI обнаружил по фото препятствие в проходе или мокрый пол",
+      when_en: "AI detected aisle obstruction or wet floor from photo",
+      period: "4 нед",
+      tasks: ["Бонус «Обход зоны»", "Уборка / эвакуация препятствия"],
+      tasks_en: ["Bonus ‘Zone walk-through’", "Clean / clear obstacle"],
+      aiSource: "Фото + CV (детект мусора/жидкости)",
+      aiSource_en: "Photo + CV (debris/liquid detection)",
+      ai_signal_source: "photo-bonus",
+      ai_detection_method:
+        "CV модель детектит на фото мусор, разлитую жидкость, упавшие коробки — alert директору + бонус-баллы сотруднику за обнаружение",
+      ai_detection_method_en:
+        "CV detects debris, spilled liquid, fallen boxes on photo — alerts director + bonus points for the employee",
+      default_money_impact: {
+        amount: 0,
+        period: "month",
+        impact_type: "compliance",
+        significance_score: 9,
+        rationale_short: "Compliance: безопасность покупателя",
+        rationale_short_en: "Compliance: customer safety",
+        rationale_breakdown: [
+          "Avoided fines: до 50 000 ₽ за случай травмы (Роспотребнадзор)",
+          "Реальный ₽-эффект: предотвращённые иски (~1 млн ₽ среднее)",
+          "Сортируется по significance, не money_impact",
+        ],
+        rationale_breakdown_en: [
+          "Avoided fines: up to 50,000 ₽ per injury case (Rospotrebnadzor)",
+          "Real ₽: prevented lawsuits (~1M ₽ avg)",
+          "Sorted by significance, not money_impact",
+        ],
+      },
+    },
+
+    // ────────── WFM telemetry / mixed (2 штуки) ──────────
     {
       title: "Больше задач за смену",
       title_en: "More tasks per shift",
-      when: "Много невыполненных задач",
-      when_en: "Many tasks left unfinished",
+      when: "AI заметил низкий процент закрытия задач + пики продаж покрыты слабо",
+      when_en: "AI saw low task closure rate + weak peak coverage",
       period: "4-8 нед",
       tasks: ["Скоростные задачи", "Маршруты обхода"],
       tasks_en: ["Quick-win tasks", "Walk-through routes"],
-      aiSource: "Внутренняя телеметрия задач",
-      aiSource_en: "Internal task telemetry",
+      aiSource: "WFM telemetry + POS пики",
+      aiSource_en: "WFM telemetry + POS peaks",
+      ai_signal_source: "wfm-schedule",
+      ai_detection_method:
+        "AI сопоставляет график смен с почасовым traffic'ом по чекам — flag'ает часы где coverage <0.7×traffic",
+      ai_detection_method_en:
+        "AI matches shift schedule against hourly POS traffic — flags hours where coverage <0.7× traffic",
       default_money_impact: {
-        amount: 88_000,
+        amount: 128_000,
         period: "month",
         impact_type: "money",
-        rationale_short: "+5 п.п. выполнения ≈ +88 000 ₽/мес",
-        rationale_short_en: "+5 pp completion ≈ +88,000 ₽/month",
+        rationale_short: "+5 п.п. выполнения ≈ +128 000 ₽/мес",
+        rationale_short_en: "+5pp completion ≈ +128,000 ₽/month",
         rationale_breakdown: [
-          "Полная стоимость часа сотрудника = 350 ₽ (РФ 2026)",
-          "Сэкономленные часы × ставка + продуктивность смены",
+          "Полная стоимость часа = 350 ₽ (РФ 2026)",
           "BLS 2024: +0.6% от ФОТ на каждый п.п. выполнения",
+          "Сэкономленные часы × ставка + продуктивность смены на 25B baseline ≈ 128 000 ₽/мес",
         ],
         rationale_breakdown_en: [
-          "Fully-loaded hour cost = 350 ₽ (RU 2026 estimate)",
-          "Hours saved × rate + shift productivity uplift",
+          "Fully-loaded hour = 350 ₽ (RU 2026)",
           "BLS 2024: +0.6% labor uplift per pp completion",
+          "Hours saved × rate + productivity uplift on 25B baseline ≈ 128,000 ₽/month",
+        ],
+      },
+    },
+    {
+      title: "Контроль ЕГАИС / Честный знак",
+      title_en: "EGAIS / Chestny Znak compliance",
+      when: "AI обнаружил расхождение между ЕГАИС-документом и физическим остатком",
+      when_en: "AI found mismatch between EGAIS doc and physical stock",
+      period: "2 нед",
+      tasks: ["Сверка алкоголь-зала", "Корректировка ЕГАИС"],
+      tasks_en: ["Reconcile alcohol section", "Update EGAIS"],
+      aiSource: "ЕГАИС + ERP + сверка",
+      aiSource_en: "EGAIS + ERP + reconciliation",
+      ai_signal_source: "egais",
+      ai_detection_method:
+        "AI ежедневно сверяет ЕГАИС-балансы с ERP остатками; flag при delta >2 бутылки",
+      ai_detection_method_en:
+        "AI daily reconciles EGAIS balances vs ERP stock; flags >2-bottle delta",
+      default_money_impact: {
+        amount: 0,
+        period: "month",
+        impact_type: "compliance",
+        significance_score: 10,
+        rationale_short: "Compliance ЕГАИС: avoid штрафы 150-300k ₽",
+        rationale_short_en: "EGAIS compliance: avoid 150-300k ₽ fines",
+        rationale_breakdown: [
+          "ФЗ-171: штраф за расхождение 150 000 — 300 000 ₽ за инцидент",
+          "Real ₽-effect: 1-2 случая в год на сеть = ~500 000 ₽/год avoided",
+          "Сортируется по significance",
+        ],
+        rationale_breakdown_en: [
+          "Federal Law 171: 150,000 — 300,000 ₽ fine per incident",
+          "Real ₽: 1-2 cases/year network-wide = ~500,000 ₽/year avoided",
+          "Sorted by significance",
         ],
       },
     },

@@ -33,6 +33,7 @@ import { formatDate, formatDateTime } from "@/lib/utils/format";
 import { computeGoalProgressWithCurrent, inferGoalDirection } from "@/lib/utils/goals-progress";
 import { pickLocalized } from "@/lib/utils/locale-pick";
 
+import { AIEvidenceSection } from "./ai-evidence-section";
 import { CategoryBadge } from "./category-badge";
 import { MoneyPill } from "./money-pill";
 import { RemoveGoalDialogContent } from "./remove-goal-dialog";
@@ -286,6 +287,16 @@ export function ActiveGoalBanner({
             </div>
           </div>
         </div>
+
+        {/* ── «Откуда AI это взял?» — прозрачность signal'а ─────────── */}
+        <AIEvidenceSection
+          signalSource={activeGoal.ai_signal_source}
+          detectionMethod={activeGoal.ai_detection_method}
+          detectionMethodEn={activeGoal.ai_detection_method_en}
+          evidence={activeGoal.ai_evidence}
+          locale={locale}
+          t={t}
+        />
 
         {/* Set by hint */}
         {activeGoal.selected_at && activeGoal.selected_by_user && (

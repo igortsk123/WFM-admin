@@ -4659,6 +4659,23 @@
         "no_proposals_title": "Не хватает данных за период",
         "no_proposals_subtitle": "ИИ не смог сформировать предложения. Попробуйте другой период или магазин"
       },
+      "ai_evidence": {
+        "section_title": "Откуда AI это взял?",
+        "detection_method_label": "Что именно AI смотрит",
+        "facts_label": "Конкретные факты",
+        "facts_count": "{count, plural, one {# факт} few {# факта} many {# фактов} other {# фактов}}",
+        "photo_taken_by": "Снято: {name}, {date}",
+        "photo_thumb_aria": "Превью фото-доказательства",
+        "source": {
+          "pos-cheque": "POS-чеки",
+          "erp-stock": "ERP остатки",
+          "erp-price-master": "ERP цены",
+          "photo-bonus": "Фото от сотрудника",
+          "wfm-schedule": "WFM-смены",
+          "egais": "ЕГАИС",
+          "mixed": "Несколько источников"
+        }
+      },
       "ai_loading": "AI анализирует данные…",
       "history": {
         "status_completed": "Достигнута",

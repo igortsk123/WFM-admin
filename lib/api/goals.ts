@@ -1,6 +1,13 @@
 /**
  * Goals API — macro-goal management with AI proposals.
  * AI proposals are static mocks with a fake 1.5s delay.
+ *
+ * Backend swap notes:
+ *  - `getGoalsOnBackend()` / `goalFromBackend()` — raw wrappers ready for
+ *    REST swap once backend ships `/goals`. Signal sources транспортятся
+ *    через `BackendGoal.ai_signal_source / ai_detection_method / ai_evidence`.
+ *  - 3 signal sources (POS / ERP / Photo) — admin-only, описаны в
+ *    `MIGRATION-NOTES.md` секция «AI-driven goals».
  */
 
 import type {
@@ -11,9 +18,18 @@ import type {
   Goal,
   GoalStatus,
   User,
+  AIEvidenceItem,
+  AISignalSource,
+  MoneyImpact,
 } from "@/lib/types";
 import { MOCK_GOALS } from "@/lib/mock-data/future-placeholders";
 import { MOCK_USERS } from "@/lib/mock-data/users";
+import type {
+  BackendGoal,
+  BackendAIEvidenceItem,
+  BackendAISignalSource,
+  BackendMoneyImpact,
+} from "./_backend-types";
 
 const delay = (ms = 300) => new Promise((r) => setTimeout(r, ms));
 
@@ -189,4 +205,154 @@ export async function getGoalProgress(goalId: string): Promise<ApiResponse<GoalP
       ],
     },
   };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// BACKEND WRAPPERS (admin-only, готовы к swap'у)
+// ═══════════════════════════════════════════════════════════════════
+//
+// Когда backend дотянется до /goals, переключим getGoals() на
+// getGoalsOnBackend() через NEXT_PUBLIC_USE_REAL_API. Сейчас функции
+// зеркалят ожидаемый контракт + сериализацию AI-evidence.
+//
+// См. MIGRATION-NOTES.md → «AI-driven goals: 3 источника signal'ов».
+
+/**
+ * Maps a `BackendAIEvidenceItem` → admin `AIEvidenceItem`.
+ * Главное отличие: backend использует `null` для отсутствующих полей,
+ * admin — `undefined`. Мы нормализуем.
+ */
+export function aiEvidenceFromBackend(
+  raw: BackendAIEvidenceItem,
+): AIEvidenceItem {
+  return {
+    source: raw.source as AISignalSource,
+    summary: raw.summary,
+    summary_en: raw.summary_en ?? undefined,
+    observed_from: raw.observed_from ?? undefined,
+    observed_to: raw.observed_to ?? undefined,
+    scope_hint: raw.scope_hint ?? undefined,
+    scope_hint_en: raw.scope_hint_en ?? undefined,
+    photo_url: raw.photo_url ?? undefined,
+    photo_taken_by: raw.photo_taken_by ?? undefined,
+    photo_taken_at: raw.photo_taken_at ?? undefined,
+  };
+}
+
+/**
+ * Maps a `BackendMoneyImpact` → admin `MoneyImpact`.
+ * Сохраняем только поля без `null`, чтобы UI не получал null'ы из json'а.
+ */
+function moneyImpactFromBackend(
+  raw: BackendMoneyImpact | null | undefined,
+): MoneyImpact | undefined {
+  if (!raw) return undefined;
+  return {
+    amount: raw.amount,
+    period: raw.period,
+    rationale_short: raw.rationale_short,
+    rationale_breakdown: raw.rationale_breakdown,
+    rationale_short_en: raw.rationale_short_en ?? undefined,
+    rationale_breakdown_en: raw.rationale_breakdown_en ?? undefined,
+    impact_type: raw.impact_type,
+    significance_score: raw.significance_score ?? undefined,
+  };
+}
+
+/**
+ * Maps a `BackendGoal` → admin `Goal`.
+ * Раскрывает AI-evidence + money_impact, нормализует null → undefined.
+ */
+export function goalFromBackend(raw: BackendGoal): Goal {
+  return {
+    id: raw.id,
+    category: raw.category,
+    title: raw.title,
+    description: raw.description,
+    title_en: raw.title_en ?? undefined,
+    description_en: raw.description_en ?? undefined,
+    starting_value: raw.starting_value ?? undefined,
+    target_value: raw.target_value,
+    target_unit: raw.target_unit,
+    current_value: raw.current_value,
+    direction: raw.direction ?? undefined,
+    status: raw.status,
+    store_id: raw.store_id ?? undefined,
+    scope: raw.scope,
+    proposed_by: raw.proposed_by,
+    selected_by: raw.selected_by ?? undefined,
+    selected_at: raw.selected_at ?? undefined,
+    period_start: raw.period_start,
+    period_end: raw.period_end,
+    money_impact: moneyImpactFromBackend(raw.money_impact),
+    ai_signal_source: (raw.ai_signal_source as AISignalSource | null) ?? undefined,
+    ai_detection_method: raw.ai_detection_method ?? undefined,
+    ai_detection_method_en: raw.ai_detection_method_en ?? undefined,
+    ai_evidence: raw.ai_evidence
+      ? raw.ai_evidence.map(aiEvidenceFromBackend)
+      : undefined,
+  };
+}
+
+/**
+ * Stub raw wrapper for `GET /goals/list` — returns mocks until backend ships.
+ * Когда backend завезёт /goals, заменим тело на fetch + map через goalFromBackend.
+ *
+ * @endpoint GET /goals/list (proposed, см. MIGRATION-NOTES)
+ */
+export async function getGoalsOnBackend(): Promise<{ goals: BackendGoal[] }> {
+  await delay(50);
+  // Пока backend не существует, возвращаем admin mocks как backend-shape.
+  // Это нужно для типов / интеграционных тестов wrapper'а.
+  const goals: BackendGoal[] = MOCK_GOALS.map((g) => ({
+    id: g.id,
+    category: g.category,
+    title: g.title,
+    description: g.description,
+    title_en: g.title_en ?? null,
+    description_en: g.description_en ?? null,
+    starting_value: g.starting_value ?? null,
+    target_value: g.target_value,
+    target_unit: g.target_unit,
+    current_value: g.current_value,
+    direction: g.direction ?? null,
+    status: g.status,
+    store_id: g.store_id ?? null,
+    scope: g.scope,
+    proposed_by: g.proposed_by,
+    selected_by: g.selected_by ?? null,
+    selected_at: g.selected_at ?? null,
+    period_start: g.period_start,
+    period_end: g.period_end,
+    money_impact: g.money_impact
+      ? {
+          amount: g.money_impact.amount,
+          period: g.money_impact.period,
+          rationale_short: g.money_impact.rationale_short,
+          rationale_breakdown: g.money_impact.rationale_breakdown,
+          rationale_short_en: g.money_impact.rationale_short_en ?? null,
+          rationale_breakdown_en: g.money_impact.rationale_breakdown_en ?? null,
+          impact_type: g.money_impact.impact_type,
+          significance_score: g.money_impact.significance_score ?? null,
+        }
+      : null,
+    ai_signal_source: (g.ai_signal_source as BackendAISignalSource) ?? null,
+    ai_detection_method: g.ai_detection_method ?? null,
+    ai_detection_method_en: g.ai_detection_method_en ?? null,
+    ai_evidence: g.ai_evidence
+      ? g.ai_evidence.map((ev) => ({
+          source: ev.source as BackendAISignalSource,
+          summary: ev.summary,
+          summary_en: ev.summary_en ?? null,
+          observed_from: ev.observed_from ?? null,
+          observed_to: ev.observed_to ?? null,
+          scope_hint: ev.scope_hint ?? null,
+          scope_hint_en: ev.scope_hint_en ?? null,
+          photo_url: ev.photo_url ?? null,
+          photo_taken_by: ev.photo_taken_by ?? null,
+          photo_taken_at: ev.photo_taken_at ?? null,
+        }))
+      : null,
+  }));
+  return { goals };
 }
