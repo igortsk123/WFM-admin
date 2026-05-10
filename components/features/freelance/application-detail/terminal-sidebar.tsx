@@ -8,6 +8,8 @@ import { Card, CardContent } from "@/components/ui/card";
 
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
 import { formatDate } from "@/lib/utils/format";
+import { pickLocalized } from "@/lib/utils/locale-pick";
+import type { Locale } from "@/lib/types";
 
 import type { ApplicationDetailData } from "./types";
 
@@ -31,7 +33,13 @@ export function TerminalSidebar({ app }: { app: ApplicationDetailData }) {
             <p className="text-xs text-muted-foreground mb-0.5">
               {t("reason_label")}
             </p>
-            <p className="text-sm text-foreground">{app.decision_comment}</p>
+            <p className="text-sm text-foreground">
+              {pickLocalized(
+                app.decision_comment,
+                app.decision_comment_en ?? undefined,
+                locale as Locale,
+              )}
+            </p>
           </div>
         )}
         {app.decided_by_name && (

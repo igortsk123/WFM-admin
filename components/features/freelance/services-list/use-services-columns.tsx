@@ -12,7 +12,8 @@ import {
 } from "lucide-react";
 import type { ColumnDef } from "@tanstack/react-table";
 
-import type { NoShowReport, Service } from "@/lib/types";
+import type { Locale, NoShowReport, Service } from "@/lib/types";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -155,7 +156,13 @@ export function useServicesColumns({
                         {t("hours_badge.underload")}
                       </Badge>
                     </TooltipTrigger>
-                    <TooltipContent>{s.adjustment_reason}</TooltipContent>
+                    <TooltipContent>
+                      {pickLocalized(
+                        s.adjustment_reason ?? "",
+                        s.adjustment_reason_en ?? undefined,
+                        locale as Locale,
+                      )}
+                    </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               )}

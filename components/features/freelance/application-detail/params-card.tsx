@@ -4,6 +4,8 @@ import { useTranslations, useLocale } from "next-intl";
 
 import { MetadataCard, WorkTypeBadge, type MetadataItem } from "@/components/shared";
 import { formatDate, formatRelative } from "@/lib/utils/format";
+import { pickLocalized } from "@/lib/utils/locale-pick";
+import type { Locale } from "@/lib/types";
 
 import type { ApplicationDetailData } from "./types";
 
@@ -64,7 +66,9 @@ export function ParamsCard({ app }: { app: ApplicationDetailData }) {
 
   items.push({
     label: tParams("comment"),
-    value: app.comment || tParams("no_comment"),
+    value: app.comment
+      ? pickLocalized(app.comment, app.comment_en, locale as Locale)
+      : tParams("no_comment"),
     span: 2,
   });
 

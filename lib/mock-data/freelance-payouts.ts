@@ -193,6 +193,7 @@ export const MOCK_FREELANCE_PAYOUTS: Payout[] = [
     agent_commission: null,
     status: "FAILED",
     failure_reason: "Неверный СНИЛС",
+    failure_reason_en: "Invalid SNILS (Russian social insurance number)",
     created_at: daysAgoFrom(3),
   },
 ];

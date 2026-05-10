@@ -15,9 +15,10 @@ import {
   cancelTaskOffer,
   type AttemptResponseAction,
 } from "@/lib/api"
-import type { TaskOffer, OfferAttempt, OfferAttemptStatus } from "@/lib/types"
+import type { Locale, TaskOffer, OfferAttempt, OfferAttemptStatus } from "@/lib/types"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
 import { formatRelative } from "@/lib/utils/format"
+import { pickLocalized } from "@/lib/utils/locale-pick"
 import { cn } from "@/lib/utils"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -154,7 +155,7 @@ export function OfferDetail({ offerId }: Props) {
               {data.note && (
                 <Alert className="mt-2">
                   <AlertDescription className="text-sm whitespace-pre-wrap">
-                    {data.note}
+                    {pickLocalized(data.note, data.note_en, locale as Locale)}
                   </AlertDescription>
                 </Alert>
               )}

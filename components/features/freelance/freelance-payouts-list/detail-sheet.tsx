@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   AlertCircle,
   Download,
@@ -41,7 +41,8 @@ import {
   getClosingDocumentUrl,
   getPayoutById,
 } from "@/lib/api/freelance-payouts";
-import type { Service } from "@/lib/types";
+import type { Locale, Service } from "@/lib/types";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 
 import {
   formatCurrency,
@@ -63,6 +64,7 @@ export function PayoutDetailSheet({
   onRetry,
 }: PayoutDetailSheetProps) {
   const t = useTranslations("screen.freelancePayoutsList");
+  const locale = useLocale();
   const [detail, setDetail] = useState<DetailedPayout | null>(null);
   const [loading, setLoading] = useState(false);
   const [docLoading, setDocLoading] = useState(false);
@@ -274,7 +276,13 @@ export function PayoutDetailSheet({
                 {detail.failure_reason ? (
                   <div className="flex items-start gap-2 rounded-md bg-destructive/10 p-3 text-sm text-destructive">
                     <AlertCircle className="size-4 mt-0.5 shrink-0" />
-                    <span>{detail.failure_reason}</span>
+                    <span>
+                      {pickLocalized(
+                        detail.failure_reason,
+                        detail.failure_reason_en ?? undefined,
+                        locale as Locale,
+                      )}
+                    </span>
                   </div>
                 ) : (
                   <p className="text-sm text-muted-foreground">

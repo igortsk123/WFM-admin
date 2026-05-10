@@ -25,6 +25,7 @@ export interface ApplicationDetailData extends FreelanceApplication {
     actor_name: string;
     action: string;
     comment?: string;
+    comment_en?: string;
   }>;
 }
 

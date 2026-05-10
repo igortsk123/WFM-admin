@@ -70,6 +70,7 @@ export const MOCK_TASK_OFFERS: TaskOffer[] = [
     duration_hours: 6,
     price_rub: 1800,
     note: "Подсчёт остатков молочного отдела",
+    note_en: "Stock count for the dairy section",
     status: "ROUTING",
     candidate_count: 4,
     current_attempt_id: "att-003-2",

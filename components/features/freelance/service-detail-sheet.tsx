@@ -19,9 +19,10 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
-import type { Service, NoShowReport, PaymentMode } from "@/lib/types";
+import type { Service, NoShowReport, PaymentMode, Locale } from "@/lib/types";
 import { ServiceStatusBadge } from "@/components/shared/service-status-badge";
 import { WorkTypeBadge } from "@/components/shared/work-type-badge";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 
 interface ServiceDetailSheetProps {
   service: Service | null;
@@ -150,7 +151,11 @@ export function ServiceDetailSheet({
           </div>
           {service.underload_not_fault && service.adjustment_reason && (
             <p className="mt-2 text-xs text-info bg-info/10 rounded-md px-2 py-1.5">
-              {service.adjustment_reason}
+              {pickLocalized(
+                service.adjustment_reason,
+                service.adjustment_reason_en ?? undefined,
+                locale as Locale,
+              )}
             </p>
           )}
           {/* Volume */}
@@ -197,7 +202,13 @@ export function ServiceDetailSheet({
                 </div>
                 <div className="flex justify-between gap-4">
                   <span className="text-muted-foreground shrink-0">{t("sheet.reason")}</span>
-                  <span className="text-foreground text-right">{service.manually_adjusted.reason}</span>
+                  <span className="text-foreground text-right">
+                    {pickLocalized(
+                      service.manually_adjusted.reason,
+                      service.manually_adjusted.reason_en,
+                      locale as Locale,
+                    )}
+                  </span>
                 </div>
               </div>
             </section>
@@ -234,7 +245,13 @@ export function ServiceDetailSheet({
                   <NoShowLegalBadge status={noShowReport.status} />
                 </div>
                 {noShowReport.legal_comment && (
-                  <p className="text-muted-foreground pt-1">{noShowReport.legal_comment}</p>
+                  <p className="text-muted-foreground pt-1">
+                    {pickLocalized(
+                      noShowReport.legal_comment,
+                      noShowReport.legal_comment_en,
+                      locale as Locale,
+                    )}
+                  </p>
                 )}
               </div>
               {canSendToLegal && noShowReport.status === "OPEN" && (

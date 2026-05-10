@@ -1065,6 +1065,11 @@ export interface FreelanceApplication {
   work_type_id: number;
   work_type_name: string;
   comment?: string;
+  /**
+   * Опциональный EN-перевод `comment` для bilingual demo.
+   * UI выбирает через `pickLocalized(app.comment, app.comment_en, locale)`.
+   */
+  comment_en?: string;
   created_by: number;
   created_by_name: string;
   created_by_role: FunctionalRole;
@@ -1073,6 +1078,8 @@ export interface FreelanceApplication {
   decided_by_name?: string | null;
   decided_at?: string | null;
   decision_comment?: string | null;
+  /** Опциональный EN-перевод `decision_comment` для bilingual demo. */
+  decision_comment_en?: string | null;
   replaced_with_bonus_budget_id?: string | null;
   mixed_bonus_hours?: number | null;
   mixed_freelance_hours?: number | null;
@@ -1142,6 +1149,8 @@ export interface TaskOffer {
   duration_hours: number;
   price_rub: number;
   note?: string;
+  /** Опциональный EN-перевод `note` для bilingual demo. */
+  note_en?: string;
   // Routing
   status: TaskOfferStatus;
   candidate_count: number;
@@ -1211,6 +1220,8 @@ export interface Service {
   payable_hours: number;
   underload_not_fault?: boolean;
   adjustment_reason?: string | null;
+  /** Опциональный EN-перевод `adjustment_reason` для bilingual demo. */
+  adjustment_reason_en?: string | null;
   normative_volume: number;
   normative_unit: string;
   hourly_rate?: number | null;
@@ -1220,7 +1231,11 @@ export interface Service {
   confirmed_by?: number | null;
   confirmed_at?: string | null;
   no_show_reason?: string | null;
+  /** Опциональный EN-перевод `no_show_reason` для bilingual demo. */
+  no_show_reason_en?: string | null;
   dispute_reason?: string | null;
+  /** Опциональный EN-перевод `dispute_reason` для bilingual demo. */
+  dispute_reason_en?: string | null;
   payout_id?: string | null;
   manually_adjusted?: {
     adjusted_by: number;
@@ -1229,6 +1244,8 @@ export interface Service {
     from_amount: number;
     to_amount: number;
     reason: string;
+    /** Опциональный EN-перевод `reason` для bilingual demo. */
+    reason_en?: string;
   } | null;
   created_at: string;
   updated_at: string;
@@ -1256,6 +1273,8 @@ export interface Payout {
   closing_doc_url?: string | null;
   paid_at?: string | null;
   failure_reason?: string | null;
+  /** Опциональный EN-перевод `failure_reason` для bilingual demo. */
+  failure_reason_en?: string | null;
   created_at: string;
 }
 
@@ -1396,6 +1415,8 @@ export interface NoShowReport {
   reported_at: string;
   status: "OPEN" | "IN_LEGAL" | "RESOLVED" | "WRITTEN_OFF";
   legal_comment?: string;
+  /** Опциональный EN-перевод `legal_comment` для bilingual demo. */
+  legal_comment_en?: string;
 }
 
 // ═══════════════════════════════════════════════════════════════════

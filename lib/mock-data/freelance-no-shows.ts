@@ -37,5 +37,6 @@ export const MOCK_NO_SHOW_REPORTS: NoShowReport[] = [
     reported_at: daysAgoFrom(10),
     status: "IN_LEGAL",
     legal_comment: "Документы переданы в юридический отдел 30 апреля. Ожидаем подтверждения уведомления.",
+    legal_comment_en: "Documents were sent to the legal department on April 30. Awaiting acknowledgement of the notice.",
   },
 ];

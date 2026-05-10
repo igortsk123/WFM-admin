@@ -157,6 +157,7 @@ export async function getFreelanceApplicationById(
         actor_name: string;
         action: string;
         comment?: string;
+        comment_en?: string;
       }>;
     }
   >
@@ -176,6 +177,7 @@ export async function getFreelanceApplicationById(
     actor_name: string;
     action: string;
     comment?: string;
+    comment_en?: string;
   }> = [
     {
       occurred_at: app.created_at,
@@ -202,6 +204,7 @@ export async function getFreelanceApplicationById(
       actor_name: app.decided_by_name,
       action: actionMap[app.status] ?? app.status,
       comment: app.decision_comment ?? undefined,
+      comment_en: app.decision_comment_en ?? undefined,
     });
   }
 

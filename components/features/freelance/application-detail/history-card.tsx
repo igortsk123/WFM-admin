@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { RoleBadge } from "@/components/shared";
 import { formatRelative } from "@/lib/utils/format";
+import { pickLocalized } from "@/lib/utils/locale-pick";
+import type { Locale } from "@/lib/types";
 
 import type { ApplicationDetailData } from "./types";
 
@@ -73,7 +75,7 @@ export function HistoryCard({ app }: { app: ApplicationDetailData }) {
                       </span>
                       {evt.comment && (
                         <p className="text-xs text-foreground bg-muted/40 rounded px-2 py-1 mt-0.5">
-                          {evt.comment}
+                          {pickLocalized(evt.comment, evt.comment_en, locale as Locale)}
                         </p>
                       )}
                     </div>
