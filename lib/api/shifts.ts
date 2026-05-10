@@ -611,6 +611,8 @@ import type {
   BackendCurrentShift,
   BackendShiftOpenRequest,
   BackendShiftCloseRequest,
+  BackendStoreSchedule,
+  BackendStoreScheduleParams,
 } from "./_backend-types";
 
 /** POST /shifts/open — открыть смену (по plan_id из shifts_plan). */
@@ -647,4 +649,44 @@ export async function getShiftByIdFromBackend(
   id: number,
 ): Promise<BackendCurrentShift> {
   return _shGet<BackendCurrentShift>(_shApiUrl("shifts", `/${id}`));
+}
+
+/**
+ * GET /shifts/by-store?store_id=&date_from=&date_to=&zone_id= — все смены
+ * магазина на диапазон дат, для календарной сетки /schedule.
+ *
+ * **Backend gap:** endpoint'а пока нет (см. MIGRATION-NOTES.md «Запрос на
+ * endpoints» #5 HIGH). Admin живёт на `getSchedule()` поверх MOCK_SHIFTS
+ * (включая 2436 LAMA-смен из `_lama-shifts.ts`). После дотягивания backend
+ * admin переключится без UI changes — `getSchedule()` начнёт ходить сюда.
+ *
+ * @endpoint GET /shifts/by-store
+ */
+export async function getStoreScheduleOnBackend(
+  params: BackendStoreScheduleParams,
+): Promise<BackendStoreSchedule> {
+  const query = new URLSearchParams();
+  query.set("date_from", params.date_from);
+  query.set("date_to", params.date_to);
+  if (params.store_id !== undefined) {
+    query.set("store_id", String(params.store_id));
+  }
+  if (params.store_ids && params.store_ids.length > 0) {
+    query.set("store_ids", params.store_ids.join(","));
+  }
+  if (params.zone_id !== undefined) {
+    query.set("zone_id", String(params.zone_id));
+  }
+  if (params.zone_ids && params.zone_ids.length > 0) {
+    query.set("zone_ids", params.zone_ids.join(","));
+  }
+  if (params.user_id !== undefined) {
+    query.set("user_id", String(params.user_id));
+  }
+  if (params.status && params.status.length > 0) {
+    query.set("status", params.status.join(","));
+  }
+  return _shGet<BackendStoreSchedule>(
+    _shApiUrl("shifts", `/by-store?${query.toString()}`),
+  );
 }

@@ -4,8 +4,15 @@ import type { ScheduleSlot } from "@/lib/api/shifts";
 // CONSTANTS
 // ═══════════════════════════════════════════════════════════════════
 
-export const TODAY_STR = "2026-05-01"; // Mock TODAY
-export const TODAY = new Date(TODAY_STR);
+/**
+ * Mock TODAY anchor. Aligned с LAMA snapshot date (2026-05-07) — это «сегодня»
+ * для real LAMA-смен из `_lama-shifts.ts` (Пн 2026-05-04 — Вс 2026-05-10).
+ * При swap на real backend эта константа уйдёт, view возьмёт `new Date()`.
+ *
+ * Используем local-noon чтобы избежать TZ-сдвига на день при разборе ISO.
+ */
+export const TODAY_STR = "2026-05-07";
+export const TODAY = new Date(2026, 4 /* May */, 7, 12, 0, 0);
 
 export const HOURS_RANGE = Array.from({ length: 15 }, (_, i) => i + 7); // 07:00–21:00
 
