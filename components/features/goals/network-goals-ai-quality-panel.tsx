@@ -344,7 +344,7 @@ function AnomaliesCard({ anomalies, onReport }: AnomaliesCardProps) {
           <CardTitle className="text-base">{t("title")}</CardTitle>
           {anomalies.length > 0 && (
             <CardDescription className="mt-1">
-              {anomalies.length} anomal{anomalies.length === 1 ? "y" : "ies"} detected
+              Найдено аномалий: {anomalies.length}
             </CardDescription>
           )}
         </div>
@@ -357,7 +357,7 @@ function AnomaliesCard({ anomalies, onReport }: AnomaliesCardProps) {
         {anomalies.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8 text-center">
             <CheckCircle2 className="size-10 text-success mb-2" />
-            <p className="text-sm text-muted-foreground">No anomalies detected</p>
+            <p className="text-sm text-muted-foreground">Аномалий не найдено</p>
           </div>
         ) : (
           <div className="flex flex-col gap-3">

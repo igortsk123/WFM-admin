@@ -145,7 +145,7 @@ function SupervisorCard({ data }: SupervisorCardProps) {
           />
           <StatItem
             icon={TrendingUp}
-            label="Accept rate"
+            label="Принято от ИИ"
             value={`${acceptRate}%`}
             variant={isLowAccept ? "warning" : "success"}
           />

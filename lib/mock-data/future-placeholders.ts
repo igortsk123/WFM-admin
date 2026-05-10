@@ -186,7 +186,7 @@ export const MOCK_GOALS: Goal[] = [
   {
     id: "goal-productivity-1",
     category: "PRODUCTIVITY",
-    title: "Поднять completion rate СПАР Новосибирск до 88%",
+    title: "Поднять процент выполнения СПАР Новосибирск до 88%",
     description: "Апрельский показатель SPAR-NSK-001 — 82.6%. Цель: достичь 88% к концу мая за счёт нормализации выполнения задач.",
     target_value: 88,
     target_unit: "%",

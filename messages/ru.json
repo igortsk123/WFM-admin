@@ -3366,9 +3366,9 @@
         "acceptance_AUTO": "Автоматическое принятие",
         "requires_photo": "Требовать фото при завершении",
         "deviation_pct": "Допустимое отклонение факт/план, %",
-        "auto_accept_hours": "Auto-accept hours",
+        "auto_accept_hours": "Часов до автопринятия",
         "auto_accept_hours_desc": "Если задача с MANUAL в ON_REVIEW дольше N часов — автоматически принимается",
-        "reject_card": "Reject reason",
+        "reject_card": "Причина отклонения",
         "min_reason_length": "Минимум символов в причине",
         "require_reject_category": "Запрашивать категорию отклонения"
       },
@@ -3405,7 +3405,7 @@
         "create_dialog_title": "Создать API-ключ",
         "name_label": "Название",
         "name_placeholder": "Интеграция LAMA prod",
-        "scopes_label": "Scopes (доступ)",
+        "scopes_label": "Доступы",
         "expiry_label": "Срок действия",
         "expiry_optional": "Необязательно",
         "key_success_title": "Ключ создан",
@@ -4141,7 +4141,7 @@
         "export_failed": "Не удалось экспортировать отчёт"
       },
       "ai_banner": {
-        "text": "За месяц completion rate вырос на 2,1 п.п. за счёт улучшений в магазинах СПАР Томск. Слабая точка — return rate в Food City пр. Ленина 217 (8,2% при норме 5%). Возможные причины: новые сотрудники, недостаточно инструктажа.",
+        "text": "За месяц процент выполнения вырос на 2,1 п.п. за счёт улучшений в магазинах СПАР Томск. Слабая точка — процент возвратов в Food City пр. Ленина 217 (8,2% при норме 5%). Возможные причины: новые сотрудники, недостаточно инструктажа.",
         "suggestions_btn": "Предложения ИИ",
         "ask_btn": "Спросить подробнее"
       },
@@ -4411,7 +4411,7 @@
       },
       "period_banner": "{count, plural, one {# магазин} few {# магазина} other {# магазинов}} · {from} – {to}",
       "ai_banner": {
-        "text": "ИИ заметил: магазины-лидеры (СПАР Томск пр. Ленина, FC Томск Global Market) показывают completion rate >92%. У отстающих (Food City пр. Ленина 217 — 78%) ключевая разница — высокий return rate из-за быстрого роста штата. Возможные действия: усилить инструктаж новых сотрудников, добавить регламенты в часто-возвращаемые задачи.",
+        "text": "ИИ заметил: магазины-лидеры (СПАР Томск пр. Ленина, FC Томск Global Market) показывают процент выполнения >92%. У отстающих (Food City пр. Ленина 217 — 78%) ключевая разница — высокий процент возвратов из-за быстрого роста штата. Возможные действия: усилить инструктаж новых сотрудников, добавить регламенты в часто-возвращаемые задачи.",
         "suggestions_btn": "Предложения ИИ для отстающих",
         "ask_btn": "Спросить подробнее"
       },
@@ -5364,7 +5364,7 @@
         "ai_accept_rate_title": "Принято от ИИ",
         "ai_accept_rate_subtitle": "{percent}% за неделю · норма >60%",
         "ai_alarm_title": "Тревога ИИ",
-        "ai_alarm_subtitle": "{count} супервайзера < 30% accept rate"
+        "ai_alarm_subtitle": "{count} супервайзера < 30% принятия"
       },
       "tabs": {
         "by_stores": "По магазинам",
@@ -5395,8 +5395,8 @@
           "actions": "Действия"
         },
         "source": {
-          "ai": "AI",
-          "manager": "Manager"
+          "ai": "ИИ",
+          "manager": "Менеджер"
         }
       },
       "supervisors_tab": {
@@ -5407,7 +5407,7 @@
           "ai_accepted": "Принято от ИИ",
           "ai_rejected": "Отклонено от ИИ"
         },
-        "ai_warning_chip": "ИИ работает неадекватно для этого scope?"
+        "ai_warning_chip": "ИИ работает неадекватно для этой области?"
       },
       "regions_tab": {
         "columns": {
@@ -5422,25 +5422,25 @@
       },
       "ai_quality_tab": {
         "stats": {
-          "generated": "Suggestions сгенерировано",
+          "generated": "Предложений сгенерировано",
           "accepted": "Принято",
           "avg_decision_time": "Среднее время до решения",
-          "helpful_rate": "Helpful rate"
+          "helpful_rate": "Доля полезных"
         },
         "by_type_card": {
-          "title": "Принятие по типам suggestion",
+          "title": "Принятие по типам предложений",
           "warning_low_accept": "ИИ слабо работает в этой категории",
           "columns": {
             "type": "Тип",
             "proposed": "Предложено",
             "accepted": "Принято",
             "rejected": "Отклонено",
-            "accept_rate": "Accept rate, %"
+            "accept_rate": "Процент принятия, %"
           }
         },
         "reject_reasons_card": {
           "title": "Топ причины отклонения",
-          "expand_examples": "Примеры reject-кейсов"
+          "expand_examples": "Примеры отклонённых случаев"
         },
         "anomalies_card": {
           "title": "Аномалии в работе ИИ",
@@ -5451,7 +5451,7 @@
           "lines": {
             "proposed": "Предложено",
             "accepted": "Принято",
-            "accept_rate": "Accept rate %"
+            "accept_rate": "Процент принятия, %"
           }
         }
       },
@@ -5460,13 +5460,13 @@
         "type_label": "Тип проблемы",
         "type_options": {
           "nonsense": "ИИ предлагает чушь",
-          "wrong_volume": "Слишком много / мало suggestions",
+          "wrong_volume": "Слишком много / мало предложений",
           "no_context": "Не учитывает контекст",
           "other": "Другое"
         },
         "period_label": "Период когда заметили",
         "details_label": "Подробнее",
-        "auto_attached_hint": "К сообщению автоматически приложатся метрики и последние 10 reject-комментариев",
+        "auto_attached_hint": "К сообщению автоматически приложатся метрики и последние 10 комментариев к отклонениям",
         "submit": "Отправить"
       },
       "empty": {
@@ -5526,7 +5526,7 @@
         }
       },
       "history_tab": {
-        "active_badge": "active",
+        "active_badge": "активная",
         "applied_count": "Применений {count}",
         "helpful_count": "Полезных {applied} ({rate}%)",
         "rollback": "Откатить",
@@ -5541,8 +5541,8 @@
         "running_badge": "Идёт",
         "completed_badge": "Завершён",
         "running_label": "Тест запущен {startDate} ({days} дней)",
-        "version_a_title": "Версия A (control)",
-        "version_b_title": "Версия B (treatment)",
+        "version_a_title": "Версия A (контрольная)",
+        "version_b_title": "Версия B (тестовая)",
         "stats": {
           "impressions": "Просмотров",
           "applications": "Применений",
@@ -5557,8 +5557,8 @@
         },
         "create_section_title": "Создать новый A/B тест",
         "create_form": {
-          "control_label": "Базовая версия (control)",
-          "treatment_label": "Версия B (treatment)",
+          "control_label": "Базовая версия (контрольная)",
+          "treatment_label": "Версия B (тестовая)",
           "traffic_b_label": "% трафика на B",
           "duration_label": "Длительность (дней)",
           "submit": "Запустить тест"
@@ -5568,11 +5568,11 @@
         "stats": {
           "applications_30d": "Применений за 30 дней",
           "helpful": "Полезных",
-          "helpful_rate": "Helpful rate %",
-          "ai_feedback": "AI feedback score"
+          "helpful_rate": "Доля полезных, %",
+          "ai_feedback": "Оценка ИИ от пользователей"
         },
-        "history_chart_title": "Динамика helpful rate за 90 дней",
-        "info_alert": "Метрики обновляются раз в сутки. Полезность считается на основе feedback от работников."
+        "history_chart_title": "Динамика доли полезных за 90 дней",
+        "info_alert": "Метрики обновляются раз в сутки. Полезность считается на основе обратной связи от работников."
       },
       "generate_dialog": {
         "title": "Генерация подсказки",
@@ -5675,19 +5675,19 @@
         "title": "Правило для типа: {workType}",
         "mode_section": "Режим проверки",
         "mode_descriptions": {
-          "FULL_REVIEW": "Все задачи требуют ручного approve",
+          "FULL_REVIEW": "Все задачи требуют ручного подтверждения",
           "SAMPLING": "% задач отправляется на проверку",
           "PHOTO_REQUIRED": "Проверка только если фото-отчёт",
-          "AUTO_ACCEPT": "Авто-accept всех"
+          "AUTO_ACCEPT": "Автоматическое принятие всех"
         },
-        "sample_section": "Sample rate",
+        "sample_section": "Доля выборки на проверку",
         "sample_hint": "Чем выше %, тем больше проверки, но больше времени",
-        "photo_section": "Photo requirement",
+        "photo_section": "Требование фото",
         "photo_label": "Требовать фото при завершении",
         "triggers_section": "Триггеры эскалации",
         "trigger_keys": {
           "NEW_PERFORMER": "Новый исполнитель",
-          "STORE_HIGH_DEFECT": "Магазин с высоким defect rate",
+          "STORE_HIGH_DEFECT": "Магазин с высокой долей брака",
           "PERFORMER_RECENT_REJECTS": "Возвраты у исполнителя",
           "TASK_ADDITIONAL": "Дополнительные задачи"
         },
@@ -5713,7 +5713,7 @@
           "tasks_total": "Задач за период",
           "would_review": "Было бы проверено",
           "hours_saved": "Сэкономлено времени",
-          "forecast_defect": "Прогнозируемый defect rate"
+          "forecast_defect": "Прогнозируемая доля брака"
         }
       },
       "history_tab": {
@@ -5787,9 +5787,9 @@
           "rank": "#",
           "user": "Сотрудник",
           "store": "Магазин",
-          "score": "Score",
-          "streak": "Streak",
-          "trend": "Δ rank"
+          "score": "Баллы",
+          "streak": "Серия",
+          "trend": "Δ места"
         }
       },
       "stores_tab": {
@@ -5797,16 +5797,16 @@
           "rank": "#",
           "store": "Магазин",
           "city": "Город",
-          "score": "Score",
+          "score": "Баллы",
           "employees": "Сотрудников",
-          "streak_weeks": "Streak недель",
-          "trend": "Δ rank"
+          "streak_weeks": "Серия недель",
+          "trend": "Δ места"
         }
       },
       "teams_tab": {
         "section_subtitle": "Группы сотрудников по сменам или должностям",
         "members_count": "{count} участников",
-        "score_label": "Score",
+        "score_label": "Баллы",
         "activity_label": "Активность",
         "drawer_title": "Команда: {name}",
         "drawer_members": "Участники"

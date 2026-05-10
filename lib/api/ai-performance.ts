@@ -90,7 +90,7 @@ export async function getAiPerformance(params: {
         ? [
             {
               type: "low_accept_rate",
-              description: `Accept rate ${acceptRate}% is below the recommended 60% threshold.`,
+              description: `Процент принятия предложений ${acceptRate}% — ниже рекомендуемого порога 60%.`,
               severity: "med",
             },
           ]
