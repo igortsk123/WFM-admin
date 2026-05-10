@@ -10,16 +10,8 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import { AlertDialog } from "@/components/ui/alert-dialog";
+import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { toast } from "sonner";
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
 import type { AIChatThread, AIChatMessage, AIChatContextType, Locale } from "@/lib/types";
@@ -58,6 +50,7 @@ export function AIChatScreen() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const t = useTranslations("screen.aiChat");
+  const tCommon = useTranslations("common");
   const _locale = useLocale() as Locale;
 
   // URL params
@@ -613,23 +606,15 @@ export function AIChatScreen() {
 
       {/* Archive confirmation dialog */}
       <AlertDialog open={archiveDialogOpen} onOpenChange={setArchiveDialogOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t("delete_dialog.title")}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t("delete_dialog.description")}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={confirmArchiveThread}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              {t("delete_dialog.confirm")}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
+        <ConfirmDialog
+          title={t("delete_dialog.title")}
+          message={t("delete_dialog.description")}
+          confirmLabel={t("delete_dialog.confirm")}
+          cancelLabel={tCommon("cancel")}
+          variant="destructive"
+          onConfirm={confirmArchiveThread}
+          onOpenChange={setArchiveDialogOpen}
+        />
       </AlertDialog>
     </>
   );
