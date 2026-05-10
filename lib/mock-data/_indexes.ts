@@ -73,6 +73,20 @@ export const TASKS_BY_ASSIGNEE: Map<number, Task[]> = groupBy(
 
 export const USERS_BY_ID: Map<number, User> = indexBy(MOCK_USERS, (u) => u.id);
 
+/**
+ * Lookup admin User by LAMA `external_id` (employee_id из их БД).
+ * Используется для резолва `LAMA_PLANNING_POOL.available_employees[].employee_id`
+ * → MOCK_USERS.id (которые в admin live-cabinet могут отличаться).
+ * Пользователи без external_id пропускаются.
+ */
+export const USERS_BY_EXTERNAL_ID: Map<number, User> = (() => {
+  const m = new Map<number, User>();
+  for (const u of MOCK_USERS) {
+    if (typeof u.external_id === "number") m.set(u.external_id, u);
+  }
+  return m;
+})();
+
 // ── Shifts ──────────────────────────────────────────────────────────
 
 export const SHIFTS_BY_ID: Map<number, Shift> = indexBy(MOCK_SHIFTS, (s) => s.id);
@@ -112,5 +126,13 @@ export const PERMISSIONS_BY_USER: Map<number, WorkerPermission[]> = groupBy(
 // ── Reference dictionaries (id → entity) ────────────────────────────
 
 export const STORES_BY_ID: Map<number, Store> = indexBy(MOCK_STORES, (s) => s.id);
+/**
+ * Store lookup by `external_code` (LAMA shop_code, например "0121").
+ * Используется в distribution flow чтобы вытащить planning pool по магазину.
+ */
+export const STORES_BY_EXTERNAL_CODE: Map<string, Store> = indexBy(
+  MOCK_STORES,
+  (s) => s.external_code,
+);
 export const ZONES_BY_ID: Map<number, Zone> = indexBy(MOCK_ZONES, (z) => z.id);
 export const WORK_TYPES_BY_ID: Map<number, WorkType> = indexBy(MOCK_WORK_TYPES, (w) => w.id);

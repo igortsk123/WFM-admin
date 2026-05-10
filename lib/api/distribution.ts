@@ -7,7 +7,13 @@ import { LAMA_EMPLOYEE_ZONES } from "@/lib/mock-data/_lama-employee-zones";
 import { LAMA_EMPLOYEE_WORK_TYPES } from "@/lib/mock-data/_lama-employee-work-types";
 import { LAMA_FALLBACK_MEDIANS } from "@/lib/mock-data/_lama-fallback-medians";
 import {
+  LAMA_PLANNING_POOL,
+  type PlanningEmployee,
+} from "@/lib/mock-data/_lama-planning-pool";
+import {
   USERS_BY_ID,
+  USERS_BY_EXTERNAL_ID,
+  STORES_BY_ID,
   SHIFTS_BY_STORE_DATE,
   SHIFTS_BY_STORE,
   TASKS_BY_ASSIGNEE,
@@ -206,9 +212,110 @@ export async function getStoreUnassignedTasks(
   };
 }
 
+// ─────────────────────────────────────────────────────────────────────
+// LAMA planning-pool helpers
+// ─────────────────────────────────────────────────────────────────────
+
+/**
+ * Resolve admin store_id → LAMA `shop_code` (external_code).
+ * Возвращает undefined для не-LAMA магазинов или несуществующих store_id.
+ */
+function getShopCodeFromStoreId(storeId: number): string | undefined {
+  return STORES_BY_ID.get(storeId)?.external_code;
+}
+
+/**
+ * Синтетическая длительность смены для сотрудника из LAMA planning pool —
+ * 12 часов (09:00–21:00). В planning pool сами смены не приходят, только
+ * список доступных сотрудников; реальные смены остались в SHIFTS_BY_STORE_DATE,
+ * но для LAMA магазинов их не индексируют → в моке выдаём типичный диапазон
+ * чтобы UI мог посчитать utilization.
+ */
+const PLANNING_POOL_SHIFT_START_HOUR = 9;
+const PLANNING_POOL_SHIFT_END_HOUR = 21;
+const PLANNING_POOL_SHIFT_TOTAL_MIN =
+  (PLANNING_POOL_SHIFT_END_HOUR - PLANNING_POOL_SHIFT_START_HOUR) * 60;
+
+/** Распарсить «Фамилия Имя Отчество» из планинг-пула в (last, first, middle). */
+function splitPlanningName(fullName: string): {
+  last_name: string;
+  first_name: string;
+  middle_name?: string;
+} {
+  const parts = fullName.trim().split(/\s+/);
+  return {
+    last_name: parts[0] ?? "",
+    first_name: parts[1] ?? "",
+    middle_name: parts[2],
+  };
+}
+
+/**
+ * Построить `EmployeeUtilization[]` из LAMA planning pool для магазина.
+ * Резолвит каждого `PlanningEmployee` в admin User через `external_id` index;
+ * если не найдено — fallback на split имени из planning pool.
+ *
+ * Поскольку planning pool — это всегда «всё ещё нераспределено», начальный
+ * `assigned_min = 0`. Зоны и work_types берутся из LAMA history (если есть).
+ */
+function buildEmployeesFromPlanningPool(
+  employees: readonly PlanningEmployee[],
+  date: string,
+): EmployeeUtilization[] {
+  // Синтетические границы смены — общий диапазон для всего пула.
+  const shiftStartIso = `${date}T${String(PLANNING_POOL_SHIFT_START_HOUR).padStart(2, "0")}:00:00`;
+  const shiftEndIso = `${date}T${String(PLANNING_POOL_SHIFT_END_HOUR).padStart(2, "0")}:00:00`;
+
+  return employees.map((pe) => {
+    const adminUser = USERS_BY_EXTERNAL_ID.get(pe.employee_id);
+    const userId = adminUser?.id ?? pe.employee_id;
+    const { last_name, first_name, middle_name } = adminUser
+      ? {
+          last_name: adminUser.last_name,
+          first_name: adminUser.first_name,
+          middle_name: adminUser.middle_name,
+        }
+      : splitPlanningName(pe.name);
+
+    // Зоны/work_types из LAMA snapshot history (по admin user.id если есть).
+    const zones = adminUser ? LAMA_EMPLOYEE_ZONES[adminUser.id] : undefined;
+    const workTypes = adminUser
+      ? LAMA_EMPLOYEE_WORK_TYPES[adminUser.id]
+      : undefined;
+
+    return {
+      user: {
+        id: userId,
+        first_name,
+        last_name,
+        middle_name,
+        avatar_url: adminUser?.avatar_url,
+        position_name: pe.position_name,
+        zones: zones ? [...zones] : [],
+        work_types: workTypes ? [...workTypes] : [],
+      },
+      shift_total_min: PLANNING_POOL_SHIFT_TOTAL_MIN,
+      assigned_min: 0,
+      utilization_pct: 0,
+      has_bonus_task: false,
+      shift_start: shiftStartIso,
+      shift_end: shiftEndIso,
+    };
+  });
+}
+
 /**
  * Get employee utilization for a store on a specific date.
  * Combines shift data with assigned tasks to calculate workload.
+ *
+ * Приоритет источников:
+ * 1. **LAMA planning pool** (если магазин имеет shop_code в `LAMA_PLANNING_POOL`) —
+ *    «сегодняшние» live данные о доступных сотрудниках. Источник правды для
+ *    /tasks/distribute по LAMA магазинам — даже если в `SHIFTS_BY_STORE_DATE`
+ *    нет совпадения по дате, planning pool всё равно даст сотрудников.
+ * 2. **SHIFTS_BY_STORE_DATE** (синтетические смены) — fallback для не-LAMA
+ *    магазинов (Abricos / SPAR / Foodcity / прочие base-моки).
+ * 3. **Closest-date shift** — если на запрошенную date нет смен, берём ближайшую.
  */
 export async function getStoreEmployeesUtilization(
   storeId: number,
@@ -216,6 +323,22 @@ export async function getStoreEmployeesUtilization(
 ): Promise<ApiResponse<EmployeeUtilization[]>> {
   await new Promise((r) => setTimeout(r, 350));
 
+  // 1. LAMA planning pool имеет приоритет — это «сегодня» для LAMA магазинов.
+  //    Решает баг «нет смен на этот день» когда SHIFTS_BY_STORE_DATE пустой,
+  //    но planning pool содержит actual список сотрудников магазина.
+  const shopCode = getShopCodeFromStoreId(storeId);
+  const planningPool = shopCode ? LAMA_PLANNING_POOL[shopCode] : undefined;
+  if (planningPool && planningPool.available_employees.length > 0) {
+    const fromPool = buildEmployeesFromPlanningPool(
+      planningPool.available_employees,
+      date,
+    );
+    // Сортируем: lowest utilization first (consistent с non-LAMA веткой).
+    fromPool.sort((a, b) => a.utilization_pct - b.utilization_pct);
+    return { data: fromPool };
+  }
+
+  // 2. Fallback: синтетические смены — для не-LAMA магазинов.
   // Use indexed lookup: O(1) вместо O(n) фильтра.
   let shifts = SHIFTS_BY_STORE_DATE.get(`${storeId}:${date}`) ?? [];
 
