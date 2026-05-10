@@ -33,7 +33,7 @@ export const MobileCard = memo(function MobileCard({
   onTerminate,
   onHistory,
 }: MobileCardProps) {
-  const t = useTranslations("freelanceBudgetLimits");
+  const t = useTranslations("screen.freelanceBudgetLimits");
   const [primary, ...rest] = limit.store_name.split(",");
   const subtitleText = rest.join(",").trim();
 

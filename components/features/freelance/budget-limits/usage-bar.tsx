@@ -18,7 +18,7 @@ export function BudgetUsageBar({
   currency,
   isClientDirect,
 }: BudgetUsageBarProps) {
-  const t = useTranslations("freelanceBudgetLimits.usage");
+  const t = useTranslations("screen.freelanceBudgetLimits.usage");
 
   if (!usage) {
     return <span className="text-xs text-muted-foreground">—</span>;

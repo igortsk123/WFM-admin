@@ -41,7 +41,7 @@ export function LimitForm({
   onSubmit,
   onCancel,
 }: LimitFormProps) {
-  const t = useTranslations("freelanceBudgetLimits");
+  const t = useTranslations("screen.freelanceBudgetLimits");
   const tCommon = useTranslations("common");
 
   const [values, setValues] = useState<LimitFormValues>(

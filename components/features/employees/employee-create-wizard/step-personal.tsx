@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import type { UseFormReturn } from "react-hook-form";
+import { useTranslations } from "next-intl";
 import {
   CalendarIcon,
   Upload,
@@ -77,6 +78,7 @@ export function StepPersonal({
   onSubmit,
   summaryFio,
 }: StepPersonalProps) {
+  const tCommon = useTranslations("common");
   const [phoneCountryOpen, setPhoneCountryOpen] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -85,11 +87,11 @@ export function StepPersonal({
   async function handleAvatarFile(file: File) {
     const allowed = ["image/jpeg", "image/png", "image/webp"];
     if (!allowed.includes(file.type)) {
-      toast.error("Формат не поддерживается. Допустимы JPG, PNG, WebP.");
+      toast.error(tCommon("toasts.file_format_not_supported"));
       return;
     }
     if (file.size > 2 * 1024 * 1024) {
-      toast.error("Файл слишком большой. Максимум 2 МБ.");
+      toast.error(tCommon("toasts.file_too_large"));
       return;
     }
     const reader = new FileReader();

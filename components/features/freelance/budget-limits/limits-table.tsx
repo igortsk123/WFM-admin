@@ -36,7 +36,7 @@ export function LimitsTable({
   onTerminate,
   onHistory,
 }: LimitsTableProps) {
-  const t = useTranslations("freelanceBudgetLimits");
+  const t = useTranslations("screen.freelanceBudgetLimits");
 
   return (
     <>

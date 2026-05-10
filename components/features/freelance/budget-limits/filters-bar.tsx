@@ -42,7 +42,7 @@ export function FiltersBar({
   activeChips,
   onClearAll,
 }: FiltersBarProps) {
-  const t = useTranslations("freelanceBudgetLimits");
+  const t = useTranslations("screen.freelanceBudgetLimits");
   const tCommon = useTranslations("common");
 
   const periodOptions = [

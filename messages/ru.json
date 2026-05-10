@@ -88,7 +88,21 @@
     "language": "Язык",
     "russian": "Русский",
     "english": "English",
-    "validation": "Минимум 5 символов"
+    "validation": "Минимум 5 символов",
+    "noData": "Нет данных",
+    "toasts": {
+      "settings_saved": "Настройки сохранены",
+      "connector_saved": "Коннектор сохранён",
+      "subscription_cancel_requested": "Заявка на отмену подписки отправлена",
+      "plan_change_soon": "Смена тарифа — soon",
+      "card_change_soon": "Смена карты — soon",
+      "restore_coming_soon": "Восстановление: coming soon",
+      "application_cancelled": "Заявка отменена",
+      "xlsx_import_mock": "Импорт XLSX — мок",
+      "xlsx_export_mock": "Экспорт XLSX — мок",
+      "file_format_not_supported": "Формат не поддерживается. Допустимы JPG, PNG, WebP.",
+      "file_too_large": "Файл слишком большой. Максимум 2 МБ."
+    }
   },
   "nav": {
     "groups": {
@@ -1245,7 +1259,8 @@
         "create_task": "Создать задачу",
         "plan_shift": "Запланировать смену",
         "add_employee": "Добавить сотрудника",
-        "import_schedule": "Импорт расписания"
+        "import_schedule": "Импорт расписания",
+        "title": "Быстрые действия"
       },
       "morning_brief": {
         "title": "Утро",
@@ -5007,7 +5022,13 @@
         "reset_to_proposal": "Сбросить к предложению ИИ",
         "bulk_accept_all": "Принять всё как есть",
         "bulk_reject_all": "Отклонить всё",
-        "bulk_clear_selection": "Снять выбор"
+        "bulk_clear_selection": "Снять выбор",
+        "bulk_accept": "Принять все",
+        "bulk_reject": "Отклонить все",
+        "helpful": "Полезно",
+        "not_helpful": "Не помогло",
+        "accept_with_edits": "Принять с правками",
+        "reset_to_original": "Сбросить к оригиналу"
       },
       "stats": {
         "new_today": "Новых сегодня",
@@ -5021,14 +5042,16 @@
         "pending": "Новые",
         "in_progress": "В работе",
         "accepted": "Принятые",
-        "rejected": "Отклонённые"
+        "rejected": "Отклонённые",
+        "edited": "Изменённые"
       },
       "filters": {
-        "type_label": "Тип",
-        "scope_label": "Объект",
-        "priority_label": "Приоритет ИИ",
-        "period_label": "Период",
-        "clear": "Очистить"
+        "clear": "Очистить",
+        "type": "Тип",
+        "scope": "Объект",
+        "priority": "Приоритет ИИ",
+        "period": "Период",
+        "store": "Магазин"
       },
       "type": {
         "TASK_SUGGESTION": "Задача",
@@ -5047,7 +5070,14 @@
         "edited_chip": "Изменено",
         "select_for_bulk": "Выбрать для массового действия",
         "selected_count": "Выбрано {count} предложений",
-        "bulk_hint": "Массовое одобрение = принять без редактирования. Если нужны правки — открывайте по одному."
+        "bulk_hint": "Массовое одобрение = принять без редактирования. Если нужны правки — открывайте по одному.",
+        "target_network": "Вся сеть",
+        "target_store": "Магазин",
+        "target_stores": "Магазинов",
+        "with_edits": "С правками",
+        "time_estimate": "~{minutes} мин",
+        "bonus_points": "+{points} баллов",
+        "rationale": "Обоснование"
       },
       "detail_panel": {
         "empty_title": "Выберите предложение слева",
@@ -5089,39 +5119,88 @@
         "title": "Отклонить предложение?",
         "reason_label": "Причина (обязательно)",
         "reason_placeholder": "Опишите подробнее...",
-        "reason_options": {
+        "confirm": "Отклонить",
+        "reasons": {
           "not_relevant": "Не релевантно сейчас",
           "already_in_progress": "Уже в работе",
           "disagree": "Не согласен с анализом",
           "too_general": "Слишком общее",
-          "other": "Другое"
+          "other": "Другое",
+          "disagree_analysis": "Не согласен с анализом",
+          "too_generic": "Слишком общее"
         },
-        "confirm": "Отклонить"
+        "comment_label": "Комментарий",
+        "comment_placeholder": "Опишите подробнее (минимум 10 символов)",
+        "message": "Это поможет ИИ научиться давать более релевантные предложения."
       },
       "bulk_reject_dialog": {
         "title": "Отклонить {count} предложений?",
         "reason_label": "Общая причина для всех (обязательно)",
-        "confirm": "Отклонить все"
+        "confirm": "Отклонить все",
+        "message": "Общая причина для всех выбранных предложений."
       },
       "empty": {
         "no_pending_title": "Пока нет новых предложений",
         "no_pending_subtitle": "ИИ анализирует данные. Новые предложения появятся в течение часа",
         "no_filtered_title": "Ничего не найдено",
-        "no_filtered_subtitle": "Сбросьте фильтры или выберите другой период"
+        "no_filtered_subtitle": "Сбросьте фильтры или выберите другой период",
+        "pending": {
+          "title": "Пока нет новых предложений",
+          "description": "ИИ анализирует данные. Новые предложения появятся в течение часа."
+        },
+        "filtered": {
+          "title": "Ничего не найдено",
+          "description": "Сбросьте фильтры или выберите другой период."
+        },
+        "accepted": {
+          "title": "Принятых пока нет",
+          "description": "Здесь появятся предложения, которые вы приняли."
+        },
+        "rejected": {
+          "title": "Отклонённых пока нет",
+          "description": "Здесь появятся предложения, которые вы отклонили."
+        }
       },
       "forbidden": {
         "title": "Доступ ограничен",
-        "subtitle": "Доступ только для супервайзеров и руководителей"
+        "subtitle": "Доступ только для супервайзеров и руководителей",
+        "description": "Доступ только для супервайзеров и руководителей"
       },
-      "read_only_banner": "Вы в режиме просмотра. Решения по предложениям ИИ принимают супервайзер или директор сети.",
-      "read_only_tooltip": "Решение принимает супервайзер или директор сети",
       "toasts": {
         "accepted": "Создано: {entity}",
         "rejected": "Предложение отклонено",
         "bulk_accepted": "Принято {count} предложений",
         "bulk_rejected": "Отклонено {count} предложений",
         "remembered": "ИИ запомнит для похожих случаев",
-        "error": "Не удалось выполнить операцию"
+        "error": "Не удалось выполнить операцию",
+        "accepted_goal": "Цель создана",
+        "accepted_bonus": "Бонусная задача создана"
+      },
+      "read_only": {
+        "banner": "Вы в режиме просмотра. Решения по предложениям ИИ принимают супервайзер или директор сети.",
+        "tooltip": "Решение принимает супервайзер или директор сети"
+      },
+      "title": "Предложения от ИИ",
+      "subtitle": "Аналитика → конкретные действия. Принимайте, редактируйте или уточняйте у ИИ",
+      "breadcrumb_home": "Главная",
+      "breadcrumb_ai": "Предложения ИИ",
+      "detail": {
+        "title": "Выберите предложение",
+        "ai_remembered": "ИИ запомнил ваши предыдущие правки и применил их.",
+        "rationale_section": "Почему ИИ это предложил",
+        "proposed_section": "Что предлагается",
+        "changed_indicator": "Изменено",
+        "data_sources_section": "Источники данных",
+        "related_data_section": "Связанные данные",
+        "form": {
+          "title": "Название",
+          "store": "Магазин",
+          "duration": "Длительность, мин",
+          "discount_percent": "Скидка, %",
+          "bonus_points": "Бонусные баллы",
+          "requires_photo": "Требовать фото",
+          "manager_comment": "Комментарий менеджера"
+        }
       }
     },
     "aiChat": {
@@ -6106,6 +6185,20 @@
         "error_retry": "Повторить",
         "forbidden_title": "Нет доступа",
         "forbidden_desc": "Эта заявка не входит в ваш рабочий периметр."
+      },
+      "actions": {
+        "approve": "Approve",
+        "reject": "Reject",
+        "request_revision": "Request revisions",
+        "replace_with_bonus": "Replace with bonus",
+        "edit": "Edit",
+        "cancel": "Cancel application"
+      },
+      "toasts_legacy": {
+        "approved": "Application approved",
+        "rejected": "Application rejected",
+        "replaced": "Application replaced with bonus",
+        "error": "Failed to perform action"
       }
     },
     "freelanceServicesList": {
@@ -7085,11 +7178,16 @@
       "actions": {
         "create": "Создать норматив",
         "import": "Импорт",
-        "export": "Экспорт"
+        "export": "Экспорт",
+        "save": "Save"
       },
       "filters": {
         "search": "Поиск",
-        "category": "Категория"
+        "category": "Категория",
+        "object_format": "Object format",
+        "work_type": "Work type",
+        "all_formats": "All formats",
+        "all_work_types": "All types"
       },
       "columns": {
         "code": "Код",
@@ -7098,7 +7196,12 @@
         "rate": "Ставка, ₽",
         "norm_per_hour": "Норма/час",
         "category": "Категория",
-        "actions": "Действия"
+        "actions": "Действия",
+        "object_format": "Object format",
+        "work_type": "Work type",
+        "normative": "Normative",
+        "approved_by": "Approved by",
+        "approved_at": "Approved at"
       },
       "form": {
         "code_label": "Код",
@@ -7108,25 +7211,43 @@
         "norm_per_hour_label": "Норма/час",
         "category_label": "Категория",
         "description_label": "Описание",
-        "submit": "Сохранить"
+        "submit": "Сохранить",
+        "create_title": "New norm",
+        "edit_title": "Edit norm",
+        "object_format_label": "Object format",
+        "work_type_label": "Work type",
+        "normative_label": "Normative per hour",
+        "rate_placeholder": "Optional",
+        "currency_label": "Currency"
       },
       "empty": {
         "no_norms": "Нормативы пока не заданы",
-        "cta": "Создать первый"
+        "cta": "Создать первый",
+        "active_title": "Нормативы пока не заданы",
+        "active_description": "Добавьте первый норматив, чтобы рассчитывать стоимость работ.",
+        "active_cta": "+ Новый норматив",
+        "archive_title": "Архив пуст",
+        "archive_description": "Архивированные нормативы появятся здесь."
       },
       "toasts": {
         "saved": "Норматив сохранён",
         "deleted": "Удалён",
-        "error": "Не удалось"
+        "error": "Не удалось",
+        "created": "Norm created",
+        "updated": "Norm updated",
+        "archived": "Norm archived",
+        "duplicate": "A norm for this combination already exists"
       },
       "tabs": {
         "active": "Активные",
-        "archived": "Архив"
+        "archived": "Архив",
+        "archive": "Archive"
       },
       "archive_confirm": {
         "title": "Архивировать норматив?",
         "description": "Норматив будет помечен как неактивный. Существующие услуги сохранят расчёт.",
-        "confirm": "Архивировать"
+        "confirm": "Архивировать",
+        "message": "The norm will be hidden from active list. Existing calculations will not change."
       },
       "per_hour": "/час",
       "rate_empty": "—",
@@ -7134,6 +7255,67 @@
         "edit": "Редактировать",
         "duplicate": "Дублировать",
         "archive": "Архивировать"
+      }
+    },
+    "agentDocuments": {
+      "page_title": "Документы",
+      "page_subtitle": "Договоры, акты, счета",
+      "actions": {
+        "upload": "Загрузить",
+        "download": "Скачать"
+      },
+      "filters": {
+        "type": "Тип",
+        "type_all": "Все типы",
+        "year": "Год",
+        "date_range": "Период",
+        "date_from": "С",
+        "date_to": "По",
+        "apply": "Применить"
+      },
+      "columns": {
+        "title": "Название",
+        "type": "Тип",
+        "period": "Период",
+        "date": "Дата создания",
+        "size": "Размер",
+        "status": "Статус"
+      },
+      "type": {
+        "CONTRACT": "Договор",
+        "CLOSING_ACT": "Акт",
+        "INVOICE": "Счёт",
+        "ACT": "Акт",
+        "REPORT": "Отчёт",
+        "OTHER": "Другое"
+      },
+      "status": {
+        "SIGNED": "Подписан",
+        "PENDING_SIGNATURE": "Ожидает подписи",
+        "DRAFT": "Черновик"
+      },
+      "empty": {
+        "no_documents": "Документов пока нет",
+        "no_documents_description": "Они появляются автоматически после выплат на ваш счёт.",
+        "no_results": "Ничего не найдено",
+        "no_results_description": "Попробуйте изменить фильтры."
+      },
+      "toasts": {
+        "uploaded": "Документ загружен",
+        "error": "Не удалось",
+        "download_link": "Ссылка действительна 5 минут"
+      },
+      "detail_sheet": {
+        "title": "Документ",
+        "meta_type": "Тип",
+        "meta_period": "Период",
+        "meta_created_at": "Дата создания",
+        "download": "Скачать"
+      },
+      "error": {
+        "title": "Не удалось загрузить",
+        "description": "Произошла ошибка при загрузке документов.",
+        "retry": "Повторить"
       }
     }
   },
@@ -7338,67 +7520,6 @@
     },
     "empty": {
       "no_earnings": "Нет доходов за период"
-    }
-  },
-  "agentDocuments": {
-    "page_title": "Документы",
-    "page_subtitle": "Договоры, акты, счета",
-    "actions": {
-      "upload": "Загрузить",
-      "download": "Скачать"
-    },
-    "filters": {
-      "type": "Тип",
-      "type_all": "Все типы",
-      "year": "Год",
-      "date_range": "Период",
-      "date_from": "С",
-      "date_to": "По",
-      "apply": "Применить"
-    },
-    "columns": {
-      "title": "Название",
-      "type": "Тип",
-      "period": "Период",
-      "date": "Дата создания",
-      "size": "Размер",
-      "status": "Статус"
-    },
-    "type": {
-      "CONTRACT": "Договор",
-      "CLOSING_ACT": "Акт",
-      "INVOICE": "Счёт",
-      "ACT": "Акт",
-      "REPORT": "Отчёт",
-      "OTHER": "Другое"
-    },
-    "status": {
-      "SIGNED": "Подписан",
-      "PENDING_SIGNATURE": "Ожидает подписи",
-      "DRAFT": "Черновик"
-    },
-    "empty": {
-      "no_documents": "Документов пока нет",
-      "no_documents_description": "Они появляются автоматически после выплат на ваш счёт.",
-      "no_results": "Ничего не найдено",
-      "no_results_description": "Попробуйте изменить фильтры."
-    },
-    "toasts": {
-      "uploaded": "Документ загружен",
-      "error": "Не удалось",
-      "download_link": "Ссылка действительна 5 минут"
-    },
-    "detail_sheet": {
-      "title": "Документ",
-      "meta_type": "Тип",
-      "meta_period": "Период",
-      "meta_created_at": "Дата создания",
-      "download": "Скачать"
-    },
-    "error": {
-      "title": "Не удалось загрузить",
-      "description": "Произошла ошибка при загрузке документов.",
-      "retry": "Повторить"
     }
   },
   "filters": {

@@ -43,7 +43,7 @@ import {
 // ─── BudgetLimits (entry point) ───────────────────────────────────────────────
 
 export function BudgetLimits() {
-  const t = useTranslations("freelanceBudgetLimits");
+  const t = useTranslations("screen.freelanceBudgetLimits");
   const { user } = useAuth();
 
   const isRegionalOrOps =
@@ -69,7 +69,7 @@ interface InnerProps {
 }
 
 function BudgetLimitsInner({ canWrite }: InnerProps) {
-  const t = useTranslations("freelanceBudgetLimits");
+  const t = useTranslations("screen.freelanceBudgetLimits");
   const tCommon = useTranslations("common");
   const locale = useLocale();
   const { user } = useAuth();

@@ -82,6 +82,7 @@ interface OrgTabBillingProps {
 
 export function OrgTabBilling({ orgId }: OrgTabBillingProps) {
   const t = useTranslations("screen.organizationSettings");
+  const tCommon = useTranslations("common");
   const [billing, setBilling] = React.useState<BillingConfig | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [cancelAlertOpen, setCancelAlertOpen] = React.useState(false);
@@ -94,7 +95,7 @@ export function OrgTabBilling({ orgId }: OrgTabBillingProps) {
   }, [orgId]);
 
   async function handleCancelSubscription() {
-    toast.success("Заявка на отмену подписки отправлена");
+    toast.success(tCommon("toasts.subscription_cancel_requested"));
   }
 
   if (loading) {
@@ -139,7 +140,7 @@ export function OrgTabBilling({ orgId }: OrgTabBillingProps) {
               </p>
             </div>
             <div className="flex flex-col gap-2 items-end">
-              <Button variant="outline" size="sm" onClick={() => toast.info("Смена тарифа — soon")}>
+              <Button variant="outline" size="sm" onClick={() => toast.info(tCommon("toasts.plan_change_soon"))}>
                 {t("billing.change_plan")}
               </Button>
               <AlertDialog open={cancelAlertOpen} onOpenChange={setCancelAlertOpen}>
@@ -197,7 +198,7 @@ export function OrgTabBilling({ orgId }: OrgTabBillingProps) {
                   {billing.payment_method.type} ···· {billing.payment_method.last4}
                 </span>
               </div>
-              <Button variant="outline" size="sm" onClick={() => toast.info("Смена карты — soon")}>
+              <Button variant="outline" size="sm" onClick={() => toast.info(tCommon("toasts.card_change_soon"))}>
                 {t("billing.change_card")}
               </Button>
             </div>

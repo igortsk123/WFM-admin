@@ -49,6 +49,7 @@ const ScatterChartView = dynamic(
 
 export function StoreCompareReport() {
   const t = useTranslations("screen.reportsCompare");
+  const tCommon = useTranslations("common");
   const { user } = useAuth();
   const router = useRouter();
 
@@ -151,7 +152,7 @@ export function StoreCompareReport() {
         <h2 className="text-xl font-semibold">{t("forbidden_title")}</h2>
         <p className="text-sm text-muted-foreground max-w-xs">{t("forbidden_desc")}</p>
         <Button variant="outline" onClick={() => router.back()}>
-          {t("common") ?? "Назад"}
+          {tCommon("back")}
         </Button>
       </div>
     );

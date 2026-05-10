@@ -30,7 +30,7 @@ export function RowActions({
   onTerminate,
   onHistory,
 }: RowActionsProps) {
-  const t = useTranslations("freelanceBudgetLimits");
+  const t = useTranslations("screen.freelanceBudgetLimits");
   const tCommon = useTranslations("common");
   const [terminateOpen, setTerminateOpen] = useState(false);
 

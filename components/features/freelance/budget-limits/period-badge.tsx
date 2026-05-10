@@ -10,7 +10,7 @@ interface BudgetPeriodBadgeProps {
 }
 
 export function BudgetPeriodBadge({ period }: BudgetPeriodBadgeProps) {
-  const t = useTranslations("freelanceBudgetLimits.period");
+  const t = useTranslations("screen.freelanceBudgetLimits.period");
   const variantMap: Record<BudgetPeriod, string> = {
     DAY: "bg-info/10 text-info border-info/20",
     WEEK: "bg-warning/10 text-warning border-warning/20",

@@ -44,6 +44,7 @@ export function RowActionsMenu({
   onDownload,
 }: RowActionsMenuProps) {
   const t = useTranslations("screen.regulations");
+  const tCommon = useTranslations("common");
   const [archiveOpen, setArchiveOpen] = React.useState(false);
 
   return (
@@ -89,7 +90,7 @@ export function RowActionsMenu({
               {t("row_actions.archive")}
             </DropdownMenuItem>
           ) : (
-            <DropdownMenuItem onClick={() => toast.info("Восстановление: coming soon")}>
+            <DropdownMenuItem onClick={() => toast.info(tCommon("toasts.restore_coming_soon"))}>
               <RotateCcw className="size-4 mr-2 text-muted-foreground" />
               {t("row_actions.restore")}
             </DropdownMenuItem>

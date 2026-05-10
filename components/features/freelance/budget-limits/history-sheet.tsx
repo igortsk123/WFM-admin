@@ -23,7 +23,7 @@ interface HistorySheetProps {
 }
 
 export function HistorySheet({ limit, open, onOpenChange }: HistorySheetProps) {
-  const t = useTranslations("freelanceBudgetLimits");
+  const t = useTranslations("screen.freelanceBudgetLimits");
 
   // Synthetic history from the single set_at event on the limit
   const items: ActivityItem[] = useMemo(

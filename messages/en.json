@@ -88,7 +88,21 @@
     "language": "Language",
     "russian": "Русский",
     "english": "English",
-    "validation": "Minimum 5 characters"
+    "validation": "Minimum 5 characters",
+    "noData": "No data",
+    "toasts": {
+      "settings_saved": "Settings saved",
+      "connector_saved": "Connector saved",
+      "subscription_cancel_requested": "Cancellation request submitted",
+      "plan_change_soon": "Plan change — soon",
+      "card_change_soon": "Card change — soon",
+      "restore_coming_soon": "Restore: coming soon",
+      "application_cancelled": "Application cancelled",
+      "xlsx_import_mock": "XLSX import — mock",
+      "xlsx_export_mock": "XLSX export — mock",
+      "file_format_not_supported": "File format not supported. Allowed: JPG, PNG, WebP.",
+      "file_too_large": "File is too large. Max 2 MB."
+    }
   },
   "nav": {
     "groups": {
@@ -1245,7 +1259,8 @@
         "create_task": "Create task",
         "plan_shift": "Plan shift",
         "add_employee": "Add employee",
-        "import_schedule": "Import schedule"
+        "import_schedule": "Import schedule",
+        "title": "Quick actions"
       },
       "morning_brief": {
         "title": "Morning",
@@ -3316,7 +3331,8 @@
         "no_entities_desc": "Add the first legal entity for this organization",
         "archive_confirm_title": "Archive entity?",
         "archive_confirm_message": "The entity will be hidden from the list. Data will be preserved.",
-        "archive_confirm_action": "Archive"
+        "archive_confirm_action": "Archive",
+        "title": "Юридические лица"
       },
       "branding": {
         "logo_card": "Logo",
@@ -5006,7 +5022,13 @@
         "reset_to_proposal": "Reset to AI proposal",
         "bulk_accept_all": "Accept all as is",
         "bulk_reject_all": "Reject all",
-        "bulk_clear_selection": "Clear selection"
+        "bulk_clear_selection": "Clear selection",
+        "bulk_accept": "Accept all",
+        "bulk_reject": "Reject all",
+        "helpful": "Helpful",
+        "not_helpful": "Not helpful",
+        "accept_with_edits": "Accept with edits",
+        "reset_to_original": "Reset to original"
       },
       "stats": {
         "new_today": "New today",
@@ -5020,14 +5042,16 @@
         "pending": "New",
         "in_progress": "In progress",
         "accepted": "Accepted",
-        "rejected": "Rejected"
+        "rejected": "Rejected",
+        "edited": "Edited"
       },
       "filters": {
-        "type_label": "Type",
-        "scope_label": "Object",
-        "priority_label": "AI priority",
-        "period_label": "Period",
-        "clear": "Clear"
+        "clear": "Clear",
+        "type": "Type",
+        "scope": "Object",
+        "priority": "AI priority",
+        "period": "Period",
+        "store": "Store"
       },
       "type": {
         "TASK_SUGGESTION": "Task",
@@ -5046,7 +5070,14 @@
         "edited_chip": "Edited",
         "select_for_bulk": "Select for bulk action",
         "selected_count": "Selected {count} suggestions",
-        "bulk_hint": "Bulk approve = accept without editing. For changes — open one by one."
+        "bulk_hint": "Bulk approve = accept without editing. For changes — open one by one.",
+        "target_network": "Entire network",
+        "target_store": "Store",
+        "target_stores": "Stores",
+        "with_edits": "With edits",
+        "time_estimate": "~{minutes} min",
+        "bonus_points": "+{points} pts",
+        "rationale": "Rationale"
       },
       "detail_panel": {
         "empty_title": "Select a suggestion",
@@ -5088,39 +5119,88 @@
         "title": "Reject the suggestion?",
         "reason_label": "Reason (required)",
         "reason_placeholder": "Describe in more detail...",
-        "reason_options": {
+        "confirm": "Reject",
+        "reasons": {
           "not_relevant": "Not relevant now",
           "already_in_progress": "Already in progress",
           "disagree": "Disagree with analysis",
           "too_general": "Too general",
-          "other": "Other"
+          "other": "Other",
+          "disagree_analysis": "Disagree with analysis",
+          "too_generic": "Too generic"
         },
-        "confirm": "Reject"
+        "comment_label": "Comment",
+        "comment_placeholder": "Add details (min. 10 characters)",
+        "message": "This helps the AI learn to give more relevant suggestions."
       },
       "bulk_reject_dialog": {
         "title": "Reject {count} suggestions?",
         "reason_label": "Common reason for all (required)",
-        "confirm": "Reject all"
+        "confirm": "Reject all",
+        "message": "Shared reason for all selected suggestions."
       },
       "empty": {
         "no_pending_title": "No new suggestions yet",
         "no_pending_subtitle": "AI is analysing data. New suggestions will appear within an hour",
         "no_filtered_title": "Nothing found",
-        "no_filtered_subtitle": "Reset filters or pick another period"
+        "no_filtered_subtitle": "Reset filters or pick another period",
+        "pending": {
+          "title": "No new suggestions yet",
+          "description": "AI is analysing data. New suggestions will appear within an hour."
+        },
+        "filtered": {
+          "title": "Nothing found",
+          "description": "Reset filters or pick a different period."
+        },
+        "accepted": {
+          "title": "No accepted suggestions",
+          "description": "Suggestions you accept will appear here."
+        },
+        "rejected": {
+          "title": "No rejected suggestions",
+          "description": "Suggestions you reject will appear here."
+        }
       },
       "forbidden": {
         "title": "Access restricted",
-        "subtitle": "Available only for supervisors and management"
+        "subtitle": "Available only for supervisors and management",
+        "description": "Available only for supervisors and management"
       },
-      "read_only_banner": "View-only mode. Decisions on AI suggestions are made by supervisors or network management.",
-      "read_only_tooltip": "Decision is made by supervisor or network management",
       "toasts": {
         "accepted": "Created: {entity}",
         "rejected": "Suggestion rejected",
         "bulk_accepted": "Accepted {count} suggestions",
         "bulk_rejected": "Rejected {count} suggestions",
         "remembered": "AI will remember for similar cases",
-        "error": "Operation failed"
+        "error": "Operation failed",
+        "accepted_goal": "Goal created",
+        "accepted_bonus": "Bonus task created"
+      },
+      "read_only": {
+        "banner": "View-only mode. Decisions on AI suggestions are made by supervisors or network management.",
+        "tooltip": "Decision is made by supervisor or network management"
+      },
+      "title": "AI Suggestions",
+      "subtitle": "Analytics → concrete actions. Accept, edit or clarify with AI",
+      "breadcrumb_home": "Home",
+      "breadcrumb_ai": "AI Suggestions",
+      "detail": {
+        "title": "Select a suggestion",
+        "ai_remembered": "AI remembered your previous edits and applied them.",
+        "rationale_section": "Why AI proposed this",
+        "proposed_section": "What is proposed",
+        "changed_indicator": "Changed",
+        "data_sources_section": "Data sources",
+        "related_data_section": "Related data",
+        "form": {
+          "title": "Title",
+          "store": "Store",
+          "duration": "Duration, min",
+          "discount_percent": "Discount, %",
+          "bonus_points": "Bonus points",
+          "requires_photo": "Require photo",
+          "manager_comment": "Manager comment"
+        }
       }
     },
     "aiChat": {
@@ -7119,17 +7199,22 @@
       },
       "tabs": {
         "active": "Active",
-        "archive": "Archive"
+        "archive": "Archive",
+        "archived": "Архив"
       },
       "actions": {
         "create": "+ New norm",
-        "save": "Save"
+        "save": "Save",
+        "import": "Импорт",
+        "export": "Экспорт"
       },
       "filters": {
         "object_format": "Object format",
         "work_type": "Work type",
         "all_formats": "All formats",
-        "all_work_types": "All types"
+        "all_work_types": "All types",
+        "search": "Поиск",
+        "category": "Категория"
       },
       "columns": {
         "object_format": "Object format",
@@ -7138,7 +7223,12 @@
         "rate": "Rate",
         "approved_by": "Approved by",
         "approved_at": "Approved at",
-        "actions": ""
+        "actions": "",
+        "code": "Код",
+        "name": "Название",
+        "unit": "Ед.",
+        "norm_per_hour": "Норма/час",
+        "category": "Категория"
       },
       "form": {
         "create_title": "New norm",
@@ -7149,33 +7239,317 @@
         "unit_label": "Unit",
         "rate_label": "Rate ₽/hour",
         "rate_placeholder": "Optional",
-        "currency_label": "Currency"
+        "currency_label": "Currency",
+        "code_label": "Код",
+        "name_label": "Название",
+        "norm_per_hour_label": "Норма/час",
+        "category_label": "Категория",
+        "description_label": "Описание",
+        "submit": "Сохранить"
       },
       "row_actions": {
         "edit": "Edit",
-        "archive": "Archive"
+        "archive": "Archive",
+        "duplicate": "Дублировать"
       },
       "archive_confirm": {
         "title": "Archive norm?",
         "message": "The norm will be hidden from active list. Existing calculations will not change.",
-        "confirm": "Archive"
+        "confirm": "Archive",
+        "description": "Норматив будет помечен как неактивный. Существующие услуги сохранят расчёт."
       },
       "empty": {
         "active_title": "No norms configured yet",
         "active_description": "Add the first norm to calculate service costs.",
         "active_cta": "+ New norm",
         "archive_title": "Archive is empty",
-        "archive_description": "Archived norms will appear here."
+        "archive_description": "Archived norms will appear here.",
+        "no_norms": "Нормативы пока не заданы",
+        "cta": "Создать первый"
       },
       "toasts": {
         "created": "Norm created",
         "updated": "Norm updated",
         "archived": "Norm archived",
         "error": "Something went wrong",
-        "duplicate": "A norm for this combination already exists"
+        "duplicate": "A norm for this combination already exists",
+        "saved": "Норматив сохранён",
+        "deleted": "Удалён"
       },
       "rate_empty": "—",
       "per_hour": "/hr"
+    },
+    "actions": {
+      "create_register": "Создать реестр",
+      "approve": "Утвердить",
+      "send_to_payment": "Отправить в оплату",
+      "export": "Экспорт"
+    },
+    "filters": {
+      "period": "Период",
+      "status": "Статус",
+      "store": "Магазин"
+    },
+    "status": {
+      "OPEN": "Открыт",
+      "READY": "Готов к утверждению",
+      "APPROVED": "Утверждён",
+      "PAYING": "В оплате",
+      "PAID": "Оплачен"
+    },
+    "columns": {
+      "register_id": "№ реестра",
+      "period": "Период",
+      "stores": "Магазины",
+      "lines_count": "Записей",
+      "amount": "Сумма",
+      "status": "Статус"
+    },
+    "summary": {
+      "total_amount": "Сумма к оплате",
+      "lines_total": "Записей",
+      "agents_total": "Агентов"
+    },
+    "empty": {
+      "no_payouts": "Нет реестров за период"
+    },
+    "toasts": {
+      "approved": "Реестр утверждён",
+      "sent": "Отправлено в оплату",
+      "error": "Не удалось"
     }
+  },
+  "freelanceBudgetLimits": {
+    "page_title": "Лимиты бюджета на внештат",
+    "page_subtitle": "Настройка месячных лимитов на объекты",
+    "breadcrumbs": {
+      "home": "Главная",
+      "freelance": "Внештат",
+      "limits": "Лимиты"
+    },
+    "actions": {
+      "set_default": "Задать по сети",
+      "save": "Сохранить",
+      "reset": "Сбросить"
+    },
+    "filters": {
+      "period": "Период",
+      "store_type": "Тип объекта"
+    },
+    "table": {
+      "columns": {
+        "object": "Объект",
+        "current_limit": "Текущий лимит",
+        "spent": "Потрачено",
+        "new_limit": "Новый лимит",
+        "diff": "Изменение"
+      }
+    },
+    "presets": {
+      "by_revenue": "По выручке",
+      "by_size": "По площади",
+      "by_employees": "По штату",
+      "manual": "Вручную"
+    },
+    "warning_overspent": "Объект уже превысил предложенный лимит",
+    "toasts": {
+      "saved": "Лимиты сохранены",
+      "error": "Не удалось"
+    }
+  },
+  "freelanceAgents": {
+    "page_title": "Справочник агентов",
+    "page_subtitle": "Внешние агенты, обеспечивающие исполнителей",
+    "breadcrumbs": {
+      "home": "Главная",
+      "freelance": "Внештат",
+      "agents": "Агенты"
+    },
+    "actions": {
+      "new_agent": "Новый агент",
+      "export": "Экспорт"
+    },
+    "filters": {
+      "search": "Поиск",
+      "status": "Статус",
+      "tier": "Уровень"
+    },
+    "columns": {
+      "agent": "Агент",
+      "tier": "Уровень",
+      "performers": "Исполнителей",
+      "month_amount": "Оборот за месяц",
+      "rating": "Рейтинг",
+      "no_show_rate": "% невыходов",
+      "status": "Статус"
+    },
+    "tier": {
+      "BRONZE": "Бронза",
+      "SILVER": "Серебро",
+      "GOLD": "Золото",
+      "PLATINUM": "Платина"
+    },
+    "status": {
+      "ACTIVE": "Активен",
+      "PAUSED": "На паузе",
+      "BLOCKED": "Заблокирован"
+    },
+    "empty": {
+      "no_agents": "Агентов пока нет"
+    },
+    "toasts": {
+      "created": "Агент создан",
+      "error": "Не удалось"
+    }
+  },
+  "freelanceAgentDetail": {
+    "page_title": "Карточка агента",
+    "breadcrumbs": {
+      "home": "Главная",
+      "freelance": "Внештат",
+      "agents": "Агенты",
+      "detail": "Агент"
+    },
+    "tabs": {
+      "summary": "Обзор",
+      "performers": "Исполнители",
+      "services": "Услуги",
+      "payouts": "Выплаты",
+      "documents": "Документы",
+      "history": "История"
+    },
+    "kpi": {
+      "tier": "Уровень",
+      "rating": "Рейтинг",
+      "month_amount": "Оборот за месяц",
+      "no_show_rate": "% невыходов",
+      "total_performers": "Всего исполнителей",
+      "active_performers": "Активных"
+    },
+    "actions": {
+      "pause": "На паузу",
+      "block": "Заблокировать",
+      "edit": "Редактировать"
+    },
+    "block_dialog": {
+      "title": "Заблокировать агента?",
+      "reason_label": "Причина",
+      "confirm": "Заблокировать"
+    },
+    "toasts": {
+      "saved": "Сохранено",
+      "blocked": "Агент заблокирован",
+      "paused": "Агент на паузе",
+      "error": "Не удалось"
+    }
+  },
+  "agentDashboard": {
+    "page_title": "Кабинет агента",
+    "page_subtitle": "Сводка по вашим исполнителям",
+    "kpi": {
+      "active_performers": "Активных исполнителей",
+      "month_earnings": "Доход за месяц",
+      "pending_payouts": "Ожидают выплаты",
+      "no_show_count": "Невыходов за месяц"
+    },
+    "sections": {
+      "recent_services": "Последние услуги",
+      "alerts": "Уведомления",
+      "tier_progress": "Прогресс по уровню"
+    },
+    "tier_progress": {
+      "current_tier": "Текущий уровень",
+      "next_tier": "До {tier}",
+      "progress_label": "Оборот за квартал"
+    },
+    "alerts_empty": "Уведомлений нет"
+  },
+  "agentFreelancers": {
+    "page_title": "Мои исполнители",
+    "page_subtitle": "Список физлиц, работающих через вас",
+    "actions": {
+      "add": "Добавить",
+      "export": "Экспорт"
+    },
+    "filters": {
+      "search": "Поиск",
+      "status": "Статус"
+    },
+    "columns": {
+      "name": "ФИО",
+      "phone": "Телефон",
+      "stores": "Магазины",
+      "month_amount": "Доход за месяц",
+      "no_show_rate": "% невыходов",
+      "status": "Статус"
+    },
+    "status": {
+      "ACTIVE": "Активен",
+      "PAUSED": "На паузе",
+      "BLOCKED": "Заблокирован"
+    },
+    "empty": {
+      "no_freelancers": "Исполнителей пока нет",
+      "cta": "Добавить первого"
+    },
+    "toasts": {
+      "created": "Исполнитель добавлен",
+      "error": "Не удалось"
+    }
+  },
+  "agentEarnings": {
+    "page_title": "Реестр доходов",
+    "page_subtitle": "Доходы по периодам и реестрам",
+    "filters": {
+      "period": "Период",
+      "register": "Реестр"
+    },
+    "kpi": {
+      "total_amount": "Сумма",
+      "agent_fee": "Комиссия агента",
+      "to_freelancers": "К исполнителям",
+      "tax_withheld": "Удержано налогов"
+    },
+    "columns": {
+      "date": "Дата",
+      "service": "Услуга",
+      "freelancer": "Исполнитель",
+      "store": "Объект",
+      "amount": "Сумма",
+      "register": "Реестр"
+    },
+    "empty": {
+      "no_earnings": "Нет доходов за период"
+    }
+  },
+  "filters": {
+    "type": "Тип",
+    "year": "Год"
+  },
+  "columns": {
+    "title": "Название",
+    "type": "Тип",
+    "date": "Дата",
+    "size": "Размер",
+    "status": "Статус"
+  },
+  "type": {
+    "CONTRACT": "Договор",
+    "ACT": "Акт",
+    "INVOICE": "Счёт",
+    "REPORT": "Отчёт",
+    "OTHER": "Другое"
+  },
+  "status": {
+    "SIGNED": "Подписан",
+    "PENDING_SIGNATURE": "Ожидает подписи",
+    "DRAFT": "Черновик"
+  },
+  "empty": {
+    "no_documents": "Документов пока нет"
+  },
+  "toasts": {
+    "uploaded": "Документ загружен",
+    "error": "Не удалось"
   }
 }

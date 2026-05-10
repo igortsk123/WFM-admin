@@ -193,10 +193,10 @@ export function ApplicationsList() {
     try {
       const result = await cancelApplication(cancelId, "Отменено пользователем")
       if (result.success) {
-        toast.success("Заявка отменена")
+        toast.success(tCommon("toasts.application_cancelled"))
         void fetchData()
       } else {
-        toast.error(result.error?.message ?? "Ошибка при отмене")
+        toast.error(result.error?.message ?? tCommon("error"))
       }
     } finally {
       setIsCancelling(false)

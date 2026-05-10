@@ -34,7 +34,7 @@ export const LimitRow = memo(function LimitRow({
   onTerminate,
   onHistory,
 }: LimitRowProps) {
-  const t = useTranslations("freelanceBudgetLimits");
+  const t = useTranslations("screen.freelanceBudgetLimits");
 
   return (
     <TableRow>

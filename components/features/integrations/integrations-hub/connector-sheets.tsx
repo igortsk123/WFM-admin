@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import {
   CheckCircle2,
@@ -44,6 +45,7 @@ export function ConnectorSheet({
   t: Translator;
   showDataOptions?: Array<{ id: string; label: string }>;
 }) {
+  const tCommon = useTranslations("common");
   const [tab, setTab] = React.useState<"sftp" | "api">("sftp");
   // SFTP fields
   const [sftpHost, setSftpHost] = React.useState("");
@@ -232,13 +234,14 @@ export function SimpleConnectorSheet({
   extraFields?: React.ReactNode;
   onSave: () => void;
 }) {
+  const tCommon = useTranslations("common");
   const [saving, setSaving] = React.useState(false);
 
   async function handleSave() {
     setSaving(true);
     await new Promise((r) => setTimeout(r, 500));
     setSaving(false);
-    toast.success("Коннектор сохранён");
+    toast.success(tCommon("toasts.connector_saved"));
     onSave();
     onOpenChange(false);
   }

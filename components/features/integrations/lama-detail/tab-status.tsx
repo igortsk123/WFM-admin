@@ -1,6 +1,7 @@
 "use client";
 
 import * as React from "react";
+import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import {
   CheckCircle2,
@@ -38,6 +39,7 @@ interface StatusTabProps {
 }
 
 export function StatusTab({ connection, t, locale, onReload }: StatusTabProps) {
+  const tCommon = useTranslations("common");
   const [editing, setEditing] = React.useState(false);
   const [showToken, setShowToken] = React.useState(false);
   const [url, setUrl] = React.useState(connection.url);
@@ -75,7 +77,7 @@ export function StatusTab({ connection, t, locale, onReload }: StatusTabProps) {
     setSaving(true);
     try {
       await updateLamaConnection({ url, tenant_id: tenantId });
-      toast.success("Настройки сохранены");
+      toast.success(tCommon("toasts.settings_saved"));
       setEditing(false);
       onReload();
     } catch {

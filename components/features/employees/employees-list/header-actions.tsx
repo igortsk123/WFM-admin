@@ -22,6 +22,7 @@ interface HeaderActionsProps {
 
 export function HeaderActions({ canFullCRUD }: HeaderActionsProps) {
   const t = useTranslations("screen.employees")
+  const tCommon = useTranslations("common")
   const router = useRouter()
 
   return (
@@ -30,7 +31,7 @@ export function HeaderActions({ canFullCRUD }: HeaderActionsProps) {
         variant="outline"
         size="sm"
         className="hidden md:flex"
-        onClick={() => toast.info("Импорт XLSX — мок")}
+        onClick={() => toast.info(tCommon("toasts.xlsx_import_mock"))}
       >
         <Upload className="size-4 mr-1.5" />
         {t("actions.import_xlsx")}
@@ -39,7 +40,7 @@ export function HeaderActions({ canFullCRUD }: HeaderActionsProps) {
         variant="outline"
         size="sm"
         className="hidden md:flex"
-        onClick={() => toast.info("Экспорт XLSX — мок")}
+        onClick={() => toast.info(tCommon("toasts.xlsx_export_mock"))}
       >
         <Download className="size-4 mr-1.5" />
         {t("actions.export_xlsx")}
@@ -63,10 +64,10 @@ export function HeaderActions({ canFullCRUD }: HeaderActionsProps) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => toast.info("Импорт XLSX — мок")}>
+          <DropdownMenuItem onClick={() => toast.info(tCommon("toasts.xlsx_import_mock"))}>
             {t("actions.import_xlsx")}
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => toast.info("Экспорт XLSX — мок")}>
+          <DropdownMenuItem onClick={() => toast.info(tCommon("toasts.xlsx_export_mock"))}>
             {t("actions.export_xlsx")}
           </DropdownMenuItem>
         </DropdownMenuContent>
