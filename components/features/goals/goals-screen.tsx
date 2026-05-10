@@ -26,7 +26,6 @@ import {
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
 
 import { AIProposalsSection } from "./goals-screen/ai-proposals-section";
-import { CatalogSection } from "./goals-screen/catalog-section";
 import { LoadingState } from "./goals-screen/loading-states";
 import { GoalsToolbar } from "./goals-screen/toolbar";
 import type {
@@ -42,15 +41,6 @@ const ActiveGoalBanner = dynamic(
     loading: () => <Skeleton className="h-[120px] w-full" />,
   }
 );
-const ProgressDashboard = dynamic(
-  () =>
-    import("./goals-screen/progress-dashboard").then((m) => m.ProgressDashboard),
-  {
-    ssr: false,
-    loading: () => <Skeleton className="h-[420px] w-full" />,
-  }
-);
-
 // ═══════════════════════════════════════════════════════════════════
 // MAIN COMPONENT
 // ═══════════════════════════════════════════════════════════════════
@@ -256,25 +246,6 @@ export function GoalsScreen() {
           tCommon={tCommon}
         />
 
-        {/* Section 3: Progress Dashboard (only if active goal) */}
-        {activeGoal && goalProgress && (
-          <ProgressDashboard
-            activeGoal={activeGoal}
-            goalProgress={goalProgress}
-            locale={locale}
-            t={t}
-          />
-        )}
-
-        {/* Section 4: Goal Catalog */}
-        <CatalogSection
-          canManageGoals={canManageGoals}
-          createDialogOpen={createDialogOpen}
-          setCreateDialogOpen={setCreateDialogOpen}
-          onCreate={handleCreateGoal}
-          t={t}
-          tCommon={tCommon}
-        />
       </div>
     </TooltipProvider>
   );
