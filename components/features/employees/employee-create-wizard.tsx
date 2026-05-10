@@ -410,7 +410,7 @@ export function EmployeeCreateWizard() {
       </div>
 
       {/* Main grid */}
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
         {/* ── Left: vertical stepper (desktop only) ── */}
         <VerticalStepper
           steps={steps}
@@ -573,26 +573,11 @@ export function EmployeeCreateWizard() {
 
         {/* ── Desktop summary sidebar (steps 1-3 only, step 4 shows inline) ── */}
         {currentStep < 4 && (
-          <div className="hidden lg:block lg:col-span-1 lg:col-start-4 -mt-[calc(theme(spacing.6)+1px)]">
-            {/* Invisible placeholder — summary is already the 4th col */}
-          </div>
+          <aside className="hidden lg:block lg:col-span-1">
+            <div className="sticky top-6">{summaryCard}</div>
+          </aside>
         )}
       </div>
-
-      {/* Desktop summary card pinned to right (steps 1-3) */}
-      {currentStep < 4 && (
-        <div
-          className="hidden lg:block fixed"
-          style={{
-            // Align with 4th grid column — approximate
-            right: "max(calc((100vw - 1536px) / 2 + 16px), 16px)",
-            top: "200px",
-            width: "260px",
-          }}
-        >
-          {summaryCard}
-        </div>
-      )}
     </>
   );
 }
