@@ -1,54 +1,42 @@
 "use client"
 
 import { useTranslations } from "next-intl"
-import Link from "next/link"
-import { Download, MoreVertical, Plus } from "lucide-react"
+import { Download, Plus } from "lucide-react"
+
+import { Link } from "@/i18n/navigation"
+import { ADMIN_ROUTES } from "@/lib/constants/routes"
 
 import { Button } from "@/components/ui/button"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { ADMIN_ROUTES } from "@/lib/constants/routes"
+  ListHeaderActions,
+  type ListHeaderAction,
+} from "@/components/shared/list-header-actions"
 
 export function HeaderActions() {
   const t = useTranslations("screen.tasks")
+  const tCommon = useTranslations("common")
 
-  return (
-    <>
-      {/* Desktop actions */}
-      <div className="hidden md:flex items-center gap-2">
-        <Button variant="outline" size="sm">
-          <Download className="size-4 mr-1.5" />
-          {t("export_xlsx")}
-        </Button>
-        <Button size="sm" asChild>
-          <Link href={ADMIN_ROUTES.taskNew}>
-            <Plus className="size-4 mr-1.5" />
-            {t("create_task")}
-          </Link>
-        </Button>
-      </div>
-      {/* Mobile: ⋮ menu for export */}
-      <div className="flex md:hidden items-center gap-2">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="size-9">
-              <MoreVertical className="size-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem>
-              <Download className="size-4 mr-2" />
-              {t("export_xlsx")}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-    </>
-  )
+  const actions: ListHeaderAction[] = [
+    {
+      id: "export",
+      label: t("export_xlsx"),
+      icon: <Download className="size-4" />,
+      // No-op until export wiring lands; keep parity with previous behavior.
+      onClick: () => {},
+    },
+    {
+      id: "create",
+      label: t("create_task"),
+      icon: <Plus className="size-4" />,
+      href: ADMIN_ROUTES.taskNew,
+      // Mobile primary CTA is rendered separately via <MobileCreateButton/>
+      // below as a full-width sticky button — keep desktop-only here to
+      // avoid double rendering on mobile.
+      desktopOnly: true,
+    },
+  ]
+
+  return <ListHeaderActions actions={actions} moreLabel={tCommon("more")} />
 }
 
 export function MobileCreateButton() {

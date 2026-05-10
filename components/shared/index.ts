@@ -58,6 +58,11 @@ export { MobileBottomNav } from "./mobile-bottom-nav"
 export { TouchInlineEdit } from "./touch-inline-edit"
 export { BulkActionBar } from "./bulk-action-bar"
 export type { BulkActionBarProps, BulkActionBarVariant } from "./bulk-action-bar"
+export { ListHeaderActions } from "./list-header-actions"
+export type {
+  ListHeaderAction,
+  ListHeaderActionsProps,
+} from "./list-header-actions"
 
 // Admin shell components
 export { AdminSidebar } from "./admin-sidebar"

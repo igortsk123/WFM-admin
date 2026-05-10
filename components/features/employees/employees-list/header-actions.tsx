@@ -2,19 +2,15 @@
 
 import * as React from "react"
 import { useTranslations } from "next-intl"
-import { Download, MoreVertical, Plus, Upload } from "lucide-react"
+import { Download, Plus, Upload } from "lucide-react"
 import { toast } from "sonner"
 
-import { useRouter } from "@/i18n/navigation"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
 
-import { Button } from "@/components/ui/button"
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+  ListHeaderActions,
+  type ListHeaderAction,
+} from "@/components/shared/list-header-actions"
 
 interface HeaderActionsProps {
   canFullCRUD: boolean
@@ -23,66 +19,29 @@ interface HeaderActionsProps {
 export function HeaderActions({ canFullCRUD }: HeaderActionsProps) {
   const t = useTranslations("screen.employees")
   const tCommon = useTranslations("common")
-  const router = useRouter()
 
-  return (
-    <>
-      <Button
-        variant="outline"
-        size="sm"
-        className="hidden md:flex"
-        onClick={() => toast.info(tCommon("toasts.xlsx_import_mock"))}
-      >
-        <Upload className="size-4 mr-1.5" />
-        {t("actions.import_xlsx")}
-      </Button>
-      <Button
-        variant="outline"
-        size="sm"
-        className="hidden md:flex"
-        onClick={() => toast.info(tCommon("toasts.xlsx_export_mock"))}
-      >
-        <Download className="size-4 mr-1.5" />
-        {t("actions.export_xlsx")}
-      </Button>
-      {canFullCRUD && (
-        <Button
-          size="sm"
-          onClick={() => router.push(ADMIN_ROUTES.employeeNew)}
-          className="hidden md:flex"
-        >
-          <Plus className="size-4 mr-1.5" />
-          {t("actions.add")}
-        </Button>
-      )}
-      {/* Mobile: meatball menu for secondary actions */}
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline" size="icon" className="md:hidden size-9">
-            <MoreVertical className="size-4" />
-            <span className="sr-only">{t("actions.more")}</span>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
-          <DropdownMenuItem onClick={() => toast.info(tCommon("toasts.xlsx_import_mock"))}>
-            {t("actions.import_xlsx")}
-          </DropdownMenuItem>
-          <DropdownMenuItem onClick={() => toast.info(tCommon("toasts.xlsx_export_mock"))}>
-            {t("actions.export_xlsx")}
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-      {/* Mobile: primary add button */}
-      {canFullCRUD && (
-        <Button
-          size="sm"
-          onClick={() => router.push(ADMIN_ROUTES.employeeNew)}
-          className="md:hidden"
-        >
-          <Plus className="size-4 mr-1.5" />
-          {t("actions.add")}
-        </Button>
-      )}
-    </>
-  )
+  const actions: ListHeaderAction[] = [
+    {
+      id: "import",
+      label: t("actions.import_xlsx"),
+      icon: <Upload className="size-4" />,
+      onClick: () => toast.info(tCommon("toasts.xlsx_import_mock")),
+    },
+    {
+      id: "export",
+      label: t("actions.export_xlsx"),
+      icon: <Download className="size-4" />,
+      onClick: () => toast.info(tCommon("toasts.xlsx_export_mock")),
+    },
+    {
+      id: "add",
+      label: t("actions.add"),
+      icon: <Plus className="size-4" />,
+      href: ADMIN_ROUTES.employeeNew,
+      primary: true,
+      hidden: !canFullCRUD,
+    },
+  ]
+
+  return <ListHeaderActions actions={actions} moreLabel={t("actions.more")} />
 }
