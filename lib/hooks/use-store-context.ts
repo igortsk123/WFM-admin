@@ -38,7 +38,9 @@ export function useStoreContext() {
   const storeOptions = useMemo<StoreOption[]>(
     () => [
       { value: ALL, label: "Все магазины" },
-      ...user.stores.map((s) => ({ value: String(s.id), label: s.name })),
+      ...[...user.stores]
+        .sort((a, b) => a.name.localeCompare(b.name, "ru"))
+        .map((s) => ({ value: String(s.id), label: s.name })),
     ],
     [user.stores],
   );
