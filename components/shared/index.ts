@@ -30,6 +30,8 @@ export type {
   InformationBannerVariant,
   InformationBannerLayout,
 } from "./information-banner"
+export { SidebarInfoCard } from "./sidebar-info-card"
+export type { SidebarInfoCardProps } from "./sidebar-info-card"
 
 // Data primitives & mobile/i18n
 export { DataTableShell } from "./data-table-shell"

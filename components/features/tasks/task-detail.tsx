@@ -15,11 +15,12 @@ import {
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
+import { SidebarInfoCard } from "@/components/shared"
 
 import { ApproveDialogContent } from "./approve-dialog-content"
 import { RejectDialogContent } from "./reject-dialog-content"
@@ -47,7 +48,6 @@ import { TabKey, useElapsed } from "./task-detail/_shared"
 import { TaskDetailHeader } from "./task-detail/header"
 import {
   SidebarAssigneeContent,
-  SidebarCard,
   SidebarLocationContent,
   SidebarSettingsContent,
   SidebarStatusContent,
@@ -400,18 +400,16 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
 
         {/* LEFT: Sidebar cards on mobile (collapsible accordion), then main tabs */}
         <div className="lg:hidden flex flex-col gap-2">
-          <SidebarCard
-            id="status"
+          <SidebarInfoCard
             title={t("sidebar_status")}
-            isOpen={sidebarOpen.status}
+            open={sidebarOpen.status}
             onOpenChange={(open) => setSidebarOpen((prev) => ({ ...prev, status: open }))}
           >
             <SidebarStatusContent task={task} />
-          </SidebarCard>
-          <SidebarCard
-            id="assignee"
+          </SidebarInfoCard>
+          <SidebarInfoCard
             title={t("sidebar_assignee")}
-            isOpen={sidebarOpen.assignee}
+            open={sidebarOpen.assignee}
             onOpenChange={(open) => setSidebarOpen((prev) => ({ ...prev, assignee: open }))}
           >
             <SidebarAssigneeContent
@@ -420,19 +418,17 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
               elapsedMin={elapsedMin}
               onAssignClick={() => setAssignOpen(true)}
             />
-          </SidebarCard>
-          <SidebarCard
-            id="location"
+          </SidebarInfoCard>
+          <SidebarInfoCard
             title={t("sidebar_location")}
-            isOpen={sidebarOpen.location}
+            open={sidebarOpen.location}
             onOpenChange={(open) => setSidebarOpen((prev) => ({ ...prev, location: open }))}
           >
             <SidebarLocationContent task={task} />
-          </SidebarCard>
-          <SidebarCard
-            id="timing"
+          </SidebarInfoCard>
+          <SidebarInfoCard
             title={t("sidebar_timing")}
-            isOpen={sidebarOpen.timing}
+            open={sidebarOpen.timing}
             onOpenChange={(open) => setSidebarOpen((prev) => ({ ...prev, timing: open }))}
           >
             <SidebarTimingContent
@@ -441,15 +437,14 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
               isOverdue={isOverdue}
               overdueDiff={overdueDiff}
             />
-          </SidebarCard>
-          <SidebarCard
-            id="settings"
+          </SidebarInfoCard>
+          <SidebarInfoCard
             title={t("sidebar_settings")}
-            isOpen={sidebarOpen.settings}
+            open={sidebarOpen.settings}
             onOpenChange={(open) => setSidebarOpen((prev) => ({ ...prev, settings: open }))}
           >
             <SidebarSettingsContent task={task} />
-          </SidebarCard>
+          </SidebarInfoCard>
         </div>
 
         {/* MAIN CONTENT: Tabs */}
@@ -524,56 +519,31 @@ export function TaskDetail({ taskId }: TaskDetailProps) {
 
         {/* RIGHT: Sidebar (desktop only — sticky) */}
         <div className="hidden lg:flex flex-col gap-4 lg:sticky lg:top-20 lg:self-start">
-          <Card>
-            <CardHeader className="pb-2 pt-4 px-4">
-              <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t("sidebar_status")}</CardTitle>
-            </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <SidebarStatusContent task={task} />
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2 pt-4 px-4">
-              <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t("sidebar_assignee")}</CardTitle>
-            </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <SidebarAssigneeContent
-                task={task}
-                isManager={isManager}
-                elapsedMin={elapsedMin}
-                onAssignClick={() => setAssignOpen(true)}
-              />
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2 pt-4 px-4">
-              <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t("sidebar_location")}</CardTitle>
-            </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <SidebarLocationContent task={task} />
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2 pt-4 px-4">
-              <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t("sidebar_timing")}</CardTitle>
-            </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <SidebarTimingContent
-                task={task}
-                actualMin={actualMin}
-                isOverdue={isOverdue}
-                overdueDiff={overdueDiff}
-              />
-            </CardContent>
-          </Card>
-          <Card>
-            <CardHeader className="pb-2 pt-4 px-4">
-              <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{t("sidebar_settings")}</CardTitle>
-            </CardHeader>
-            <CardContent className="px-4 pb-4">
-              <SidebarSettingsContent task={task} />
-            </CardContent>
-          </Card>
+          <SidebarInfoCard title={t("sidebar_status")} collapsibleOnMobile={false}>
+            <SidebarStatusContent task={task} />
+          </SidebarInfoCard>
+          <SidebarInfoCard title={t("sidebar_assignee")} collapsibleOnMobile={false}>
+            <SidebarAssigneeContent
+              task={task}
+              isManager={isManager}
+              elapsedMin={elapsedMin}
+              onAssignClick={() => setAssignOpen(true)}
+            />
+          </SidebarInfoCard>
+          <SidebarInfoCard title={t("sidebar_location")} collapsibleOnMobile={false}>
+            <SidebarLocationContent task={task} />
+          </SidebarInfoCard>
+          <SidebarInfoCard title={t("sidebar_timing")} collapsibleOnMobile={false}>
+            <SidebarTimingContent
+              task={task}
+              actualMin={actualMin}
+              isOverdue={isOverdue}
+              overdueDiff={overdueDiff}
+            />
+          </SidebarInfoCard>
+          <SidebarInfoCard title={t("sidebar_settings")} collapsibleOnMobile={false}>
+            <SidebarSettingsContent task={task} />
+          </SidebarInfoCard>
         </div>
       </div>
 

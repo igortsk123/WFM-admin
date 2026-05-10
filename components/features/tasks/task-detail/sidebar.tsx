@@ -1,14 +1,11 @@
 "use client"
 
-import type { ReactNode } from "react"
 import { useTranslations, useLocale } from "next-intl"
-import { CheckCircle2, ChevronDown, MapPin, Store, User } from "lucide-react"
+import { CheckCircle2, MapPin, Store, User } from "lucide-react"
 
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 
 import { TaskStateBadge } from "@/components/shared/task-state-badge"
 import { ReviewStateBadge } from "@/components/shared/review-state-badge"
@@ -19,46 +16,6 @@ import type { TaskDetail as TaskDetailType } from "@/lib/api/tasks"
 import { cn } from "@/lib/utils"
 
 import { fmtDate, fmtMin, fmtTime, getDeviationClass } from "./_shared"
-
-// ──────────────────────────────────────────────────────────────────
-// SidebarCard — desktop=Card, mobile=Collapsible
-// ──────────────────────────────────────────────────────────────────
-
-interface SidebarCardProps {
-  id: string
-  title: string
-  isOpen: boolean
-  onOpenChange: (open: boolean) => void
-  children: ReactNode
-}
-
-export function SidebarCard({ id, title, isOpen, onOpenChange, children }: SidebarCardProps) {
-  void id
-  return (
-    <>
-      {/* Desktop: plain Card */}
-      <Card className="hidden lg:block">
-        <CardHeader className="pb-2 pt-4 px-4">
-          <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wide">{title}</CardTitle>
-        </CardHeader>
-        <CardContent className="px-4 pb-4">{children}</CardContent>
-      </Card>
-
-      {/* Mobile: Collapsible */}
-      <Collapsible
-        open={isOpen}
-        onOpenChange={onOpenChange}
-        className="lg:hidden border rounded-lg overflow-hidden"
-      >
-        <CollapsibleTrigger className="flex w-full items-center justify-between px-4 py-3 min-h-[44px] hover:bg-muted/50 transition-colors">
-          <span className="text-sm font-medium text-foreground">{title}</span>
-          <ChevronDown className={cn("size-4 text-muted-foreground transition-transform", isOpen && "rotate-180")} />
-        </CollapsibleTrigger>
-        <CollapsibleContent className="px-4 pb-4 pt-1">{children}</CollapsibleContent>
-      </Collapsible>
-    </>
-  )
-}
 
 // ──────────────────────────────────────────────────────────────────
 // Status content

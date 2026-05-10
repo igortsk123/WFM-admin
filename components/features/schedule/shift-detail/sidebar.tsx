@@ -2,8 +2,8 @@ import { MapPin, Phone, Store, User } from "lucide-react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RoleBadge } from "@/components/shared";
+import { Card, CardContent } from "@/components/ui/card";
+import { RoleBadge, SidebarInfoCard } from "@/components/shared";
 import { Link } from "@/i18n/navigation";
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
 
@@ -110,13 +110,8 @@ export function StatsCard({ shift }: { shift: ShiftDetailData }) {
   const totalTasks = shift.tasks?.length ?? 0;
 
   return (
-    <Card>
-      <CardHeader className="pb-2 pt-4 px-4">
-        <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-          Статистика смены
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="px-4 pb-4 space-y-2">
+    <SidebarInfoCard title="Статистика смены" collapsibleOnMobile={false}>
+      <div className="space-y-2">
         {shift.late_minutes > 0 && (
           <div className="flex justify-between text-sm">
             <span className="text-muted-foreground">Опоздание</span>
@@ -141,8 +136,8 @@ export function StatsCard({ shift }: { shift: ShiftDetailData }) {
             <span className="text-success font-medium">—</span>
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </SidebarInfoCard>
   );
 }
 
@@ -152,13 +147,8 @@ export function StatsCard({ shift }: { shift: ShiftDetailData }) {
 
 export function AuditCard({ shift }: { shift: ShiftDetailData }) {
   return (
-    <Card>
-      <CardHeader className="pb-2 pt-4 px-4">
-        <CardTitle className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-          Аудит
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="px-4 pb-4 space-y-2">
+    <SidebarInfoCard title="Аудит" collapsibleOnMobile={false}>
+      <div className="space-y-2">
         {shift.audit?.slice(0, 3).map((entry) => (
           <div key={entry.id} className="text-xs space-y-0.5">
             <p className="font-medium text-foreground">{entry.action_label}</p>
@@ -176,7 +166,7 @@ export function AuditCard({ shift }: { shift: ShiftDetailData }) {
         >
           <Link href={`${ADMIN_ROUTES.audit}?entity_id=${shift.id}`}>Полный аудит →</Link>
         </Button>
-      </CardContent>
-    </Card>
+      </div>
+    </SidebarInfoCard>
   );
 }
