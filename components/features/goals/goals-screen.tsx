@@ -251,6 +251,7 @@ export function GoalsScreen() {
           selectedProposal={selectedProposal}
           setSelectedProposal={setSelectedProposal}
           onSelect={handleSelectGoal}
+          locale={locale}
           t={t}
           tCommon={tCommon}
         />

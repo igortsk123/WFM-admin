@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import type { Locale } from "@/lib/types";
 import { formatDate } from "@/lib/utils/format";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 
 import { CategoryBadge } from "./category-badge";
 import type { GoalWithUser, GoalsT } from "./_shared";
@@ -33,10 +34,14 @@ export function HistoryDrawerContent({
             <div className="flex items-center justify-between">
               <CategoryBadge category={goal.category} t={t} />
               <Badge variant={goal.status === "COMPLETED" ? "default" : "secondary"}>
-                {goal.status === "COMPLETED" ? "Достигнута" : "Архив"}
+                {goal.status === "COMPLETED"
+                  ? t("history.status_completed")
+                  : t("history.status_archived")}
               </Badge>
             </div>
-            <p className="font-medium text-sm">{goal.title}</p>
+            <p className="font-medium text-sm">
+              {pickLocalized(goal.title, goal.title_en, locale)}
+            </p>
             <p className="text-xs text-muted-foreground">
               {formatDate(new Date(goal.period_start), locale)} — {formatDate(new Date(goal.period_end), locale)}
             </p>

@@ -28,6 +28,8 @@ import { EmptyState } from "@/components/shared";
 import { Link } from "@/i18n/navigation";
 import type { GoalProposal } from "@/lib/api/goals";
 import { ADMIN_ROUTES } from "@/lib/constants/routes";
+import type { Locale } from "@/lib/types";
+import { pickLocalized } from "@/lib/utils/locale-pick";
 
 import { CategoryBadge } from "./category-badge";
 import { AILoadingState } from "./loading-states";
@@ -48,6 +50,7 @@ export function AIProposalsSection({
   selectedProposal,
   setSelectedProposal,
   onSelect,
+  locale,
   t,
   tCommon,
 }: {
@@ -60,6 +63,7 @@ export function AIProposalsSection({
   selectedProposal: GoalProposal | null;
   setSelectedProposal: (p: GoalProposal | null) => void;
   onSelect: (proposal: GoalProposal) => Promise<void>;
+  locale: Locale;
   t: GoalsT;
   tCommon: CommonT;
 }) {
@@ -114,9 +118,11 @@ export function AIProposalsSection({
                       </Badge>
                     </div>
 
-                    <h3 className="font-semibold text-sm mb-2 text-balance">{proposal.title}</h3>
+                    <h3 className="font-semibold text-sm mb-2 text-balance">
+                      {pickLocalized(proposal.title, proposal.title_en, locale)}
+                    </h3>
                     <p className="text-xs text-muted-foreground mb-4 flex-1 leading-relaxed">
-                      {proposal.description}
+                      {pickLocalized(proposal.description, proposal.description_en, locale)}
                     </p>
 
                     <div className="grid grid-cols-2 gap-2 text-xs mb-3">
@@ -162,6 +168,7 @@ export function AIProposalsSection({
                             <SelectGoalDialogContent
                               goal={selectedProposal}
                               hasActiveGoal={hasActiveGoal}
+                              locale={locale}
                               t={t}
                               tCommon={tCommon}
                               onConfirm={() => onSelect(selectedProposal)}
@@ -180,7 +187,7 @@ export function AIProposalsSection({
                             </Button>
                           </TooltipTrigger>
                           <TooltipContent>
-                            Решение принимает супервайзер или директор сети
+                            {t("active_goal.remove_disabled_hint")}
                           </TooltipContent>
                         </Tooltip>
                       )}

@@ -4566,9 +4566,27 @@
           "days_left": "Дней до конца",
           "diff_better": "лучше за {days} дней"
         },
+        "narrative": {
+          "was": "Было",
+          "now": "Сейчас",
+          "progress_to_goal": "Прогресс к цели",
+          "delta_pp_over_days": "{delta} п.п. за {days} дн.",
+          "delta_units_over_days": "{delta} {unit} за {days} дн.",
+          "earned_so_far_label": "Уже принесло",
+          "where_we_go": "Куда идём",
+          "target_full": "Цель: {target}{unit} к {date}",
+          "days_remaining": "осталось {days} дн.",
+          "realistic_because": "Реалистично — основано на",
+          "pace_pp": "историческом темпе улучшения {pace} п.п. за {days} дн.",
+          "pace_units": "историческом темпе улучшения {pace} {unit} за {days} дн.",
+          "at_target_money": "При достижении: ещё +{amount}/{period}",
+          "see_calc": "Подробнее: как считаем",
+          "discuss_in_ai_chat": "Разобрать в ИИ-чате"
+        },
         "set_by_hint": "Установлена {date} {user}",
         "no_active_title": "На эту неделю цель не установлена",
         "no_active_cta": "Выбрать цель из предложений ниже",
+        "remove_disabled_hint": "Решение принимает супервайзер или директор сети",
         "money": {
           "label": "Денежный эффект",
           "details": "Подробнее",
@@ -4650,6 +4668,10 @@
         "no_proposals_subtitle": "ИИ не смог сформировать предложения. Попробуйте другой период или магазин"
       },
       "ai_loading": "AI анализирует данные…",
+      "history": {
+        "status_completed": "Достигнута",
+        "status_archived": "Архив"
+      },
       "toasts": {
         "selected": "Цель установлена",
         "removed": "Цель снята",

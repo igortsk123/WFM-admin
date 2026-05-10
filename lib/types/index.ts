@@ -841,20 +841,32 @@ export type MoneyImpactPeriod = "week" | "month" | "quarter" | "year";
  * Денежная выгода от достижения цели.
  * `amount` в рублях за `period`. `rationale_short` — 1 строка для пилюли.
  * `rationale_breakdown` — пункты для popover/sheet «Подробнее».
+ *
+ * `*_en` — опциональные EN-переводы для bilingual demo. Если не заданы —
+ * fallback на `rationale_short` / `rationale_breakdown` (RU).
  */
 export interface MoneyImpact {
   amount: number;
   period: MoneyImpactPeriod;
   rationale_short: string;
   rationale_breakdown: string[];
+  rationale_short_en?: string;
+  rationale_breakdown_en?: string[];
 }
 
 /** AI-Assistant цель + ручная */
 export interface Goal {
   id: string;
   category: GoalCategory;
+  /**
+   * RU-литерал по умолчанию (исторически весь код использует `title`/`description`).
+   * Для bilingual demo задаются опциональные `title_en`/`description_en` —
+   * UI выбирает нужный текст по `useLocale()` через helper `pickLocalized`.
+   */
   title: string;
   description: string;
+  title_en?: string;
+  description_en?: string;
   /**
    * Значение метрики на момент установки цели — нужно для прогресса
    * (closedGap = |starting - current| при decrease, current - starting при increase).

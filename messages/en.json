@@ -4566,9 +4566,27 @@
           "days_left": "Days left",
           "diff_better": "better over {days} days"
         },
+        "narrative": {
+          "was": "Was",
+          "now": "Now",
+          "progress_to_goal": "Progress to goal",
+          "delta_pp_over_days": "{delta} pp in {days}d",
+          "delta_units_over_days": "{delta} {unit} in {days}d",
+          "earned_so_far_label": "Already earned",
+          "where_we_go": "Where we're heading",
+          "target_full": "Target: {target}{unit} by {date}",
+          "days_remaining": "{days}d left",
+          "realistic_because": "Realistic — based on",
+          "pace_pp": "historical improvement pace of {pace} pp every {days}d",
+          "pace_units": "historical improvement pace of {pace} {unit} every {days}d",
+          "at_target_money": "On target: another +{amount}/{period}",
+          "see_calc": "Details: how we calculate",
+          "discuss_in_ai_chat": "Explore in AI Chat"
+        },
         "set_by_hint": "Set on {date} by {user}",
         "no_active_title": "No goal set for this week",
         "no_active_cta": "Pick a goal from the suggestions below",
+        "remove_disabled_hint": "Decision belongs to supervisor or network director",
         "money": {
           "label": "Money impact",
           "details": "Details",
@@ -4650,6 +4668,10 @@
         "no_proposals_subtitle": "AI couldn't generate suggestions. Try a different period or store"
       },
       "ai_loading": "AI is analysing data…",
+      "history": {
+        "status_completed": "Reached",
+        "status_archived": "Archived"
+      },
       "toasts": {
         "selected": "Goal set",
         "removed": "Goal removed",
