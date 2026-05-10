@@ -24,13 +24,15 @@ git pull origin main >> $LOG 2>&1
 python3 tools/lama/fetch-snapshot-async.py --concurrency 3 >> $LOG 2>&1
 python3 tools/lama/regenerate-from-snapshots.py >> $LOG 2>&1
 python3 tools/lama/build-planning-pool.py >> $LOG 2>&1
+python3 tools/lama/analyze-distribution.py >> $LOG 2>&1
 
 # Commit только если TS-файлы изменились
 git add lib/mock-data/_lama-unassigned-blocks.ts \
         lib/mock-data/_lama-employee-zones.ts \
         lib/mock-data/_lama-employee-work-types.ts \
         lib/mock-data/_lama-fallback-medians.ts \
-        lib/mock-data/_lama-planning-pool.ts
+        lib/mock-data/_lama-planning-pool.ts \
+        lib/mock-data/_lama-distribution-stats.ts
 
 if git diff --cached --quiet; then
   echo "$(date -u +%H:%M:%S) NO CHANGES" >> $LOG
