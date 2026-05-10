@@ -329,6 +329,13 @@ Admin: `Goal { id, category, title, description, starting_value?, target_value, 
 - Service norms (для маппинга формат магазина → нормы трудозатрат)
 - Hints coverage matrix
 - Schedule conflict detection
+- **Employee speed score** — `lib/utils/employee-speed.ts::computeEmployeeSpeed(userId)`.
+  Деривируется из `EMPLOYEE_STATS` (LAMA snapshots) и `MOCK_STORES.object_format`:
+  per-employee median_duration по work_type сравнивается с peer-cohort'ом
+  (employees в магазинах того же object_format). Output 0..10 + объяснение
+  (RU/EN). Backend wrapper не нужен — это derived KPI поверх данных, которые
+  backend и так отдаёт (history событий + stores). Если backend позже отдаст
+  готовый endpoint `GET /users/{id}/speed` — admin переключится без UI-changes.
 
 Эти модули backend подхватит позже — admin их моделирует чтобы UI работал и спецификация была понятна.
 

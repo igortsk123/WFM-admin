@@ -13,9 +13,10 @@ import { Checkbox } from "@/components/ui/checkbox"
 
 import { EntityMobileCard } from "@/components/shared/entity-mobile-card"
 import { PermissionPill } from "@/components/shared/permission-pill"
-import { RoleBadge } from "@/components/shared/role-badge"
 import { ShiftStateBadge } from "@/components/shared/shift-state-badge"
 import { UserCell } from "@/components/shared/user-cell"
+
+import { LAMA_EMPLOYEE_ZONES } from "@/lib/mock-data/_lama-employee-zones"
 
 import { formatShiftTime } from "./_shared"
 import { RowActions } from "./row-actions"
@@ -56,6 +57,9 @@ export const MobileCard = memo(function MobileCard({
     : ""
   const visiblePerms = (u.permissions ?? []).slice(0, 2)
   const extraPerms = (u.permissions ?? []).length - 2
+  const zones = LAMA_EMPLOYEE_ZONES[u.id] ?? []
+  const visibleZones = zones.slice(0, 2)
+  const extraZones = zones.length - 2
 
   return (
     <EntityMobileCard
@@ -105,10 +109,21 @@ export const MobileCard = memo(function MobileCard({
             {u.assignment.store_name}
           </p>
         ) : null,
-        <div key="role" className="flex items-center gap-2 pl-[42px] flex-wrap">
-          {u.functional_role && (
-            <RoleBadge role={u.functional_role} size="sm" />
-          )}
+        zones.length > 0 ? (
+          <div key="zones" className="flex flex-wrap items-center gap-1 pl-[42px]">
+            {visibleZones.map((z) => (
+              <Badge key={z} variant="secondary" className="text-xs px-1.5 font-normal">
+                {z}
+              </Badge>
+            ))}
+            {extraZones > 0 && (
+              <Badge variant="secondary" className="text-xs px-1.5">
+                {t("columns.more_zones", { n: extraZones })}
+              </Badge>
+            )}
+          </div>
+        ) : null,
+        <div key="employment" className="flex items-center gap-2 pl-[42px] flex-wrap">
           <Badge
             className={cn(
               "text-xs",

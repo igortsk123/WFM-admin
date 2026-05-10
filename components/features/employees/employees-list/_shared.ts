@@ -38,13 +38,6 @@ export const POSITION_OPTIONS = [
   { id: 8, name: "Супервайзер" },
 ]
 
-// Agents for filter — mirrors MOCK_FREELANCE_AGENTS (only ACTIVE)
-export const AGENT_OPTIONS = [
-  { id: "agent-001", name: "ИП Захарова М. С." },
-  { id: "agent-002", name: 'ООО «Кадровый партнёр»' },
-  { id: "agent-003", name: "ИП Никитин А. И." },
-]
-
 export const ALL_FREELANCER_STATUSES: FreelancerStatus[] = [
   "NEW",
   "VERIFICATION",

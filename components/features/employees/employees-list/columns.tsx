@@ -19,9 +19,10 @@ import {
 
 import { FreelancerStatusBadge } from "@/components/shared/freelancer-status-badge"
 import { PermissionPill } from "@/components/shared/permission-pill"
-import { RoleBadge } from "@/components/shared/role-badge"
 import { ShiftStateBadge } from "@/components/shared/shift-state-badge"
 import { UserCell } from "@/components/shared/user-cell"
+
+import { LAMA_EMPLOYEE_ZONES } from "@/lib/mock-data/_lama-employee-zones"
 
 import { formatHiredAt, formatShiftTime } from "./_shared"
 import { RowActions } from "./row-actions"
@@ -114,6 +115,32 @@ export function buildColumns({
         )
       },
     },
+    {
+      id: "zones",
+      header: t("columns.zones"),
+      cell: ({ row }) => {
+        const zones = LAMA_EMPLOYEE_ZONES[row.original.id] ?? []
+        if (zones.length === 0) {
+          return <span className="text-xs text-muted-foreground">—</span>
+        }
+        const visible = zones.slice(0, 2)
+        const extra = zones.length - 2
+        return (
+          <div className="flex flex-wrap items-center gap-1 max-w-[220px]">
+            {visible.map((z) => (
+              <Badge key={z} variant="secondary" className="text-xs px-1.5 font-normal">
+                {z}
+              </Badge>
+            ))}
+            {extra > 0 && (
+              <Badge variant="secondary" className="text-xs px-1.5">
+                {t("columns.more_zones", { n: extra })}
+              </Badge>
+            )}
+          </div>
+        )
+      },
+    },
     ...(!hideStore
       ? [
           {
@@ -135,16 +162,6 @@ export function buildColumns({
           {row.original.assignment?.position_name ?? "—"}
         </span>
       ),
-    },
-    {
-      id: "functional_role",
-      header: t("columns.functional_role"),
-      cell: ({ row }) =>
-        row.original.functional_role ? (
-          <RoleBadge role={row.original.functional_role} size="sm" />
-        ) : (
-          <span className="text-xs text-muted-foreground">—</span>
-        ),
     },
     {
       id: "permissions",

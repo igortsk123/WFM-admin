@@ -9,7 +9,6 @@ import { toast } from "sonner"
 
 import type {
   Permission,
-  FunctionalRole,
   EmployeeType,
   FreelancerStatus,
 } from "@/lib/types"
@@ -46,7 +45,6 @@ import { StatsRow } from "./employees-list/stats-row"
 
 export function EmployeesList() {
   const t = useTranslations("screen.employees")
-  const tRole = useTranslations("role.functional")
   const tPerm = useTranslations("permission")
   const router = useRouter()
   const locale = useLocale()
@@ -84,10 +82,8 @@ export function EmployeesList() {
   const [selectedPermissions, setSelectedPermissions] = React.useState<
     string[]
   >([])
-  const [selectedRole, setSelectedRole] = React.useState<string>("")
   const [selectedEmploymentType, setSelectedEmploymentType] =
     React.useState<string>("")
-  const [selectedAgentIds, setSelectedAgentIds] = React.useState<string[]>([])
   const [selectedFreelancerStatus, setSelectedFreelancerStatus] =
     React.useState<string>("")
   const [selectedSource, setSelectedSource] = React.useState<string>("")
@@ -150,14 +146,12 @@ export function EmployeesList() {
         selectedPermissions.length > 0
           ? (selectedPermissions as Permission[])
           : undefined,
-      role: selectedRole ? (selectedRole as FunctionalRole) : undefined,
       employment_type: selectedEmploymentType
         ? (selectedEmploymentType as EmployeeType)
         : undefined,
       freelancer_status: selectedFreelancerStatus
         ? (selectedFreelancerStatus as FreelancerStatus)
         : undefined,
-      agent_ids: selectedAgentIds.length > 0 ? selectedAgentIds : undefined,
       source: selectedSource
         ? (selectedSource as "MANUAL" | "EXTERNAL_SYNC")
         : undefined,
@@ -189,10 +183,8 @@ export function EmployeesList() {
     JSON.stringify(selectedStoreIds),
     JSON.stringify(selectedPositionIds),
     JSON.stringify(selectedPermissions),
-    selectedRole,
     selectedEmploymentType,
     selectedFreelancerStatus,
-    JSON.stringify(selectedAgentIds),
     selectedSource,
     pageParam,
     refreshTick,
@@ -225,12 +217,11 @@ export function EmployeesList() {
     }
   }, [])
 
-  // ── Org feature flags (mock: NOMINAL_ACCOUNT + external_hr_enabled) ──
-  // In production these come from user.organization
-  type PaymentMode = "NOMINAL_ACCOUNT" | "CLIENT_DIRECT"
-  const paymentMode: PaymentMode = "NOMINAL_ACCOUNT" as PaymentMode
+  // ── Org feature flags (mock: external_hr_enabled) ──
+  // In production these come from user.organization.
+  // showAgentFilter удалён — агентский scope относится только к freelance-карточкам
+  // (см. /freelance/* ); в общем списке /employees он смешивал штатных и внештатных.
   const externalHrEnabled = true
-  const showAgentFilter = paymentMode !== "CLIENT_DIRECT"
   const showSourceFilter = externalHrEnabled
   const showFreelancerStatusFilter = selectedEmploymentType === "FREELANCE"
 
@@ -239,9 +230,7 @@ export function EmployeesList() {
     selectedStoreIds.length +
     selectedPositionIds.length +
     selectedPermissions.length +
-    (selectedRole ? 1 : 0) +
     (selectedEmploymentType ? 1 : 0) +
-    selectedAgentIds.length +
     (selectedFreelancerStatus ? 1 : 0) +
     (selectedSource ? 1 : 0)
 
@@ -251,9 +240,7 @@ export function EmployeesList() {
     setSelectedStoreIds([])
     setSelectedPositionIds([])
     setSelectedPermissions([])
-    setSelectedRole("")
     setSelectedEmploymentType("")
-    setSelectedAgentIds([])
     setSelectedFreelancerStatus("")
     setSelectedSource("")
     setSearchParam(null)
@@ -331,16 +318,6 @@ export function EmployeesList() {
     SELF_CHECKOUT: tPerm("self_checkout"),
     WAREHOUSE: tPerm("warehouse"),
     PRODUCTION_LINE: tPerm("production_line"),
-  }
-
-  const roleLabelMap: Record<string, string> = {
-    WORKER: tRole("worker"),
-    STORE_DIRECTOR: tRole("store_director"),
-    SUPERVISOR: tRole("supervisor"),
-    REGIONAL: tRole("regional"),
-    NETWORK_OPS: tRole("network_ops"),
-    HR_MANAGER: tRole("hr_manager"),
-    OPERATOR: tRole("operator"),
   }
 
   // ── Columns ─────────────────────────────────────────────────────
@@ -460,20 +437,6 @@ export function EmployeesList() {
             setPageParam(null)
           })
         }}
-        selectedAgentIds={selectedAgentIds}
-        onAgentIdsChange={(v) => {
-          startTransition(() => {
-            setSelectedAgentIds(v)
-            setPageParam(null)
-          })
-        }}
-        selectedRole={selectedRole}
-        onRoleChange={(v) => {
-          startTransition(() => {
-            setSelectedRole(v)
-            setPageParam(null)
-          })
-        }}
         selectedEmploymentType={selectedEmploymentType}
         onEmploymentTypeChange={(v) => {
           startTransition(() => {
@@ -496,13 +459,11 @@ export function EmployeesList() {
           })
         }}
         hideStore={hideStore}
-        showAgentFilter={showAgentFilter}
         showSourceFilter={showSourceFilter}
         showFreelancerStatusFilter={showFreelancerStatusFilter}
         activeFilterCount={activeFilterCount}
         clearAllFilters={clearAllFilters}
         permLabelMap={permLabelMap}
-        roleLabelMap={roleLabelMap}
       />
 
       {/* Error state */}

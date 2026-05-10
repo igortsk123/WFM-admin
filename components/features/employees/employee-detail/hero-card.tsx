@@ -1,13 +1,13 @@
 "use client"
 
-import { useTranslations } from "next-intl"
+import { useTranslations, useLocale } from "next-intl"
 import {
   Phone,
   Mail,
   Briefcase,
   CheckCircle2,
   Clock,
-  Timer,
+  Gauge,
   Info,
 } from "lucide-react"
 import Link from "next/link"
@@ -16,6 +16,7 @@ import type { ReactNode } from "react"
 import type { Permission } from "@/lib/types"
 import type { UserDetail } from "@/lib/api/users"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
+import { computeEmployeeSpeed } from "@/lib/utils/employee-speed"
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
@@ -49,6 +50,8 @@ export function HeroCard({
 }: HeroCardProps) {
   const activeAssignment = user.assignments.find((a) => a.active)
   const stats = user.stats
+  const speed = computeEmployeeSpeed(user.id)
+  const locale = useLocale()
 
   const leading = (
     <Avatar className="size-16 md:size-20">
@@ -174,31 +177,37 @@ export function HeroCard({
         icon={CheckCircle2}
       />
       <KpiCard label={t("stats.paused_now")} value={stats.paused_now} icon={Clock} />
-      {/* Custom: minutes-with-unit diff (not %), can't use KpiCard.diff */}
+      {/* Speed score — 0..10 vs peers in stores of same object_format.
+          Заменяет «Среднее выполнение» (абсолютная медиана не несла бизнес-смысла —
+          сравнение со сверстниками показывает реальную производительность). */}
       <div className="flex flex-col gap-1 rounded-xl border bg-card p-5">
         <div className="flex items-center gap-2">
           <span className="flex size-8 items-center justify-center rounded-md bg-muted">
-            <Timer className="size-4 text-muted-foreground" aria-hidden="true" />
+            <Gauge className="size-4 text-muted-foreground" aria-hidden="true" />
           </span>
           <span className="text-sm font-medium text-muted-foreground truncate">
-            {t("stats.avg_completion")}
+            {t("stats.speed_score")}
           </span>
         </div>
-        <div className="flex items-end gap-3">
-          <span className="text-2xl font-semibold tracking-tight text-foreground">
-            {stats.avg_completion_min} {t("stats.minutes_unit")}
+        {speed ? (
+          <>
+            <div className="flex items-end gap-2">
+              <span className="text-2xl font-semibold tracking-tight text-foreground">
+                {speed.score.toFixed(1)}
+              </span>
+              <span className="text-sm text-muted-foreground mb-0.5">
+                {t("stats.speed_score_unit")}
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground line-clamp-2">
+              {locale === "en" ? speed.explanation_en : speed.explanation}
+            </p>
+          </>
+        ) : (
+          <span className="text-sm italic text-muted-foreground">
+            {t("stats.speed_no_data")}
           </span>
-          {stats.avg_completion_diff_min !== 0 && (
-            <span
-              className={`flex items-center gap-0.5 text-sm font-medium mb-0.5 ${
-                stats.avg_completion_diff_min < 0 ? "text-success" : "text-destructive"
-              }`}
-            >
-              {stats.avg_completion_diff_min > 0 ? "+" : ""}
-              {stats.avg_completion_diff_min} {t("stats.minutes_unit")} {t("stats.diff_vs_plan")}
-            </span>
-          )}
-        </div>
+        )}
       </div>
     </div>
   ) : null
