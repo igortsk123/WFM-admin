@@ -30,6 +30,71 @@
 
 ---
 
+## 🆕 /schedule подключён к real LAMA shifts (admin-only fallback)
+
+**Что это.** Экран `/schedule` (Расписание) теперь рендерит реальные LAMA-смены
+из `lib/mock-data/_lama-shifts.ts` (2436 смен на текущую LAMA-неделю
+Пн 2026-05-04 — Вс 2026-05-10, 593 сотрудника, 21 непустой ЛАМА-магазин).
+
+Магазины уже идут из `REAL_LAMA_STORES` (133 магазина) через `MOCK_STORES`
+spread → `auth.user.stores` (org-lama scope) → `useStoreContext()` → toolbar
+filter combobox.
+
+**Где это в admin.**
+- TODAY anchor: `components/features/schedule/schedule-calendar/_shared.ts`
+  (`TODAY_STR = "2026-05-07"`, центр LAMA-недели)
+- Shifts mock: `lib/mock-data/shifts.ts` уже spread'ит `...REAL_LAMA_SHIFTS`
+- API: `lib/api/shifts.ts::getSchedule()` фильтрует MOCK_SHIFTS по
+  `(date_from, date_to, store_ids?, zone_ids?, user_id?, status?)`
+- Real backend wrapper: `getStoreScheduleOnBackend()` (готов к swap'у когда
+  backend дотянет `GET /shifts/by-store`)
+- TS-зеркало: `BackendStoreSchedule`, `BackendScheduleSlot`,
+  `BackendStoreScheduleParams` в `lib/api/_backend-types.ts`
+
+**Что нужно от backend (HIGH, см. также пункт #5 ниже).**
+
+| Endpoint | Назначение |
+|---|---|
+| `GET /shifts/by-store?store_id=&date_from=&date_to=&zone_id=&user_id=&status=` | Все смены магазина(ов) на диапазон дат, плюс aggregate'ы (planned/actual hours, coverage_pct). Сейчас backend умеет только `GET /shifts/current?assignment_id=` (одна смена, один сотрудник). |
+
+**Pydantic schema (предлагаемая):**
+```python
+class StoreScheduleSlot(BaseModel):
+    id: int
+    user_id: int
+    user_name: str
+    store_id: int
+    store_name: str
+    zone_id: int | None
+    zone_name: str | None
+    position_id: int | None
+    position_name: str | None
+    shift_date: date
+    planned_start: datetime
+    planned_end: datetime
+    actual_start: datetime | None
+    actual_end: datetime | None
+    status: Literal["NEW", "OPENED", "CLOSED"]
+    has_conflict: bool
+    conflict_reason: Literal["OVERLAP", "LATE_CLOSE", "OVERFLOW", "OTHER"] | None
+    late_minutes: int
+    overtime_minutes: int
+
+class StoreSchedule(BaseModel):
+    slots: list[StoreScheduleSlot]
+    date_from: date
+    date_to: date
+    total_planned_hours: float
+    total_actual_hours: float
+    coverage_pct: int  # 0..100
+```
+
+**До добавления endpoint'а** admin живёт на `getSchedule()` поверх MOCK_SHIFTS
+(включая 2436 LAMA смен). После — переключим `USE_REAL_API` и admin начнёт
+ходить через `getStoreScheduleOnBackend()`.
+
+---
+
 ## 🆕 UnassignedTaskBlock — концепция распределения (HIGH)
 
 **Что это.** В реальности LAMA отдаёт сводки трудозатрат на магазин блоками,
@@ -149,6 +214,7 @@ USE_REAL_API и admin начнёт грузить блоки из backend.
     - `closeShiftOnBackend(planId, force?)` → `POST /shifts/close`
     - `getCurrentShiftFromBackend(assignmentId)` → `GET /shifts/current`
     - `getShiftByIdFromBackend(id)` → `GET /shifts/{id}`
+    - `getStoreScheduleOnBackend(params)` → `GET /shifts/by-store` (**backend gap** — endpoint'а пока нет, см. секцию `/schedule` ниже и пункт #5 в «Запросе на endpoints»)
   - **hints** (`lib/api/hints.ts`):
     - `getHintsFromBackend(workTypeId, zoneId)` → `GET /tasks/hints`
     - `createHintOnBackend(data)` → `POST /tasks/hints`

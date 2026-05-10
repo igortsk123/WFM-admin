@@ -369,6 +369,61 @@ export interface BackendShiftCloseRequest {
   force?: boolean;
 }
 
+// ── Store schedule (admin-only пока — backend нужно дотянуть) ──
+//
+// Endpoint которого сейчас нет у backend, но admin /schedule (/расписание)
+// его ожидает: `GET /shifts/by-store?store_id=&date_from=&date_to=&zone_id=`.
+// Backend сейчас умеет только `/shifts/current?assignment_id=` (одна смена
+// одного сотрудника). Для календарной сетки на день/неделю/месяц admin'у
+// нужны ВСЕ смены магазина(ов) на диапазон дат, plus aggregate'ы (planned
+// vs actual hours, coverage_pct).
+//
+// Когда backend дотянет — admin переключит `getSchedule()` с MOCK_SHIFTS
+// на `getStoreScheduleOnBackend()` без UI changes.
+
+export interface BackendScheduleSlot {
+  id: number;
+  user_id: number;
+  user_name: string;
+  user_avatar_url?: string | null;
+  store_id: number;
+  store_name: string;
+  zone_id?: number | null;
+  zone_name?: string | null;
+  position_id?: number | null;
+  position_name?: string | null;
+  shift_date: string; // yyyy-MM-dd
+  planned_start: string; // ISO
+  planned_end: string; // ISO
+  actual_start?: string | null;
+  actual_end?: string | null;
+  status: BackendShiftStatus;
+  has_conflict?: boolean;
+  conflict_reason?: "OVERLAP" | "LATE_CLOSE" | "OVERFLOW" | "OTHER" | null;
+  late_minutes?: number;
+  overtime_minutes?: number;
+}
+
+export interface BackendStoreSchedule {
+  slots: BackendScheduleSlot[];
+  date_from: string;
+  date_to: string;
+  total_planned_hours: number;
+  total_actual_hours: number;
+  coverage_pct: number;
+}
+
+export interface BackendStoreScheduleParams {
+  store_id?: number;
+  store_ids?: number[];
+  date_from: string;
+  date_to: string;
+  zone_id?: number;
+  zone_ids?: number[];
+  user_id?: number;
+  status?: BackendShiftStatus[];
+}
+
 // ── UnassignedTaskBlock (admin-only пока — backend нужно дотянуть) ──
 //
 // Концепция: LAMA каждый день выгружает блоки трудозатрат на магазин:
