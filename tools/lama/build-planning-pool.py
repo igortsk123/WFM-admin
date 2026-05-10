@@ -36,7 +36,13 @@ OUT_FILE = ROOT / "lib" / "mock-data" / "_lama-planning-pool.ts"
 # Status'ы которые означают «ещё в работе, нуждается в распределении».
 # Completed/Accepted — уже сделано / принято, не планируем.
 # Suspended (приостановлено) — добавляем: задача актуальна, нужна повторная распланировка.
-PLANNABLE_STATUSES = {"Created", "InProgress", "Suspended"}
+PLANNABLE_STATUSES = {"Created", "InProgress", "Suspended", "Completed", "Accepted"}
+# Демо-логика: «утренняя картина дня» — берём ВСЕ задачи дня (включая уже
+# Accepted/Completed которые LAMA фактически распределил и закрыл), стрипаем
+# assignee. Директор открывает экран как будто в 06:00 AM до старта дня:
+# видит весь объём → сравнивает наш auto-distribute vs ручное распределение.
+# Также baseline для backtest «наш алго vs реальность» формируется из этой же
+# полной картины (real assignment в _lama-backtest-baseline.ts).
 
 
 def latest_snapshot() -> Path:
