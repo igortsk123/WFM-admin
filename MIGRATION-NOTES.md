@@ -325,7 +325,13 @@ Admin: `Goal { id, category, title, description, starting_value?, target_value, 
 - Notifications categories beyond TASK_* (CHAT_INVITE, GOAL_REACHED, BONUS_CREDITED, ...)
 - Activity feed
 - Audit log
-- Permissions coverage analytics
+- **Permissions coverage analytics** — `lib/api/users.ts::getPermissionsCoverage(params)`.
+  Принимает `{ search?, store_id?, position_id?, permission? }` (зеркалит filter set
+  /employees/permissions matrix). granted/eligible считаются с тем же LAMA-fallback
+  что и `getUsers` (explicit MOCK_PERMISSIONS, иначе derive из `LAMA_EMPLOYEE_WORK_TYPES`).
+  Manager-исключение тоже учитывает LAMA-derived functional role. Когда backend
+  сделает `GET /users/permissions/coverage?store_id=&position_id=&search=&permission=` —
+  admin переключится без UI changes (signature 1:1).
 - Service norms (для маппинга формат магазина → нормы трудозатрат)
 - Hints coverage matrix
 - Schedule conflict detection

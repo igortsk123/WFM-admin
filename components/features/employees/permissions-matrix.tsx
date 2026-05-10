@@ -131,8 +131,11 @@ export function PermissionsMatrix() {
               position_id: filterPositionId ?? undefined,
               permission: filterPermission ?? undefined,
             }),
-            getStores({}),
-            getPositions({}),
+            // Filter dropdown'ы показывают весь LAMA-пул (~150 stores / ~50 positions),
+            // явно бампнем page_size чтобы не упереться в default 20/50 и не потерять
+            // часть real LAMA-имён в селектах.
+            getStores({ page_size: 200 }),
+            getPositions({ page_size: 200 }),
           ]);
 
         setUsers(usersRes.data);
