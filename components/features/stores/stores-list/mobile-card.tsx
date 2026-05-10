@@ -2,7 +2,7 @@
 
 import { memo } from "react"
 import { useTranslations } from "next-intl"
-import { AlertCircle, MoreHorizontal } from "lucide-react"
+import { MoreHorizontal } from "lucide-react"
 
 import type { StoreWithStats } from "@/lib/api/stores"
 
@@ -16,9 +16,21 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { EntityMobileCard } from "@/components/shared/entity-mobile-card"
-import { cn } from "@/lib/utils"
 
-import { formatLamaSync } from "./_shared"
+/**
+ * Полный адрес одной строкой (без дубликатов city).
+ * Дедуп: LAMA-shape «г. <city>» → отдаём только address.
+ */
+function buildFullAddress(store: StoreWithStats): string {
+  const city = store.city?.trim() ?? ""
+  const address = store.address?.trim() ?? ""
+  if (!address) return city
+  if (!city) return address
+  const stripped = address.replace(/^г\.\s*/i, "").trim()
+  if (stripped.toLowerCase() === city.toLowerCase()) return address
+  if (address.toLowerCase().startsWith(city.toLowerCase())) return address
+  return `${city}, ${address}`
+}
 
 interface MobileCardProps {
   store: StoreWithStats
@@ -35,7 +47,6 @@ interface MobileCardProps {
 
 export const MobileCard = memo(function MobileCard({ store, onClick, onArchive, onSync, onEdit }: MobileCardProps) {
   const t = useTranslations("screen.stores")
-  const { label: lamaLabel, level: lamaLevel } = formatLamaSync(store.lama_synced_at)
 
   return (
     <EntityMobileCard
@@ -50,51 +61,21 @@ export const MobileCard = memo(function MobileCard({ store, onClick, onArchive, 
           </Badge>
         </div>
       }
-      subtitle={
-        <span className="truncate">
-          {store.address}, {store.city}
-        </span>
-      }
-      status={
-        <Badge
-          variant={store.archived ? "secondary" : "outline"}
-          className={cn(
-            "text-[10px]",
-            !store.archived && "text-success border-success/30 bg-success/10",
-          )}
-        >
-          {store.archived ? t("status.archived") : t("status.active")}
-        </Badge>
-      }
+      subtitle={<span className="break-words">{buildFullAddress(store)}</span>}
       meta={
         <div className="flex flex-wrap gap-1">
           <Badge variant="secondary" className="text-xs">
-            Сотр: {store.staff_count}
-          </Badge>
-          <Badge variant="secondary" className="text-xs">
-            Откр. смен: {store.current_shifts_open_count}
+            {t("columns.staff")}: {store.staff_count}
           </Badge>
           {store.tasks_today_count > 0 && (
             <Badge variant="secondary" className="text-xs">
-              Задач: {store.tasks_today_count}
+              {t("columns.tasks_today")}: {store.tasks_today_count}
             </Badge>
           )}
         </div>
       }
       footer={
-        <div className="flex items-center justify-between">
-          <span
-            className={cn(
-              "text-xs",
-              lamaLevel === "fresh" && "text-success",
-              lamaLevel === "stale" && "text-warning",
-              lamaLevel === "critical" && "text-destructive flex items-center gap-1",
-              lamaLevel === "never" && "text-muted-foreground",
-            )}
-          >
-            {lamaLevel === "critical" && <AlertCircle className="size-3 inline mr-0.5" />}
-            {lamaLabel}
-          </span>
+        <div className="flex items-center justify-end">
           <div
             onClick={(e) => e.stopPropagation()}
             onKeyDown={(e) => e.stopPropagation()}
@@ -103,7 +84,7 @@ export const MobileCard = memo(function MobileCard({ store, onClick, onArchive, 
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="h-11 w-11">
                   <MoreHorizontal className="size-4" />
-                  <span className="sr-only">Действия</span>
+                  <span className="sr-only">{t("actions.more")}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
