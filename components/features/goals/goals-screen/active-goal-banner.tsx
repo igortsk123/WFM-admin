@@ -36,6 +36,7 @@ import { pickLocalized } from "@/lib/utils/locale-pick";
 import { AIEvidenceSection } from "./ai-evidence-section";
 import { CategoryBadge } from "./category-badge";
 import { MoneyPill } from "./money-pill";
+import { PilotWaveBadge } from "./pilot-wave-badge";
 import { RemoveGoalDialogContent } from "./remove-goal-dialog";
 import {
   type GoalWithUser,
@@ -134,6 +135,11 @@ export function ActiveGoalBanner({
           <div className="flex flex-1 flex-wrap items-center gap-2 min-w-0">
             <Badge variant="default">{t("active_goal.badge")}</Badge>
             <CategoryBadge category={activeGoal.category} t={t} />
+            <PilotWaveBadge
+              tier={activeGoal.tier}
+              wave={activeGoal.pilot_wave}
+              t={t}
+            />
           </div>
           {activeGoal.money_impact && (
             <MoneyPill

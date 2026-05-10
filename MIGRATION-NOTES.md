@@ -105,6 +105,8 @@ class Goal(BaseModel):
     ai_detection_method: str | None = None
     ai_detection_method_en: str | None = None
     ai_evidence: list[AIEvidenceItem] | None = None
+    tier: Literal["priority", "secondary"] | None = None
+    pilot_wave: Literal["A", "B", "C", "D"] | None = None
 ```
 
 **Что admin использует поверх backend (admin-only extras).**
@@ -113,6 +115,12 @@ class Goal(BaseModel):
 - `MoneyImpact.rationale_breakdown` — pre-computed в admin через
   `lib/utils/goal-monetization.ts` (на 25B baseline). Когда backend завезёт
   ML-модель монетизации, перенесём в backend.
+- `Goal.tier` (`priority`/`secondary`) и `Goal.pilot_wave` (`A`/`B`/`C`/`D`) —
+  topology AI-целей по deep-research отчёту (5 foundation-целей наверху,
+  остальные `secondary`). См. `.memory_bank/_claude/AI-GOALS-ROADMAP.md`,
+  типы `GoalTier`/`PilotWave` в `lib/types/index.ts`, обёртки
+  `BackendGoalTier`/`BackendPilotWave` в `lib/api/_backend-types.ts`.
+  UI: `components/features/goals/goals-screen/pilot-wave-badge.tsx`.
 
 **Источники research для коэффициентов** (см. полный список в
 `.memory_bank/_claude/GOALS-MONETIZATION.md`):

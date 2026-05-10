@@ -291,6 +291,8 @@ export function goalFromBackend(raw: BackendGoal): Goal {
     ai_evidence: raw.ai_evidence
       ? raw.ai_evidence.map(aiEvidenceFromBackend)
       : undefined,
+    tier: raw.tier ?? undefined,
+    pilot_wave: raw.pilot_wave ?? undefined,
   };
 }
 
@@ -353,6 +355,8 @@ export async function getGoalsOnBackend(): Promise<{ goals: BackendGoal[] }> {
           photo_taken_at: ev.photo_taken_at ?? null,
         }))
       : null,
+    tier: g.tier ?? null,
+    pilot_wave: g.pilot_wave ?? null,
   }));
   return { goals };
 }

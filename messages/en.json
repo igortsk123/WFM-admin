@@ -4654,6 +4654,17 @@
         "medium": "Medium",
         "low": "Low"
       },
+      "pilot_wave": {
+        "badge_prefix": "Wave",
+        "A": "Wave A",
+        "A_tooltip": "Pilot Wave A: empty shelves and hidden out-of-stock (4 wk baseline + 8 wk test)",
+        "B": "Wave B",
+        "B_tooltip": "Wave B: fresh category write-offs (4 wk baseline + 12 wk test)",
+        "C": "Wave C",
+        "C_tooltip": "Wave C: post-promo leftovers (8-10 wks, 3 promo cycles)",
+        "D": "Wave D",
+        "D_tooltip": "Wave D: slow-moving stock (12-16 wks)"
+      },
       "empty": {
         "no_data_title": "No data",
         "no_proposals_title": "Not enough data for this period",

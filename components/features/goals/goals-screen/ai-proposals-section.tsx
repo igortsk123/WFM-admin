@@ -36,6 +36,7 @@ import { SignalSourceChip } from "./ai-evidence-section";
 import { CategoryBadge } from "./category-badge";
 import { AILoadingState } from "./loading-states";
 import { MoneyPill } from "./money-pill";
+import { PilotWaveBadge } from "./pilot-wave-badge";
 import { SelectGoalDialogContent } from "./select-goal-dialog";
 import { compareByMoneyImpact } from "./sort-utils";
 import {
@@ -122,6 +123,11 @@ export function AIProposalsSection({
                           <Icon className="size-4 text-muted-foreground" />
                         </span>
                         <CategoryBadge category={proposal.category} t={t} />
+                        <PilotWaveBadge
+                          tier={proposal.tier}
+                          wave={proposal.pilot_wave}
+                          t={t}
+                        />
                         {proposal.ai_signal_source && (
                           <SignalSourceChip
                             source={proposal.ai_signal_source}
