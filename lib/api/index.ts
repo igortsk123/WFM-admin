@@ -83,6 +83,7 @@ export {
   bulkUpdateStore,
   // Permissions coverage (matrix stats)
   type PermissionCoverageRow,
+  type PermissionsCoverageParams,
   getPermissionsCoverage,
   // History events (employee detail tab «История»)
   type UserHistoryEvent,

@@ -123,17 +123,32 @@ export function buildColumns({
         if (zones.length === 0) {
           return <span className="text-xs text-muted-foreground">—</span>
         }
+        // Сокращения чтобы влезало в колонку: длинные → короткие лейблы.
+        const SHORT_LABELS: Record<string, string> = {
+          "Кондитерка, чай, кофе": "Кондитерка",
+          "Молочные продукты": "Молочка",
+          "Фрукты, овощи": "Овощи",
+          "Хозтовары": "Хоз.",
+          "Менеджерские": "Менедж.",
+          "Бакалея": "Бакалея",
+        }
+        const shorten = (z: string) => SHORT_LABELS[z] ?? (z.length > 12 ? `${z.slice(0, 11)}…` : z)
         const visible = zones.slice(0, 2)
         const extra = zones.length - 2
         return (
-          <div className="flex flex-wrap items-center gap-1 max-w-[220px]">
+          <div className="flex flex-wrap items-center gap-1 max-w-[180px]">
             {visible.map((z) => (
-              <Badge key={z} variant="secondary" className="text-xs px-1.5 font-normal">
-                {z}
+              <Badge
+                key={z}
+                variant="secondary"
+                className="text-xs px-1.5 font-normal"
+                title={z}
+              >
+                {shorten(z)}
               </Badge>
             ))}
             {extra > 0 && (
-              <Badge variant="secondary" className="text-xs px-1.5">
+              <Badge variant="secondary" className="text-xs px-1.5" title={zones.slice(2).join(", ")}>
                 {t("columns.more_zones", { n: extra })}
               </Badge>
             )}

@@ -1017,58 +1017,151 @@ export interface PermissionCoverageRow {
 }
 
 /**
- * Get coverage statistics for all permissions in scope.
- * Использует MOCK_USERS + MOCK_PERMISSIONS, фильтр по архивным/manager.
+ * Параметры для permissions coverage stats. Зеркалят user-list filters
+ * чтобы stat-cards пересчитывались под текущий фильтр matrix-экрана.
+ */
+export interface PermissionsCoverageParams {
+  /** Поиск по ФИО/телефону (как в getUsers). */
+  search?: string;
+  /** Один магазин (legacy + scope для STORE_DIRECTOR/SUPERVISOR). */
+  store_id?: number;
+  /** Должность (фильтр position-list). */
+  position_id?: number;
+  /** Конкретная привилегия — оставляем пользователей у которых есть хоть одна. */
+  permission?: Permission;
+}
+
+/**
+ * Get coverage statistics for permissions in scope.
+ * Считает grant'ы как `getUsers` enrichment — explicit MOCK_PERMISSIONS,
+ * иначе LAMA-derived из истории work_types. Manager-фильтр тоже учитывает
+ * LAMA-derived functional role.
  *
- * @param storeId опционально — ограничить scope (для STORE_DIRECTOR / SUPERVISOR)
- * @returns coverage row per permission (5 строк: CASHIER, SALES_FLOOR, SELF_CHECKOUT, WAREHOUSE, PRODUCTION_LINE)
- * @endpoint GET /users/permissions/coverage?store_id=
+ * Принимает full filter set (search/store/position/permission) — stat-cards
+ * пересчитываются под текущий фильтр permissions-matrix экрана. Без фильтров
+ * считает по всему non-archived non-manager пулу.
+ *
+ * @param params filter params (или number для backward-compat — storeId)
+ * @returns coverage row per permission (5: CASHIER, SALES_FLOOR, SELF_CHECKOUT, WAREHOUSE, PRODUCTION_LINE)
+ * @endpoint GET /users/permissions/coverage?store_id=&position_id=&search=&permission=
  * @roles STORE_DIRECTOR (свой магазин), SUPERVISOR, NETWORK_OPS
  */
 export async function getPermissionsCoverage(
-  storeId?: number,
+  params?: PermissionsCoverageParams | number,
 ): Promise<ApiResponse<PermissionCoverageRow[]>> {
   await delay(250);
 
-  const ALL: Permission[] = ["CASHIER", "SALES_FLOOR", "SELF_CHECKOUT", "WAREHOUSE", "PRODUCTION_LINE"];
+  // Backward-compat: getPermissionsCoverage(123) → { store_id: 123 }.
+  const p: PermissionsCoverageParams =
+    typeof params === "number"
+      ? { store_id: params }
+      : params ?? {};
+  const { search, store_id, position_id, permission } = p;
 
-  // Eligible: не архивный + не manager. Manager определяем через position role_id=2 — но у нас нет
-  // позиции в User. Используем наличие активного assignment + проверка через роль из functional-roles.
-  const managerUserIds = new Set(
-    MOCK_FUNCTIONAL_ROLES
-      .filter((r) => r.functional_role !== "WORKER")
-      .map((r) => r.user_id),
+  const ALL: Permission[] = [
+    "CASHIER",
+    "SALES_FLOOR",
+    "SELF_CHECKOUT",
+    "WAREHOUSE",
+    "PRODUCTION_LINE",
+  ];
+
+  // ── Manager detection: explicit MOCK_FUNCTIONAL_ROLES + LAMA-derived ──
+  // (LAMA-derived role !== "WORKER" → исключаем как manager).
+  const explicitRoles = new Map<number, FunctionalRole>(
+    MOCK_FUNCTIONAL_ROLES.map((r) => [r.user_id, r.functional_role]),
+  );
+  const isUserManager = (userId: number): boolean => {
+    const explicit = explicitRoles.get(userId);
+    if (explicit) return explicit !== "WORKER";
+    const derived = deriveLamaFunctionalRole(userId);
+    return derived !== undefined && derived !== "WORKER";
+  };
+
+  // ── Permissions resolver: explicit OR LAMA-derived (same logic as getUsers) ──
+  const explicitPermsByUser = new Map<number, Set<Permission>>();
+  for (const mp of MOCK_PERMISSIONS) {
+    if (mp.revoked_at) continue;
+    const set = explicitPermsByUser.get(mp.user_id) ?? new Set<Permission>();
+    set.add(mp.permission);
+    explicitPermsByUser.set(mp.user_id, set);
+  }
+  const userPerms = (userId: number): Permission[] => {
+    const explicit = explicitPermsByUser.get(userId);
+    if (explicit && explicit.size > 0) return Array.from(explicit);
+    return deriveLamaPermissions(userId);
+  };
+
+  // ── Build eligible pool (matches matrix table scope) ──
+  let eligibleUsers = MOCK_USERS.filter(
+    (u) => !u.archived && !isUserManager(u.id),
   );
 
-  let eligibleUsers = MOCK_USERS.filter((u) => !u.archived && !managerUserIds.has(u.id));
-
-  if (storeId) {
+  if (store_id) {
     const storeUserIds = new Set(
       MOCK_ASSIGNMENTS
-        .filter((a) => a.active && a.store_id === storeId)
+        .filter((a) => a.active && a.store_id === store_id)
         .map((a) => a.user_id),
     );
     eligibleUsers = eligibleUsers.filter((u) => storeUserIds.has(u.id));
   }
 
-  const eligibleIds = new Set(eligibleUsers.map((u) => u.id));
+  if (position_id) {
+    const positionUserIds = new Set(
+      MOCK_ASSIGNMENTS
+        .filter((a) => a.active && a.position_id === position_id)
+        .map((a) => a.user_id),
+    );
+    eligibleUsers = eligibleUsers.filter((u) => positionUserIds.has(u.id));
+  }
+
+  if (permission) {
+    eligibleUsers = eligibleUsers.filter((u) =>
+      userPerms(u.id).includes(permission),
+    );
+  }
+
+  if (search) {
+    const q = search.toLowerCase();
+    eligibleUsers = eligibleUsers.filter(
+      (u) =>
+        u.first_name.toLowerCase().includes(q) ||
+        u.last_name.toLowerCase().includes(q) ||
+        (u.middle_name?.toLowerCase().includes(q) ?? false) ||
+        u.phone.includes(search),
+    );
+  }
+
   const eligible_count = eligibleUsers.length;
 
   const rows: PermissionCoverageRow[] = ALL.map((perm) => {
-    const granted_count = MOCK_PERMISSIONS.filter(
-      (p) => p.permission === perm && !p.revoked_at && eligibleIds.has(p.user_id),
-    ).length;
+    const granted_count = eligibleUsers.reduce(
+      (acc, u) => (userPerms(u.id).includes(perm) ? acc + 1 : acc),
+      0,
+    );
 
-    const coverage_pct = eligible_count === 0 ? 0 : Math.round((granted_count / eligible_count) * 100);
+    const coverage_pct =
+      eligible_count === 0
+        ? 0
+        : Math.round((granted_count / eligible_count) * 100);
 
     // Mock 30-day trend — детерминированный по permission (чтобы график не прыгал)
     const seed = perm.length;
     const trend_30d = Array.from({ length: 30 }, (_, i) => {
       const noise = ((i + seed) * 7) % 11 - 5; // -5..+5
-      return Math.max(0, Math.min(100, coverage_pct - 10 + noise + Math.floor(i / 3)));
+      return Math.max(
+        0,
+        Math.min(100, coverage_pct - 10 + noise + Math.floor(i / 3)),
+      );
     });
 
-    return { permission: perm, granted_count, eligible_count, coverage_pct, trend_30d };
+    return {
+      permission: perm,
+      granted_count,
+      eligible_count,
+      coverage_pct,
+      trend_30d,
+    };
   });
 
   return { data: rows };

@@ -109,6 +109,10 @@ export function PermissionsMatrix() {
       setError(null);
       try {
         const p = resetPage ? 1 : page;
+        // При выборе магазина показываем ВСЕХ сотрудников этого магазина
+        // (без pagination) — обычно <50 человек, и UX «выбрал магазин →
+        // увидел весь штат» важнее экономии 30 строк рендера.
+        const effectivePageSize = filterStoreId ? 1000 : PAGE_SIZE;
         const [usersRes, coverageRes, storesRes, positionsRes] =
           await Promise.all([
             getUsers({
@@ -117,9 +121,16 @@ export function PermissionsMatrix() {
               position_id: filterPositionId ?? undefined,
               permissions: filterPermission ? [filterPermission] : undefined,
               page: p,
-              page_size: PAGE_SIZE,
+              page_size: effectivePageSize,
             }),
-            getPermissionsCoverage(filterStoreId ?? undefined),
+            // Stats считаем под текущий filter set чтобы все 4 KPI цифры
+            // отражали именно отображаемую выборку (а не глобальный пул).
+            getPermissionsCoverage({
+              search: search || undefined,
+              store_id: filterStoreId ?? undefined,
+              position_id: filterPositionId ?? undefined,
+              permission: filterPermission ?? undefined,
+            }),
             getStores({}),
             getPositions({}),
           ]);
@@ -322,7 +333,9 @@ export function PermissionsMatrix() {
   };
 
   // ── PAGINATION ────────────────────────────────────────────────────
-  const totalPages = Math.ceil(totalUsers / PAGE_SIZE);
+  // При выбранном магазине — показываем всех (без pagination).
+  const effectivePageSize = filterStoreId ? 1000 : PAGE_SIZE;
+  const totalPages = Math.ceil(totalUsers / effectivePageSize);
 
   // ── PERMISSION LABEL ──────────────────────────────────────────────
   const permLabel = React.useMemo(
