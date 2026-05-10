@@ -6,6 +6,7 @@ import { MOCK_UNASSIGNED_BLOCKS } from "@/lib/mock-data/_lama-unassigned-blocks"
 import { LAMA_EMPLOYEE_ZONES } from "@/lib/mock-data/_lama-employee-zones";
 import { LAMA_EMPLOYEE_WORK_TYPES } from "@/lib/mock-data/_lama-employee-work-types";
 import { LAMA_FALLBACK_MEDIANS } from "@/lib/mock-data/_lama-fallback-medians";
+import { EMPLOYEE_STATS } from "@/lib/mock-data/_lama-distribution-stats";
 import {
   LAMA_PLANNING_POOL,
   type PlanningEmployee,
@@ -906,13 +907,29 @@ export function autoDistribute(
       candidates = employees.filter((e) => (freeByUser.get(e.user.id) ?? 0) > 0);
     }
 
-    // Balance-aware ranking: relative free ratio desc (наименее загруженный первым).
+    // Balance-aware ranking: relative free ratio desc (least loaded first),
+    // с history-affinity tiebreaker для близких кандидатов (≤5% difference).
+    // Чем больше у сотрудника подтверждённого опыта по этому work_type
+    // (count в EMPLOYEE_STATS из вчерашних снапшотов), тем выше он попадает
+    // при равной загрузке. Стат каждый день обновляется через analyze-distribution.py
+    // → алгоритм улучшается без UI-триггера.
+    const FREE_RATIO_TIE_EPSILON = 0.05;
+    const taskWorkType = task.work_type_name ?? "";
+    const affinityFor = (userId: number): number => {
+      const stats = EMPLOYEE_STATS[userId];
+      if (!stats || !taskWorkType) return 0;
+      return stats.affinity?.[taskWorkType]?.count ?? 0;
+    };
     const ranked = [...candidates].sort((a, b) => {
       const aRatio =
         a.shift_total_min > 0 ? (freeByUser.get(a.user.id) ?? 0) / a.shift_total_min : 0;
       const bRatio =
         b.shift_total_min > 0 ? (freeByUser.get(b.user.id) ?? 0) / b.shift_total_min : 0;
-      return bRatio - aRatio;
+      if (Math.abs(aRatio - bRatio) > FREE_RATIO_TIE_EPSILON) {
+        return bRatio - aRatio;
+      }
+      // Tiebreaker: исторический опыт по типу работ (больше count = опытнее)
+      return affinityFor(b.user.id) - affinityFor(a.user.id);
     });
 
     // Track кому уже дали в этой задаче — dedup для pass 2.

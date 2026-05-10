@@ -24,11 +24,6 @@ import {
   getActiveLamaStoreIds,
   type OverShiftEntry,
 } from "@/lib/api/distribution"
-import {
-  autoDistribute as autoDistributeFromHistory,
-  hasPlanningPool,
-  type DistributionResult as HistoryDistributionResult,
-} from "@/lib/utils/auto-distribute"
 import { getStores } from "@/lib/api/stores"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
 import { useAuth } from "@/lib/contexts/auth-context"
@@ -58,7 +53,6 @@ import { TasksPanel } from "./distribution/tasks-panel"
 import { EmployeesPanel } from "./distribution/employees-panel"
 import { DistributionSheet } from "./distribution/distribution-sheet"
 import { EmployeeSheet } from "./distribution/employee-sheet"
-import { AutoDistributeHistorySheet } from "./distribution/auto-distribute-history-sheet"
 import { MobileUtilizationCollapsible } from "./distribution/mobile-utilization-collapsible"
 import { StickyPlanBar } from "./distribution/sticky-plan-bar"
 import { getFullName } from "./distribution/_utils"
@@ -170,13 +164,6 @@ export function TaskDistribution() {
   // Какой ракурс показываем: список задач (по дефолту) или список сотрудников
   const [viewMode, setViewMode] = React.useState<ViewMode>("by-task")
 
-  // History-driven auto-distribute (lib/utils/auto-distribute) — отдельный
-  // алгоритм поверх LAMA snapshot'ов с детальным reasoning'ом для демо.
-  const [historyResult, setHistoryResult] = React.useState<HistoryDistributionResult | null>(null)
-  const [historySheetOpen, setHistorySheetOpen] = React.useState(false)
-  const [isHistoryRunning, setIsHistoryRunning] = React.useState(false)
-  const [isHistoryApplying, setIsHistoryApplying] = React.useState(false)
-
   // Локальный план — staged allocations не закоммичены на сервер.
   // Map<taskId, allocations[]>. Подтверждается через StickyPlanBar.
   const [plan, setPlan] = React.useState<Map<string, TaskDistributionAllocation[]>>(new Map())
@@ -285,48 +272,10 @@ export function TaskDistribution() {
   // shop_code (external_code) текущего магазина — нужен для history-algo,
   // т.к. LAMA mocks ключуются по внешнему коду магазина (e.g. "0006"),
   // а не по числовому id.
-  const selectedShopCode = React.useMemo(
-    () => stores.find((s) => s.id === selectedStoreId)?.external_code ?? null,
-    [stores, selectedStoreId],
-  )
-  const canRunHistoryAlgo = canEdit && hasPlanningPool(selectedShopCode)
-
-  // History-driven auto-distribute — pure алгоритм по LAMA stats.
-  // Открывает Sheet с reasoning'ом каждого назначения; apply = демо
-  // (LAMA-задачи живут отдельно от MOCK_TASKS, мы лишь показываем план).
-  const handleAutoDistributeHistory = () => {
-    if (!selectedShopCode || !canRunHistoryAlgo) return
-    setIsHistoryRunning(true)
-    setTimeout(() => {
-      const result = autoDistributeFromHistory(selectedShopCode)
-      setHistoryResult(result)
-      setHistorySheetOpen(true)
-      setIsHistoryRunning(false)
-    }, 200)
-  }
-
-  const handleApproveHistoryPlan = () => {
-    if (!historyResult) return
-    setIsHistoryApplying(true)
-    // Демо-применение: LAMA-задачи отдельный мир, но клиенту в демо
-    // важен сам факт «план применился». Toast + закрытие Sheet'а.
-    setTimeout(() => {
-      toast.success(
-        t("toast.history_applied", { count: historyResult.assignments.length }),
-      )
-      setHistorySheetOpen(false)
-      setHistoryResult(null)
-      setIsHistoryApplying(false)
-    }, 350)
-  }
-
-  const handleCloseHistorySheet = () => {
-    if (isHistoryApplying) return
-    setHistorySheetOpen(false)
-    setHistoryResult(null)
-  }
-
   // Auto-distribute: алгоритм предлагает план, кладём в локальный state.
+  // History tiebreaker встроен в основной алгоритм (lib/api/distribution.ts) —
+  // EMPLOYEE_STATS из ежедневного analyze-distribution.py подсказывает кому
+  // отдать задачу при близкой загрузке. Чем дольше работает — тем точнее.
   // НЕ коммитит на сервер — директор подтверждает через StickyPlanBar.
   const handleAutoDistribute = () => {
     if (!selectedStoreId || !canEdit) return
@@ -531,29 +480,6 @@ export function TaskDistribution() {
             </Tooltip>
           </TooltipProvider>
 
-          {canRunHistoryAlgo && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="block w-full sm:w-auto">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={handleAutoDistributeHistory}
-                      disabled={isHistoryRunning || isLoadingTasks}
-                      className="gap-1.5 w-full sm:w-auto"
-                    >
-                      <Sparkles className="size-4" />
-                      {isHistoryRunning
-                        ? t("toolbar.auto_history_running")
-                        : t("toolbar.auto_history")}
-                    </Button>
-                  </span>
-                </TooltipTrigger>
-                <TooltipContent>{t("toolbar.auto_history_hint")}</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )}
         </div>
       </div>
 
@@ -687,15 +613,6 @@ export function TaskDistribution() {
         t={t}
       />
 
-      {/* History-driven auto-distribute Sheet (отдельный от обычного Авто) */}
-      <AutoDistributeHistorySheet
-        open={historySheetOpen}
-        onClose={handleCloseHistorySheet}
-        shopCode={selectedShopCode}
-        result={historyResult}
-        onApprove={handleApproveHistoryPlan}
-        isApplying={isHistoryApplying}
-      />
     </div>
   )
 }
