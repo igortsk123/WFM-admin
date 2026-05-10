@@ -6,7 +6,7 @@ import type { UserDetail } from "@/lib/api/users"
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { RoleBadge } from "@/components/shared"
+import { MetadataCard, RoleBadge, type MetadataItem } from "@/components/shared"
 
 import type { FormatDate, FormatTime } from "./_shared"
 
@@ -22,23 +22,76 @@ export function EmployeeProfileTab({ user, locale, formatDate, formatTime, t }: 
   const activeAssignment = user.assignments.find((a) => a.active)
   const tEmpType = useTranslations("employee_type")
 
+  const personalItems: MetadataItem[] = [
+    {
+      label: t("profile.personal_name"),
+      value: [user.last_name, user.first_name, user.middle_name].filter(Boolean).join(" "),
+    },
+    {
+      label: t("profile.personal_phone"),
+      value: (
+        <a href={`tel:${user.phone}`} className="text-foreground hover:underline">
+          {user.phone}
+        </a>
+      ),
+    },
+  ]
+  if (user.email) {
+    personalItems.push({
+      label: t("profile.personal_email"),
+      value: (
+        <a href={`mailto:${user.email}`} className="text-foreground hover:underline">
+          {user.email}
+        </a>
+      ),
+    })
+  }
+  personalItems.push({
+    label: t("profile.personal_type"),
+    value: <Badge variant="secondary">{tEmpType(user.type === "STAFF" ? "STAFF" : "FREELANCE")}</Badge>,
+  })
+  if (user.hired_at) {
+    personalItems.push({
+      label: t("profile.personal_hired"),
+      value: formatDate(user.hired_at, locale),
+    })
+  }
+
+  const systemItems: MetadataItem[] = [
+    {
+      label: t("profile.system_id"),
+      value: <span className="font-mono text-sm">{user.id}</span>,
+    },
+  ]
+  if (activeAssignment?.external_id) {
+    systemItems.push({
+      label: t("profile.system_external_id"),
+      value: <span className="font-mono text-sm">{activeAssignment.external_id}</span>,
+    })
+  }
+  if (user.hired_at) {
+    systemItems.push({
+      label: t("profile.system_created"),
+      value: formatDate(user.hired_at, locale),
+    })
+  }
+  if (user.last_active_at) {
+    systemItems.push({
+      label: t("profile.system_last_active"),
+      value: formatTime(user.last_active_at, locale),
+    })
+  }
+  if (user.preferred_timezone) {
+    systemItems.push({
+      label: t("profile.system_timezone"),
+      value: user.preferred_timezone,
+    })
+  }
+
   return (
     <div className="flex flex-col gap-6">
       {/* Personal card */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">{t("profile.personal_card")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <ProfileRow label={t("profile.personal_name")} value={[user.last_name, user.first_name, user.middle_name].filter(Boolean).join(" ")} />
-            <ProfileRow label={t("profile.personal_phone")} value={<a href={`tel:${user.phone}`} className="text-foreground hover:underline">{user.phone}</a>} />
-            {user.email && <ProfileRow label={t("profile.personal_email")} value={<a href={`mailto:${user.email}`} className="text-foreground hover:underline">{user.email}</a>} />}
-            <ProfileRow label={t("profile.personal_type")} value={<Badge variant="secondary">{tEmpType(user.type === "STAFF" ? "STAFF" : "FREELANCE")}</Badge>} />
-            {user.hired_at && <ProfileRow label={t("profile.personal_hired")} value={formatDate(user.hired_at, locale)} />}
-          </dl>
-        </CardContent>
-      </Card>
+      <MetadataCard title={t("profile.personal_card")} items={personalItems} columns={2} />
 
       {/* Assignments card */}
       <Card>
@@ -103,28 +156,7 @@ export function EmployeeProfileTab({ user, locale, formatDate, formatTime, t }: 
       )}
 
       {/* System card */}
-      <Card>
-        <CardHeader className="pb-3">
-          <CardTitle className="text-base">{t("profile.system_card")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <ProfileRow label={t("profile.system_id")} value={<span className="font-mono text-sm">{user.id}</span>} />
-            {activeAssignment?.external_id && (
-              <ProfileRow label={t("profile.system_external_id")} value={<span className="font-mono text-sm">{activeAssignment.external_id}</span>} />
-            )}
-            {user.hired_at && (
-              <ProfileRow label={t("profile.system_created")} value={formatDate(user.hired_at, locale)} />
-            )}
-            {user.last_active_at && (
-              <ProfileRow label={t("profile.system_last_active")} value={formatTime(user.last_active_at, locale)} />
-            )}
-            {user.preferred_timezone && (
-              <ProfileRow label={t("profile.system_timezone")} value={user.preferred_timezone} />
-            )}
-          </dl>
-        </CardContent>
-      </Card>
+      <MetadataCard title={t("profile.system_card")} items={systemItems} columns={2} />
     </div>
   )
 }

@@ -8,6 +8,7 @@ import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { MetadataCard, type MetadataItem } from "@/components/shared";
 import {
   Select,
   SelectContent,
@@ -213,31 +214,16 @@ export function AppearanceTab({ user, locale, onUserUpdate }: AppearanceTabProps
       </Card>
 
       {/* Regional formats — read-only */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-base">{t("sections.appearance.regional_title")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
-            <div>
-              <dt className="text-xs text-muted-foreground mb-0.5">{t("sections.appearance.regional_date")}</dt>
-              <dd className="font-medium">{regionalFormats.date}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground mb-0.5">{t("sections.appearance.regional_time")}</dt>
-              <dd className="font-medium">{regionalFormats.time}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground mb-0.5">{t("sections.appearance.regional_number")}</dt>
-              <dd className="font-medium">{regionalFormats.number}</dd>
-            </div>
-            <div>
-              <dt className="text-xs text-muted-foreground mb-0.5">{t("sections.appearance.regional_currency")}</dt>
-              <dd className="font-medium">{regionalFormats.currency}</dd>
-            </div>
-          </dl>
-        </CardContent>
-      </Card>
+      <MetadataCard
+        title={t("sections.appearance.regional_title")}
+        columns={2}
+        items={[
+          { label: t("sections.appearance.regional_date"), value: regionalFormats.date },
+          { label: t("sections.appearance.regional_time"), value: regionalFormats.time },
+          { label: t("sections.appearance.regional_number"), value: regionalFormats.number },
+          { label: t("sections.appearance.regional_currency"), value: regionalFormats.currency },
+        ] satisfies MetadataItem[]}
+      />
     </div>
   );
 }
