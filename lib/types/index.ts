@@ -292,6 +292,19 @@ export interface User {
   source?: "MANUAL" | "EXTERNAL_SYNC";
   /** Внешний ID из LAMA (employee_id из их БД). Backend имеет (external_id в UserResponse). */
   external_id?: number;
+  /**
+   * @admin-extension Ручная корректировка типов работ директором.
+   *
+   * По умолчанию `work_types` сотрудника автоматически выводится из истории
+   * (`LAMA_EMPLOYEE_WORK_TYPES[user.id]`). Директор в карточке сотрудника
+   * (`/employees/{id}` вкладка «Типы») может перепроставить галочки —
+   * результат сохраняется сюда и переопределяет авто-derive.
+   *
+   * Используется алгоритмом распределения (`autoDistribute`) через
+   * `EmployeeUtilization.user.work_types` (см. `lib/api/distribution.ts`).
+   * Backend пока не отдаёт — admin-only поле. См. MIGRATION-NOTES.md.
+   */
+  preferred_work_types?: string[];
 }
 
 /**

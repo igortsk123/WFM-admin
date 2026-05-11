@@ -1717,6 +1717,7 @@
         "tasks": "Задачи",
         "shifts": "Смены",
         "permissions": "Зоны",
+        "work_types": "Типы",
         "history": "История",
         "documents": "Документы",
         "services": "Услуги",
@@ -1775,6 +1776,13 @@
         "history_card": "История привилегий",
         "history_granted": "Привилегия {permission} назначена",
         "history_revoked": "Привилегия {permission} отозвана"
+      },
+      "work_types": {
+        "card_title": "Типы задач",
+        "hint": "По умолчанию берётся из истории сотрудника. Поправьте если нужно — алгоритм распределения будет это учитывать.",
+        "count_label": "{count, plural, one {# раз в истории} few {# раза в истории} many {# раз в истории} other {# раз в истории}}",
+        "never": "никогда",
+        "saved": "Сохранено"
       },
       "history": {
         "empty": "История пуста"

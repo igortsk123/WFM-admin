@@ -431,6 +431,7 @@ Admin использует поверх:
 | `oferta_accepted_at` | timestamp? | Когда внештатник принял оферту. |
 | `rating` | float | Рейтинг для распределения задач. |
 | `source` | "MANUAL" \| "EXTERNAL_SYNC" | Откуда создан (HR-система, внешний sync). |
+| `preferred_work_types` | string[]? | Ручная корректировка типов работ директором (override LAMA-derived). Используется алгоритмом распределения (`autoDistribute` через `EmployeeUtilization.user.work_types`). Редактируется на `/employees/{id}` вкладка «Типы». Значения — имена work-types как в LAMA («Касса», «Выкладка», «КСО», «Переоценка», «Инвентаризация», «Менеджерские операции», «Другие работы»). Backend хранит nullable массив строк; null = использовать авто-derive из истории. |
 
 #### LAMA-derived permissions fallback (admin)
 

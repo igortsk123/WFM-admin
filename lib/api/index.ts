@@ -89,6 +89,10 @@ export {
   type UserHistoryEvent,
   type UserHistoryEventType,
   getUserHistoryEvents,
+  // Work types (employee detail tab «Типы»)
+  type EmployeeWorkTypeRow,
+  ALL_LAMA_WORK_TYPES,
+  getEmployeeWorkTypes,
 } from "./users";
 
 // ═══════════════════════════════════════════════════════════════════

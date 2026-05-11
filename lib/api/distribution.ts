@@ -289,7 +289,9 @@ function buildEmployeesFromPlanningPool(
     // from-snapshots.py пишет map с тем же resolved-id ключом, так что
     // unmapped employees тоже находят свои зоны (включая peer-inferred).
     const zones = LAMA_EMPLOYEE_ZONES[userId];
-    const workTypes = LAMA_EMPLOYEE_WORK_TYPES[userId];
+    // preferred_work_types — ручная корректировка директором (override LAMA).
+    const workTypes = adminUser?.preferred_work_types
+      ?? LAMA_EMPLOYEE_WORK_TYPES[userId];
 
     return {
       user: {
@@ -445,15 +447,21 @@ export async function getStoreEmployeesUtilization(
     }
 
     // Work types сотрудника — fallback для фильтра «подходящие» когда у
-    // задачи нет зоны. Источник 1: LAMA snapshot history. Источник 2:
-    // история admin-tasks (work_type_name из MOCK_TASKS).
+    // задачи нет зоны. Приоритет:
+    //   1. preferred_work_types — ручная корректировка директором (override).
+    //   2. LAMA snapshot history.
+    //   3. История admin-tasks (work_type_name из MOCK_TASKS).
     const workTypesFromHistory = new Set<string>();
-    const lamaWorkTypes = LAMA_EMPLOYEE_WORK_TYPES[shift.user_id];
-    if (lamaWorkTypes) {
-      for (const w of lamaWorkTypes) workTypesFromHistory.add(w);
-    }
-    for (const t of userTasks) {
-      if (t.work_type_name) workTypesFromHistory.add(t.work_type_name);
+    if (user?.preferred_work_types && user.preferred_work_types.length > 0) {
+      for (const w of user.preferred_work_types) workTypesFromHistory.add(w);
+    } else {
+      const lamaWorkTypes = LAMA_EMPLOYEE_WORK_TYPES[shift.user_id];
+      if (lamaWorkTypes) {
+        for (const w of lamaWorkTypes) workTypesFromHistory.add(w);
+      }
+      for (const t of userTasks) {
+        if (t.work_type_name) workTypesFromHistory.add(t.work_type_name);
+      }
     }
 
     return {

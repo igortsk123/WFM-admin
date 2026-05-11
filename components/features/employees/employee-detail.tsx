@@ -82,6 +82,10 @@ const EmployeeRatingTab = dynamic(
   () => import("./employee-detail/tab-rating").then((m) => m.EmployeeRatingTab),
   { loading: () => <TabSkeleton /> },
 )
+const EmployeeWorkTypesTab = dynamic(
+  () => import("./employee-detail/tab-work-types").then((m) => m.EmployeeWorkTypesTab),
+  { loading: () => <TabSkeleton /> },
+)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // TYPES
@@ -393,13 +397,20 @@ export function EmployeeDetail({ userId }: EmployeeDetailProps) {
           />
         </TabsContent>
 
+        <TabsContent value="work_types" className="mt-6">
+          <EmployeeWorkTypesTab user={user} t={t} />
+        </TabsContent>
+
         <TabsContent value="history" className="mt-6">
           <EmployeeHistoryTab user={user} locale={locale} formatTime={formatTime} t={t} />
         </TabsContent>
 
-        <TabsContent value="documents" className="mt-6">
-          <EmployeeDocumentsTab user={user} t={t} locale={locale} formatDate={formatDate} />
-        </TabsContent>
+        {/* Documents — только для FREELANCE (внештатникам нужны паспорт/ИНН/договор) */}
+        {user.type === "FREELANCE" && (
+          <TabsContent value="documents" className="mt-6">
+            <EmployeeDocumentsTab user={user} t={t} locale={locale} formatDate={formatDate} />
+          </TabsContent>
+        )}
 
         {user.type === "FREELANCE" && (
           <TabsContent value="services" className="mt-6">

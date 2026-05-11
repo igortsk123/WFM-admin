@@ -1717,6 +1717,7 @@
         "tasks": "Tasks",
         "shifts": "Shifts",
         "permissions": "Zones",
+        "work_types": "Task types",
         "history": "History",
         "documents": "Documents",
         "services": "Services",
@@ -1775,6 +1776,13 @@
         "history_card": "Permission history",
         "history_granted": "Permission {permission} granted",
         "history_revoked": "Permission {permission} revoked"
+      },
+      "work_types": {
+        "card_title": "Task types",
+        "hint": "Defaults to types from the employee's history. Adjust if needed — the distribution algorithm will respect it.",
+        "count_label": "{count, plural, one {# time in history} other {# times in history}}",
+        "never": "never",
+        "saved": "Saved"
       },
       "history": {
         "empty": "History is empty"

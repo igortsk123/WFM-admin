@@ -4,7 +4,6 @@ import { useTranslations } from "next-intl"
 
 import type { UserDetail } from "@/lib/api/users"
 
-import { Badge } from "@/components/ui/badge"
 import { TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
@@ -20,20 +19,18 @@ export function EmployeeTabsHeader({ user, t }: EmployeeTabsHeaderProps) {
   return (
     <ScrollArea className="w-full">
       <TabsList className="h-10 inline-flex w-auto min-w-full justify-start rounded-none border-b bg-transparent p-0">
-        {(["profile", "tasks", "shifts", "permissions", "history"] as const).map((tab) => (
+        {/* Базовые вкладки — порядок: Профиль → Задачи → Смены → Зоны → Типы → История */}
+        {(["profile", "tasks", "shifts", "permissions", "work_types", "history"] as const).map((tab) => (
           <TabsTrigger key={tab} value={tab} className={TAB_TRIGGER_CLASS}>
             {t(`tabs.${tab}`)}
           </TabsTrigger>
         ))}
-        {/* Documents tab */}
-        <TabsTrigger value="documents" className={TAB_TRIGGER_CLASS}>
-          {t("tabs.documents")}
-          {user.type === "STAFF" && (
-            <Badge variant="secondary" className="ml-1.5 text-[10px] px-1.5 py-0">
-              {t("documents.tab_optional")}
-            </Badge>
-          )}
-        </TabsTrigger>
+        {/* Documents tab — только для FREELANCE (внештатникам нужны паспорт/ИНН/договор) */}
+        {user.type === "FREELANCE" && (
+          <TabsTrigger value="documents" className={TAB_TRIGGER_CLASS}>
+            {t("tabs.documents")}
+          </TabsTrigger>
+        )}
         {/* FREELANCE-only tabs */}
         {user.type === "FREELANCE" && (
           <>

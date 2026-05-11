@@ -102,6 +102,12 @@ export interface BackendUserResponse {
   permissions: BackendPermission[];
   assignments: BackendAssignment[];
   updated_at: string;
+  /**
+   * @admin-extension Ручная корректировка типов работ директором.
+   * Имена work-types из LAMA словаря («Касса», «Выкладка», «КСО», ...).
+   * Backend пока не отдаёт — добавить в /users/{id} response. См. MIGRATION-NOTES.md.
+   */
+  preferred_work_types?: string[] | null;
 }
 
 /** PATCH /users/{id} body */
@@ -111,6 +117,11 @@ export interface BackendUserUpdate {
   first_name?: string | null;
   last_name?: string | null;
   middle_name?: string | null;
+  /**
+   * @admin-extension Ручная корректировка типов работ директором.
+   * См. BackendUserResponse.preferred_work_types.
+   */
+  preferred_work_types?: string[] | null;
 }
 
 /** PATCH /users/{id}/permissions body */

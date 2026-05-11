@@ -29,6 +29,7 @@ import { MOCK_FREELANCE_AGENTS } from "@/lib/mock-data/freelance-agents";
 import { MOCK_ORGANIZATIONS } from "@/lib/mock-data/organizations";
 import { LAMA_EMPLOYEE_WORK_TYPES } from "@/lib/mock-data/_lama-employee-work-types";
 import { REAL_LAMA_POSITIONS } from "@/lib/mock-data/_lama-real";
+import { EMPLOYEE_STATS } from "@/lib/mock-data/_lama-distribution-stats";
 
 /** Сегодняшняя дата в моках — синхронизируем с MOCK_SHIFTS / MOCK_TASKS. */
 const TODAY = "2026-05-01";
@@ -667,6 +668,13 @@ export async function updateUser(
     };
   }
 
+  // In-memory mutate — нужно чтобы getStoreEmployeesUtilization / autoDistribute
+  // увидели новый preferred_work_types сразу (USERS_BY_ID указывает на тот же
+  // объект, что MOCK_USERS[i]). При swap на real backend этот mutate уйдёт.
+  if (data.preferred_work_types !== undefined) {
+    user.preferred_work_types = data.preferred_work_types;
+  }
+
   return { success: true };
 }
 
@@ -1024,6 +1032,68 @@ export async function getUserHistoryEvents(
   events.sort((a, b) => b.occurred_at.localeCompare(a.occurred_at));
 
   return { data: events };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// EMPLOYEE WORK TYPES (для employee-detail tab «Типы»)
+// ═══════════════════════════════════════════════════════════════════
+
+/** 7 уникальных типов работ из LAMA-словаря (источник `_lama-employee-work-types.ts`). */
+export const ALL_LAMA_WORK_TYPES: readonly string[] = [
+  "Выкладка",
+  "Касса",
+  "КСО",
+  "Переоценка",
+  "Инвентаризация",
+  "Менеджерские операции",
+  "Другие работы",
+] as const;
+
+/** Одна строка вкладки «Типы» — work_type + count из истории + флаг отмечен ли сейчас. */
+export interface EmployeeWorkTypeRow {
+  /** Имя типа работ (как в LAMA). */
+  work_type: string;
+  /** Сколько раз сотрудник выполнял эту работу (из EMPLOYEE_STATS.affinity). 0 = никогда. */
+  history_count: number;
+  /** Отмечен ли сейчас (с учётом preferred_work_types override). */
+  checked: boolean;
+}
+
+/**
+ * Get full work-types list with history counts and current checked state for an employee.
+ *
+ * Используется на `/employees/{id}` вкладка «Типы»: директор видит все 7 типов работ
+ * + сколько раз сотрудник их делал в истории + текущие галочки (из `preferred_work_types`
+ * или из LAMA авто-derive).
+ *
+ * @param userId Employee user.id
+ * @endpoint GET /users/{user_id}/work-types (admin-only)
+ */
+export async function getEmployeeWorkTypes(
+  userId: number,
+): Promise<ApiResponse<EmployeeWorkTypeRow[]>> {
+  await delay(200);
+
+  const user = MOCK_USERS.find((u) => u.id === userId);
+  if (!user) {
+    return { data: [] };
+  }
+
+  // Current effective work types: preferred override or LAMA auto-derive.
+  const current = new Set<string>(
+    user.preferred_work_types ?? LAMA_EMPLOYEE_WORK_TYPES[userId] ?? [],
+  );
+
+  // History counts: EMPLOYEE_STATS.affinity[work_type].count (если есть запись).
+  const affinity = EMPLOYEE_STATS[userId]?.affinity ?? {};
+
+  const rows: EmployeeWorkTypeRow[] = ALL_LAMA_WORK_TYPES.map((wt) => ({
+    work_type: wt,
+    history_count: affinity[wt]?.count ?? 0,
+    checked: current.has(wt),
+  }));
+
+  return { data: rows };
 }
 
 // ═══════════════════════════════════════════════════════════════════
