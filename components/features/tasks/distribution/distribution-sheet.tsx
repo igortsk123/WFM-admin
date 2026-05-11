@@ -218,6 +218,24 @@ export function DistributionSheet({
           )
         })()}
 
+        {/* Cashier hard-constraint warning. Касса = материальная
+            ответственность — отдавать можно ТОЛЬКО тем у кого «Касса» уже
+            в истории. Если 0 таких на смене — показываем директору alert
+            с просьбой добавить зону. (КСО — касса самообслуживания — не
+            попадает под это правило). */}
+        {task.work_type_name === "Касса" && (() => {
+          const cashiers = employees.filter((e) => e.user.work_types?.includes("Касса"))
+          if (cashiers.length > 0) return null
+          return (
+            <div className="mx-4 my-3 px-3 py-2 rounded-md border border-warning/40 bg-warning/10 text-warning text-xs">
+              <strong>Касса = материальная ответственность.</strong> Сегодня на смене
+              нет сотрудников с подтверждённой работой на кассе. Откройте
+              карточку нужного сотрудника и поставьте галочку «Касса» в
+              разделе «Типы задач».
+            </div>
+          )
+        })()}
+
         {/* Employee list */}
         <ScrollArea className="flex-1 min-h-0 px-4 py-3">
           <p className="text-xs font-medium text-muted-foreground mb-3">
@@ -228,6 +246,10 @@ export function DistributionSheet({
               if (!zoneFilterEnabled) return employees
               const hasZone = !!task.zone_name && task.zone_name !== "Без зоны"
               const hasWorkType = !!task.work_type_name
+              // Касса = hard constraint, без relax.
+              if (task.work_type_name === "Касса") {
+                return employees.filter((e) => e.user.work_types?.includes("Касса"))
+              }
               // Strict zone+wt
               if (hasZone && hasWorkType) {
                 const strict = employees.filter(

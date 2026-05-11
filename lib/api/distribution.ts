@@ -1013,7 +1013,15 @@ export function autoDistribute(
     // если у emp нет истории по этой зоне/wtype (новый сотрудник, или просто
     // не делал такое раньше). Hard constraint смягчён после iter#5 backtest'а
     // (43% задач оставались без кандидатов — что хуже false positive).
-    if (candidates.length === 0) {
+    //
+    // ИСКЛЮЧЕНИЕ — «Касса» = материальная ответственность. На обычную кассу
+    // (НЕ КСО) можно отдавать ТОЛЬКО тех у кого «Касса» уже была в истории
+    // или в preferred_work_types. Если 0 кандидатов после строгих cascade'ов
+    // → не подсовываем рандомного, оставляем пустой allocations и идём
+    // дальше. UI покажет директору warning «нужно добавить зону Касса
+    // кому-то из сотрудников».
+    const isCashier = taskWorkType === "Касса";
+    if (candidates.length === 0 && !isCashier) {
       candidates = employees.filter((e) => (freeByUser.get(e.user.id) ?? 0) > 0);
     }
 
