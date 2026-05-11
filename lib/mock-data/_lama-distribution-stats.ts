@@ -8,7 +8,7 @@
  *   - EMPLOYEE_STATS  — workload, affinity by work_type, zones worked
  *   - SHOP_STATS      — daily workload, hour-of-day curve, top work types
  *
- * Built at: 2026-05-11T16:36:56Z
+ * Built at: 2026-05-11T17:41:35Z
  * Source date range: 2026-05-07 to 2026-05-11 (5 days)
  *
  * 776 unique employees, 7 unique work_types,
@@ -26220,7 +26220,7 @@ export const SHOP_EMPLOYEE_ZONE_WT_COUNT: Record<string, number> = {
   "0029::31832::Фреш 1::Выкладка": 2,
 };
 
-export const ANALYSIS_BUILT_AT = "2026-05-11T16:36:56Z";
+export const ANALYSIS_BUILT_AT = "2026-05-11T17:41:35Z";
 export const ANALYSIS_SOURCE_DAYS = 5;
 export const ANALYSIS_SOURCE_DATE_FROM = "2026-05-07";
 export const ANALYSIS_SOURCE_DATE_TO = "2026-05-11";
