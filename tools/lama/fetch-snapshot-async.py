@@ -123,6 +123,7 @@ async def fetch_shop(
 
     employees_records = []
     tasks = []
+    shifts = []
     for (e, pos), result in zip(eis_jobs, results):
         eis = pos["employee_in_shop_id"]
         rec = {
@@ -141,7 +142,29 @@ async def fetch_shop(
         if isinstance(result, Exception):
             continue
         shift_data, tasks_list = result
-        if not shift_data or not tasks_list:
+        if not shift_data:
+            continue
+        # Сохраняем полный shift record — нужен для алго (shift-time alignment)
+        # и для понимания «кто реально на смене сегодня» с часами.
+        shifts.append({
+            "shift_id": shift_data["id"],
+            "employee_id": e.get("employee_id"),
+            "employee_name": e.get("employee_name"),
+            "shop_code": code,
+            "shop_name": pos.get("shop_name"),
+            "eis_id": eis,
+            "position_code": pos.get("position_code"),
+            "position_name": pos.get("position_name"),
+            "time_start": shift_data.get("time_start"),
+            "time_end": shift_data.get("time_end"),
+            "planned_start": shift_data.get("planned_start"),
+            "planned_end": shift_data.get("planned_end"),
+            "actual_start": shift_data.get("actual_start"),
+            "actual_end": shift_data.get("actual_end"),
+            "status": shift_data.get("status"),
+            "date": shift_data.get("date"),
+        })
+        if not tasks_list:
             continue
         for t in tasks_list:
             t["_employee_id"] = e["employee_id"]
@@ -157,6 +180,7 @@ async def fetch_shop(
         "shop_name": shop_name,
         "employees": employees_records,
         "tasks": tasks,
+        "shifts": shifts,
         "n_emps": len(emps),
     }
 
@@ -165,6 +189,7 @@ async def main_async(codes: list[str], concurrency: int, out_path: Path):
     shops = []
     employees_records = []
     tasks = []
+    shifts = []
     t0 = time.time()
 
     # httpx с keep-alive (HTTP/2 если поддерживается LAMA, иначе HTTP/1.1)
@@ -193,11 +218,13 @@ async def main_async(codes: list[str], concurrency: int, out_path: Path):
             shops.append(code)
             employees_records.extend(shop_data["employees"])
             tasks.extend(shop_data["tasks"])
+            shifts.extend(shop_data.get("shifts", []))
             elapsed = time.time() - t0
             print(
                 f"  [{idx}/{len(codes)}] {code}: {shop_data['shop_name']} "
                 f"({shop_data['n_emps']} emps, {len(shop_data['employees'])} positions, "
-                f"{len(shop_data['tasks'])} tasks) — elapsed {elapsed:.0f}s",
+                f"{len(shop_data['tasks'])} tasks, {len(shop_data.get('shifts', []))} shifts) "
+                f"— elapsed {elapsed:.0f}s",
                 file=sys.stderr,
                 flush=True,
             )
@@ -207,13 +234,14 @@ async def main_async(codes: list[str], concurrency: int, out_path: Path):
         "shops": shops,
         "employees": employees_records,
         "tasks": tasks,
+        "shifts": shifts,
     }
     out_path.write_text(json.dumps(snapshot, ensure_ascii=False, indent=2), encoding="utf-8")
 
     elapsed = time.time() - t0
     print(
         f"\nSaved: {out_path}",
-        f"  shops={len(shops)} employees={len(employees_records)} tasks={len(tasks)}",
+        f"  shops={len(shops)} employees={len(employees_records)} tasks={len(tasks)} shifts={len(shifts)}",
         f"  elapsed {elapsed:.0f}s ({elapsed / 60:.1f} мин)",
         sep="\n",
         file=sys.stderr,
