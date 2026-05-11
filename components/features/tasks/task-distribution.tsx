@@ -25,6 +25,7 @@ import {
   type OverShiftEntry,
 } from "@/lib/api/distribution"
 import { getStores } from "@/lib/api/stores"
+import { PLANNING_POOL_SOURCE_DATE } from "@/lib/mock-data/_lama-planning-pool"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
 import { useAuth } from "@/lib/contexts/auth-context"
 import { useStoreContext } from "@/lib/hooks/use-store-context"
@@ -189,10 +190,13 @@ export function TaskDistribution() {
   ]
   const canEdit = !!user?.role && DISTRIBUTOR_ROLES.includes(user.role)
 
-  // Get current date based on period
+  // Дата = свежий LAMA snapshot (PLANNING_POOL_SOURCE_DATE), а не хардкод.
+  // Cron каждое утро регенерирует planning pool → дата сама обновляется.
+  // Если по какой-то причине константа пустая — fallback на сегодня (на сервере MSK).
   const currentDate = React.useMemo(() => {
-    const today = new Date("2026-05-01") // Mock date
-    return period === "tomorrow" ? format(addDays(today, 1), "yyyy-MM-dd") : format(today, "yyyy-MM-dd")
+    const baseStr = PLANNING_POOL_SOURCE_DATE || format(new Date(), "yyyy-MM-dd")
+    const base = new Date(baseStr)
+    return period === "tomorrow" ? format(addDays(base, 1), "yyyy-MM-dd") : format(base, "yyyy-MM-dd")
   }, [period])
 
   // Load stores on mount
