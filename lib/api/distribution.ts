@@ -6,7 +6,12 @@ import { MOCK_UNASSIGNED_BLOCKS } from "@/lib/mock-data/_lama-unassigned-blocks"
 import { LAMA_EMPLOYEE_ZONES } from "@/lib/mock-data/_lama-employee-zones";
 import { LAMA_EMPLOYEE_WORK_TYPES } from "@/lib/mock-data/_lama-employee-work-types";
 import { LAMA_FALLBACK_MEDIANS } from "@/lib/mock-data/_lama-fallback-medians";
-import { EMPLOYEE_STATS } from "@/lib/mock-data/_lama-distribution-stats";
+import {
+  EMPLOYEE_STATS,
+  STICKINESS_BY_DATE,
+  SHOP_EMPLOYEE_WT_COUNT,
+  EMPLOYEE_SHIFT_START_BY_DATE,
+} from "@/lib/mock-data/_lama-distribution-stats";
 import {
   LAMA_PLANNING_POOL,
   type PlanningEmployee,
@@ -822,18 +827,44 @@ export async function notifyOverShiftAssignment(
 // ═══════════════════════════════════════════════════════════════════
 
 /**
- * Iter#3 scoring weights — после iter#2 (43.9%) backtest показал что
- * BALANCE_RANKING_DIFFERENCE даёт 50% mismatch'ей. Реальность концентрирует
- * работу на профиле сотрудника, не балансирует. Снижаем balance с 11% до 5%,
- * перекидываем по 3 п.п. в zone и wtype.
+ * Iter#5 scoring weights — iter#4 baseline (zone+global wtype) + 2 новых
+ * сигнала ADDITIVELY (stickiness + per-shop wtype), не replacement. Это
+ * сохраняет силу global wtype для emp'ов с короткой shop-историей, и
+ * толкает «вчерашнего» в топ при близком score.
  *
- * iter#2: 41 / 37 / 11 / 11 → 43.9% overall (49.9% после shift-filter)
- * iter#3: 44 / 40 / 05 / 11 → ожидаем хвост магазинов 20-39% подтянется
+ * iter#3: zone 44 / wtype 40 / balance  5 / rank 11           → 46.0%
+ * iter#4: + single-assignee                                   → 45.3% (честнее)
+ * iter#5: zone 30 / wtype 30 / shopWT 15 / stick 15 / b+r 10  → цель 55-65%
+ *
+ * Замечание: stickiness — bonus only когда «вчера в этом shop эту (zone, wt)
+ * делал кандидат X». Это не строгий predictor, но толкает X в топ при ties.
  */
-const SCORE_WEIGHT_ZONE = 0.44;
-const SCORE_WEIGHT_WTYPE = 0.40;
-const SCORE_WEIGHT_BALANCE = 0.05;
-const SCORE_WEIGHT_RANK = 0.11;
+const SCORE_WEIGHT_ZONE = 0.30;
+const SCORE_WEIGHT_WTYPE = 0.25;
+const SCORE_WEIGHT_SHIFT_ALIGN = 0.20; // iter#6: время задачи vs старт смены
+const SCORE_WEIGHT_SHOP_WTYPE = 0.10;
+const SCORE_WEIGHT_STICKINESS = 0.10;
+const SCORE_WEIGHT_RANK = 0.03;
+const SCORE_WEIGHT_BALANCE = 0.02;
+
+/**
+ * Iter#6: считает гэп между временем задачи и временем начала смены
+ * сотрудника. score = 1 если совпадает, 0 если разница ≥4ч. Шкала
+ * линейная — задача в 08:00 у emp с shift_start 07:00 → score 0.75.
+ */
+function parseHHMM(s?: string): number | null {
+  if (!s) return null;
+  const m = s.match(/^(\d{1,2}):(\d{2})/);
+  if (!m) return null;
+  return parseInt(m[1], 10) + parseInt(m[2], 10) / 60;
+}
+function shiftAlignScore(taskTimeStart: string, shiftTimeStart?: string): number {
+  const tH = parseHHMM(taskTimeStart);
+  const sH = parseHHMM(shiftTimeStart);
+  if (tH === null || sH === null) return 0;
+  const gap = Math.abs(tH - sH);
+  return Math.max(0, 1 - gap / 4);
+}
 
 /**
  * Seniority score из position_name (LAMA `rank` поле = «N/A» для всех
@@ -891,9 +922,20 @@ function minmax(value: number, min: number, max: number): number {
  */
 export function autoDistribute(
   tasks: UnassignedTask[],
-  employees: EmployeeUtilization[]
+  employees: EmployeeUtilization[],
+  currentDate?: string,
 ): Map<string, TaskDistributionAllocation[]> {
   const plan = new Map<string, TaskDistributionAllocation[]>();
+
+  // Stickiness: берём данные за день ПЕРЕД currentDate (вчерашний).
+  // Если currentDate не передан или нет данных за previous day — empty map.
+  const sortedStickyDates = Object.keys(STICKINESS_BY_DATE).sort();
+  const prevDate = currentDate
+    ? sortedStickyDates.filter((d) => d < currentDate).pop()
+    : sortedStickyDates[sortedStickyDates.length - 1]; // fallback: latest
+  const currentDateStickiness = prevDate
+    ? STICKINESS_BY_DATE[prevDate]
+    : undefined;
 
   // Mutable per-employee free minutes — shrinks как аллоцируем.
   const freeByUser = new Map<number, number>();
@@ -918,43 +960,82 @@ export function autoDistribute(
     let remaining = task.remaining_minutes;
     const allocations: TaskDistributionAllocation[] = [];
 
-    // Match cascade: zone → work_type → all
+    // Match cascade (iter#5): hard constraint по work_type если есть.
     const hasZone = !!task.zone_name && task.zone_name !== "Без зоны";
     const hasWorkType = !!task.work_type_name;
+    const taskWorkType = task.work_type_name ?? "";
+    const taskZone = task.zone_name ?? "";
+    const taskShopCode = STORES_BY_ID.get(task.store_id)?.external_code ?? "";
 
     let candidates: EmployeeUtilization[] = [];
-    if (hasZone) {
+    // 1. Strict: совпадение zone И work_type (если есть оба).
+    if (hasZone && hasWorkType) {
       candidates = employees.filter(
         (e) =>
-          e.user.zones?.includes(task.zone_name!) &&
+          e.user.zones?.includes(taskZone) &&
+          e.user.work_types?.includes(taskWorkType) &&
           (freeByUser.get(e.user.id) ?? 0) > 0,
       );
     }
+    // 2. Relax: только zone (если по сценарию выше пусто).
+    if (candidates.length === 0 && hasZone) {
+      candidates = employees.filter(
+        (e) =>
+          e.user.zones?.includes(taskZone) &&
+          (freeByUser.get(e.user.id) ?? 0) > 0,
+      );
+    }
+    // 3. Relax: только work_type (zone не задан или нет совпадений).
     if (candidates.length === 0 && hasWorkType) {
       candidates = employees.filter(
         (e) =>
-          e.user.work_types?.includes(task.work_type_name!) &&
+          e.user.work_types?.includes(taskWorkType) &&
           (freeByUser.get(e.user.id) ?? 0) > 0,
       );
     }
+    // 4. Final fallback: если все предыдущие cascade'ы пустые — берём всех
+    // со свободным временем. Это «лучше что-то предложить чем ничего», даже
+    // если у emp нет истории по этой зоне/wtype (новый сотрудник, или просто
+    // не делал такое раньше). Hard constraint смягчён после iter#5 backtest'а
+    // (43% задач оставались без кандидатов — что хуже false positive).
     if (candidates.length === 0) {
       candidates = employees.filter((e) => (freeByUser.get(e.user.id) ?? 0) > 0);
     }
 
-    // Iter#2 weighted scoring (zone 41% + wtype 37% + balance 11% + rank 11%).
-    // Каждая metric нормирована minmax относительно eligible кандидатов task'а;
-    // load инвертирован (low load = high score). Стат обновляется ежедневно
-    // через analyze-distribution.py → алгоритм улучшается с историей.
-    const taskWorkType = task.work_type_name ?? "";
-    const taskZone = task.zone_name ?? "";
+    // Iter#5 scoring: zone 30 + global wtype 30 + shop wtype 15 + stickiness 15
+    //                 + rank 5 + balance 5. Stickiness/shop-wtype — boosters,
+    //                 не replacement.
+    const stickinessEmpId = currentDateStickiness?.[
+      `${taskShopCode}::${taskZone}::${taskWorkType}`
+    ];
 
-    const zoneAffFor = (userId: number): number => {
-      const stats = EMPLOYEE_STATS[userId];
+    const stickinessFor = (uid: number): number =>
+      stickinessEmpId !== undefined && stickinessEmpId === uid ? 1 : 0;
+    const shopWtFor = (uid: number): number => {
+      if (!taskShopCode || !taskWorkType) return 0;
+      return SHOP_EMPLOYEE_WT_COUNT[`${taskShopCode}::${uid}::${taskWorkType}`] ?? 0;
+    };
+    // Iter#6 — shift_start lookup для shift-alignment score.
+    // currentDate уже резолвлен наверху как prevDate-source для stickiness;
+    // для shift-align берём ТЕКУЩИЙ день (или latest snapshot если нет).
+    const shiftStartDateKeys = Object.keys(EMPLOYEE_SHIFT_START_BY_DATE).sort();
+    const shiftDate = currentDate && EMPLOYEE_SHIFT_START_BY_DATE[currentDate]
+      ? currentDate
+      : shiftStartDateKeys[shiftStartDateKeys.length - 1];
+    const shiftStartMap = shiftDate ? EMPLOYEE_SHIFT_START_BY_DATE[shiftDate] : undefined;
+    const shiftAlignFor = (uid: number): number => {
+      const shiftStart = shiftStartMap?.[uid];
+      const taskStart = task.time_start ?? "";
+      if (!shiftStart || !taskStart) return 0;
+      return shiftAlignScore(taskStart, shiftStart);
+    };
+    const zoneAffFor = (uid: number): number => {
+      const stats = EMPLOYEE_STATS[uid];
       if (!stats || !taskZone) return 0;
       return stats.zone_affinity?.[taskZone] ?? 0;
     };
-    const wtypeAffFor = (userId: number): number => {
-      const stats = EMPLOYEE_STATS[userId];
+    const wtypeAffFor = (uid: number): number => {
+      const stats = EMPLOYEE_STATS[uid];
       if (!stats || !taskWorkType) return 0;
       return stats.affinity?.[taskWorkType]?.count ?? 0;
     };
@@ -963,24 +1044,36 @@ export function autoDistribute(
     const rankFor = (e: EmployeeUtilization): number =>
       rankSeniority(e.user.position_name);
 
-    // Pre-compute ranges для minmax нормализации.
+    // Pre-compute ranges для minmax нормализации (7 факторов, iter#6).
+    const stickVals = candidates.map((e) => stickinessFor(e.user.id));
+    const swVals = candidates.map((e) => shopWtFor(e.user.id));
     const zoneVals = candidates.map((e) => zoneAffFor(e.user.id));
     const wtypeVals = candidates.map((e) => wtypeAffFor(e.user.id));
+    const shiftVals = candidates.map((e) => shiftAlignFor(e.user.id));
     const loadVals = candidates.map((e) => loadFor(e.user.id, e.shift_total_min));
     const rankVals = candidates.map((e) => rankFor(e));
+    const sMin = Math.min(...stickVals), sMax = Math.max(...stickVals);
+    const swMin = Math.min(...swVals), swMax = Math.max(...swVals);
     const zMin = Math.min(...zoneVals), zMax = Math.max(...zoneVals);
     const wMin = Math.min(...wtypeVals), wMax = Math.max(...wtypeVals);
+    const shMin = Math.min(...shiftVals), shMax = Math.max(...shiftVals);
     const lMin = Math.min(...loadVals), lMax = Math.max(...loadVals);
     const rMin = Math.min(...rankVals), rMax = Math.max(...rankVals);
 
     const scoreOf = (e: EmployeeUtilization): number => {
+      const s = minmax(stickinessFor(e.user.id), sMin, sMax);
+      const sw = minmax(shopWtFor(e.user.id), swMin, swMax);
       const z = minmax(zoneAffFor(e.user.id), zMin, zMax);
       const w = minmax(wtypeAffFor(e.user.id), wMin, wMax);
+      const sh = minmax(shiftAlignFor(e.user.id), shMin, shMax);
       const l = minmax(loadFor(e.user.id, e.shift_total_min), lMin, lMax);
       const r = minmax(rankFor(e), rMin, rMax);
       return (
         SCORE_WEIGHT_ZONE * z +
         SCORE_WEIGHT_WTYPE * w +
+        SCORE_WEIGHT_SHIFT_ALIGN * sh +
+        SCORE_WEIGHT_SHOP_WTYPE * sw +
+        SCORE_WEIGHT_STICKINESS * s +
         SCORE_WEIGHT_BALANCE * (1 - l) +
         SCORE_WEIGHT_RANK * r
       );

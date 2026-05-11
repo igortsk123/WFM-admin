@@ -90,13 +90,35 @@ def load_employee_positions() -> dict[int, str]:
 
 
 # ─────────────────────────────────────────────────────────────────────
-# Iter#3 scoring weights (mirror of TS lib/api/distribution.ts).
-# Снижен balance с 11% до 5%, перелит в zone+wtype.
+# Iter#5 scoring weights (mirror of TS).
+# zone 30 / wtype 30 / shop-wtype 15 / stickiness 15 / rank 5 / balance 5.
 # ─────────────────────────────────────────────────────────────────────
-SCORE_WEIGHT_ZONE = 0.44
-SCORE_WEIGHT_WTYPE = 0.40
-SCORE_WEIGHT_BALANCE = 0.05
-SCORE_WEIGHT_RANK = 0.11
+SCORE_WEIGHT_ZONE = 0.30
+SCORE_WEIGHT_WTYPE = 0.25
+SCORE_WEIGHT_SHIFT_ALIGN = 0.20
+SCORE_WEIGHT_SHOP_WTYPE = 0.10
+SCORE_WEIGHT_STICKINESS = 0.10
+SCORE_WEIGHT_RANK = 0.03
+SCORE_WEIGHT_BALANCE = 0.02
+
+
+def parse_hhmm(s: str) -> float | None:
+    if not s:
+        return None
+    import re as _re
+    m = _re.match(r"^(\d{1,2}):(\d{2})", s)
+    if not m:
+        return None
+    return int(m.group(1)) + int(m.group(2)) / 60
+
+
+def shift_align_score(task_time_start: str, shift_time_start: str) -> float:
+    t = parse_hhmm(task_time_start)
+    s = parse_hhmm(shift_time_start)
+    if t is None or s is None:
+        return 0.0
+    gap = abs(t - s)
+    return max(0.0, 1.0 - gap / 4.0)
 
 
 def minmax_norm(value: float, lo: float, hi: float) -> float:
@@ -266,6 +288,127 @@ def parse_employee_stats_zone_affinity(text: str) -> dict[int, dict[str, int]]:
             zone_aff[zn_m.group(1)] = int(zn_m.group(2))
         if zone_aff:
             out[emp_id] = zone_aff
+    return out
+
+
+def parse_string_int_record(text: str, var_name: str) -> dict[str, int]:
+    """Парсит `export const VAR: Record<string, number> = { \"key\": N, ... }`."""
+    pat = re.compile(
+        rf'export const {var_name}[^=]*=\s*\{{', re.DOTALL
+    )
+    m = pat.search(text)
+    if not m:
+        return {}
+    body_start = m.end()
+    depth = 1
+    pos = body_start
+    while pos < len(text) and depth > 0:
+        c = text[pos]
+        if c == "{":
+            depth += 1
+        elif c == "}":
+            depth -= 1
+            if depth == 0:
+                break
+        pos += 1
+    body = text[body_start:pos]
+    out: dict[str, int] = {}
+    for entry_m in re.finditer(r'"((?:[^"\\]|\\.)*)":\s*(\d+)', body):
+        key = entry_m.group(1).replace('\\"', '"').replace('\\\\', '\\')
+        out[key] = int(entry_m.group(2))
+    return out
+
+
+def parse_shift_start_by_date(text: str) -> dict[str, dict[int, str]]:
+    """Парсит EMPLOYEE_SHIFT_START_BY_DATE = Record<date, Record<emp_id, hh:mm:ss>>."""
+    pat = re.compile(
+        r'export const EMPLOYEE_SHIFT_START_BY_DATE[^=]*=\s*\{', re.DOTALL
+    )
+    m = pat.search(text)
+    if not m:
+        return {}
+    body_start = m.end()
+    depth = 1
+    pos = body_start
+    while pos < len(text) and depth > 0:
+        c = text[pos]
+        if c == "{":
+            depth += 1
+        elif c == "}":
+            depth -= 1
+            if depth == 0:
+                break
+        pos += 1
+    body = text[body_start:pos]
+    out: dict[str, dict[int, str]] = {}
+    entry_pat = re.compile(r'"(\d{4}-\d{2}-\d{2})":\s*\{')
+    for em in entry_pat.finditer(body):
+        date = em.group(1)
+        es = em.end() - 1
+        d = 1
+        p = es + 1
+        while p < len(body) and d > 0:
+            c = body[p]
+            if c == "{":
+                d += 1
+            elif c == "}":
+                d -= 1
+                if d == 0:
+                    break
+            p += 1
+        sub = body[es + 1 : p]
+        inner: dict[int, str] = {}
+        for km in re.finditer(r'(\d+):\s*"([^"]+)"', sub):
+            inner[int(km.group(1))] = km.group(2)
+        out[date] = inner
+    return out
+
+
+def parse_stickiness_by_date(text: str) -> dict[str, dict[str, int]]:
+    """Парсит STICKINESS_BY_DATE = Record<date, Record<key, emp_id>>."""
+    pat = re.compile(
+        r'export const STICKINESS_BY_DATE[^=]*=\s*\{', re.DOTALL
+    )
+    m = pat.search(text)
+    if not m:
+        return {}
+    body_start = m.end()
+    depth = 1
+    pos = body_start
+    while pos < len(text) and depth > 0:
+        c = text[pos]
+        if c == "{":
+            depth += 1
+        elif c == "}":
+            depth -= 1
+            if depth == 0:
+                break
+        pos += 1
+    body = text[body_start:pos]
+    # Top-level entries: `"YYYY-MM-DD": { ... }`
+    out: dict[str, dict[str, int]] = {}
+    entry_pat = re.compile(r'"(\d{4}-\d{2}-\d{2})":\s*\{')
+    for em in entry_pat.finditer(body):
+        date = em.group(1)
+        # Find balanced } for this entry
+        es = em.end() - 1
+        d = 1
+        p = es + 1
+        while p < len(body) and d > 0:
+            c = body[p]
+            if c == "{":
+                d += 1
+            elif c == "}":
+                d -= 1
+                if d == 0:
+                    break
+            p += 1
+        sub = body[es + 1 : p]
+        inner: dict[str, int] = {}
+        for km in re.finditer(r'"((?:[^"\\]|\\.)*)":\s*(\d+)', sub):
+            key = km.group(1).replace('\\"', '"').replace('\\\\', '\\')
+            inner[key] = int(km.group(2))
+        out[date] = inner
     return out
 
 
@@ -442,6 +585,7 @@ class Task:
     zone: str | None
     duration_min: int  # planned/remaining minutes
     priority: int
+    time_start: str = ""  # iter#6: для shift-time alignment
 
 
 @dataclass
@@ -490,13 +634,20 @@ def auto_distribute(
     employees: list[Employee],
     affinity: dict[int, dict[str, int]],
     zone_affinity: dict[int, dict[str, int]] | None = None,
+    stickiness: dict[str, int] | None = None,
+    shop_emp_wt: dict[str, int] | None = None,
+    shop_code: str = "",
+    shift_start_by_emp: dict[int, str] | None = None,
 ) -> dict[int, list[tuple[int, int]]]:
     """Returns { task_id: [(emp_id, minutes), ...] }.
 
-    Mirror of TS `autoDistribute` (iter#2) — weighted scoring:
-    zone 41% / wtype 37% / balance 11% / rank 11%.
+    Mirror of TS `autoDistribute` (iter#5) — weighted scoring:
+    stick 30 / shopWT 30 / zone 20 / rank 10 / load 10.
     """
     zone_affinity = zone_affinity or {}
+    stickiness = stickiness or {}
+    shop_emp_wt = shop_emp_wt or {}
+    shift_start_by_emp = shift_start_by_emp or {}
     # Mutable per-employee free time
     free_by = {e.id: max(0, e.shift_total_min - 0) for e in employees}
     by_id: dict[int, Employee] = {e.id: e for e in employees}
@@ -514,52 +665,95 @@ def auto_distribute(
         allocations: list[tuple[int, int]] = []
         has_zone = bool(task.zone) and task.zone != "Без зоны"
         has_wt = bool(task.work_type)
+        task_zone = task.zone or ""
+        task_wt = task.work_type or ""
 
         candidates: list[Employee] = []
-        if has_zone:
+        # 1. Strict: zone AND work_type
+        if has_zone and has_wt:
             candidates = [
                 e for e in employees
-                if task.zone in e.zones and free_by.get(e.id, 0) > 0
+                if task_zone in e.zones
+                and task_wt in e.work_types
+                and free_by.get(e.id, 0) > 0
             ]
+        # 2. Relax: только zone
+        if not candidates and has_zone:
+            candidates = [
+                e for e in employees
+                if task_zone in e.zones and free_by.get(e.id, 0) > 0
+            ]
+        # 3. Relax: только work_type
         if not candidates and has_wt:
             candidates = [
                 e for e in employees
-                if task.work_type in e.work_types and free_by.get(e.id, 0) > 0
+                if task_wt in e.work_types and free_by.get(e.id, 0) > 0
             ]
+        # 4. Final fallback: все со свободным временем (если предыдущие пустые)
         if not candidates:
             candidates = [e for e in employees if free_by.get(e.id, 0) > 0]
 
-        # Iter#2 weighted scoring (mirror of TS lib/api/distribution.ts).
-        def zone_aff_for(e: Employee) -> int:
-            if not task.zone:
+        # Iter#5 scoring (mirror of TS): добавляем stickiness/shop-wt
+        # ADDITIVE к iter#4 baseline (zone + global wtype).
+        stick_emp_id = stickiness.get(f"{shop_code}::{task_zone}::{task_wt}")
+
+        def stick_for(e: Employee) -> int:
+            return 1 if stick_emp_id is not None and stick_emp_id == e.id else 0
+
+        def shop_wt_for(e: Employee) -> int:
+            if not shop_code or not task_wt:
                 return 0
-            return zone_affinity.get(e.id, {}).get(task.zone, 0)
+            return shop_emp_wt.get(f"{shop_code}::{e.id}::{task_wt}", 0)
+
+        def zone_aff_for(e: Employee) -> int:
+            if not task_zone:
+                return 0
+            return zone_affinity.get(e.id, {}).get(task_zone, 0)
 
         def wt_aff_for(e: Employee) -> int:
-            return affinity.get(e.id, {}).get(task.work_type, 0)
+            return affinity.get(e.id, {}).get(task_wt, 0)
+
+        def shift_align_for(e: Employee) -> float:
+            shift_start = shift_start_by_emp.get(e.id, "")
+            task_start = getattr(task, "time_start", "") or ""
+            if not shift_start or not task_start:
+                return 0.0
+            return shift_align_score(task_start, shift_start)
 
         def load_for(e: Employee) -> float:
             if e.shift_total_min <= 0:
                 return 1.0
             return 1.0 - free_by.get(e.id, 0) / e.shift_total_min
 
+        stick_vals = [stick_for(e) for e in candidates]
+        sw_vals = [shop_wt_for(e) for e in candidates]
         zone_vals = [zone_aff_for(e) for e in candidates]
         wt_vals = [wt_aff_for(e) for e in candidates]
+        shift_vals = [shift_align_for(e) for e in candidates]
         load_vals = [load_for(e) for e in candidates]
         rank_vals = [rank_seniority(e.position_name) for e in candidates]
+        s_lo, s_hi = (min(stick_vals), max(stick_vals)) if stick_vals else (0, 0)
+        sw_lo, sw_hi = (min(sw_vals), max(sw_vals)) if sw_vals else (0, 0)
         z_lo, z_hi = (min(zone_vals), max(zone_vals)) if zone_vals else (0, 0)
         w_lo, w_hi = (min(wt_vals), max(wt_vals)) if wt_vals else (0, 0)
+        sh_lo, sh_hi = (min(shift_vals), max(shift_vals)) if shift_vals else (0.0, 0.0)
         l_lo, l_hi = (min(load_vals), max(load_vals)) if load_vals else (0.0, 0.0)
         r_lo, r_hi = (min(rank_vals), max(rank_vals)) if rank_vals else (0, 0)
 
         def score_of(e: Employee) -> float:
+            s = minmax_norm(stick_for(e), s_lo, s_hi)
+            sw = minmax_norm(shop_wt_for(e), sw_lo, sw_hi)
             z = minmax_norm(zone_aff_for(e), z_lo, z_hi)
             w = minmax_norm(wt_aff_for(e), w_lo, w_hi)
+            sh = minmax_norm(shift_align_for(e), sh_lo, sh_hi)
             l = minmax_norm(load_for(e), l_lo, l_hi)
             r = minmax_norm(rank_seniority(e.position_name), r_lo, r_hi)
             return (
                 SCORE_WEIGHT_ZONE * z
                 + SCORE_WEIGHT_WTYPE * w
+                + SCORE_WEIGHT_SHIFT_ALIGN * sh
+                + SCORE_WEIGHT_SHOP_WTYPE * sw
+                + SCORE_WEIGHT_STICKINESS * s
                 + SCORE_WEIGHT_BALANCE * (1.0 - l)
                 + SCORE_WEIGHT_RANK * r
             )
@@ -645,6 +839,7 @@ def build_shop_days(
                     zone=r["zone"],
                     duration_min=int(r["duration"]),
                     priority=calc_priority(int(r["duration"])),
+                    time_start=r.get("time_start", ""),
                 )
             )
             real_assigns[tid] = r["employee_id"]
@@ -735,10 +930,30 @@ def evaluate(
     shop_days: list[ShopDay],
     affinity: dict[int, dict[str, int]],
     zone_affinity: dict[int, dict[str, int]] | None = None,
+    stickiness_by_date: dict[str, dict[str, int]] | None = None,
+    shop_emp_wt: dict[str, int] | None = None,
+    shift_start_by_date: dict[str, dict[int, str]] | None = None,
 ) -> list[ShopDayResult]:
     results: list[ShopDayResult] = []
+    sticky = stickiness_by_date or {}
+    shifts_map = shift_start_by_date or {}
+    # Сортируем dates → нужен previous_date для каждого shop_day.date
+    sorted_dates = sorted(sticky.keys())
+    prev_date_for: dict[str, str] = {}
+    for i in range(1, len(sorted_dates)):
+        prev_date_for[sorted_dates[i]] = sorted_dates[i - 1]
+
     for sd in shop_days:
-        plan = auto_distribute(sd.tasks, sd.candidates, affinity, zone_affinity)
+        # Stickiness берём за вчера (день ДО sd.date).
+        prev_d = prev_date_for.get(sd.date)
+        stickiness_today = sticky.get(prev_d, {}) if prev_d else {}
+        # Shift start — за текущий день (если есть).
+        shifts_today = shifts_map.get(sd.date, {})
+        plan = auto_distribute(
+            sd.tasks, sd.candidates, affinity, zone_affinity,
+            stickiness=stickiness_today, shop_emp_wt=shop_emp_wt,
+            shop_code=sd.shop_code, shift_start_by_emp=shifts_today,
+        )
         candidates_by_id = {e.id: e for e in sd.candidates}
         matched = 0
         mismatches: list[Mismatch] = []
@@ -952,6 +1167,8 @@ def materialize_baseline(
     for date, recs in by_date.items():
         for t in recs:
             zone_idx = t[6]
+            ts_min = t[9] if len(t) >= 10 else 0
+            ts_str = f"{ts_min // 60:02d}:{ts_min % 60:02d}:00" if ts_min > 0 else ""
             out.append({
                 "date": date,
                 "task_id": t[0],
@@ -963,6 +1180,7 @@ def materialize_baseline(
                 "zone": zones[zone_idx] if zone_idx >= 0 and zone_idx < len(zones) else None,
                 "duration": t[7],
                 "status": statuses[t[8]] if 0 <= t[8] < len(statuses) else "",
+                "time_start": ts_str,
             })
     return out
 
@@ -998,6 +1216,17 @@ def main() -> int:
 
     affinity = parse_employee_stats_affinity(stats_text)
     zone_affinity = parse_employee_stats_zone_affinity(stats_text)
+    stickiness_by_date = parse_stickiness_by_date(stats_text)
+    shop_emp_wt = parse_string_int_record(stats_text, "SHOP_EMPLOYEE_WT_COUNT")
+    shift_start_by_date = parse_shift_start_by_date(stats_text)
+    total_stick = sum(len(d) for d in stickiness_by_date.values())
+    total_shifts = sum(len(d) for d in shift_start_by_date.values())
+    print(
+        f"[backtest] Stickiness dates: {len(stickiness_by_date)} "
+        f"({total_stick} keys), shop×emp×wt keys: {len(shop_emp_wt)}, "
+        f"shift_start dates: {len(shift_start_by_date)} ({total_shifts} entries)",
+        file=sys.stderr,
+    )
     employee_names = parse_employee_names(stats_text)
     print(
         f"[backtest] EMPLOYEE_STATS wtype-aff: {len(affinity)}, "
@@ -1015,7 +1244,11 @@ def main() -> int:
     print(f"[backtest] Shop-days to evaluate: {len(shop_days)}", file=sys.stderr)
 
     print("[backtest] Running auto-distribute (iter#2) against ground truth...", file=sys.stderr)
-    results = evaluate(shop_days, affinity, zone_affinity)
+    results = evaluate(
+        shop_days, affinity, zone_affinity,
+        stickiness_by_date=stickiness_by_date, shop_emp_wt=shop_emp_wt,
+        shift_start_by_date=shift_start_by_date,
+    )
 
     # Aggregations
     by_shop: dict[str, list[ShopDayResult]] = defaultdict(list)

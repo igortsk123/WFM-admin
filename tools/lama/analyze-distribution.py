@@ -135,6 +135,18 @@ def main() -> None:
     emp_wt_count: dict[tuple[int, str], int] = defaultdict(int)
     # employee × zone → count (для zone_affinity скоринга в iter#2).
     emp_zone_count: dict[tuple[int, str], int] = defaultdict(int)
+    # employee × shop × work_type → count (peer-trust per-shop в iter#5).
+    emp_shop_wt_count: dict[tuple[int, str, str], int] = defaultdict(int)
+    # Per-day stickiness: для каждой даты — словарь (shop, zone, wt) → emp_id.
+    # Алгоритм для дня N берёт stickiness за день N-1 (предыдущий) — это
+    # имитирует «вчера в этом магазине Машa делала Молочку, сегодня скорее
+    # ей же». Без data leak: предсказание на 5-10 не использует данные 5-10.
+    stickiness_by_date: dict[str, dict[tuple[str, str, str], int]] = defaultdict(dict)
+    # Shift-time alignment: shift_id → time_start (для слоя 3 — задача в N часов
+    # утра идёт тому у кого смена с N часов).
+    shift_start_by_id: dict[int, str] = {}
+    # Per-(employee, date) shift start time — основной look-up для алго.
+    emp_date_shift_start: dict[str, dict[int, str]] = defaultdict(dict)
     # employee × date → seconds (для daily_load).
     emp_day_seconds: dict[tuple[int, str], int] = defaultdict(int)
 
@@ -191,7 +203,33 @@ def main() -> None:
                     emp_zone_count[(emp_id, zone)] += 1
                 emp_wt_durations[(emp_id, work)].append(duration)
                 emp_wt_count[(emp_id, work)] += 1
+                emp_shop_wt_count[(emp_id, shop_code, work)] += 1
                 emp_day_seconds[(emp_id, snap_date)] += duration
+
+                # Per-day stickiness: записываем под snap_date.
+                zone_key = zone if isinstance(zone, str) and zone and zone != "N/A" else ""
+                stick_key = (shop_code, zone_key, work)
+                stickiness_by_date[snap_date][stick_key] = emp_id
+
+                # Shift-time fallback (если в snapshot нет полных shift records):
+                # time_start первой task в shift'е ≈ старт смены.
+                shift_id = t.get("_shift_id")
+                time_start = t.get("time_start") or ""
+                if isinstance(shift_id, int) and time_start:
+                    prev_ts = shift_start_by_id.get(shift_id)
+                    if prev_ts is None or time_start < prev_ts:
+                        shift_start_by_id[shift_id] = time_start
+
+        # Iter#6: реальные shift records из snapshot.shifts[] (если есть).
+        # Перезаписывает fallback values полученные через tasks.
+        for sh in snap.get("shifts", []):
+            sid = sh.get("shift_id")
+            ts = sh.get("time_start")
+            eid = sh.get("employee_id")
+            if isinstance(sid, int) and isinstance(ts, str) and ts:
+                shift_start_by_id[sid] = ts
+            if isinstance(eid, int) and isinstance(ts, str) and ts:
+                emp_date_shift_start[snap_date][eid] = ts
 
             # 3. shop
             shop_dates[shop_code].add(snap_date)
@@ -470,6 +508,78 @@ export interface ShopWorkloadStats {{
                 )
             lines.append("    ],\n")
         lines.append("  },\n")
+    lines.append("};\n\n")
+
+    # ─── Iter#5 stickiness + per-shop affinity + shift-times ───
+    # STICKINESS_BY_DATE[date]["${shop}::${zone}::${wt}"] = emp_id
+    # Алгоритм для дня N использует данные за день N-1. Без data leak.
+    total_stick_keys = sum(len(d) for d in stickiness_by_date.values())
+    lines.append(
+        f"// Per-day stickiness ({len(stickiness_by_date)} dates, "
+        f"{total_stick_keys} total keys).\n"
+    )
+    lines.append(
+        "export const STICKINESS_BY_DATE: Record<string, Record<string, number>> = {\n"
+    )
+    for date in sorted(stickiness_by_date.keys()):
+        day_map = stickiness_by_date[date]
+        lines.append(f"  {ts_string_literal(date)}: {{\n")
+        for key in sorted(day_map.keys()):
+            sc, zone, wt = key
+            composite = f"{sc}::{zone}::{wt}"
+            lines.append(
+                f"    {ts_string_literal(composite)}: {day_map[key]},\n"
+            )
+        lines.append("  },\n")
+    lines.append("};\n\n")
+
+    # SHIFT_START_BY_ID[shift_id] = "HH:MM:SS"
+    lines.append(
+        f"// Shift start times ({len(shift_start_by_id)} shift_ids).\n"
+    )
+    lines.append(
+        "export const SHIFT_START_BY_ID: Record<number, string> = {\n"
+    )
+    for sid in sorted(shift_start_by_id.keys()):
+        lines.append(
+            f"  {sid}: {ts_string_literal(shift_start_by_id[sid])},\n"
+        )
+    lines.append("};\n\n")
+
+    # Iter#6: EMPLOYEE_SHIFT_START_BY_DATE[date][emp_id] = "HH:MM:SS"
+    # Прямой реальный shift start, из endpoint /shift/?employee_in_shop_id.
+    total_emp_shifts = sum(len(d) for d in emp_date_shift_start.values())
+    lines.append(
+        f"// Per-(date, emp) shift start times ({len(emp_date_shift_start)} dates, "
+        f"{total_emp_shifts} entries).\n"
+    )
+    lines.append(
+        "export const EMPLOYEE_SHIFT_START_BY_DATE: "
+        "Record<string, Record<number, string>> = {\n"
+    )
+    for date in sorted(emp_date_shift_start.keys()):
+        day_map = emp_date_shift_start[date]
+        lines.append(f"  {ts_string_literal(date)}: {{\n")
+        for eid in sorted(day_map.keys()):
+            lines.append(f"    {eid}: {ts_string_literal(day_map[eid])},\n")
+        lines.append("  },\n")
+    lines.append("};\n\n")
+
+    # SHOP_EMPLOYEE_WT_COUNT[`${shop}::${emp_id}::${work_type}`] = count
+    # Per-shop affinity — учитывает локальные предпочтения директора этого
+    # магазина. У одного шопа Молочка → Свете, у другого → Маше.
+    lines.append(
+        f"// Per-shop employee × work_type counts ({len(emp_shop_wt_count)} keys).\n"
+    )
+    lines.append(
+        "export const SHOP_EMPLOYEE_WT_COUNT: Record<string, number> = {\n"
+    )
+    for key in sorted(emp_shop_wt_count.keys()):
+        eid, sc, wt = key
+        composite = f"{sc}::{eid}::{wt}"
+        lines.append(
+            f"  {ts_string_literal(composite)}: {emp_shop_wt_count[key]},\n"
+        )
     lines.append("};\n\n")
 
     # Constants.

@@ -125,8 +125,9 @@ def main() -> None:
     status_idx: dict[str, int] = {}
 
     # date → list[tuple-record]. Tuple layout:
-    #   [task_id, shop_idx, emp_id, eis_id, shift_id, wt_idx, zone_idx, duration_min, status_idx]
+    #   [task_id, shop_idx, emp_id, eis_id, shift_id, wt_idx, zone_idx, duration_min, status_idx, time_start_min]
     # zone_idx = -1 означает null (нет зоны).
+    # time_start_min = время начала задачи в минутах от полуночи (0-1439), 0 если нет.
     by_date: "OrderedDict[str, list[list[int]]]" = OrderedDict()
 
     skipped_status = 0
@@ -182,8 +183,17 @@ def main() -> None:
             w_idx = index_or_add(work_table, work_idx, work)
             st_idx = index_or_add(status_table, status_idx, status)
 
+            time_start_raw = t.get("time_start") or ""
+            ts_min = 0
+            if isinstance(time_start_raw, str) and len(time_start_raw) >= 5:
+                try:
+                    h, m = time_start_raw[:5].split(":")
+                    ts_min = int(h) * 60 + int(m)
+                except (ValueError, IndexError):
+                    ts_min = 0
+
             recs.append(
-                [task_id, sh_idx, emp_id, eis, shift, w_idx, z_idx, duration_min, st_idx]
+                [task_id, sh_idx, emp_id, eis, shift, w_idx, z_idx, duration_min, st_idx, ts_min]
             )
             total_kept += 1
 
@@ -243,7 +253,7 @@ export interface BacktestTaskRecord {{
  * `zone_idx === -1` означает `zone: null`.
  */
 export type BacktestTuple = [
-  number, number, number, number, number, number, number, number, number,
+  number, number, number, number, number, number, number, number, number, number,
 ];
 
 export const BACKTEST_SHOPS: readonly string[] = {render_string_table(shop_table)};
