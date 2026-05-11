@@ -10,6 +10,7 @@ import {
   EMPLOYEE_STATS,
   STICKINESS_BY_DATE,
   SHOP_EMPLOYEE_WT_COUNT,
+  SHOP_EMPLOYEE_ZONE_WT_COUNT,
   EMPLOYEE_SHIFT_START_BY_DATE,
 } from "@/lib/mock-data/_lama-distribution-stats";
 import {
@@ -1084,7 +1085,26 @@ export function autoDistribute(
         SCORE_WEIGHT_RANK * r
       );
     };
-    const ranked = [...candidates].sort((a, b) => scoreOf(b) - scoreOf(a));
+    // Iter#8 — brigade pre-assign: если среди eligible кандидатов есть
+    // emp с накопленной expertise по этой (shop, zone, wt) ≥ 3 раз →
+    // он специалист, отдаём ему. Если несколько — берём максимум.
+    // Это не cascade trap: смотрим в data history, не в runtime decisions.
+    const EXPERTISE_THRESHOLD = 3;
+    let bestExpert: EmployeeUtilization | null = null;
+    let bestExpertCount = 0;
+    for (const e of candidates) {
+      const cnt = SHOP_EMPLOYEE_ZONE_WT_COUNT[
+        `${taskShopCode}::${e.user.id}::${taskZone}::${taskWorkType}`
+      ] ?? 0;
+      if (cnt >= EXPERTISE_THRESHOLD && cnt > bestExpertCount) {
+        bestExpert = e;
+        bestExpertCount = cnt;
+      }
+    }
+
+    const ranked = bestExpert
+      ? [bestExpert, ...candidates.filter((e) => e !== bestExpert).sort((a, b) => scoreOf(b) - scoreOf(a))]
+      : [...candidates].sort((a, b) => scoreOf(b) - scoreOf(a));
 
     // Iter#4 — single-assignee: задача целиком одному топ-кандидату, без
     // дробления. Директор так и делает — отдаёт задачу одному, не расщепляет.

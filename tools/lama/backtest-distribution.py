@@ -638,6 +638,7 @@ def auto_distribute(
     shop_emp_wt: dict[str, int] | None = None,
     shop_code: str = "",
     shift_start_by_emp: dict[int, str] | None = None,
+    shop_emp_zone_wt: dict[str, int] | None = None,
 ) -> dict[int, list[tuple[int, int]]]:
     """Returns { task_id: [(emp_id, minutes), ...] }.
 
@@ -648,6 +649,7 @@ def auto_distribute(
     stickiness = stickiness or {}
     shop_emp_wt = shop_emp_wt or {}
     shift_start_by_emp = shift_start_by_emp or {}
+    shop_emp_zone_wt = shop_emp_zone_wt or {}
     # Mutable per-employee free time
     free_by = {e.id: max(0, e.shift_total_min - 0) for e in employees}
     by_id: dict[int, Employee] = {e.id: e for e in employees}
@@ -758,7 +760,26 @@ def auto_distribute(
                 + SCORE_WEIGHT_RANK * r
             )
 
-        ranked = sorted(candidates, key=lambda e: -score_of(e))
+        # Iter#8 brigade pre-assign: ищем «специалиста» по (shop, zone, wt)
+        # среди eligible. Если есть с history >=3 — он получает task first.
+        EXPERTISE_THRESHOLD = 3
+        best_expert = None
+        best_count = 0
+        for e in candidates:
+            cnt = shop_emp_zone_wt.get(
+                f"{shop_code}::{e.id}::{task_zone}::{task_wt}", 0
+            )
+            if cnt >= EXPERTISE_THRESHOLD and cnt > best_count:
+                best_expert = e
+                best_count = cnt
+
+        if best_expert is not None:
+            ranked = [best_expert] + sorted(
+                [e for e in candidates if e is not best_expert],
+                key=lambda e: -score_of(e),
+            )
+        else:
+            ranked = sorted(candidates, key=lambda e: -score_of(e))
 
         # Iter#4 — single-assignee: задача целиком одному топ-кандидату.
         # Если у топа free=0 — берём следующего. Overtime допустим.
@@ -933,6 +954,7 @@ def evaluate(
     stickiness_by_date: dict[str, dict[str, int]] | None = None,
     shop_emp_wt: dict[str, int] | None = None,
     shift_start_by_date: dict[str, dict[int, str]] | None = None,
+    shop_emp_zone_wt: dict[str, int] | None = None,
 ) -> list[ShopDayResult]:
     results: list[ShopDayResult] = []
     sticky = stickiness_by_date or {}
@@ -953,6 +975,7 @@ def evaluate(
             sd.tasks, sd.candidates, affinity, zone_affinity,
             stickiness=stickiness_today, shop_emp_wt=shop_emp_wt,
             shop_code=sd.shop_code, shift_start_by_emp=shifts_today,
+            shop_emp_zone_wt=shop_emp_zone_wt,
         )
         candidates_by_id = {e.id: e for e in sd.candidates}
         matched = 0
@@ -1219,6 +1242,7 @@ def main() -> int:
     stickiness_by_date = parse_stickiness_by_date(stats_text)
     shop_emp_wt = parse_string_int_record(stats_text, "SHOP_EMPLOYEE_WT_COUNT")
     shift_start_by_date = parse_shift_start_by_date(stats_text)
+    shop_emp_zone_wt = parse_string_int_record(stats_text, "SHOP_EMPLOYEE_ZONE_WT_COUNT")
     total_stick = sum(len(d) for d in stickiness_by_date.values())
     total_shifts = sum(len(d) for d in shift_start_by_date.values())
     print(
@@ -1257,6 +1281,7 @@ def main() -> int:
         shop_days, affinity, zone_affinity,
         stickiness_by_date=stickiness_by_date, shop_emp_wt=shop_emp_wt,
         shift_start_by_date=shift_start_by_date,
+        shop_emp_zone_wt=shop_emp_zone_wt,
     )
 
     # Aggregations

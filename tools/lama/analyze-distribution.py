@@ -137,6 +137,10 @@ def main() -> None:
     emp_zone_count: dict[tuple[int, str], int] = defaultdict(int)
     # employee × shop × work_type → count (peer-trust per-shop в iter#5).
     emp_shop_wt_count: dict[tuple[int, str, str], int] = defaultdict(int)
+    # employee × shop × zone × work_type — для iter#8 brigade pre-assign.
+    # Зная (zone, wt) задачи и список emps на смене, выбираем того у кого
+    # max history именно по этой комбинации.
+    emp_shop_zone_wt_count: dict[tuple[int, str, str, str], int] = defaultdict(int)
     # Per-day stickiness: для каждой даты — словарь (shop, zone, wt) → emp_id.
     # Алгоритм для дня N берёт stickiness за день N-1 (предыдущий) — это
     # имитирует «вчера в этом магазине Машa делала Молочку, сегодня скорее
@@ -204,6 +208,8 @@ def main() -> None:
                 emp_wt_durations[(emp_id, work)].append(duration)
                 emp_wt_count[(emp_id, work)] += 1
                 emp_shop_wt_count[(emp_id, shop_code, work)] += 1
+                zone_for_count = zone if isinstance(zone, str) and zone and zone != "N/A" else ""
+                emp_shop_zone_wt_count[(emp_id, shop_code, zone_for_count, work)] += 1
                 emp_day_seconds[(emp_id, snap_date)] += duration
 
                 # Per-day stickiness: записываем под snap_date.
@@ -579,6 +585,24 @@ export interface ShopWorkloadStats {{
         composite = f"{sc}::{eid}::{wt}"
         lines.append(
             f"  {ts_string_literal(composite)}: {emp_shop_wt_count[key]},\n"
+        )
+    lines.append("};\n\n")
+
+    # Iter#8: SHOP_EMPLOYEE_ZONE_WT_COUNT[`${shop}::${emp_id}::${zone}::${wt}`] = count
+    # Точная история «кто что где делал». Используется для brigade pre-assign:
+    # для каждой (shop, zone, wt) пары находим emp на смене с max count → он
+    # «специалист по этой комбинации в этом магазине» и получает задачу first.
+    lines.append(
+        f"// Per-shop emp × zone × wt counts ({len(emp_shop_zone_wt_count)} keys).\n"
+    )
+    lines.append(
+        "export const SHOP_EMPLOYEE_ZONE_WT_COUNT: Record<string, number> = {\n"
+    )
+    for key in sorted(emp_shop_zone_wt_count.keys()):
+        eid, sc, zone, wt = key
+        composite = f"{sc}::{eid}::{zone}::{wt}"
+        lines.append(
+            f"  {ts_string_literal(composite)}: {emp_shop_zone_wt_count[key]},\n"
         )
     lines.append("};\n\n")
 
