@@ -876,6 +876,35 @@ function shiftAlignScore(taskTimeStart: string, shiftTimeStart?: string): number
 }
 
 /**
+ * Iter#10 — retail business priority (порядок выполнения задач).
+ * Реальный ритейл-приоритет из практики розничных сетей:
+ *
+ * 1 = Касса (выручка под угрозой если открыта не будет)
+ * 2 = Выкладка свежих категорий — Фреш, Молочка (скоропорт)
+ * 3 = Выкладка остальных категорий, КСО
+ * 4 = Менеджерские операции
+ * 5 = Переоценка (можно подождать)
+ * 6 = Инвентаризация (плановая, не срочно)
+ * 7 = Прочее
+ *
+ * Возвращает число: меньше = выше приоритет (раздаём первым).
+ */
+function retailPriority(workType: string, zone: string): number {
+  if (workType === "Касса") return 1;
+  if (workType === "Выкладка") {
+    const isFresh = zone === "Фреш 1" || zone === "Фреш 2"
+      || zone === "Молочка" || zone === "Молочные продукты"
+      || zone === "Кулинария" || zone === "Хлеб";
+    return isFresh ? 2 : 3;
+  }
+  if (workType === "КСО") return 3;
+  if (workType === "Менеджерские операции") return 4;
+  if (workType === "Переоценка") return 5;
+  if (workType === "Инвентаризация") return 6;
+  return 7;
+}
+
+/**
  * Seniority score из position_name (LAMA `rank` поле = «N/A» для всех
  * Administrators, поэтому используем keyword match по должности).
  * Source: per-store-pattern-analysis.py — те же ключи.
@@ -961,14 +990,19 @@ export function autoDistribute(
     );
   }
 
-  // Sort: priority asc (1 = high, 100 = low), затем zone alpha для группировки.
+  // Iter#10 — sort tasks by retail business priority FIRST (Касса → Фреш
+  // → Выкладка → ... → Переоценка), затем LAMA priority, затем длиннее
+  // первой (большие задачи труднее впихнуть в конце).
   const sorted = [...tasks]
     .filter((t) => t.remaining_minutes > 0)
     .sort((a, b) => {
-      const pa = a.priority ?? 100;
-      const pb = b.priority ?? 100;
-      if (pa !== pb) return pa - pb;
-      return (a.zone_name ?? "").localeCompare(b.zone_name ?? "");
+      const pra = retailPriority(a.work_type_name ?? "", a.zone_name ?? "");
+      const prb = retailPriority(b.work_type_name ?? "", b.zone_name ?? "");
+      if (pra !== prb) return pra - prb;
+      const la = a.priority ?? 100;
+      const lb = b.priority ?? 100;
+      if (la !== lb) return la - lb;
+      return (b.remaining_minutes ?? 0) - (a.remaining_minutes ?? 0);
     });
 
   for (const task of sorted) {

@@ -412,6 +412,24 @@ def parse_stickiness_by_date(text: str) -> dict[str, dict[str, int]]:
     return out
 
 
+def retail_priority(work_type: str, zone: str) -> int:
+    """Mirror of TS `retailPriority` — iter#10 бизнес-приоритет ритейла."""
+    if work_type == "Касса":
+        return 1
+    if work_type == "Выкладка":
+        is_fresh = zone in {"Фреш 1", "Фреш 2", "Молочка", "Молочные продукты", "Кулинария", "Хлеб"}
+        return 2 if is_fresh else 3
+    if work_type == "КСО":
+        return 3
+    if work_type == "Менеджерские операции":
+        return 4
+    if work_type == "Переоценка":
+        return 5
+    if work_type == "Инвентаризация":
+        return 6
+    return 7
+
+
 def rank_seniority(position_name: str) -> int:
     """Same logic as TS `rankSeniority` in `lib/api/distribution.ts`."""
     p = (position_name or "").lower()
@@ -654,10 +672,14 @@ def auto_distribute(
     free_by = {e.id: max(0, e.shift_total_min - 0) for e in employees}
     by_id: dict[int, Employee] = {e.id: e for e in employees}
 
-    # Sort tasks priority asc, then zone alpha
+    # Iter#10: sort by retail business priority, then LAMA priority, then duration desc.
     sorted_tasks = sorted(
         [t for t in tasks if t.duration_min > 0],
-        key=lambda t: (t.priority, t.zone or ""),
+        key=lambda t: (
+            retail_priority(t.work_type, t.zone or ""),
+            t.priority,
+            -t.duration_min,
+        ),
     )
 
     plan: dict[int, list[tuple[int, int]]] = {}
