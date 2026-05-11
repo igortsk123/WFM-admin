@@ -1241,7 +1241,16 @@ def main() -> int:
     print(f"[backtest] Planning pool: {len(pool)} shops", file=sys.stderr)
 
     shop_days = build_shop_days(records, pool, zones_map, work_types_map, positions_map)
-    print(f"[backtest] Shop-days to evaluate: {len(shop_days)}", file=sys.stderr)
+    # CLI флаг --only-date <YYYY-MM-DD> — оставляет только тот день в evaluate.
+    only_date = None
+    for i, a in enumerate(sys.argv):
+        if a == "--only-date" and i + 1 < len(sys.argv):
+            only_date = sys.argv[i + 1]
+    if only_date:
+        shop_days = [sd for sd in shop_days if sd.date == only_date]
+        print(f"[backtest] Filter --only-date={only_date}: {len(shop_days)} shop-days", file=sys.stderr)
+    else:
+        print(f"[backtest] Shop-days to evaluate: {len(shop_days)}", file=sys.stderr)
 
     print("[backtest] Running auto-distribute (iter#2) against ground truth...", file=sys.stderr)
     results = evaluate(

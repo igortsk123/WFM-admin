@@ -927,6 +927,12 @@ export function autoDistribute(
 ): Map<string, TaskDistributionAllocation[]> {
   const plan = new Map<string, TaskDistributionAllocation[]>();
 
+  // Iter#7 experiment (rolled back): runtime brigade tracking создавал
+  // cascade-trap — если первая task попала к неправильному emp, blok
+  // тащил все остальные тоже. Returns to iter#6 как honest best baseline.
+  // Brigade pattern (35% emps работают на 1 wt в день) проявится через
+  // per-day stickiness как только cron накопит ≥7 дней shifts data.
+
   // Stickiness: берём данные за день ПЕРЕД currentDate (вчерашний).
   // Если currentDate не передан или нет данных за previous day — empty map.
   const sortedStickyDates = Object.keys(STICKINESS_BY_DATE).sort();
