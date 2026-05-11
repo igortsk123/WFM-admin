@@ -21,6 +21,7 @@ import type {
 } from "@/lib/types";
 import { MOCK_USERS } from "@/lib/mock-data";
 import { MOCK_STORES } from "@/lib/mock-data/stores";
+import { getCurrentOrgId } from "./_org-context";
 import { MOCK_ASSIGNMENTS } from "@/lib/mock-data/assignments";
 import { MOCK_PERMISSIONS } from "@/lib/mock-data/permissions";
 import { MOCK_FUNCTIONAL_ROLES } from "@/lib/mock-data/functional-roles";
@@ -294,6 +295,22 @@ export async function getUsers(
   } = params;
 
   let filtered = [...MOCK_USERS];
+
+  // Org-scope: показываем только сотрудников у которых есть active
+  // assignment в магазине текущего org'а. Без этого в LAMA-контексте
+  // показывались сотрудники SPAR/Abricos/демо-моков — «левые» для юзера.
+  const currentOrgId = getCurrentOrgId();
+  const orgStoreIds = new Set(
+    MOCK_STORES
+      .filter((s) => s.organization_id === currentOrgId)
+      .map((s) => s.id),
+  );
+  const orgUserIds = new Set(
+    MOCK_ASSIGNMENTS
+      .filter((a) => a.active && orgStoreIds.has(a.store_id))
+      .map((a) => a.user_id),
+  );
+  filtered = filtered.filter((u) => orgUserIds.has(u.id));
 
   // Filter by archived status
   filtered = filtered.filter((u) => u.archived === archived);
@@ -1131,13 +1148,21 @@ export async function getEmployeeWorkTypes(
     return { data: [] };
   }
 
-  // Current effective work types: preferred override or LAMA auto-derive.
+  // LAMA таблицы keyed по employee_id (= external_id), а не admin user.id.
+  // Резолвим через external_id если есть.
+  const statsKey = user.external_id ?? userId;
+
+  // Current effective work types: preferred override (директор поправил)
+  // ИЛИ LAMA auto-derive. Тот же key resolve.
   const current = new Set<string>(
-    user.preferred_work_types ?? LAMA_EMPLOYEE_WORK_TYPES[userId] ?? [],
+    user.preferred_work_types ??
+      LAMA_EMPLOYEE_WORK_TYPES[userId] ??
+      LAMA_EMPLOYEE_WORK_TYPES[statsKey] ??
+      [],
   );
 
-  // History counts: EMPLOYEE_STATS.affinity[work_type].count (если есть запись).
-  const affinity = EMPLOYEE_STATS[userId]?.affinity ?? {};
+  // History counts: EMPLOYEE_STATS.affinity[work_type].count.
+  const affinity = EMPLOYEE_STATS[statsKey]?.affinity ?? {};
 
   const rows: EmployeeWorkTypeRow[] = ALL_LAMA_WORK_TYPES.map((wt) => ({
     work_type: wt,

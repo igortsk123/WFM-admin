@@ -86,10 +86,7 @@ export function EmployeeWorkTypesTab({ user, t }: EmployeeWorkTypesTabProps) {
             {rows.map((row) => {
               const isChecked = checked.has(row.work_type)
               const checkboxId = `wt-${user.id}-${row.work_type}`
-              const countLabel =
-                row.history_count > 0
-                  ? t("work_types.count_label", { count: row.history_count })
-                  : t("work_types.never")
+              const countLabel = t("work_types.count_label", { count: row.history_count })
               return (
                 <li key={row.work_type}>
                   <label
