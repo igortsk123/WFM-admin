@@ -120,13 +120,26 @@ export function EmployeeSheet({
     onClose()
   }
 
-  // Z-фильтр: задачи в зонах сотрудника. Если у сотрудника нет zones —
-  // показываем все (зон нет → matched.length=0 → бесполезно фильтровать).
+  // Z-фильтр iter#8: задачи где у emp есть И zone match И work_type match
+  // (strict). Если strict пустой — relax до zone-only, потом wt-only.
+  // Логика синхронна с distribution-sheet и autoDistribute.
   const empZones = employee.user.zones ?? []
-  const matchedByZone = empZones.length > 0
-    ? tasks.filter((tt) => tt.zone_name && empZones.includes(tt.zone_name))
-    : tasks
-  const visibleTasks = zoneFilterEnabled && empZones.length > 0
+  const empWtypes = employee.user.work_types ?? []
+  const strictMatch = tasks.filter(
+    (tt) =>
+      (!tt.zone_name || empZones.includes(tt.zone_name)) &&
+      (!tt.work_type_name || empWtypes.includes(tt.work_type_name)) &&
+      (empZones.includes(tt.zone_name ?? "") || empWtypes.includes(tt.work_type_name ?? ""))
+  )
+  let matchedByZone: typeof tasks = strictMatch
+  if (matchedByZone.length === 0 && empZones.length > 0) {
+    matchedByZone = tasks.filter((tt) => tt.zone_name && empZones.includes(tt.zone_name))
+  }
+  if (matchedByZone.length === 0 && empWtypes.length > 0) {
+    matchedByZone = tasks.filter((tt) => tt.work_type_name && empWtypes.includes(tt.work_type_name))
+  }
+  const filterAvailable = empZones.length > 0 || empWtypes.length > 0
+  const visibleTasks = zoneFilterEnabled && filterAvailable
     ? matchedByZone
     : tasks
 
@@ -197,8 +210,8 @@ export function EmployeeSheet({
           )}
         </div>
 
-        {/* Zone filter toggle (если у сотрудника есть зоны) */}
-        {empZones.length > 0 && (
+        {/* Filter toggle iter#8: zone+wt strict → relax cascade */}
+        {filterAvailable && (
           <div className="px-4 py-2 border-b shrink-0 flex items-center justify-between gap-2 text-xs">
             <label className="flex items-center gap-2 cursor-pointer select-none">
               <input

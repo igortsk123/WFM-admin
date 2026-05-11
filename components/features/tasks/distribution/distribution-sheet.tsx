@@ -162,22 +162,36 @@ export function DistributionSheet({
           </div>
         </div>
 
-        {/* Filter «только подходящие сотрудники» — двух-уровневый match:
-            1. Если у задачи есть зона → match по zones (история зон сотрудника).
-            2. Если зоны нет (Касса/КСО/Менеджерские) → match по work_types
-               (тот же тип работы у сотрудника в LAMA history).
-            Чекбокс активен в обоих случаях, disabled только если ни zone ни
-            work_type у задачи нет. */}
+        {/* Filter «только подходящие сотрудники» — три-уровневый каскад:
+            1. Strict: zone И work_type оба совпадают с историей emp.
+            2. Relax: только zone (если strict пустой и зона есть).
+            3. Relax: только work_type (если zone нет или относится к Касса/КСО).
+            Совместно zone+wtype = «бригадный» match — то что предпочитает алго iter#8. */}
         {(() => {
           const hasZone = !!task.zone_name && task.zone_name !== "Без зоны"
           const hasWorkType = !!task.work_type_name
           const filterAvailable = hasZone || hasWorkType
-          const matched = hasZone
-            ? employees.filter((e) => e.user.zones?.includes(task.zone_name))
-            : hasWorkType
-              ? employees.filter((e) => e.user.work_types?.includes(task.work_type_name!))
-              : employees
-          const matchKind = hasZone ? "по зоне" : hasWorkType ? "по типу работ" : ""
+          const matchEmp = (e: typeof employees[number]): boolean => {
+            const inZone = !hasZone || (e.user.zones?.includes(task.zone_name) ?? false)
+            const inWtype = !hasWorkType || (e.user.work_types?.includes(task.work_type_name!) ?? false)
+            // Strict: обе галочки должны совпадать (когда они применимы).
+            if (hasZone && hasWorkType) return inZone && inWtype
+            if (hasZone) return inZone
+            if (hasWorkType) return inWtype
+            return true
+          }
+          let matched = employees.filter(matchEmp)
+          let matchKind = hasZone && hasWorkType ? "по зоне и типу работ" : hasZone ? "по зоне" : "по типу работ"
+          // Если strict zone+wt пустой — relax до zone-only.
+          if (matched.length === 0 && hasZone && hasWorkType) {
+            matched = employees.filter((e) => e.user.zones?.includes(task.zone_name) ?? false)
+            matchKind = "по зоне"
+          }
+          // Если ещё пусто — relax до wt-only.
+          if (matched.length === 0 && hasWorkType) {
+            matched = employees.filter((e) => e.user.work_types?.includes(task.work_type_name!) ?? false)
+            matchKind = "по типу работ"
+          }
           return (
             <div className="px-4 py-2 border-b shrink-0 flex items-center justify-between gap-2 text-xs">
               <label className="flex items-center gap-2 cursor-pointer select-none">
@@ -213,10 +227,22 @@ export function DistributionSheet({
             {(() => {
               if (!zoneFilterEnabled) return employees
               const hasZone = !!task.zone_name && task.zone_name !== "Без зоны"
+              const hasWorkType = !!task.work_type_name
+              // Strict zone+wt
+              if (hasZone && hasWorkType) {
+                const strict = employees.filter(
+                  (e) =>
+                    e.user.zones?.includes(task.zone_name) &&
+                    e.user.work_types?.includes(task.work_type_name!)
+                )
+                if (strict.length > 0) return strict
+                // relax to zone-only
+                return employees.filter((e) => e.user.zones?.includes(task.zone_name))
+              }
               if (hasZone) {
                 return employees.filter((e) => e.user.zones?.includes(task.zone_name))
               }
-              if (task.work_type_name) {
+              if (hasWorkType) {
                 return employees.filter((e) => e.user.work_types?.includes(task.work_type_name!))
               }
               return employees
