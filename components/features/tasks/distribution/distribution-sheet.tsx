@@ -168,7 +168,7 @@ export function DistributionSheet({
             3. Relax: только work_type (если zone нет или относится к Касса/КСО).
             Совместно zone+wtype = «бригадный» match — то что предпочитает алго iter#8. */}
         {(() => {
-          const hasZone = !!task.zone_name && task.zone_name !== "Без зоны"
+          const hasZone = !!task.zone_name && task.zone_name !== "Без зоны" && task.zone_name !== "N/A"
           const hasWorkType = !!task.work_type_name
           const filterAvailable = hasZone || hasWorkType
           const matchEmp = (e: typeof employees[number]): boolean => {
@@ -244,7 +244,7 @@ export function DistributionSheet({
           <div className="space-y-3">
             {(() => {
               if (!zoneFilterEnabled) return employees
-              const hasZone = !!task.zone_name && task.zone_name !== "Без зоны"
+              const hasZone = !!task.zone_name && task.zone_name !== "Без зоны" && task.zone_name !== "N/A"
               const hasWorkType = !!task.work_type_name
               // Касса = hard constraint, без relax.
               if (task.work_type_name === "Касса") {

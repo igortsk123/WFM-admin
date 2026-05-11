@@ -803,16 +803,23 @@ def auto_distribute(
         else:
             ranked = sorted(candidates, key=lambda e: -score_of(e))
 
-        # Iter#9 — single-assignee БЕЗ overtime: задача только тому у кого
-        # хватает свободного времени. Если ни у кого — task unassigned.
+        # Iter#11 — частичное назначение для Кассы (эстафета смен).
+        # Для обычных task — single-assignee без overtime.
+        allow_split = task.work_type == "Касса"
         for emp in ranked:
+            if remaining <= 0:
+                break
             free = free_by.get(emp.id, 0)
-            if free < remaining:
+            if free < 1:
                 continue
-            allocations.append((emp.id, remaining))
-            free_by[emp.id] = free - remaining
-            remaining = 0
-            break
+            if not allow_split and free < remaining:
+                continue
+            give = min(free, remaining)
+            allocations.append((emp.id, give))
+            free_by[emp.id] = free - give
+            remaining -= give
+            if not allow_split:
+                break
 
         if allocations:
             plan[task.id] = allocations

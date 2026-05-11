@@ -1010,7 +1010,11 @@ export function autoDistribute(
     const allocations: TaskDistributionAllocation[] = [];
 
     // Match cascade (iter#5): hard constraint по work_type если есть.
-    const hasZone = !!task.zone_name && task.zone_name !== "Без зоны";
+    // «Без зоны» и «N/A» — оба означают «у task нет конкретной зоны»
+    // (Касса/КСО/Менеджерские/Переоценка/Инвентаризация работают без zone).
+    const hasZone = !!task.zone_name
+      && task.zone_name !== "Без зоны"
+      && task.zone_name !== "N/A";
     const hasWorkType = !!task.work_type_name;
     const taskWorkType = task.work_type_name ?? "";
     const taskZone = task.zone_name ?? "";
@@ -1158,17 +1162,24 @@ export function autoDistribute(
 
     // Iter#9 — single-assignee БЕЗ overtime: задача отдаётся одному топ-
     // кандидату только если у него хватает свободного времени на ВСЮ
-    // задачу. Если у топа недостаточно окна — берём следующего по score.
-    // Если ни у кого не хватает — задача остаётся нераспределённой
-    // (это правильно: директор не должен отдавать сверх смены, лучше
-    // вернуть на завтра или подумать).
+    // задачу. Если у топа недостаточно — берём следующего по score.
+    //
+    // Iter#11 — частичное назначение для Кассы: смена 12ч, а Касса-задача
+    // часто 14-15ч (открыта весь день). Тогда первый кассир берёт сколько
+    // помещается, остаток идёт следующему кассиру. Это «эстафета смен».
+    // Для НЕ-Кассы — single-assignee без дробления (директор так делает).
+    const allowSplit = task.work_type_name === "Касса";
+
     for (const emp of ranked) {
+      if (remaining <= 0) break;
       const free = freeByUser.get(emp.user.id) ?? 0;
-      if (free < remaining) continue; // не хватает окна на всю задачу
-      allocations.push({ userId: emp.user.id, minutes: remaining });
-      freeByUser.set(emp.user.id, free - remaining);
-      remaining = 0;
-      break;
+      if (free < 1) continue;
+      if (!allowSplit && free < remaining) continue; // обычная — целиком или ничего
+      const give = Math.min(free, remaining);
+      allocations.push({ userId: emp.user.id, minutes: give });
+      freeByUser.set(emp.user.id, free - give);
+      remaining -= give;
+      if (!allowSplit) break; // single для обычных task — берём только одного
     }
 
     if (allocations.length > 0) {
