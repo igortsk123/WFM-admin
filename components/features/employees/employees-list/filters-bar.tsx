@@ -3,8 +3,6 @@
 import * as React from "react"
 import { useTranslations } from "next-intl"
 
-import type { ObjectFormat, Permission } from "@/lib/types"
-
 import { Input } from "@/components/ui/input"
 
 import {
@@ -14,73 +12,56 @@ import {
   type FilterControl,
 } from "@/components/shared/filter-bar"
 import { MobileFilterSheet } from "@/components/shared/mobile-filter-sheet"
-import { MultiSelectCombobox } from "@/components/shared/multi-select-combobox"
 import { SingleSelectCombobox } from "@/components/shared/single-select-combobox"
 
 import {
-  ALL_FREELANCER_STATUSES,
-  ALL_PERMISSIONS,
-  EMPLOYEE_OBJECT_FORMATS,
+  ALL_LAMA_ZONES,
+  ALL_WORK_TYPES,
   POSITION_OPTIONS,
   STORE_OPTIONS,
+  shortenWorkType,
 } from "./_shared"
 
 export interface FiltersBarProps {
   // search
   search: string
   onSearchChange: (v: string) => void
-  // multi-selects
-  selectedStoreIds: string[]
-  onStoreIdsChange: (v: string[]) => void
-  selectedPositionIds: string[]
-  onPositionIdsChange: (v: string[]) => void
-  selectedPermissions: string[]
-  onPermissionsChange: (v: string[]) => void
-  // singles
-  selectedEmploymentType: string
-  onEmploymentTypeChange: (v: string) => void
-  selectedFreelancerStatus: string
-  onFreelancerStatusChange: (v: string) => void
-  selectedSource: string
-  onSourceChange: (v: string) => void
-  selectedObjectFormat: string
-  onObjectFormatChange: (v: string) => void
+  // single-selects (1:1 с колонками таблицы)
+  selectedStoreId: string
+  onStoreIdChange: (v: string) => void
+  selectedPositionId: string
+  onPositionIdChange: (v: string) => void
+  selectedZone: string
+  onZoneChange: (v: string) => void
+  selectedWorkType: string
+  onWorkTypeChange: (v: string) => void
+  selectedOnShift: string
+  onOnShiftChange: (v: string) => void
   // flags
   hideStore: boolean
-  showSourceFilter: boolean
-  showFreelancerStatusFilter: boolean
   // helpers
   activeFilterCount: number
   clearAllFilters: () => void
-  permLabelMap: Record<Permission, string>
 }
 
 export function FiltersBar({
   search,
   onSearchChange,
-  selectedStoreIds,
-  onStoreIdsChange,
-  selectedPositionIds,
-  onPositionIdsChange,
-  selectedPermissions,
-  onPermissionsChange,
-  selectedEmploymentType,
-  onEmploymentTypeChange,
-  selectedFreelancerStatus,
-  onFreelancerStatusChange,
-  selectedSource,
-  onSourceChange,
-  selectedObjectFormat,
-  onObjectFormatChange,
+  selectedStoreId,
+  onStoreIdChange,
+  selectedPositionId,
+  onPositionIdChange,
+  selectedZone,
+  onZoneChange,
+  selectedWorkType,
+  onWorkTypeChange,
+  selectedOnShift,
+  onOnShiftChange,
   hideStore,
-  showSourceFilter,
-  showFreelancerStatusFilter,
   activeFilterCount,
   clearAllFilters,
-  permLabelMap,
 }: FiltersBarProps) {
   const t = useTranslations("screen.employees")
-  const tFormat = useTranslations("object_format")
 
   // ── Filter options ───────────────────────────────────────────────
   const storeOptions = STORE_OPTIONS.map((s) => ({
@@ -91,187 +72,120 @@ export function FiltersBar({
     value: String(p.id),
     label: p.name,
   }))
-  const permOptions = ALL_PERMISSIONS.map((p) => ({
-    value: p,
-    label: permLabelMap[p],
+  const zoneOptions = ALL_LAMA_ZONES.map((z) => ({
+    value: z,
+    label: z,
   }))
-  const employmentOptions = [
-    { value: "STAFF", label: t("employment.staff") },
-    { value: "FREELANCE", label: t("employment.freelance") },
+  const workTypeOptions = ALL_WORK_TYPES.map((wt) => ({
+    value: wt,
+    label: shortenWorkType(wt),
+  }))
+  const onShiftOptions = [
+    { value: "yes", label: t("filters.on_shift.yes") },
+    { value: "no", label: t("filters.on_shift.no") },
   ]
-  const freelancerStatusOptions = ALL_FREELANCER_STATUSES.map((s) => ({
-    value: s,
-    label:
-      s === "NEW"
-        ? "Новый"
-        : s === "VERIFICATION"
-          ? "Проверка"
-          : s === "ACTIVE"
-            ? "Активен"
-            : s === "BLOCKED"
-              ? "Заблокирован"
-              : "Архив",
-  }))
-  const sourceOptions = [
-    { value: "MANUAL", label: t("source.manual") },
-    { value: "EXTERNAL_SYNC", label: t("source.external") },
-  ]
-  const objectFormatOptions = EMPLOYEE_OBJECT_FORMATS.map((f) => ({
-    value: f,
-    label: tFormat(f as Parameters<typeof tFormat>[0]),
-  }))
 
-  // Shared filter controls (used in both desktop FilterBar and mobile sheet via render-prop wrappers)
+  // Shared filter controls (используются в desktop FilterBar и mobile sheet).
   const desktopControls: FilterControl[] = []
+  desktopControls.push({
+    kind: "single-select",
+    value: selectedOnShift,
+    onChange: onOnShiftChange,
+    options: onShiftOptions,
+    placeholder: t("filters.on_shift.label"),
+    className: "w-40",
+  })
   if (!hideStore) {
     desktopControls.push({
-      kind: "multi-select",
-      value: selectedStoreIds,
-      onChange: onStoreIdsChange,
+      kind: "single-select",
+      value: selectedStoreId,
+      onChange: onStoreIdChange,
       options: storeOptions,
       placeholder: t("filters.store"),
       className: "w-44",
     })
   }
-  if (!hideStore) {
-    desktopControls.push({
-      kind: "single-select",
-      value: selectedObjectFormat,
-      onChange: onObjectFormatChange,
-      options: objectFormatOptions,
-      placeholder: t("filters.format"),
-      className: "w-44",
-    })
-  }
   desktopControls.push(
     {
-      kind: "multi-select",
-      value: selectedPositionIds,
-      onChange: onPositionIdsChange,
+      kind: "single-select",
+      value: selectedPositionId,
+      onChange: onPositionIdChange,
       options: positionOptions,
       placeholder: t("filters.position"),
       className: "w-44",
     },
     {
-      kind: "multi-select",
-      value: selectedPermissions,
-      onChange: onPermissionsChange,
-      options: permOptions,
+      kind: "single-select",
+      value: selectedZone,
+      onChange: onZoneChange,
+      options: zoneOptions,
       placeholder: t("filters.zone"),
       className: "w-40",
     },
     {
       kind: "single-select",
-      value: selectedEmploymentType,
-      onChange: (v) => {
-        onEmploymentTypeChange(v)
-        if (v !== "FREELANCE") onFreelancerStatusChange("")
-      },
-      options: employmentOptions,
-      placeholder: t("filters.employment_type"),
+      value: selectedWorkType,
+      onChange: onWorkTypeChange,
+      options: workTypeOptions,
+      placeholder: t("filters.work_types.label"),
       className: "w-40",
     },
   )
-  if (showFreelancerStatusFilter) {
-    desktopControls.push({
-      kind: "single-select",
-      value: selectedFreelancerStatus,
-      onChange: onFreelancerStatusChange,
-      options: freelancerStatusOptions,
-      placeholder: t("filters.freelancer_status"),
-      className: "w-44",
-    })
-  }
-  if (showSourceFilter) {
-    desktopControls.push({
-      kind: "single-select",
-      value: selectedSource,
-      onChange: onSourceChange,
-      options: sourceOptions,
-      placeholder: t("filters.source_creation"),
-      className: "w-44",
-    })
-  }
 
   // ── Filter chips ─────────────────────────────────────────────────
   const filterChips: FilterChipDescriptor[] = []
 
-  selectedStoreIds.forEach((id) => {
-    const name = STORE_OPTIONS.find((s) => String(s.id) === id)?.name ?? id
+  if (selectedOnShift) {
     filterChips.push({
-      key: `store-${id}`,
+      key: "onshift",
+      label: t("filters.on_shift.label"),
+      value:
+        selectedOnShift === "yes"
+          ? t("filters.on_shift.yes")
+          : t("filters.on_shift.no"),
+      onRemove: () => onOnShiftChange(""),
+    })
+  }
+
+  if (selectedStoreId && !hideStore) {
+    const name =
+      STORE_OPTIONS.find((s) => String(s.id) === selectedStoreId)?.name ??
+      selectedStoreId
+    filterChips.push({
+      key: `store-${selectedStoreId}`,
       label: t("filters.store"),
       value: name,
-      onRemove: () =>
-        onStoreIdsChange(selectedStoreIds.filter((v) => v !== id)),
+      onRemove: () => onStoreIdChange(""),
     })
-  })
+  }
 
-  selectedPositionIds.forEach((id) => {
-    const name = POSITION_OPTIONS.find((p) => String(p.id) === id)?.name ?? id
+  if (selectedPositionId) {
+    const name =
+      POSITION_OPTIONS.find((p) => String(p.id) === selectedPositionId)?.name ??
+      selectedPositionId
     filterChips.push({
-      key: `pos-${id}`,
+      key: `pos-${selectedPositionId}`,
       label: t("filters.position"),
       value: name,
-      onRemove: () =>
-        onPositionIdsChange(selectedPositionIds.filter((v) => v !== id)),
+      onRemove: () => onPositionIdChange(""),
     })
-  })
+  }
 
-  selectedPermissions.forEach((p) => {
+  if (selectedZone) {
     filterChips.push({
-      key: `perm-${p}`,
+      key: `zone-${selectedZone}`,
       label: t("filters.zone"),
-      value: permLabelMap[p as Permission] ?? p,
-      onRemove: () =>
-        onPermissionsChange(selectedPermissions.filter((v) => v !== p)),
-    })
-  })
-
-  if (selectedEmploymentType) {
-    filterChips.push({
-      key: "emp",
-      label: t("filters.employment_type"),
-      value:
-        selectedEmploymentType === "STAFF"
-          ? t("employment.staff")
-          : t("employment.freelance"),
-      onRemove: () => onEmploymentTypeChange(""),
+      value: selectedZone,
+      onRemove: () => onZoneChange(""),
     })
   }
 
-  if (selectedFreelancerStatus) {
-    const statusLabel =
-      freelancerStatusOptions.find((o) => o.value === selectedFreelancerStatus)
-        ?.label ?? selectedFreelancerStatus
+  if (selectedWorkType) {
     filterChips.push({
-      key: "fstatus",
-      label: t("filters.freelancer_status"),
-      value: statusLabel,
-      onRemove: () => onFreelancerStatusChange(""),
-    })
-  }
-
-  if (selectedSource) {
-    filterChips.push({
-      key: "source",
-      label: t("filters.source_creation"),
-      value:
-        selectedSource === "MANUAL"
-          ? t("source.manual")
-          : t("source.external"),
-      onRemove: () => onSourceChange(""),
-    })
-  }
-
-  if (selectedObjectFormat && !hideStore) {
-    filterChips.push({
-      key: "format",
-      label: t("filters.format"),
-      value:
-        objectFormatOptions.find((o) => o.value === selectedObjectFormat)?.label
-        ?? selectedObjectFormat,
-      onRemove: () => onObjectFormatChange(""),
+      key: `wt-${selectedWorkType}`,
+      label: t("filters.work_types.label"),
+      value: shortenWorkType(selectedWorkType),
+      onRemove: () => onWorkTypeChange(""),
     })
   }
 
@@ -300,92 +214,59 @@ export function FiltersBar({
             }}
           >
             <div className="space-y-4">
+              <div className="space-y-2">
+                <p className="text-sm font-medium">
+                  {t("filters.on_shift.label")}
+                </p>
+                <SingleSelectCombobox
+                  options={onShiftOptions}
+                  value={selectedOnShift}
+                  onValueChange={onOnShiftChange}
+                  placeholder={t("filters.on_shift.label")}
+                  className="w-full"
+                />
+              </div>
               {!hideStore && (
                 <div className="space-y-2">
                   <p className="text-sm font-medium">{t("filters.store")}</p>
-                  <MultiSelectCombobox
-                    options={storeOptions}
-                    selected={selectedStoreIds}
-                    onSelectionChange={onStoreIdsChange}
-                    placeholder={t("filters.store")}
-                    className="w-full"
-                  />
-                </div>
-              )}
-              {!hideStore && (
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">{t("filters.format")}</p>
                   <SingleSelectCombobox
-                    options={objectFormatOptions}
-                    value={selectedObjectFormat}
-                    onValueChange={onObjectFormatChange}
-                    placeholder={t("filters.format")}
+                    options={storeOptions}
+                    value={selectedStoreId}
+                    onValueChange={onStoreIdChange}
+                    placeholder={t("filters.store")}
                     className="w-full"
                   />
                 </div>
               )}
               <div className="space-y-2">
                 <p className="text-sm font-medium">{t("filters.position")}</p>
-                <MultiSelectCombobox
+                <SingleSelectCombobox
                   options={positionOptions}
-                  selected={selectedPositionIds}
-                  onSelectionChange={onPositionIdsChange}
+                  value={selectedPositionId}
+                  onValueChange={onPositionIdChange}
                   placeholder={t("filters.position")}
                   className="w-full"
                 />
               </div>
               <div className="space-y-2">
-                <p className="text-sm font-medium">
-                  {t("filters.employment_type")}
-                </p>
+                <p className="text-sm font-medium">{t("filters.zone")}</p>
                 <SingleSelectCombobox
-                  options={employmentOptions}
-                  value={selectedEmploymentType}
-                  onValueChange={(v) => {
-                    onEmploymentTypeChange(v)
-                    if (v !== "FREELANCE") onFreelancerStatusChange("")
-                  }}
-                  placeholder={t("filters.employment_type")}
+                  options={zoneOptions}
+                  value={selectedZone}
+                  onValueChange={onZoneChange}
+                  placeholder={t("filters.zone")}
                   className="w-full"
                 />
               </div>
-              {showFreelancerStatusFilter && (
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">
-                    {t("filters.freelancer_status")}
-                  </p>
-                  <SingleSelectCombobox
-                    options={freelancerStatusOptions}
-                    value={selectedFreelancerStatus}
-                    onValueChange={onFreelancerStatusChange}
-                    placeholder={t("filters.freelancer_status")}
-                    className="w-full"
-                  />
-                </div>
-              )}
-              {showSourceFilter && (
-                <div className="space-y-2">
-                  <p className="text-sm font-medium">
-                    {t("filters.source_creation")}
-                  </p>
-                  <SingleSelectCombobox
-                    options={sourceOptions}
-                    value={selectedSource}
-                    onValueChange={onSourceChange}
-                    placeholder={t("filters.source_creation")}
-                    className="w-full"
-                  />
-                </div>
-              )}
               <div className="space-y-2">
                 <p className="text-sm font-medium">
-                  {t("filters.zone")}
+                  {t("filters.work_types.label")}
                 </p>
-                <MultiSelectCombobox
-                  options={permOptions}
-                  selected={selectedPermissions}
-                  onSelectionChange={onPermissionsChange}
-                  placeholder={t("filters.zone")}
+                <SingleSelectCombobox
+                  options={workTypeOptions}
+                  value={selectedWorkType}
+                  onValueChange={onWorkTypeChange}
+                  placeholder={t("filters.work_types.label")}
                   className="w-full"
                 />
               </div>

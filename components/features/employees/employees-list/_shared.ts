@@ -5,6 +5,8 @@ import type {
   ObjectFormat,
 } from "@/lib/types"
 import { DEMO_TOP_STORES } from "@/lib/api/_demo-stores"
+import { LAMA_EMPLOYEE_ZONES } from "@/lib/mock-data/_lama-employee-zones"
+import { ALL_LAMA_WORK_TYPES } from "@/lib/api/users"
 
 // ─── CONSTANTS ───────────────────────────────────────────────────────────────
 
@@ -66,6 +68,37 @@ export const INACTIVE_FREELANCER_STATUSES: FreelancerStatus[] = [
   "VERIFICATION",
   "BLOCKED",
 ]
+
+/**
+ * Все уникальные zone names, встретившиеся в LAMA-истории сотрудников.
+ * Используется в filter «Зона» — точно зеркалит реальные значения колонки zones,
+ * без фейковых вариантов.
+ */
+export const ALL_LAMA_ZONES: string[] = Array.from(
+  new Set(Object.values(LAMA_EMPLOYEE_ZONES).flat()),
+).sort((a, b) => a.localeCompare(b, "ru"))
+
+/**
+ * 7 типов работ для фильтра «Типы работ» — те же что и в LAMA work-types словаре.
+ */
+export const ALL_WORK_TYPES: readonly string[] = ALL_LAMA_WORK_TYPES
+
+/**
+ * Сокращения для отображения work-type'ов в узкой таблице.
+ * Используется и в desktop columns, и в mobile card.
+ */
+export const WORK_TYPE_SHORT_LABELS: Record<string, string> = {
+  "Менеджерские операции": "Менедж.",
+  "Касса самообслуживания": "КСО",
+  "Инвентаризация": "Инвент.",
+  "Переоценка": "Переоц.",
+  "Выкладка": "Выкл.",
+  "Другие работы": "Другие",
+}
+
+export function shortenWorkType(wt: string): string {
+  return WORK_TYPE_SHORT_LABELS[wt] ?? wt
+}
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 

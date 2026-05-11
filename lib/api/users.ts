@@ -28,6 +28,7 @@ import { MOCK_SHIFTS } from "@/lib/mock-data/shifts";
 import { MOCK_FREELANCE_AGENTS } from "@/lib/mock-data/freelance-agents";
 import { MOCK_ORGANIZATIONS } from "@/lib/mock-data/organizations";
 import { LAMA_EMPLOYEE_WORK_TYPES } from "@/lib/mock-data/_lama-employee-work-types";
+import { LAMA_EMPLOYEE_ZONES } from "@/lib/mock-data/_lama-employee-zones";
 import { REAL_LAMA_POSITIONS } from "@/lib/mock-data/_lama-real";
 import { EMPLOYEE_STATS } from "@/lib/mock-data/_lama-distribution-stats";
 
@@ -197,6 +198,23 @@ export interface UserListParams extends ApiListParams {
   source?: "MANUAL" | "EXTERNAL_SYNC";
   /** Архивированные. По умолчанию false (только активные). */
   archived?: boolean;
+  /**
+   * LAMA-derived зона (фильтр для employees-list — реальные зоны из истории
+   * snapshot'ов, не Permission). Сотрудник попадает в выборку если зона есть
+   * в LAMA_EMPLOYEE_ZONES[user.id].
+   */
+  zone?: string;
+  /**
+   * Тип работ (LAMA work_type — Касса/КСО/Выкладка/...). Сотрудник попадает
+   * если тип есть в `user.preferred_work_types` (явный override) или в
+   * LAMA_EMPLOYEE_WORK_TYPES[user.id] (история).
+   */
+  work_type?: string;
+  /**
+   * На смене сейчас. "yes" = есть сегодняшняя смена в статусе OPENED;
+   * "no" = смены нет или она NEW/CLOSED.
+   */
+  on_shift?: "yes" | "no";
 }
 
 /** Способ отправки приглашения новому сотруднику (для STAFF). */
@@ -262,6 +280,9 @@ export async function getUsers(
     freelancer_status,
     agent_ids,
     source,
+    zone,
+    work_type,
+    on_shift,
     archived = false,
     page = 1,
     page_size = 20,
@@ -372,6 +393,37 @@ export async function getUsers(
   // Filter by creation source
   if (source) {
     filtered = filtered.filter((u) => u.source === source);
+  }
+
+  // Filter by LAMA-derived zone — реальные зоны из истории работ.
+  // Используется фильтром «Зона» в employees-list (admin-only). При swap на
+  // real backend заменится на granted zones / store_zones table.
+  if (zone) {
+    filtered = filtered.filter((u) =>
+      (LAMA_EMPLOYEE_ZONES[u.id] ?? []).includes(zone),
+    );
+  }
+
+  // Filter by work type — preferred override OR LAMA history.
+  if (work_type) {
+    filtered = filtered.filter((u) => {
+      const wts = u.preferred_work_types ?? LAMA_EMPLOYEE_WORK_TYPES[u.id] ?? [];
+      return wts.includes(work_type);
+    });
+  }
+
+  // Filter by «на смене сейчас». Использует MOCK_SHIFTS на TODAY и статус OPENED.
+  if (on_shift) {
+    const openShiftUserIds = new Set(
+      MOCK_SHIFTS
+        .filter((s) => s.shift_date === TODAY && s.status === "OPENED")
+        .map((s) => s.user_id),
+    );
+    filtered = filtered.filter((u) =>
+      on_shift === "yes"
+        ? openShiftUserIds.has(u.id)
+        : !openShiftUserIds.has(u.id),
+    );
   }
 
   // Search by name or phone

@@ -1550,28 +1550,25 @@
       "filters": {
         "search_placeholder": "Поиск по ФИО, телефону",
         "store": "Магазин",
-        "format": "Формат",
         "position": "Должность",
         "zone": "Зона",
-        "employment_type": "Тип занятости",
-        "source_creation": "Источник создания",
-        "freelancer_status": "Статус исполнителя",
+        "on_shift": {
+          "label": "На смене сейчас",
+          "all": "Все",
+          "yes": "Да",
+          "no": "Нет"
+        },
+        "work_types": {
+          "label": "Типы работ",
+          "all": "Все типы"
+        },
         "clear_all": "Очистить все",
         "open_filters": "Фильтры",
         "close": "Закрыть",
         "apply": "Применить"
       },
-      "source": {
-        "manual": "Вручную",
-        "external": "Из внешней HR"
-      },
       "employment": {
-        "staff": "Штатный",
-        "freelance": "Внештатный",
-        "no_documents": "Нет загруженных документов",
         "no_oferta": "Оферта не подписана",
-        "oferta_signed": "Оферта подписана",
-        "no_agent": "Без агента",
         "not_activated_tooltip": "Исполнитель не активирован"
       },
       "columns": {
@@ -1579,14 +1576,10 @@
         "store": "Магазин",
         "position": "Должность",
         "zones": "Зоны",
-        "permissions": "Зоны",
+        "work_types": "Типы работ",
         "current_shift": "Текущая смена",
-        "employment": "Тип занятости",
-        "hired_at": "Принят",
-        "more_permissions": "+{n}",
         "more_zones": "+{n}",
-        "freelancer_status": "Статус исполнителя",
-        "oferta": "Оферта"
+        "more_work_types": "+{n}"
       },
       "shift": {
         "no_shift": "—",
