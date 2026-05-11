@@ -1122,16 +1122,17 @@ export function autoDistribute(
       ? [bestExpert, ...candidates.filter((e) => e !== bestExpert).sort((a, b) => scoreOf(b) - scoreOf(a))]
       : [...candidates].sort((a, b) => scoreOf(b) - scoreOf(a));
 
-    // Iter#4 — single-assignee: задача целиком одному топ-кандидату, без
-    // дробления. Директор так и делает — отдаёт задачу одному, не расщепляет.
-    // Если у топа совсем нет окна (free=0) — берём следующего по score.
-    // Overtime допустим: если у выбранного free < task.duration, всё равно
-    // отдаём ему целиком (отметим overflow), как и в реальной практике.
+    // Iter#9 — single-assignee БЕЗ overtime: задача отдаётся одному топ-
+    // кандидату только если у него хватает свободного времени на ВСЮ
+    // задачу. Если у топа недостаточно окна — берём следующего по score.
+    // Если ни у кого не хватает — задача остаётся нераспределённой
+    // (это правильно: директор не должен отдавать сверх смены, лучше
+    // вернуть на завтра или подумать).
     for (const emp of ranked) {
       const free = freeByUser.get(emp.user.id) ?? 0;
-      if (free < 1) continue; // нет окна вообще — переходим к следующему
+      if (free < remaining) continue; // не хватает окна на всю задачу
       allocations.push({ userId: emp.user.id, minutes: remaining });
-      freeByUser.set(emp.user.id, free - remaining); // может уйти в минус (overtime)
+      freeByUser.set(emp.user.id, free - remaining);
       remaining = 0;
       break;
     }

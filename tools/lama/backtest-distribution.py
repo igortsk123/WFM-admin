@@ -781,11 +781,11 @@ def auto_distribute(
         else:
             ranked = sorted(candidates, key=lambda e: -score_of(e))
 
-        # Iter#4 — single-assignee: задача целиком одному топ-кандидату.
-        # Если у топа free=0 — берём следующего. Overtime допустим.
+        # Iter#9 — single-assignee БЕЗ overtime: задача только тому у кого
+        # хватает свободного времени. Если ни у кого — task unassigned.
         for emp in ranked:
             free = free_by.get(emp.id, 0)
-            if free < 1:
+            if free < remaining:
                 continue
             allocations.append((emp.id, remaining))
             free_by[emp.id] = free - remaining
