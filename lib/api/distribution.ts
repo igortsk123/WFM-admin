@@ -882,9 +882,10 @@ function minmax(value: number, min: number, max: number): number {
  *    (PER-STORE-PATTERNS.md). Реальность концентрирует работу на профиле
  *    сотрудника (zone+wtype 84%), почти не балансирует (5%).
  *
- * 3. **Two-pass chunk size** — стараемся не дробить 4ч задачу на 8 огрызков:
- *    - Pass 1 (preferred): пропускаем кандидатов у кого free < 60 мин.
- *    - Pass 2 (relaxed): порог 30 мин, добиваем остаток.
+ * 3. **Single-assignee (iter#4)** — задача отдаётся ОДНОМУ топ-кандидату
+ *    целиком, без дробления. Директор так и делает: отдаёт Маше всю
+ *    Бакалею, не расщепляет на Машу+Петю. Если у топа нет окна (free=0) —
+ *    берём следующего по score. Overtime допустим.
  *
  * Не делает API-вызовов, не мутирует серверное состояние. Идемпотентна.
  */
@@ -892,9 +893,6 @@ export function autoDistribute(
   tasks: UnassignedTask[],
   employees: EmployeeUtilization[]
 ): Map<string, TaskDistributionAllocation[]> {
-  const PREFERRED_CHUNK = 60; // мин — целимся в куски ≥1ч (TIER 2)
-  const MIN_CHUNK = 30; // мин — абсолютный порог защиты от фрагментации
-
   const plan = new Map<string, TaskDistributionAllocation[]>();
 
   // Mutable per-employee free minutes — shrinks как аллоцируем.
@@ -989,41 +987,18 @@ export function autoDistribute(
     };
     const ranked = [...candidates].sort((a, b) => scoreOf(b) - scoreOf(a));
 
-    // Track кому уже дали в этой задаче — dedup для pass 2.
-    const allocatedToThisTask = new Set<number>();
-
-    // Pass 1: preferred chunks ≥60 мин (целимся в большие куски).
+    // Iter#4 — single-assignee: задача целиком одному топ-кандидату, без
+    // дробления. Директор так и делает — отдаёт задачу одному, не расщепляет.
+    // Если у топа совсем нет окна (free=0) — берём следующего по score.
+    // Overtime допустим: если у выбранного free < task.duration, всё равно
+    // отдаём ему целиком (отметим overflow), как и в реальной практике.
     for (const emp of ranked) {
-      if (remaining <= 0) break;
-      if (allocatedToThisTask.has(emp.user.id)) continue;
       const free = freeByUser.get(emp.user.id) ?? 0;
-      if (free <= 0) continue;
-      // Skip если этот сотрудник может дать только мелкий слот, а задаче
-      // ещё нужно много — пропускаем его в надежде на «большой» кандидат.
-      if (free < PREFERRED_CHUNK && remaining >= PREFERRED_CHUNK) continue;
-
-      const allocate = Math.min(remaining, free);
-      allocations.push({ userId: emp.user.id, minutes: allocate });
-      freeByUser.set(emp.user.id, free - allocate);
-      remaining -= allocate;
-      allocatedToThisTask.add(emp.user.id);
-    }
-
-    // Pass 2: если задача не покрыта — релаксируем порог до MIN_CHUNK (30 мин).
-    if (remaining > 0) {
-      for (const emp of ranked) {
-        if (remaining <= 0) break;
-        if (allocatedToThisTask.has(emp.user.id)) continue;
-        const free = freeByUser.get(emp.user.id) ?? 0;
-        if (free <= 0) continue;
-        if (free < MIN_CHUNK && remaining >= MIN_CHUNK) continue;
-
-        const allocate = Math.min(remaining, free);
-        allocations.push({ userId: emp.user.id, minutes: allocate });
-        freeByUser.set(emp.user.id, free - allocate);
-        remaining -= allocate;
-        allocatedToThisTask.add(emp.user.id);
-      }
+      if (free < 1) continue; // нет окна вообще — переходим к следующему
+      allocations.push({ userId: emp.user.id, minutes: remaining });
+      freeByUser.set(emp.user.id, free - remaining); // может уйти в минус (overtime)
+      remaining = 0;
+      break;
     }
 
     if (allocations.length > 0) {

@@ -566,42 +566,16 @@ def auto_distribute(
 
         ranked = sorted(candidates, key=lambda e: -score_of(e))
 
-        allocated: set[int] = set()
-
-        # Pass 1: preferred chunks ≥60 мин
+        # Iter#4 — single-assignee: задача целиком одному топ-кандидату.
+        # Если у топа free=0 — берём следующего. Overtime допустим.
         for emp in ranked:
-            if remaining <= 0:
-                break
-            if emp.id in allocated:
-                continue
             free = free_by.get(emp.id, 0)
-            if free <= 0:
+            if free < 1:
                 continue
-            if free < PREFERRED_CHUNK and remaining >= PREFERRED_CHUNK:
-                continue
-            allocate = min(remaining, free)
-            allocations.append((emp.id, allocate))
-            free_by[emp.id] = free - allocate
-            remaining -= allocate
-            allocated.add(emp.id)
-
-        # Pass 2: relaxed ≥30 мин
-        if remaining > 0:
-            for emp in ranked:
-                if remaining <= 0:
-                    break
-                if emp.id in allocated:
-                    continue
-                free = free_by.get(emp.id, 0)
-                if free <= 0:
-                    continue
-                if free < MIN_CHUNK and remaining >= MIN_CHUNK:
-                    continue
-                allocate = min(remaining, free)
-                allocations.append((emp.id, allocate))
-                free_by[emp.id] = free - allocate
-                remaining -= allocate
-                allocated.add(emp.id)
+            allocations.append((emp.id, remaining))
+            free_by[emp.id] = free - remaining
+            remaining = 0
+            break
 
         if allocations:
             plan[task.id] = allocations
