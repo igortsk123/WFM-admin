@@ -1550,28 +1550,25 @@
       "filters": {
         "search_placeholder": "Search by name, phone",
         "store": "Store",
-        "format": "Format",
         "position": "Position",
         "zone": "Zone",
-        "employment_type": "Employment type",
-        "source_creation": "Creation source",
-        "freelancer_status": "Freelancer status",
+        "on_shift": {
+          "label": "On shift now",
+          "all": "All",
+          "yes": "Yes",
+          "no": "No"
+        },
+        "work_types": {
+          "label": "Task types",
+          "all": "All types"
+        },
         "clear_all": "Clear all",
         "open_filters": "Filters",
         "close": "Close",
         "apply": "Apply"
       },
-      "source": {
-        "manual": "Manual",
-        "external": "From external HR"
-      },
       "employment": {
-        "staff": "Staff",
-        "freelance": "Freelance",
-        "no_documents": "No documents uploaded",
         "no_oferta": "Offer not signed",
-        "oferta_signed": "Offer signed",
-        "no_agent": "No agent",
         "not_activated_tooltip": "Freelancer is not activated"
       },
       "columns": {
@@ -1579,14 +1576,10 @@
         "store": "Store",
         "position": "Position",
         "zones": "Zones",
-        "permissions": "Zones",
+        "work_types": "Task types",
         "current_shift": "Current shift",
-        "employment": "Employment",
-        "hired_at": "Hired",
-        "more_permissions": "+{n}",
         "more_zones": "+{n}",
-        "freelancer_status": "Freelancer status",
-        "oferta": "Offer"
+        "more_work_types": "+{n}"
       },
       "shift": {
         "no_shift": "—",

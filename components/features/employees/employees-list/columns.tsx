@@ -4,9 +4,7 @@ import * as React from "react"
 import { type ColumnDef } from "@tanstack/react-table"
 import { FileWarning } from "lucide-react"
 
-import type { Permission } from "@/lib/types"
 import type { UserWithAssignment } from "@/lib/api/users"
-import { cn } from "@/lib/utils"
 
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -17,14 +15,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-import { FreelancerStatusBadge } from "@/components/shared/freelancer-status-badge"
-import { PermissionPill } from "@/components/shared/permission-pill"
 import { ShiftStateBadge } from "@/components/shared/shift-state-badge"
 import { UserCell } from "@/components/shared/user-cell"
 
 import { LAMA_EMPLOYEE_ZONES } from "@/lib/mock-data/_lama-employee-zones"
+import { LAMA_EMPLOYEE_WORK_TYPES } from "@/lib/mock-data/_lama-employee-work-types"
 
-import { formatHiredAt, formatShiftTime } from "./_shared"
+import { formatShiftTime, shortenWorkType } from "./_shared"
 import { RowActions } from "./row-actions"
 
 interface BuildColumnsArgs {
@@ -42,9 +39,23 @@ interface BuildColumnsArgs {
   onArchive: (userId: number) => void
 }
 
+// Сокращения зон чтобы влезали в колонку.
+const ZONE_SHORT_LABELS: Record<string, string> = {
+  "Кондитерка, чай, кофе": "Кондитерка",
+  "Молочные продукты": "Молочка",
+  "Фрукты, овощи": "Овощи",
+  Хозтовары: "Хоз.",
+  Менеджерские: "Менедж.",
+  Бакалея: "Бакалея",
+}
+
+function shortenZone(z: string): string {
+  return ZONE_SHORT_LABELS[z] ?? (z.length > 12 ? `${z.slice(0, 11)}…` : z)
+}
+
 export function buildColumns({
   t,
-  locale,
+  locale: _locale,
   hideStore,
   canFullCRUD,
   canArchiveBulk,
@@ -116,6 +127,15 @@ export function buildColumns({
       },
     },
     {
+      id: "position",
+      header: t("columns.position"),
+      cell: ({ row }) => (
+        <span className="text-sm">
+          {row.original.assignment?.position_name ?? "—"}
+        </span>
+      ),
+    },
+    {
       id: "zones",
       header: t("columns.zones"),
       cell: ({ row }) => {
@@ -123,16 +143,6 @@ export function buildColumns({
         if (zones.length === 0) {
           return <span className="text-xs text-muted-foreground">—</span>
         }
-        // Сокращения чтобы влезало в колонку: длинные → короткие лейблы.
-        const SHORT_LABELS: Record<string, string> = {
-          "Кондитерка, чай, кофе": "Кондитерка",
-          "Молочные продукты": "Молочка",
-          "Фрукты, овощи": "Овощи",
-          "Хозтовары": "Хоз.",
-          "Менеджерские": "Менедж.",
-          "Бакалея": "Бакалея",
-        }
-        const shorten = (z: string) => SHORT_LABELS[z] ?? (z.length > 12 ? `${z.slice(0, 11)}…` : z)
         const visible = zones.slice(0, 2)
         const extra = zones.length - 2
         return (
@@ -144,59 +154,17 @@ export function buildColumns({
                 className="text-xs px-1.5 font-normal"
                 title={z}
               >
-                {shorten(z)}
+                {shortenZone(z)}
               </Badge>
             ))}
             {extra > 0 && (
-              <Badge variant="secondary" className="text-xs px-1.5" title={zones.slice(2).join(", ")}>
+              <Badge
+                variant="secondary"
+                className="text-xs px-1.5"
+                title={zones.slice(2).join(", ")}
+              >
                 {t("columns.more_zones", { n: extra })}
               </Badge>
-            )}
-          </div>
-        )
-      },
-    },
-    ...(!hideStore
-      ? [
-          {
-            id: "store",
-            header: t("columns.store"),
-            cell: ({ row }: { row: { original: UserWithAssignment } }) => (
-              <span className="text-sm text-muted-foreground truncate max-w-[180px] block">
-                {row.original.assignment?.store_name ?? "—"}
-              </span>
-            ),
-          } as ColumnDef<UserWithAssignment>,
-        ]
-      : []),
-    {
-      id: "position",
-      header: t("columns.position"),
-      cell: ({ row }) => (
-        <span className="text-sm">
-          {row.original.assignment?.position_name ?? "—"}
-        </span>
-      ),
-    },
-    {
-      id: "permissions",
-      header: t("columns.permissions"),
-      cell: ({ row }) => {
-        const perms: Permission[] = row.original.permissions ?? []
-        const visible = perms.slice(0, 3)
-        const extra = perms.length - 3
-        return (
-          <div className="flex flex-wrap items-center gap-1">
-            {visible.map((p) => (
-              <PermissionPill key={p} permission={p} />
-            ))}
-            {extra > 0 && (
-              <Badge variant="secondary" className="text-xs px-1.5">
-                {t("columns.more_permissions", { n: extra })}
-              </Badge>
-            )}
-            {perms.length === 0 && (
-              <span className="text-xs text-muted-foreground">—</span>
             )}
           </div>
         )
@@ -229,56 +197,55 @@ export function buildColumns({
       },
     },
     {
-      id: "employment",
-      header: t("columns.employment"),
+      id: "work_types",
+      header: t("columns.work_types"),
       cell: ({ row }) => {
-        const isFreelance = row.original.type === "FREELANCE"
-        const noDocs =
-          isFreelance &&
-          (row.original.freelance_documents_count ?? 0) === 0
+        const u = row.original
+        const wts: string[] =
+          u.preferred_work_types ?? LAMA_EMPLOYEE_WORK_TYPES[u.id] ?? []
+        if (wts.length === 0) {
+          return <span className="text-xs text-muted-foreground">—</span>
+        }
+        const visible = wts.slice(0, 2)
+        const extra = wts.length - 2
         return (
-          <div className="flex items-center gap-1.5">
-            <Badge
-              className={cn(
-                "text-xs",
-                isFreelance
-                  ? "bg-warning/10 text-warning border-warning/20"
-                  : "bg-muted text-muted-foreground border-transparent"
-              )}
-            >
-              {isFreelance
-                ? t("employment.freelance")
-                : t("employment.staff")}
-            </Badge>
-            {noDocs && (
-              <FileWarning
-                className="size-3.5 text-warning shrink-0"
-                aria-label={t("employment.no_documents")}
-              />
+          <div className="flex flex-wrap items-center gap-1 max-w-[180px]">
+            {visible.map((wt) => (
+              <Badge
+                key={wt}
+                variant="secondary"
+                className="text-xs px-1.5 font-normal"
+                title={wt}
+              >
+                {shortenWorkType(wt)}
+              </Badge>
+            ))}
+            {extra > 0 && (
+              <Badge
+                variant="secondary"
+                className="text-xs px-1.5"
+                title={wts.slice(2).join(", ")}
+              >
+                {t("columns.more_work_types", { n: extra })}
+              </Badge>
             )}
           </div>
         )
       },
     },
-    {
-      id: "hired_at",
-      header: t("columns.hired_at"),
-      size: 110,
-      cell: ({ row }) => (
-        <span className="text-xs text-muted-foreground whitespace-nowrap">
-          {formatHiredAt(row.original.hired_at, locale)}
-        </span>
-      ),
-    },
-    {
-      id: "freelancer_status",
-      header: t("columns.freelancer_status"),
-      cell: ({ row }) => {
-        const u = row.original
-        if (u.type !== "FREELANCE" || !u.freelancer_status) return null
-        return <FreelancerStatusBadge status={u.freelancer_status} size="sm" />
-      },
-    },
+    ...(!hideStore
+      ? [
+          {
+            id: "store",
+            header: t("columns.store"),
+            cell: ({ row }: { row: { original: UserWithAssignment } }) => (
+              <span className="text-sm text-muted-foreground truncate max-w-[180px] block">
+                {row.original.assignment?.store_name ?? "—"}
+              </span>
+            ),
+          } as ColumnDef<UserWithAssignment>,
+        ]
+      : []),
     {
       id: "actions",
       header: "",

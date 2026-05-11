@@ -7,12 +7,6 @@ import { useQueryState, parseAsString, parseAsInteger } from "nuqs"
 import { Archive, SearchX, Users } from "lucide-react"
 import { toast } from "sonner"
 
-import type {
-  Permission,
-  EmployeeType,
-  FreelancerStatus,
-  ObjectFormat,
-} from "@/lib/types"
 import type { UserWithAssignment } from "@/lib/api/users"
 import { getUsers, archiveUser } from "@/lib/api/users"
 import { ADMIN_ROUTES } from "@/lib/constants/routes"
@@ -46,7 +40,6 @@ import { StatsRow } from "./employees-list/stats-row"
 
 export function EmployeesList() {
   const t = useTranslations("screen.employees")
-  const tPerm = useTranslations("permission")
   const router = useRouter()
   const locale = useLocale()
   const { user } = useAuth()
@@ -74,27 +67,13 @@ export function EmployeesList() {
     "page",
     parseAsInteger.withDefault(1)
   )
-  // Формат магазина (HYPERMARKET/SUPERMARKET/CONVENIENCE/SMALL_SHOP).
-  // В URL — для опер.директора / супервайзера, чтобы можно было поделиться
-  // ссылкой на «сотрудники гипермаркетов» (нормы по людям отличаются по формату).
-  const [formatParam, setFormatParam] = useQueryState(
-    "format",
-    parseAsString.withDefault("")
-  )
 
-  // Local filter state (not in URL for brevity — complex multi arrays)
-  const [selectedStoreIds, setSelectedStoreIds] = React.useState<string[]>([])
-  const [selectedPositionIds, setSelectedPositionIds] = React.useState<
-    string[]
-  >([])
-  const [selectedPermissions, setSelectedPermissions] = React.useState<
-    string[]
-  >([])
-  const [selectedEmploymentType, setSelectedEmploymentType] =
-    React.useState<string>("")
-  const [selectedFreelancerStatus, setSelectedFreelancerStatus] =
-    React.useState<string>("")
-  const [selectedSource, setSelectedSource] = React.useState<string>("")
+  // Local filter state — все single-select, 1:1 с колонками таблицы.
+  const [selectedStoreId, setSelectedStoreId] = React.useState<string>("")
+  const [selectedPositionId, setSelectedPositionId] = React.useState<string>("")
+  const [selectedZone, setSelectedZone] = React.useState<string>("")
+  const [selectedWorkType, setSelectedWorkType] = React.useState<string>("")
+  const [selectedOnShift, setSelectedOnShift] = React.useState<string>("")
 
   // ── Data state ──────────────────────────────────────────────────
   const [data, setData] = React.useState<UserWithAssignment[]>([])
@@ -142,27 +121,12 @@ export function EmployeesList() {
     getUsers({
       archived,
       search: searchParam || undefined,
-      store_ids:
-        selectedStoreIds.length > 0
-          ? selectedStoreIds.map(Number)
-          : undefined,
-      position_ids:
-        selectedPositionIds.length > 0
-          ? selectedPositionIds.map(Number)
-          : undefined,
-      permissions:
-        selectedPermissions.length > 0
-          ? (selectedPermissions as Permission[])
-          : undefined,
-      employment_type: selectedEmploymentType
-        ? (selectedEmploymentType as EmployeeType)
-        : undefined,
-      object_format: formatParam ? (formatParam as ObjectFormat) : undefined,
-      freelancer_status: selectedFreelancerStatus
-        ? (selectedFreelancerStatus as FreelancerStatus)
-        : undefined,
-      source: selectedSource
-        ? (selectedSource as "MANUAL" | "EXTERNAL_SYNC")
+      store_id: selectedStoreId ? Number(selectedStoreId) : undefined,
+      position_id: selectedPositionId ? Number(selectedPositionId) : undefined,
+      zone: selectedZone || undefined,
+      work_type: selectedWorkType || undefined,
+      on_shift: selectedOnShift
+        ? (selectedOnShift as "yes" | "no")
         : undefined,
       page: pageParam,
       page_size: 20,
@@ -189,13 +153,11 @@ export function EmployeesList() {
   }, [
     statusParam,
     searchParam,
-    JSON.stringify(selectedStoreIds),
-    JSON.stringify(selectedPositionIds),
-    JSON.stringify(selectedPermissions),
-    selectedEmploymentType,
-    selectedFreelancerStatus,
-    selectedSource,
-    formatParam,
+    selectedStoreId,
+    selectedPositionId,
+    selectedZone,
+    selectedWorkType,
+    selectedOnShift,
     pageParam,
     refreshTick,
   ])
@@ -227,34 +189,22 @@ export function EmployeesList() {
     }
   }, [])
 
-  // ── Org feature flags (mock: external_hr_enabled) ──
-  // In production these come from user.organization.
-  // showAgentFilter удалён — агентский scope относится только к freelance-карточкам
-  // (см. /freelance/* ); в общем списке /employees он смешивал штатных и внештатных.
-  const externalHrEnabled = true
-  const showSourceFilter = externalHrEnabled
-  const showFreelancerStatusFilter = selectedEmploymentType === "FREELANCE"
-
   // ── Active filter count ─────────────────────────────────────────
   const activeFilterCount =
-    selectedStoreIds.length +
-    selectedPositionIds.length +
-    selectedPermissions.length +
-    (selectedEmploymentType ? 1 : 0) +
-    (selectedFreelancerStatus ? 1 : 0) +
-    (selectedSource ? 1 : 0) +
-    (formatParam ? 1 : 0)
+    (selectedStoreId ? 1 : 0) +
+    (selectedPositionId ? 1 : 0) +
+    (selectedZone ? 1 : 0) +
+    (selectedWorkType ? 1 : 0) +
+    (selectedOnShift ? 1 : 0)
 
   const hasActiveFilters = activeFilterCount > 0 || !!searchParam
 
   function clearAllFilters() {
-    setSelectedStoreIds([])
-    setSelectedPositionIds([])
-    setSelectedPermissions([])
-    setSelectedEmploymentType("")
-    setSelectedFreelancerStatus("")
-    setSelectedSource("")
-    setFormatParam(null)
+    setSelectedStoreId("")
+    setSelectedPositionId("")
+    setSelectedZone("")
+    setSelectedWorkType("")
+    setSelectedOnShift("")
     setSearchParam(null)
     setPageParam(null)
   }
@@ -321,15 +271,6 @@ export function EmployeesList() {
       return
     }
     router.push(ADMIN_ROUTES.employeeDetail(String(row.id)))
-  }
-
-  // ── Permission/Role label helpers ────────────────────────────────
-  const permLabelMap: Record<Permission, string> = {
-    CASHIER: tPerm("cashier"),
-    SALES_FLOOR: tPerm("sales_floor"),
-    SELF_CHECKOUT: tPerm("self_checkout"),
-    WAREHOUSE: tPerm("warehouse"),
-    PRODUCTION_LINE: tPerm("production_line"),
   }
 
   // ── Columns ─────────────────────────────────────────────────────
@@ -428,61 +369,44 @@ export function EmployeesList() {
             setPageParam(null)
           })
         }}
-        selectedStoreIds={selectedStoreIds}
-        onStoreIdsChange={(v) => {
+        selectedStoreId={selectedStoreId}
+        onStoreIdChange={(v) => {
           startTransition(() => {
-            setSelectedStoreIds(v)
+            setSelectedStoreId(v)
             setPageParam(null)
           })
         }}
-        selectedPositionIds={selectedPositionIds}
-        onPositionIdsChange={(v) => {
+        selectedPositionId={selectedPositionId}
+        onPositionIdChange={(v) => {
           startTransition(() => {
-            setSelectedPositionIds(v)
+            setSelectedPositionId(v)
             setPageParam(null)
           })
         }}
-        selectedPermissions={selectedPermissions}
-        onPermissionsChange={(v) => {
+        selectedZone={selectedZone}
+        onZoneChange={(v) => {
           startTransition(() => {
-            setSelectedPermissions(v)
+            setSelectedZone(v)
             setPageParam(null)
           })
         }}
-        selectedEmploymentType={selectedEmploymentType}
-        onEmploymentTypeChange={(v) => {
+        selectedWorkType={selectedWorkType}
+        onWorkTypeChange={(v) => {
           startTransition(() => {
-            setSelectedEmploymentType(v)
+            setSelectedWorkType(v)
             setPageParam(null)
           })
         }}
-        selectedFreelancerStatus={selectedFreelancerStatus}
-        onFreelancerStatusChange={(v) => {
+        selectedOnShift={selectedOnShift}
+        onOnShiftChange={(v) => {
           startTransition(() => {
-            setSelectedFreelancerStatus(v)
-            setPageParam(null)
-          })
-        }}
-        selectedSource={selectedSource}
-        onSourceChange={(v) => {
-          startTransition(() => {
-            setSelectedSource(v)
-            setPageParam(null)
-          })
-        }}
-        selectedObjectFormat={formatParam}
-        onObjectFormatChange={(v) => {
-          startTransition(() => {
-            setFormatParam(v || null)
+            setSelectedOnShift(v)
             setPageParam(null)
           })
         }}
         hideStore={hideStore}
-        showSourceFilter={showSourceFilter}
-        showFreelancerStatusFilter={showFreelancerStatusFilter}
         activeFilterCount={activeFilterCount}
         clearAllFilters={clearAllFilters}
-        permLabelMap={permLabelMap}
       />
 
       {/* Error state */}

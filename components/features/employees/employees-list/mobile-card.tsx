@@ -3,22 +3,20 @@
 import * as React from "react"
 import { memo } from "react"
 import { useTranslations } from "next-intl"
-import { FileWarning } from "lucide-react"
 
 import type { UserWithAssignment } from "@/lib/api/users"
-import { cn } from "@/lib/utils"
 
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 
 import { EntityMobileCard } from "@/components/shared/entity-mobile-card"
-import { PermissionPill } from "@/components/shared/permission-pill"
 import { ShiftStateBadge } from "@/components/shared/shift-state-badge"
 import { UserCell } from "@/components/shared/user-cell"
 
 import { LAMA_EMPLOYEE_ZONES } from "@/lib/mock-data/_lama-employee-zones"
+import { LAMA_EMPLOYEE_WORK_TYPES } from "@/lib/mock-data/_lama-employee-work-types"
 
-import { formatShiftTime } from "./_shared"
+import { formatShiftTime, shortenWorkType } from "./_shared"
 import { RowActions } from "./row-actions"
 
 interface MobileCardProps {
@@ -47,19 +45,19 @@ export const MobileCard = memo(function MobileCard({
   const t = useTranslations("screen.employees")
   const u = user
   const shift = u.current_shift
-  const isFreelance = u.type === "FREELANCE"
-  const noDocs = isFreelance && (u.freelance_documents_count ?? 0) === 0
   const start = shift
     ? formatShiftTime(shift.actual_start ?? shift.planned_start)
     : ""
   const end = shift
     ? formatShiftTime(shift.actual_end ?? shift.planned_end)
     : ""
-  const visiblePerms = (u.permissions ?? []).slice(0, 2)
-  const extraPerms = (u.permissions ?? []).length - 2
   const zones = LAMA_EMPLOYEE_ZONES[u.id] ?? []
-  const visibleZones = zones.slice(0, 2)
-  const extraZones = zones.length - 2
+  const visibleZones = zones.slice(0, 3)
+  const extraZones = zones.length - 3
+  const workTypes: string[] =
+    u.preferred_work_types ?? LAMA_EMPLOYEE_WORK_TYPES[u.id] ?? []
+  const visibleWts = workTypes.slice(0, 3)
+  const extraWts = workTypes.length - 3
 
   return (
     <EntityMobileCard
@@ -75,12 +73,6 @@ export const MobileCard = memo(function MobileCard({
             }}
             className="flex-1"
           />
-          {noDocs && (
-            <FileWarning
-              className="size-4 text-warning shrink-0"
-              aria-label={t("employment.no_documents")}
-            />
-          )}
         </div>
       }
       actions={
@@ -105,14 +97,24 @@ export const MobileCard = memo(function MobileCard({
       }
       meta={[
         !hideStore && u.assignment?.store_name ? (
-          <p className="text-xs text-muted-foreground truncate pl-[42px] w-full">
+          <p
+            key="store"
+            className="text-xs text-muted-foreground truncate pl-[42px] w-full"
+          >
             {u.assignment.store_name}
           </p>
         ) : null,
         zones.length > 0 ? (
-          <div key="zones" className="flex flex-wrap items-center gap-1 pl-[42px]">
+          <div
+            key="zones"
+            className="flex flex-wrap items-center gap-1 pl-[42px]"
+          >
             {visibleZones.map((z) => (
-              <Badge key={z} variant="secondary" className="text-xs px-1.5 font-normal">
+              <Badge
+                key={z}
+                variant="secondary"
+                className="text-xs px-1.5 font-normal"
+              >
                 {z}
               </Badge>
             ))}
@@ -123,28 +125,28 @@ export const MobileCard = memo(function MobileCard({
             )}
           </div>
         ) : null,
-        <div key="employment" className="flex items-center gap-2 pl-[42px] flex-wrap">
-          <Badge
-            className={cn(
-              "text-xs",
-              isFreelance
-                ? "bg-warning/10 text-warning border-warning/20"
-                : "bg-muted text-muted-foreground border-transparent",
-            )}
+        workTypes.length > 0 ? (
+          <div
+            key="work_types"
+            className="flex flex-wrap items-center gap-1 pl-[42px]"
           >
-            {isFreelance ? t("employment.freelance") : t("employment.staff")}
-          </Badge>
-        </div>,
-        <div key="perms" className="flex flex-wrap items-center gap-1 pl-[42px]">
-          {visiblePerms.map((p) => (
-            <PermissionPill key={p} permission={p} />
-          ))}
-          {extraPerms > 0 && (
-            <Badge variant="secondary" className="text-xs px-1.5">
-              {t("columns.more_permissions", { n: extraPerms })}
-            </Badge>
-          )}
-        </div>,
+            {visibleWts.map((wt) => (
+              <Badge
+                key={wt}
+                variant="secondary"
+                className="text-xs px-1.5 font-normal"
+                title={wt}
+              >
+                {shortenWorkType(wt)}
+              </Badge>
+            ))}
+            {extraWts > 0 && (
+              <Badge variant="secondary" className="text-xs px-1.5">
+                {t("columns.more_work_types", { n: extraWts })}
+              </Badge>
+            )}
+          </div>
+        ) : null,
         <div key="shift" className="flex items-center gap-2 pl-[42px]">
           {shift ? (
             <>
