@@ -1047,20 +1047,26 @@ export function autoDistribute(
       );
     }
     // 4. Final fallback: если все предыдущие cascade'ы пустые — берём всех
-    // со свободным временем. Это «лучше что-то предложить чем ничего», даже
-    // если у emp нет истории по этой зоне/wtype (новый сотрудник, или просто
-    // не делал такое раньше). Hard constraint смягчён после iter#5 backtest'а
-    // (43% задач оставались без кандидатов — что хуже false positive).
+    // со свободным временем. Это «лучше что-то предложить чем ничего».
     //
-    // ИСКЛЮЧЕНИЕ — «Касса» = материальная ответственность. На обычную кассу
-    // (НЕ КСО) можно отдавать ТОЛЬКО тех у кого «Касса» уже была в истории
-    // или в preferred_work_types. Если 0 кандидатов после строгих cascade'ов
-    // → не подсовываем рандомного, оставляем пустой allocations и идём
-    // дальше. UI покажет директору warning «нужно добавить зону Касса
-    // кому-то из сотрудников».
+    // ИСКЛЮЧЕНИЕ — «Касса» = материальная ответственность (см. ниже).
     const isCashier = taskWorkType === "Касса";
     if (candidates.length === 0 && !isCashier) {
       candidates = employees.filter((e) => (freeByUser.get(e.user.id) ?? 0) > 0);
+    }
+    // Iter#12 — второй эшелон: даже если strict cascade нашёл «специалистов»,
+    // но у них всех не хватает времени, добавляем тех у кого свободное время
+    // есть (без specialty match). Сортируются в конце ranked после специалистов.
+    // Это решает кейс: 5 emps на 100%, Шагалова свободна — Инвентаризация
+    // должна уйти ей если другие не помещаются.
+    if (!isCashier) {
+      const inCandidates = new Set(candidates.map((c) => c.user.id));
+      for (const e of employees) {
+        if (inCandidates.has(e.user.id)) continue;
+        if ((freeByUser.get(e.user.id) ?? 0) >= remaining) {
+          candidates.push(e);
+        }
+      }
     }
 
     // Iter#5 scoring: zone 30 + global wtype 30 + shop wtype 15 + stickiness 15
