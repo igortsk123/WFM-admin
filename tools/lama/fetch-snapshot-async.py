@@ -24,7 +24,7 @@ import io
 import json
 import sys
 import time
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
 import httpx
@@ -264,7 +264,10 @@ def main():
 
     codes = args.shop_codes.split(",") if args.shop_codes else []
 
-    out_name = args.out or f"{datetime.now(timezone.utc).strftime('%Y-%m-%d')}.json"
+    # MSK (UTC+3) дата — иначе cron в 01:00 MSK создаёт файл «вчера»
+    # потому что в UTC ещё предыдущий день.
+    msk_now = datetime.now(timezone.utc) + timedelta(hours=3)
+    out_name = args.out or f"{msk_now.strftime('%Y-%m-%d')}.json"
     out_path = SNAPSHOT_DIR / out_name
 
     async def run():
