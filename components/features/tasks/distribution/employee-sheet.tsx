@@ -139,8 +139,15 @@ export function EmployeeSheet({
     matchedByZone = tasks.filter((tt) => tt.work_type_name && empWtypes.includes(tt.work_type_name))
   }
   const filterAvailable = empZones.length > 0 || empWtypes.length > 0
+  // visibleTasks = strict cascade match + ВСЕГДА задачи где у этого emp
+  // уже есть allocation (даже если zone/wt не совпадают). Без этого
+  // пропадают распределённые задачи когда зон/типов нет в истории.
+  const matchedIds = new Set(matchedByZone.map((t) => t.id))
+  const tasksWithMyAlloc = tasks.filter(
+    (tt) => !matchedIds.has(tt.id) && (allocations[tt.id] ?? 0) > 0
+  )
   const visibleTasks = zoneFilterEnabled && filterAvailable
-    ? matchedByZone
+    ? [...matchedByZone, ...tasksWithMyAlloc]
     : tasks
 
   // Sort: задачи где у этого сотрудника уже есть alloc — сверху, потом по
