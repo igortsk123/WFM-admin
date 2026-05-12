@@ -535,6 +535,16 @@ Backend будет считать эти суммы свой стороной (f
 - Goals API (`/goals`, `/goal-categories`, `/goals/:id/money-impact`)
 - Bonus tasks (`/bonus`, `/bonus-payouts`)
 - Freelance flow (`/freelance/applications`, `/freelance/services`, `/payouts`)
+  - **`Service.service_name` / `service_name_en`** (NEW 2026-05-12) — человеческое
+    название услуги FMCG (например «Мерчендайзинг (выкладка товара)»). Это
+    первичный заголовок строки в реестре оказанных услуг (`/freelance/services`).
+    `work_type_id` / `work_type_name` остаются как нормировочная категория
+    (расчёт норм трудозатрат + cross-агрегации). См. `BackendFreelanceService`
+    в `lib/api/_backend-types.ts` + raw wrapper `getServicesOnBackend()` /
+    `serviceFromBackend()` в `lib/api/freelance-services.ts`. Когда backend
+    реализует `/freelance/services` — поле должно поехать в schema записи
+    `freelance_service`. Список типовых имён услуг (RU+EN) зашит в i18n
+    `screen.freelanceServicesList.service_names.*` как референс.
 - Network health / Budget summary (`/dashboard/network-health`, `/dashboard/budget`)
 - Reports (`/reports/plan-fact`, `/reports/store-compare`)
 - Leaderboards (`/leaderboards`)
@@ -575,6 +585,7 @@ backend-changes не требуется — backend отдаёт поля как
 | `KpiMetric` (reports-kpi) | `label_en?` |
 | `KpiByDimension` (zones only) | `label_en?` (work-types — RU only, отраслевой стандарт) |
 | `PlanFactSummary.worst_day` | `reason_en?` |
+| `Service` (freelance) | `service_name_en?` |
 
 Backend может игнорировать эти поля — если они приходят от admin, его контракт
 терпимо относится к unknown fields. Если backend сам генерирует RU-only — admin

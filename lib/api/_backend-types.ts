@@ -599,3 +599,90 @@ export interface BackendGoal {
 export interface BackendGoalListData {
   goals: BackendGoal[];
 }
+
+// ── Freelance Service (admin-only пока — backend нужно дотянуть) ─────
+//
+// Концепция: запись в реестре оказанных услуг — это услуга с человеческим
+// именем (например «Мерчендайзинг (выкладка товара)»), категоризованная
+// по work_type (нормировочная категория для расчёта норм трудозатрат и
+// агрегаций). См. `Service` в `lib/types/index.ts`.
+//
+// `service_name` — основной заголовок строки реестра (новое поле admin-модели).
+// `work_type_id` / `work_type_name` остаются для backwards-compatibility
+// с уже существующим backend контрактом и для расчётных норм.
+//
+// Полная Service schema (статусы, hours, manually_adjusted, ...) —
+// admin-only пока, см. MIGRATION-NOTES.md «Freelance flow».
+
+export type BackendServiceStatus =
+  | "PLANNED"
+  | "IN_PROGRESS"
+  | "COMPLETED"
+  | "CONFIRMED"
+  | "READY_TO_PAY"
+  | "PAID"
+  | "NO_SHOW"
+  | "DISPUTED";
+
+export interface BackendFreelanceService {
+  id: string;
+  freelancer_id: number;
+  freelancer_name: string;
+  freelancer_phone: string;
+  agent_id?: string | null;
+  agent_name?: string | null;
+  application_id?: string | null;
+  assignment_id?: string | null;
+  task_ids?: string[];
+  store_id: number;
+  store_name: string;
+  service_date: string;
+  /**
+   * Человеческое название услуги (например «Мерчендайзинг (выкладка
+   * товара)»). Первичный заголовок в реестре оказанных услуг.
+   * Backend должен хранить это поле в записи `freelance_service`.
+   */
+  service_name: string;
+  /** Опциональный EN-перевод `service_name` для bilingual demo. */
+  service_name_en?: string | null;
+  /** Нормировочная категория (для расчёта норм + кросс-агрегаций). */
+  work_type_id: number;
+  work_type_name: string;
+  scheduled_hours: number;
+  actual_hours: number;
+  payable_hours: number;
+  underload_not_fault?: boolean;
+  adjustment_reason?: string | null;
+  adjustment_reason_en?: string | null;
+  normative_volume: number;
+  normative_unit: string;
+  hourly_rate?: number | null;
+  total_amount?: number | null;
+  total_amount_indicative?: number | null;
+  status: BackendServiceStatus;
+  confirmed_by?: number | null;
+  confirmed_at?: string | null;
+  no_show_reason?: string | null;
+  no_show_reason_en?: string | null;
+  dispute_reason?: string | null;
+  dispute_reason_en?: string | null;
+  payout_id?: string | null;
+  manually_adjusted?: {
+    adjusted_by: number;
+    adjusted_by_name: string;
+    adjusted_at: string;
+    from_amount: number;
+    to_amount: number;
+    reason: string;
+    reason_en?: string;
+  } | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface BackendFreelanceServiceListData {
+  services: BackendFreelanceService[];
+  total: number;
+  page: number;
+  page_size: number;
+}

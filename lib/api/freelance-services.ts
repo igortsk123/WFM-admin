@@ -13,6 +13,10 @@ import type {
   Service,
   ServiceStatus,
 } from "@/lib/types";
+import type {
+  BackendFreelanceService,
+  BackendFreelanceServiceListData,
+} from "@/lib/api/_backend-types";
 import { MOCK_FREELANCE_SERVICES } from "@/lib/mock-data/freelance-services";
 import { MOCK_NO_SHOW_REPORTS } from "@/lib/mock-data/freelance-no-shows";
 
@@ -326,4 +330,80 @@ export async function adjustServiceAmount(
 
 
   return { success: true };
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// RAW BACKEND WRAPPERS (admin-only пока — backend ещё не реализован)
+// ═══════════════════════════════════════════════════════════════════
+//
+// Сигнатуры зеркалят будущий REST контракт. Когда backend сделает
+// /freelance/services — admin переключается без UI changes.
+// См. MIGRATION-NOTES.md → «Freelance flow» + «Что admin использует
+// поверх backend → Freelance Service service_name».
+
+/**
+ * Маппинг Backend → admin domain.
+ * 1:1 sо всеми полями (включая admin-only `service_name` / `service_name_en`).
+ */
+export function serviceFromBackend(b: BackendFreelanceService): Service {
+  return {
+    id: b.id,
+    freelancer_id: b.freelancer_id,
+    freelancer_name: b.freelancer_name,
+    freelancer_phone: b.freelancer_phone,
+    agent_id: b.agent_id ?? null,
+    agent_name: b.agent_name ?? null,
+    application_id: b.application_id ?? null,
+    assignment_id: b.assignment_id ?? null,
+    task_ids: b.task_ids,
+    store_id: b.store_id,
+    store_name: b.store_name,
+    service_date: b.service_date,
+    service_name: b.service_name,
+    service_name_en: b.service_name_en ?? null,
+    work_type_id: b.work_type_id,
+    work_type_name: b.work_type_name,
+    scheduled_hours: b.scheduled_hours,
+    actual_hours: b.actual_hours,
+    payable_hours: b.payable_hours,
+    underload_not_fault: b.underload_not_fault,
+    adjustment_reason: b.adjustment_reason ?? null,
+    adjustment_reason_en: b.adjustment_reason_en ?? null,
+    normative_volume: b.normative_volume,
+    normative_unit: b.normative_unit,
+    hourly_rate: b.hourly_rate ?? null,
+    total_amount: b.total_amount ?? null,
+    total_amount_indicative: b.total_amount_indicative ?? null,
+    status: b.status as ServiceStatus,
+    confirmed_by: b.confirmed_by ?? null,
+    confirmed_at: b.confirmed_at ?? null,
+    no_show_reason: b.no_show_reason ?? null,
+    no_show_reason_en: b.no_show_reason_en ?? null,
+    dispute_reason: b.dispute_reason ?? null,
+    dispute_reason_en: b.dispute_reason_en ?? null,
+    payout_id: b.payout_id ?? null,
+    manually_adjusted: b.manually_adjusted ?? null,
+    created_at: b.created_at,
+    updated_at: b.updated_at,
+  };
+}
+
+/**
+ * Raw GET /freelance/services — admin-only. См. MIGRATION-NOTES.
+ * @endpoint GET /freelance/services
+ * @adminOnly Backend ещё не реализован.
+ */
+export async function getServicesOnBackend(_params: {
+  freelancer_id?: number;
+  store_id?: number;
+  agent_id?: string;
+  status?: ServiceStatus;
+  date_from?: string;
+  date_to?: string;
+  page?: number;
+  page_size?: number;
+} = {}): Promise<BackendFreelanceServiceListData> {
+  throw new Error(
+    "getServicesOnBackend not implemented — admin-only пока. См. MIGRATION-NOTES.md → Freelance flow.",
+  );
 }

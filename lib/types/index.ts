@@ -1389,6 +1389,15 @@ export interface Service {
   store_id: number;
   store_name: string;
   service_date: string;
+  /**
+   * Человеческое название услуги (например «Мерчендайзинг (выкладка товара)»).
+   * Это первичный заголовок строки в реестре оказанных услуг.
+   * `work_type_id` / `work_type_name` остаются как нормировочная категория
+   * (для расчёта норм трудозатрат и кросс-агрегаций).
+   */
+  service_name: string;
+  /** Опциональный EN-перевод `service_name` для bilingual demo. */
+  service_name_en?: string | null;
   work_type_id: number;
   work_type_name: string;
   scheduled_hours: number;

@@ -86,8 +86,15 @@ export function ServiceDetailSheet({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent className="w-full sm:max-w-xl p-6 overflow-y-auto">
         <SheetHeader className="pb-4 px-0">
-          <SheetTitle className="flex items-center gap-2 text-base font-semibold">
+          <p className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
             {t("sheet.title")}
+          </p>
+          <SheetTitle className="text-xl font-semibold text-foreground leading-tight">
+            {pickLocalized(
+              service.service_name,
+              service.service_name_en ?? undefined,
+              locale as Locale,
+            )}
           </SheetTitle>
         </SheetHeader>
 

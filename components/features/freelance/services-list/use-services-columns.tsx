@@ -83,6 +83,32 @@ export function useServicesColumns({
         ),
       },
       {
+        id: "service_name",
+        header: t("columns.service_name"),
+        cell: ({ row }) => {
+          const s = row.original;
+          const name = pickLocalized(
+            s.service_name,
+            s.service_name_en ?? undefined,
+            locale as Locale,
+          );
+          return (
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="text-sm font-medium text-foreground truncate max-w-[260px]">
+                {name}
+              </span>
+              <WorkTypeBadge
+                workType={{
+                  id: s.work_type_id,
+                  name: s.work_type_name,
+                }}
+                size="sm"
+              />
+            </div>
+          );
+        },
+      },
+      {
         id: "performer",
         header: t("columns.performer"),
         cell: ({ row }) => {
@@ -111,43 +137,21 @@ export function useServicesColumns({
         ),
       },
       {
-        id: "work_type",
-        header: t("columns.work_type"),
-        cell: ({ row }) => (
-          <WorkTypeBadge
-            workType={{
-              id: row.original.work_type_id,
-              name: row.original.work_type_name,
-            }}
-            size="sm"
-          />
-        ),
-      },
-      {
         id: "hours",
-        header: () => (
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span className="cursor-help">{t("columns.hours")}</span>
-              </TooltipTrigger>
-              <TooltipContent>{t("columns.hours_tooltip")}</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-        ),
+        header: t("columns.hours"),
         cell: ({ row }) => {
           const s = row.original;
-          const allSame =
-            s.scheduled_hours === s.actual_hours &&
-            s.actual_hours === s.payable_hours;
+          // Одно значение часов: PLANNED/IN_PROGRESS/NO_SHOW — «обещано»,
+          // остальные статусы — «к оплате» (финальная цифра). Детальная
+          // разбивка (обещано/факт/к оплате) остаётся в sheet'е.
+          const isPreOrPending =
+            s.status === "PLANNED" ||
+            s.status === "IN_PROGRESS" ||
+            s.status === "NO_SHOW";
+          const value = isPreOrPending ? s.scheduled_hours : s.payable_hours;
           return (
             <div className="flex items-center gap-1.5 whitespace-nowrap">
-              <span className="text-sm text-foreground font-mono">
-                {allSame
-                  ? `${s.scheduled_hours}`
-                  : `${s.scheduled_hours} / ${s.actual_hours} / ${s.payable_hours}`}
-                {" ч"}
-              </span>
+              <span className="text-sm text-foreground font-mono">{`${value} ч`}</span>
               {s.underload_not_fault && s.payable_hours > s.actual_hours && (
                 <TooltipProvider>
                   <Tooltip>

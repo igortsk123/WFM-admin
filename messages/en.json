@@ -6365,6 +6365,7 @@
       },
       "columns": {
         "date": "Date",
+        "service_name": "Service",
         "store": "Object",
         "performer": "Performer",
         "work_type": "Work type",
@@ -6378,6 +6379,22 @@
         "legal_status": "Legal status",
         "status": "Status",
         "actions": "Actions"
+      },
+      "service_names": {
+        "merchandising": "Merchandising (product display)",
+        "cashier": "Cashier service",
+        "self_checkout": "Self-checkout service",
+        "receiving": "Goods receiving",
+        "stock_taking": "Stock-taking",
+        "repricing": "Price tag update / repricing",
+        "online_picking": "Online order picking",
+        "promo_audit": "Promo audit / display control",
+        "expiry_control": "Expiry date control",
+        "cleaning": "Sales floor cleaning",
+        "open_close": "Store opening/closing",
+        "shift_cover": "Shift replacement",
+        "warehouse_loader": "Warehouse assistance (loader)",
+        "promo_pricing": "Promo price tag posting"
       },
       "status": {
         "PLANNED": "Planned",
