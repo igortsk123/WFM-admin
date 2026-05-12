@@ -84,8 +84,8 @@ export function ServiceDetailSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="w-full sm:max-w-lg overflow-y-auto">
-        <SheetHeader className="pb-4">
+      <SheetContent className="w-full sm:max-w-xl p-6 overflow-y-auto">
+        <SheetHeader className="pb-4 px-0">
           <SheetTitle className="flex items-center gap-2 text-base font-semibold">
             {t("sheet.title")}
           </SheetTitle>
