@@ -129,13 +129,23 @@ export function Toolbar({
 
           {/* Row 2: Desktop filters */}
           <div className="hidden md:flex flex-wrap items-center gap-2">
-            <Combobox
-              options={storeOptions}
-              value={filterStore}
-              onValueChange={onFilterStoreChange}
-              placeholder={t("filters.store")}
-              className="w-56 h-9"
-            />
+            {/* Store: один store обязателен — нельзя «сбросить» в пустоту,
+                нет «Все магазины». Если только 1 store — показываем как label. */}
+            {storeOptions.length === 1 ? (
+              <div className="inline-flex h-9 items-center rounded-md border border-border bg-muted/40 px-3 text-sm text-foreground">
+                {storeOptions[0].label}
+              </div>
+            ) : (
+              <Combobox
+                options={storeOptions}
+                value={filterStore}
+                onValueChange={(v) => {
+                  if (v) onFilterStoreChange(v);
+                }}
+                placeholder={t("filters.store")}
+                className="w-56 h-9"
+              />
+            )}
             <Combobox
               options={zoneOptions}
               value={filterZones[0] ?? ""}
@@ -159,12 +169,20 @@ export function Toolbar({
                 <label className="text-sm font-medium">
                   {t("filters.store")}
                 </label>
-                <Combobox
-                  options={storeOptions}
-                  value={filterStore}
-                  onValueChange={onFilterStoreChange}
-                  placeholder={t("filters.store")}
-                />
+                {storeOptions.length === 1 ? (
+                  <div className="flex h-9 items-center rounded-md border border-border bg-muted/40 px-3 text-sm text-foreground">
+                    {storeOptions[0].label}
+                  </div>
+                ) : (
+                  <Combobox
+                    options={storeOptions}
+                    value={filterStore}
+                    onValueChange={(v) => {
+                      if (v) onFilterStoreChange(v);
+                    }}
+                    placeholder={t("filters.store")}
+                  />
+                )}
               </div>
               <div className="space-y-1.5">
                 <label className="text-sm font-medium">

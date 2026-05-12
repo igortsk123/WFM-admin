@@ -42,14 +42,21 @@ export function DayView({ day, slots, onShiftClick }: DayViewProps) {
   const dayStr = format(day, "yyyy-MM-dd");
   const daySlots = slots.filter((s) => s.shift_date === dayStr);
 
-  // Measure container width for pixel-accurate column geometry
+  // Measure container width for pixel-accurate column geometry.
+  // Используем ResizeObserver чтобы при ресайзе окна и смене filter chips
+  // высоты/ширина пересчитывалась — иначе оверлей выходит за рамки
+  // (особенно когда контейнер уже layouted ширине ≠ 600 initial).
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [containerWidth, setContainerWidth] = React.useState(600);
 
   React.useLayoutEffect(() => {
-    if (containerRef.current) {
-      setContainerWidth(containerRef.current.offsetWidth);
-    }
+    const el = containerRef.current;
+    if (!el) return;
+    const update = () => setContainerWidth(el.offsetWidth);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
   }, [daySlots.length]);
 
   if (daySlots.length === 0) {
@@ -151,12 +158,21 @@ export function DayView({ day, slots, onShiftClick }: DayViewProps) {
       continue;
     }
 
-    // Normal column-split rendering
+    // Normal column-split rendering.
+    // ВАЖНО: ширина блока НЕ должна превышать `effectiveColWidth - gap`,
+    // иначе блок заходит за границу своей колонки и перекрывает соседнюю.
+    // Раньше тут был `Math.max(40, blockWidth)` который при узких колонках
+    // (>3 overlap, < 44px each) насильно расширял блок → overflow визуально.
+    // Теперь жёстко clamp'им сверху, без min-width forcing.
     const effectiveCols = needsOverflow ? COL_OVERFLOW_MAX : totalCols;
+    const GAP_PX = 2; // gap между колонками внутри одной группы
     const effectiveColWidth = CONTENT_WIDTH / effectiveCols;
     const leftPx = LABEL_WIDTH + col * effectiveColWidth;
-    const blockWidth =
-      effectiveColWidth - (col < effectiveCols - 1 ? 4 : RIGHT_MARGIN);
+    const isLastCol = col >= effectiveCols - 1;
+    const blockWidth = Math.max(
+      8,
+      effectiveColWidth - (isLastCol ? RIGHT_MARGIN : GAP_PX),
+    );
 
     slotElements.push(
       <TooltipProvider key={slot.id} delayDuration={300}>
@@ -168,7 +184,7 @@ export function DayView({ day, slots, onShiftClick }: DayViewProps) {
                 top: Math.max(0, topPx),
                 height: heightPx,
                 left: leftPx,
-                width: Math.max(40, blockWidth),
+                width: blockWidth,
               }}
             >
               <div

@@ -2407,7 +2407,11 @@
         "total_actual": "Actual hours",
         "coverage": "Plan / actual coverage",
         "open_shifts": "Open shifts",
-        "conflicts": "Conflicts"
+        "conflicts": "Conflicts",
+        "forecast": "Forecast",
+        "assigned": "Assigned",
+        "coverage_assigned": "Coverage",
+        "hours_value": "{hours} h"
       },
       "filters": {
         "store": "Store",

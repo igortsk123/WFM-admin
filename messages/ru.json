@@ -2407,7 +2407,11 @@
         "total_actual": "Отработано часов",
         "coverage": "Покрытие план/факт",
         "open_shifts": "Открытых смен",
-        "conflicts": "Конфликтов"
+        "conflicts": "Конфликтов",
+        "forecast": "Прогноз",
+        "assigned": "Назначено",
+        "coverage_assigned": "Покрытие",
+        "hours_value": "{hours} ч"
       },
       "filters": {
         "store": "Магазин",

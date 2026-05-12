@@ -154,11 +154,18 @@ export function getSlotVariant(slot: ScheduleSlot): ShiftVariant {
   return "closed";
 }
 
+/**
+ * Cell styles per status. Текст всегда `text-foreground` (читаемый чёрный
+ * на light bg) — статус кодируется ТОЛЬКО цветом фона/рамки и опц. dot-
+ * accent в самом ShiftBlock. Это убирает проблему «светлый текст на
+ * пастельном фоне → нечитаемо» которая была раньше (text-info / text-success
+ * на bg-color/10 теряются на ярком экране).
+ */
 export const SLOT_STYLES: Record<ShiftVariant, string> = {
-  new: "bg-info/10 text-info border border-info/20",
-  opened: "bg-success/10 text-success border border-success/20",
-  conflict: "bg-destructive/10 text-destructive border border-destructive/20",
-  overtime: "bg-warning/10 text-warning border border-warning/20",
-  late: "bg-warning/10 text-warning border border-warning/20",
-  closed: "bg-muted/60 text-muted-foreground border border-border",
+  new: "bg-info/15 text-foreground border border-info/40",
+  opened: "bg-success/15 text-foreground border border-success/40",
+  conflict: "bg-destructive/15 text-foreground border border-destructive/40",
+  overtime: "bg-warning/20 text-foreground border border-warning/50",
+  late: "bg-warning/20 text-foreground border border-warning/50",
+  closed: "bg-muted text-foreground border border-border",
 };

@@ -134,7 +134,16 @@ export interface ScheduleSlot {
 
 /**
  * Schedule grid response.
- * Aggregates: total planned/actual hours and coverage_pct (actual/planned ratio).
+ * Aggregates:
+ *  - total_planned_hours / total_actual_hours / coverage_pct — старые
+ *    legacy поля (план vs факт по сменам).
+ *  - forecast_hours — прогноз трудозатрат из LAMA на диапазон (если LAMA
+ *    отдала). Пока считаем сумму planned-часов всех смен в диапазоне.
+ *  - assigned_hours — часы, покрытые реальными задачами в этих сменах
+ *    (через Task.shift_id + planned_minutes). Это «сколько работы уже
+ *    распределено по сменам».
+ *  - coverage_assigned_pct — assigned / forecast × 100. Сколько процентов
+ *    прогнозных часов уже распределено по задачам.
  */
 export interface ScheduleResponse {
   slots: ScheduleSlot[];
@@ -143,6 +152,9 @@ export interface ScheduleResponse {
   total_planned_hours: number;
   total_actual_hours: number;
   coverage_pct: number;
+  forecast_hours: number;
+  assigned_hours: number;
+  coverage_assigned_pct: number;
 }
 
 // ═══════════════════════════════════════════════════════════════════
@@ -406,6 +418,26 @@ export async function getSchedule(
       ? Math.round((total_actual_hours / total_planned_hours) * 100)
       : 0;
 
+  // ─── New KPIs: forecast / assigned / coverage_assigned ───────────
+  // Forecast = planned hours of all shifts in range (proxy на LAMA forecast).
+  const forecast_hours = total_planned_hours;
+
+  // Assigned = sum of Task.planned_minutes для задач привязанных к этим сменам
+  // (Task.shift_id ∈ filtered shift ids, не archived).
+  const shiftIds = new Set(filtered.map((s) => s.id));
+  const assignedMinutes = MOCK_TASKS.reduce((acc, t) => {
+    if (t.archived) return acc;
+    if (t.shift_id === undefined) return acc;
+    if (!shiftIds.has(t.shift_id)) return acc;
+    return acc + (t.planned_minutes ?? 0);
+  }, 0);
+  const assigned_hours = Number((assignedMinutes / 60).toFixed(1));
+
+  const coverage_assigned_pct =
+    forecast_hours > 0
+      ? Math.round((assigned_hours / forecast_hours) * 100)
+      : 0;
+
   return {
     data: {
       slots,
@@ -414,6 +446,9 @@ export async function getSchedule(
       total_planned_hours,
       total_actual_hours,
       coverage_pct,
+      forecast_hours,
+      assigned_hours,
+      coverage_assigned_pct,
     },
   };
 }

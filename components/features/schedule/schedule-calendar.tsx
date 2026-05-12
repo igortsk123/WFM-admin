@@ -74,6 +74,20 @@ export function ScheduleCalendar() {
     [setFilterStoreRaw],
   );
 
+  // Расписание не имеет смысла без выбранного магазина — KPI и зоны
+  // считаются per store. Поэтому убираем «Все магазины» из вариантов
+  // и при ?store=all (или невалидном scope) автоматически выбираем
+  // первый магазин из текущего org-scope.
+  const storeOnlyOptions = React.useMemo(
+    () => ctxStoreOptions.filter((o) => o.value !== "all"),
+    [ctxStoreOptions],
+  );
+  React.useEffect(() => {
+    if (filterStore === "all" && storeOnlyOptions.length > 0) {
+      setFilterStore(storeOnlyOptions[0].value);
+    }
+  }, [filterStore, storeOnlyOptions, setFilterStore]);
+
   // State
   const [view, setView] = React.useState<ScheduleView>("week");
   const [currentDate, setCurrentDate] = React.useState<Date>(TODAY);
@@ -91,9 +105,9 @@ export function ScheduleCalendar() {
     React.useState<ConfirmActionState | null>(null);
   const [, setActionLoading] = React.useState(false);
 
-  // Store options берём из useStoreContext (filtered по auth.user.stores).
-  // Zone options всё ещё локальные через getZones API.
-  const storeOptions = ctxStoreOptions;
+  // Store options берём из useStoreContext, но без «Все магазины» — для расписания
+  // выбор конкретного store обязателен (см. effect выше).
+  const storeOptions = storeOnlyOptions;
   const [zoneOptions, setZoneOptions] = React.useState<ComboboxOption[]>([]);
 
   React.useEffect(() => {
@@ -183,8 +197,10 @@ export function ScheduleCalendar() {
     setLoading(true);
     setError(null);
 
-    const storeIds =
-      filterStore !== "all" ? [parseInt(filterStore, 10)] : undefined;
+    // filterStore теперь всегда конкретный store_id (см. effect выше).
+    // Если пока "all" (первый рендер до effect) — не грузим.
+    if (filterStore === "all") return;
+    const storeIds = [parseInt(filterStore, 10)];
     const zoneIds = filterZones.length > 0 ? filterZones.map(Number) : undefined;
 
     getSchedule({
@@ -288,16 +304,8 @@ export function ScheduleCalendar() {
     onRemove: () => void;
   }> = [];
 
-  if (filterStore !== "all") {
-    const storeLabel =
-      storeOptions.find((o) => o.value === filterStore)?.label ?? filterStore;
-    activeFilters.push({
-      key: "store",
-      label: t("filters.store"),
-      value: storeLabel,
-      onRemove: () => setFilterStore("all"),
-    });
-  }
+  // Store filter — больше не отображается как «снимаемый» chip (выбор магазина
+  // обязателен, нельзя сбросить в «все»). Поэтому в active-filters его нет.
   filterZones.forEach((z) => {
     const zoneLabel = zoneOptions.find((o) => o.value === z)?.label ?? z;
     activeFilters.push({
@@ -309,7 +317,6 @@ export function ScheduleCalendar() {
   });
 
   const clearAllFilters = () => {
-    setFilterStore("all");
     setFilterZones([]);
     setFilterStatus([]);
   };
@@ -317,16 +324,10 @@ export function ScheduleCalendar() {
   // ─── Stats ───────────────────────────────────────────────────────
   const stats = React.useMemo(() => {
     if (!scheduleData) return null;
-    const openShifts = scheduleData.slots.filter(
-      (s) => s.status === "OPENED",
-    ).length;
-    const conflicts = scheduleData.slots.filter((s) => s.has_conflict).length;
-    const coveragePct = scheduleData.coverage_pct;
     return {
-      coverage: coveragePct,
-      openShifts,
-      planned: scheduleData.total_planned_hours,
-      conflicts,
+      forecast: scheduleData.forecast_hours,
+      assigned: scheduleData.assigned_hours,
+      coveragePct: scheduleData.coverage_assigned_pct,
     };
   }, [scheduleData]);
 

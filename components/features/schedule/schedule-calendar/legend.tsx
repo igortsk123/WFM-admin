@@ -4,13 +4,15 @@ import { useTranslations } from "next-intl";
 
 export function LegendRow() {
   const t = useTranslations("screen.schedule");
+  // «Конфликт» из легенды убран по фидбэку — пользователи не понимают
+  // что такое конфликт расписания. Логика has_conflict в данных остаётся
+  // для будущих use-cases.
   const items = [
     { key: "planned", color: "bg-info" },
     { key: "opened", color: "bg-success" },
     { key: "closed_normal", color: "bg-muted-foreground/40" },
     { key: "closed_late", color: "bg-warning" },
     { key: "closed_overtime", color: "bg-warning" },
-    { key: "conflict", color: "bg-destructive" },
   ];
   return (
     <div className="flex flex-wrap items-center gap-x-4 gap-y-1">

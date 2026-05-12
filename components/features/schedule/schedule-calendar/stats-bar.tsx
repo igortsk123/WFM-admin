@@ -1,15 +1,16 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { AlertTriangle } from "lucide-react";
 
 import { StatTile } from "@/components/shared";
 
 interface StatsBarStats {
-  coverage: number;
-  openShifts: number;
-  planned: number;
-  conflicts: number;
+  /** Прогноз LAMA на диапазон (часы). */
+  forecast: number;
+  /** Часы покрытые реальными задачами (Task.shift_id ∈ shifts). */
+  assigned: number;
+  /** Покрытие = assigned / forecast × 100. */
+  coveragePct: number;
 }
 
 interface StatsBarProps {
@@ -20,44 +21,38 @@ export function StatsBar({ stats }: StatsBarProps) {
   const t = useTranslations("screen.schedule");
 
   const coverageColor =
-    stats.coverage >= 80
+    stats.coveragePct >= 80
       ? "text-success"
-      : stats.coverage >= 60
-      ? "text-warning"
-      : "text-destructive";
+      : stats.coveragePct >= 60
+        ? "text-warning"
+        : "text-destructive";
+
+  const forecastLabel =
+    stats.forecast > 0
+      ? t("aggregates.hours_value", { hours: stats.forecast })
+      : "—";
+  const assignedLabel = t("aggregates.hours_value", {
+    hours: stats.assigned,
+  });
+  const coverageLabel =
+    stats.forecast > 0 ? `${stats.coveragePct}%` : "—";
 
   return (
-    <div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-4">
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 md:gap-4">
       <StatTile
-        label={t("aggregates.coverage")}
-        value={`${stats.coverage}%`}
-        colorClass={coverageColor}
+        label={t("aggregates.forecast")}
+        value={forecastLabel}
         size="md"
       />
       <StatTile
-        label={t("aggregates.open_shifts")}
-        value={stats.openShifts}
+        label={t("aggregates.assigned")}
+        value={assignedLabel}
         size="md"
       />
       <StatTile
-        label={t("aggregates.total_planned")}
-        value={stats.planned}
-        size="md"
-      />
-      <StatTile
-        label={t("aggregates.conflicts")}
-        value={
-          <span className="inline-flex items-center gap-1.5">
-            {stats.conflicts}
-            {stats.conflicts > 0 && (
-              <AlertTriangle
-                className="size-4 text-destructive"
-                aria-hidden="true"
-              />
-            )}
-          </span>
-        }
-        colorClass={stats.conflicts > 0 ? "text-destructive" : undefined}
+        label={t("aggregates.coverage_assigned")}
+        value={coverageLabel}
+        colorClass={stats.forecast > 0 ? coverageColor : undefined}
         size="md"
       />
     </div>
