@@ -7,7 +7,7 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-05-14
- * Built at: 2026-05-13T22:40:17Z
+ * Built at: 2026-05-13T23:02:45Z
  *
  * 0 ON_REVIEW + 5 ACCEPTED + 0 REJECTED across 1 shops.
  *
@@ -25,5 +25,5 @@ export const REAL_LAMA_REVIEW_TASKS: Task[] = [
   { id: "task-lama-review-297845", external_id: 297845, title: "Выкладка: Кондитерка, чай, кофе", description: "Выкладка в зоне «Кондитерка, чай, кофе»", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 221, store_name: "У-23 Кирова 65", zone_id: 108, zone_name: "Кондитерка, чай, кофе", work_type_id: 4, work_type_name: "Выкладка", priority: 5, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 350, assignee_name: "Евлахова Екатерина Юрьевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ACCEPTED", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 180, time_start: "11:31:01", time_end: "14:31:01", shift_id: 5736120, created_at: "2026-05-14T11:31:01+07:00", updated_at: "2026-05-14T14:31:01+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-05-13T22:40:17Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-05-13T23:02:45Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-05-14";
