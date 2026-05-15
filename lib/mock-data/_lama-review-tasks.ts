@@ -7,9 +7,9 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-05-15
- * Built at: 2026-05-14T23:00:57Z
+ * Built at: 2026-05-15T00:01:20Z
  *
- * 0 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 0 shops.
+ * 2 ON_REVIEW + 2 ACCEPTED + 0 REJECTED across 3 shops.
  *
  * Регенерируется:
  *   - daily (cron-daily.sh) после fetch-snapshot-async.py
@@ -18,7 +18,11 @@
 import type { Task } from "@/lib/types";
 
 export const REAL_LAMA_REVIEW_TASKS: Task[] = [
+  { id: "task-lama-review-302648", external_id: 302648, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 215, store_name: "У-17 Бела Куна 26/1", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 425, assignee_name: "Ильина Наталия Николаевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 20, time_start: "07:00:00", time_end: "07:20:00", shift_id: 5730737, created_at: "2026-05-15T07:00:00+07:00", updated_at: "2026-05-15T07:20:00+07:00" },
+  { id: "task-lama-review-302336", external_id: 302336, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 216, store_name: "У-15 Дербышевского 17", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 4, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 410, assignee_name: "Шайхулаева Ксения Махмудовна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 10, time_start: "08:15:00", time_end: "08:25:00", shift_id: 5721640, created_at: "2026-05-15T08:15:00+07:00", updated_at: "2026-05-15T08:25:00+07:00" },
+  { id: "task-lama-review-301821", external_id: 301821, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 211, store_name: "У-03 Фрунзе 120 (ИР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 437, assignee_name: "Райхе Наталья Анатольевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ACCEPTED", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 15, time_start: "07:00:00", time_end: "07:15:00", shift_id: 5728185, created_at: "2026-05-15T07:00:00+07:00", updated_at: "2026-05-15T07:15:00+07:00" },
+  { id: "task-lama-review-301822", external_id: 301822, title: "Выкладка: Фреш 1", description: "Выкладка в зоне «Фреш 1»", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 211, store_name: "У-03 Фрунзе 120 (ИР)", zone_id: 100, zone_name: "Фреш 1", work_type_id: 4, work_type_name: "Выкладка", priority: 2, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 437, assignee_name: "Райхе Наталья Анатольевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ACCEPTED", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 30, time_start: "07:15:00", time_end: "07:45:00", shift_id: 5728185, created_at: "2026-05-15T07:15:00+07:00", updated_at: "2026-05-15T07:45:00+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-05-14T23:00:57Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-05-15T00:01:20Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-05-15";
