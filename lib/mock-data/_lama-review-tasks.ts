@@ -7,7 +7,7 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-05-21
- * Built at: 2026-05-20T22:27:22Z
+ * Built at: 2026-05-20T23:02:13Z
  *
  * 0 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 0 shops.
  *
@@ -20,5 +20,5 @@ import type { Task } from "@/lib/types";
 export const REAL_LAMA_REVIEW_TASKS: Task[] = [
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-05-20T22:27:22Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-05-20T23:02:13Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-05-21";
