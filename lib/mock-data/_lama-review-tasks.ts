@@ -7,9 +7,9 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-05-29
- * Built at: 2026-05-28T23:02:34Z
+ * Built at: 2026-05-29T00:02:30Z
  *
- * 0 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 0 shops.
+ * 2 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 2 shops.
  *
  * Регенерируется:
  *   - daily (cron-daily.sh) после fetch-snapshot-async.py
@@ -18,7 +18,9 @@
 import type { Task } from "@/lib/types";
 
 export const REAL_LAMA_REVIEW_TASKS: Task[] = [
+  { id: "task-lama-review-348768", external_id: 348768, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 219, store_name: "У-08 Киевская 13", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 760, assignee_name: "Малышенко Людмила Яковлевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 31, time_start: "07:00:00", time_end: "07:31:00", shift_id: 5726445, created_at: "2026-05-29T07:00:00+07:00", updated_at: "2026-05-29T07:31:00+07:00" },
+  { id: "task-lama-review-349638", external_id: 349638, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 222, store_name: "У-18 Кулагина 6а", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 681, assignee_name: "Перевозчикова Виктория Вячеславовна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 20, time_start: "07:00:00", time_end: "07:20:00", shift_id: 5724420, created_at: "2026-05-29T07:00:00+07:00", updated_at: "2026-05-29T07:20:00+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-05-28T23:02:34Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-05-29T00:02:30Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-05-29";
