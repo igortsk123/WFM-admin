@@ -7,9 +7,9 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-06-05
- * Built at: 2026-06-04T23:04:54Z
+ * Built at: 2026-06-05T00:04:25Z
  *
- * 0 ON_REVIEW + 1 ACCEPTED + 0 REJECTED across 1 shops.
+ * 4 ON_REVIEW + 1 ACCEPTED + 0 REJECTED across 4 shops.
  *
  * Регенерируется:
  *   - daily (cron-daily.sh) после fetch-snapshot-async.py
@@ -18,8 +18,12 @@
 import type { Task } from "@/lib/types";
 
 export const REAL_LAMA_REVIEW_TASKS: Task[] = [
+  { id: "task-lama-review-373380", external_id: 373380, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 215, store_name: "У-17 Бела Куна 26/1", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 386, assignee_name: "Днепровская Ольга Александровна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 15, time_start: "07:00:00", time_end: "07:15:00", shift_id: 5759660, created_at: "2026-06-05T07:00:00+07:00", updated_at: "2026-06-05T07:15:00+07:00" },
+  { id: "task-lama-review-372814", external_id: 372814, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 216, store_name: "У-15 Дербышевского 17", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 2, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 805, assignee_name: "Калыкова Мария Александровна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 10, time_start: "18:10:00", time_end: "18:20:00", shift_id: 5763776, created_at: "2026-06-05T18:10:00+07:00", updated_at: "2026-06-05T18:20:00+07:00" },
+  { id: "task-lama-review-373355", external_id: 373355, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 222, store_name: "У-18 Кулагина 6а", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 681, assignee_name: "Перевозчикова Виктория Вячеславовна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 10, time_start: "07:00:00", time_end: "07:10:00", shift_id: 5772718, created_at: "2026-06-05T07:00:00+07:00", updated_at: "2026-06-05T07:10:00+07:00" },
+  { id: "task-lama-review-372177", external_id: 372177, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 224, store_name: "У-01 Мокрушина 24", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 608, assignee_name: "Искандарова Айбаниз Сабир", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 20, time_start: "07:00:00", time_end: "07:20:00", shift_id: 5788119, created_at: "2026-06-05T07:00:00+07:00", updated_at: "2026-06-05T07:20:00+07:00" },
   { id: "task-lama-review-372053", external_id: 372053, title: "Инвентаризация", description: "Инвентаризация", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 224, store_name: "У-01 Мокрушина 24", zone_id: 112, zone_name: "Без зоны", work_type_id: 6, work_type_name: "Инвентаризация", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 569, assignee_name: "Лушова Любовь Владимировна", assigned_to_permission: null, state: "COMPLETED", review_state: "ACCEPTED", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 60, time_start: "07:00:00", time_end: "08:00:00", shift_id: 5764510, created_at: "2026-06-05T07:00:00+07:00", updated_at: "2026-06-05T08:00:00+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-06-04T23:04:54Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-06-05T00:04:25Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-06-05";
