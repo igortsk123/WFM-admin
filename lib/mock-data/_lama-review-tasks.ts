@@ -7,9 +7,9 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-06-09
- * Built at: 2026-06-08T23:02:19Z
+ * Built at: 2026-06-09T00:02:49Z
  *
- * 0 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 0 shops.
+ * 4 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 3 shops.
  *
  * Регенерируется:
  *   - daily (cron-daily.sh) после fetch-snapshot-async.py
@@ -18,7 +18,11 @@
 import type { Task } from "@/lib/types";
 
 export const REAL_LAMA_REVIEW_TASKS: Task[] = [
+  { id: "task-lama-review-385940", external_id: 385940, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 214, store_name: "У-10 Бирюкова 8", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 689, assignee_name: "Малышева Людмила Николаевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 10, time_start: "07:30:00", time_end: "07:40:00", shift_id: 5758181, created_at: "2026-06-09T07:30:00+07:00", updated_at: "2026-06-09T07:40:00+07:00" },
+  { id: "task-lama-review-382364", external_id: 382364, title: "Инвентаризация", description: "Инвентаризация", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 222, store_name: "У-18 Кулагина 6а", zone_id: 112, zone_name: "Без зоны", work_type_id: 6, work_type_name: "Инвентаризация", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 418, assignee_name: "Петина Юлия Рашидовна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 60, time_start: "07:00:00", time_end: "08:00:00", shift_id: 5772745, created_at: "2026-06-09T07:00:00+07:00", updated_at: "2026-06-09T08:00:00+07:00" },
+  { id: "task-lama-review-381349", external_id: 381349, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 227, store_name: "УФ-4 79 Гвардейской дивизии 12/1 (ТР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 403, assignee_name: "Чабанова Екатерина Ивановна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 15, time_start: "07:00:00", time_end: "07:15:00", shift_id: 5768854, created_at: "2026-06-09T07:00:00+07:00", updated_at: "2026-06-09T07:15:00+07:00" },
+  { id: "task-lama-review-381322", external_id: 381322, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 227, store_name: "УФ-4 79 Гвардейской дивизии 12/1 (ТР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 473, assignee_name: "Медведева Ксения Геннадьевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 15, time_start: "07:00:00", time_end: "07:15:00", shift_id: 5768897, created_at: "2026-06-09T07:00:00+07:00", updated_at: "2026-06-09T07:15:00+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-06-08T23:02:19Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-06-09T00:02:49Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-06-09";
