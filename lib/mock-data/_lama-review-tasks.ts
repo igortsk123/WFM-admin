@@ -7,9 +7,9 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-06-14
- * Built at: 2026-06-13T23:02:22Z
+ * Built at: 2026-06-14T00:02:28Z
  *
- * 0 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 0 shops.
+ * 3 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 2 shops.
  *
  * Регенерируется:
  *   - daily (cron-daily.sh) после fetch-snapshot-async.py
@@ -18,7 +18,10 @@
 import type { Task } from "@/lib/types";
 
 export const REAL_LAMA_REVIEW_TASKS: Task[] = [
+  { id: "task-lama-review-398828", external_id: 398828, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 211, store_name: "У-03 Фрунзе 120 (ИР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 437, assignee_name: "Райхе Наталья Анатольевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 15, time_start: "07:00:00", time_end: "07:15:00", shift_id: 5760070, created_at: "2026-06-14T07:00:00+07:00", updated_at: "2026-06-14T07:15:00+07:00" },
+  { id: "task-lama-review-398829", external_id: 398829, title: "Выкладка: Фреш 1", description: "Выкладка в зоне «Фреш 1»", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 211, store_name: "У-03 Фрунзе 120 (ИР)", zone_id: 100, zone_name: "Фреш 1", work_type_id: 4, work_type_name: "Выкладка", priority: 2, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 437, assignee_name: "Райхе Наталья Анатольевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 30, time_start: "07:15:00", time_end: "07:45:00", shift_id: 5760070, created_at: "2026-06-14T07:15:00+07:00", updated_at: "2026-06-14T07:45:00+07:00" },
+  { id: "task-lama-review-403492", external_id: 403492, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 215, store_name: "У-17 Бела Куна 26/1", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 3, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 426, assignee_name: "Качеева Юлия Григорьевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 15, time_start: "15:00:00", time_end: "15:15:00", shift_id: 5759671, created_at: "2026-06-14T15:00:00+07:00", updated_at: "2026-06-14T15:15:00+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-06-13T23:02:22Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-06-14T00:02:28Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-06-14";
