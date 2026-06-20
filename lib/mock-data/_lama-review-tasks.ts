@@ -7,9 +7,9 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-06-20
- * Built at: 2026-06-20T00:01:49Z
+ * Built at: 2026-06-20T01:01:17Z
  *
- * 0 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 0 shops.
+ * 6 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 6 shops.
  *
  * Регенерируется:
  *   - daily (cron-daily.sh) после fetch-snapshot-async.py
@@ -18,7 +18,13 @@
 import type { Task } from "@/lib/types";
 
 export const REAL_LAMA_REVIEW_TASKS: Task[] = [
+  { id: "task-lama-review-420398", external_id: 420398, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 205, store_name: "У-20 Вокзальная 41 (ИР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 740, assignee_name: "Алмаз Юлианна Владимировна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 15, time_start: "10:00:00", time_end: "10:15:00", shift_id: 5766951, created_at: "2026-06-20T10:00:00+07:00", updated_at: "2026-06-20T10:15:00+07:00" },
+  { id: "task-lama-review-420071", external_id: 420071, title: "Выкладка: ЗОЖ", description: "Выкладка в зоне «ЗОЖ»", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 207, store_name: "У-22 Коммунистический 143 (ИР)", zone_id: 107, zone_name: "ЗОЖ", work_type_id: 4, work_type_name: "Выкладка", priority: 4, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 633, assignee_name: "Артемьев Владислав Сергеевич", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 6, time_start: "19:54:00", time_end: "20:00:00", shift_id: 5771080, created_at: "2026-06-20T19:54:00+07:00", updated_at: "2026-06-20T20:00:00+07:00" },
+  { id: "task-lama-review-421662", external_id: 421662, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 211, store_name: "У-03 Фрунзе 120 (ИР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 437, assignee_name: "Райхе Наталья Анатольевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 30, time_start: "07:00:00", time_end: "07:30:00", shift_id: 5760074, created_at: "2026-06-20T07:00:00+07:00", updated_at: "2026-06-20T07:30:00+07:00" },
+  { id: "task-lama-review-420032", external_id: 420032, title: "Выкладка: Фреш 1", description: "Выкладка в зоне «Фреш 1»", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 214, store_name: "У-10 Бирюкова 8", zone_id: 100, zone_name: "Фреш 1", work_type_id: 4, work_type_name: "Выкладка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 563, assignee_name: "Кузьменко Елена Владимировна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 30, time_start: "07:00:00", time_end: "07:30:00", shift_id: 5805365, created_at: "2026-06-20T07:00:00+07:00", updated_at: "2026-06-20T07:30:00+07:00" },
+  { id: "task-lama-review-421504", external_id: 421504, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 223, store_name: "У-02 Мира 27в", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 764, assignee_name: "Окунева Ольга Степановна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 10, time_start: "07:30:00", time_end: "07:40:00", shift_id: 5773556, created_at: "2026-06-20T07:30:00+07:00", updated_at: "2026-06-20T07:40:00+07:00" },
+  { id: "task-lama-review-416079", external_id: 416079, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 225, store_name: "У-19 Сибирская 104а", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 510, assignee_name: "Алышанова Фарида Муса", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 10, time_start: "07:00:00", time_end: "07:10:00", shift_id: 5753619, created_at: "2026-06-20T07:00:00+07:00", updated_at: "2026-06-20T07:10:00+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-06-20T00:01:49Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-06-20T01:01:17Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-06-20";
