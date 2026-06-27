@@ -7,7 +7,7 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-06-27
- * Built at: 2026-06-27T19:01:39Z
+ * Built at: 2026-06-27T20:01:43Z
  *
  * 6 ON_REVIEW + 432 ACCEPTED + 0 REJECTED across 14 shops.
  *
@@ -458,5 +458,5 @@ export const REAL_LAMA_REVIEW_TASKS: Task[] = [
   { id: "task-lama-review-439555", external_id: 439555, title: "Выкладка: ФРОВ", description: "Выкладка в зоне «ФРОВ»", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 229, store_name: "У-14 Иркутский 96 (ТР)", zone_id: 111, zone_name: "ФРОВ", work_type_id: 4, work_type_name: "Выкладка", priority: 5, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 758, assignee_name: "Шехтерле Юлия Ивановна", assigned_to_permission: null, state: "COMPLETED", review_state: "ACCEPTED", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 210, time_start: "12:30:00", time_end: "16:00:00", shift_id: 5759941, created_at: "2026-06-27T12:30:00+07:00", updated_at: "2026-06-27T16:00:00+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-06-27T19:01:39Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-06-27T20:01:43Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-06-27";
