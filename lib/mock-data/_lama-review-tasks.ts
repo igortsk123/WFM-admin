@@ -7,9 +7,9 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-06-27
- * Built at: 2026-06-26T23:01:40Z
+ * Built at: 2026-06-27T00:01:40Z
  *
- * 1 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 1 shops.
+ * 3 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 2 shops.
  *
  * Регенерируется:
  *   - daily (cron-daily.sh) после fetch-snapshot-async.py
@@ -18,8 +18,10 @@
 import type { Task } from "@/lib/types";
 
 export const REAL_LAMA_REVIEW_TASKS: Task[] = [
+  { id: "task-lama-review-442345", external_id: 442345, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 215, store_name: "У-17 Бела Куна 26/1", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 2, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 386, assignee_name: "Днепровская Ольга Александровна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 15, time_start: "07:10:00", time_end: "07:25:00", shift_id: 5759656, created_at: "2026-06-27T07:10:00+07:00", updated_at: "2026-06-27T07:25:00+07:00" },
+  { id: "task-lama-review-442450", external_id: 442450, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 215, store_name: "У-17 Бела Куна 26/1", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 480, assignee_name: "Дерпак Анастасия Сергеевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 15, time_start: "07:00:00", time_end: "07:15:00", shift_id: 5809868, created_at: "2026-06-27T07:00:00+07:00", updated_at: "2026-06-27T07:15:00+07:00" },
   { id: "task-lama-review-432630", external_id: 432630, title: "Выкладка: Фреш 1", description: "Выкладка в зоне «Фреш 1»", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 219, store_name: "У-08 Киевская 13", zone_id: 100, zone_name: "Фреш 1", work_type_id: 4, work_type_name: "Выкладка", priority: 4, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 806, assignee_name: "Риферт Роза Яковлевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 26, time_start: "07:53:11", time_end: "08:20:10", shift_id: 5767931, created_at: "2026-06-27T07:53:11+07:00", updated_at: "2026-06-27T08:20:10+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-06-26T23:01:40Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-06-27T00:01:40Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-06-27";
