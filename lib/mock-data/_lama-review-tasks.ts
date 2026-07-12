@@ -7,9 +7,9 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-07-12
- * Built at: 2026-07-11T23:01:40Z
+ * Built at: 2026-07-12T00:01:44Z
  *
- * 0 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 0 shops.
+ * 1 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 1 shops.
  *
  * Регенерируется:
  *   - daily (cron-daily.sh) после fetch-snapshot-async.py
@@ -18,7 +18,8 @@
 import type { Task } from "@/lib/types";
 
 export const REAL_LAMA_REVIEW_TASKS: Task[] = [
+  { id: "task-lama-review-480644", external_id: 480644, title: "Выкладка: Пиво, чипсы", description: "Выкладка в зоне «Пиво, чипсы»", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 227, store_name: "УФ-4 79 Гвардейской дивизии 12/1 (ТР)", zone_id: 109, zone_name: "Пиво, чипсы", work_type_id: 4, work_type_name: "Выкладка", priority: 4, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 860, assignee_name: "Батраков Игорь Андреевич", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 30, time_start: "13:00:00", time_end: "13:30:00", shift_id: 5808603, created_at: "2026-07-12T13:00:00+07:00", updated_at: "2026-07-12T13:30:00+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-07-11T23:01:40Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-07-12T00:01:44Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-07-12";
