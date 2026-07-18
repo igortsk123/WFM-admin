@@ -7,7 +7,7 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-07-18
- * Built at: 2026-07-18T20:01:21Z
+ * Built at: 2026-07-18T21:01:15Z
  *
  * 7 ON_REVIEW + 365 ACCEPTED + 0 REJECTED across 13 shops.
  *
@@ -392,5 +392,5 @@ export const REAL_LAMA_REVIEW_TASKS: Task[] = [
   { id: "task-lama-review-499725", external_id: 499725, title: "Касса", description: "Касса", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 229, store_name: "У-14 Иркутский 96 (ТР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 2, work_type_name: "Касса", priority: 8, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 871, assignee_name: "Шварц Светлана Александровна", assigned_to_permission: null, state: "COMPLETED", review_state: "ACCEPTED", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 420, time_start: "15:00:00", time_end: "22:00:00", shift_id: 5852981, created_at: "2026-07-18T15:00:00+07:00", updated_at: "2026-07-18T22:00:00+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-07-18T20:01:21Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-07-18T21:01:15Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-07-18";
