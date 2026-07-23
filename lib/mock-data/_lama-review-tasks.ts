@@ -7,9 +7,9 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-07-23
- * Built at: 2026-07-23T17:01:16Z
+ * Built at: 2026-07-23T18:00:55Z
  *
- * 21 ON_REVIEW + 387 ACCEPTED + 0 REJECTED across 15 shops.
+ * 22 ON_REVIEW + 387 ACCEPTED + 0 REJECTED across 15 shops.
  *
  * Регенерируется:
  *   - daily (cron-daily.sh) после fetch-snapshot-async.py
@@ -18,6 +18,7 @@
 import type { Task } from "@/lib/types";
 
 export const REAL_LAMA_REVIEW_TASKS: Task[] = [
+  { id: "task-lama-review-513604", external_id: 513604, title: "Выкладка: Алкоголь", description: "Выкладка в зоне «Алкоголь»", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 205, store_name: "У-20 Вокзальная 41 (ИР)", zone_id: 106, zone_name: "Алкоголь", work_type_id: 4, work_type_name: "Выкладка", priority: 6, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 579, assignee_name: "Степичева Оксана Геннадьевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 90, time_start: "17:15:00", time_end: "18:45:00", shift_id: 5814288, created_at: "2026-07-23T17:15:00+07:00", updated_at: "2026-07-23T18:45:00+07:00" },
   { id: "task-lama-review-513618", external_id: 513618, title: "Выкладка: ФРОВ", description: "Выкладка в зоне «ФРОВ»", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 205, store_name: "У-20 Вокзальная 41 (ИР)", zone_id: 111, zone_name: "ФРОВ", work_type_id: 4, work_type_name: "Выкладка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 867, assignee_name: "Шклярова Анна Сергеевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 645, time_start: "07:00:00", time_end: "17:45:00", shift_id: 5814396, created_at: "2026-07-23T07:00:00+07:00", updated_at: "2026-07-23T17:45:00+07:00" },
   { id: "task-lama-review-513619", external_id: 513619, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 205, store_name: "У-20 Вокзальная 41 (ИР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 2, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 867, assignee_name: "Шклярова Анна Сергеевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 15, time_start: "17:45:00", time_end: "18:00:00", shift_id: 5814396, created_at: "2026-07-23T17:45:00+07:00", updated_at: "2026-07-23T18:00:00+07:00" },
   { id: "task-lama-review-513620", external_id: 513620, title: "Выкладка: Бакалея", description: "Выкладка в зоне «Бакалея»", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 205, store_name: "У-20 Вокзальная 41 (ИР)", zone_id: 102, zone_name: "Бакалея", work_type_id: 4, work_type_name: "Выкладка", priority: 3, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 867, assignee_name: "Шклярова Анна Сергеевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 60, time_start: "18:00:00", time_end: "19:00:00", shift_id: 5814396, created_at: "2026-07-23T18:00:00+07:00", updated_at: "2026-07-23T19:00:00+07:00" },
@@ -428,5 +429,5 @@ export const REAL_LAMA_REVIEW_TASKS: Task[] = [
   { id: "task-lama-review-513324", external_id: 513324, title: "Выкладка: Фреш 2", description: "Выкладка в зоне «Фреш 2»", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 272, store_name: "С-8 Калинина 145 (П)", zone_id: 101, zone_name: "Фреш 2", work_type_id: 4, work_type_name: "Выкладка", priority: 10, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 544, assignee_name: "Клименко Анастасия Александровна", assigned_to_permission: null, state: "COMPLETED", review_state: "ACCEPTED", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 48, time_start: "21:11:22", time_end: "22:00:00", shift_id: 5835105, created_at: "2026-07-23T21:11:22+07:00", updated_at: "2026-07-23T22:00:00+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-07-23T17:01:16Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-07-23T18:00:55Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-07-23";
