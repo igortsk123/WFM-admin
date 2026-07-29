@@ -7,9 +7,9 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-07-29
- * Built at: 2026-07-28T23:00:40Z
+ * Built at: 2026-07-29T00:00:39Z
  *
- * 0 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 0 shops.
+ * 2 ON_REVIEW + 1 ACCEPTED + 0 REJECTED across 2 shops.
  *
  * Регенерируется:
  *   - daily (cron-daily.sh) после fetch-snapshot-async.py
@@ -18,7 +18,10 @@
 import type { Task } from "@/lib/types";
 
 export const REAL_LAMA_REVIEW_TASKS: Task[] = [
+  { id: "task-lama-review-530034", external_id: 530034, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 215, store_name: "У-17 Бела Куна 26/1", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 329, assignee_name: "Верхова Лариса Васильевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 20, time_start: "07:00:00", time_end: "07:20:00", shift_id: 5815715, created_at: "2026-07-29T07:00:00+07:00", updated_at: "2026-07-29T07:20:00+07:00" },
+  { id: "task-lama-review-529919", external_id: 529919, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 227, store_name: "УФ-4 79 Гвардейской дивизии 12/1 (ТР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 5, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 473, assignee_name: "Медведева Ксения Геннадьевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 15, time_start: "13:30:00", time_end: "13:45:00", shift_id: 5808499, created_at: "2026-07-29T13:30:00+07:00", updated_at: "2026-07-29T13:45:00+07:00" },
+  { id: "task-lama-review-529947", external_id: 529947, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 227, store_name: "УФ-4 79 Гвардейской дивизии 12/1 (ТР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 4, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 401, assignee_name: "Филиппова Ольга Васильевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ACCEPTED", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 15, time_start: "10:20:00", time_end: "10:35:00", shift_id: 5808667, created_at: "2026-07-29T10:20:00+07:00", updated_at: "2026-07-29T10:35:00+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-07-28T23:00:40Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-07-29T00:00:39Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-07-29";
