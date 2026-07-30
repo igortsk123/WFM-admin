@@ -7,9 +7,9 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-07-30
- * Built at: 2026-07-29T23:00:41Z
+ * Built at: 2026-07-30T00:00:41Z
  *
- * 0 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 0 shops.
+ * 2 ON_REVIEW + 1 ACCEPTED + 0 REJECTED across 3 shops.
  *
  * Регенерируется:
  *   - daily (cron-daily.sh) после fetch-snapshot-async.py
@@ -18,7 +18,10 @@
 import type { Task } from "@/lib/types";
 
 export const REAL_LAMA_REVIEW_TASKS: Task[] = [
+  { id: "task-lama-review-531433", external_id: 531433, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 211, store_name: "У-03 Фрунзе 120 (ИР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 437, assignee_name: "Райхе Наталья Анатольевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 15, time_start: "07:00:00", time_end: "07:15:00", shift_id: 5818561, created_at: "2026-07-30T07:00:00+07:00", updated_at: "2026-07-30T07:15:00+07:00" },
+  { id: "task-lama-review-528818", external_id: 528818, title: "Инвентаризация", description: "Инвентаризация", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 219, store_name: "У-08 Киевская 13", zone_id: 112, zone_name: "Без зоны", work_type_id: 6, work_type_name: "Инвентаризация", priority: 2, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 760, assignee_name: "Малышенко Людмила Яковлевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 150, time_start: "07:30:00", time_end: "10:00:00", shift_id: 5817907, created_at: "2026-07-30T07:30:00+07:00", updated_at: "2026-07-30T10:00:00+07:00" },
+  { id: "task-lama-review-523987", external_id: 523987, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 225, store_name: "У-19 Сибирская 104а", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 433, assignee_name: "Никифорова Наталья Владимировна", assigned_to_permission: null, state: "COMPLETED", review_state: "ACCEPTED", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 10, time_start: "06:00:00", time_end: "06:10:00", shift_id: 5859508, created_at: "2026-07-30T06:00:00+07:00", updated_at: "2026-07-30T06:10:00+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-07-29T23:00:41Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-07-30T00:00:41Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-07-30";
