@@ -7,9 +7,9 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-07-31
- * Built at: 2026-07-30T23:00:42Z
+ * Built at: 2026-07-31T00:00:41Z
  *
- * 0 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 0 shops.
+ * 3 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 3 shops.
  *
  * Регенерируется:
  *   - daily (cron-daily.sh) после fetch-snapshot-async.py
@@ -18,7 +18,10 @@
 import type { Task } from "@/lib/types";
 
 export const REAL_LAMA_REVIEW_TASKS: Task[] = [
+  { id: "task-lama-review-534381", external_id: 534381, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 211, store_name: "У-03 Фрунзе 120 (ИР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 437, assignee_name: "Райхе Наталья Анатольевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 15, time_start: "07:00:00", time_end: "07:15:00", shift_id: 5818565, created_at: "2026-07-31T07:00:00+07:00", updated_at: "2026-07-31T07:15:00+07:00" },
+  { id: "task-lama-review-533980", external_id: 533980, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 219, store_name: "У-08 Киевская 13", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 2, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 834, assignee_name: "Войтенко Алена Евгеньевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 13, time_start: "16:00:00", time_end: "16:13:00", shift_id: 5818070, created_at: "2026-07-31T16:00:00+07:00", updated_at: "2026-07-31T16:13:00+07:00" },
+  { id: "task-lama-review-534731", external_id: 534731, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 222, store_name: "У-18 Кулагина 6а", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 4, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 373, assignee_name: "Марьясова Екатерина Дмитриевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 10, time_start: "13:05:00", time_end: "13:15:00", shift_id: 5813606, created_at: "2026-07-31T13:05:00+07:00", updated_at: "2026-07-31T13:15:00+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-07-30T23:00:42Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-07-31T00:00:41Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-07-31";
