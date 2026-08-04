@@ -7,9 +7,9 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-08-05
- * Built at: 2026-08-04T22:15:27Z
+ * Built at: 2026-08-04T23:00:54Z
  *
- * 0 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 0 shops.
+ * 1 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 1 shops.
  *
  * Регенерируется:
  *   - daily (cron-daily.sh) после fetch-snapshot-async.py
@@ -18,7 +18,8 @@
 import type { Task } from "@/lib/types";
 
 export const REAL_LAMA_REVIEW_TASKS: Task[] = [
+  { id: "task-lama-review-547937", external_id: 547937, title: "Касса", description: "Касса", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 215, store_name: "У-17 Бела Куна 26/1", zone_id: 112, zone_name: "Без зоны", work_type_id: 2, work_type_name: "Касса", priority: 2, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 329, assignee_name: "Верхова Лариса Васильевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 425, time_start: "07:15:00", time_end: "14:20:00", shift_id: 5887789, created_at: "2026-08-05T07:15:00+07:00", updated_at: "2026-08-05T14:20:00+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-08-04T22:15:27Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-08-04T23:00:54Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-08-05";
