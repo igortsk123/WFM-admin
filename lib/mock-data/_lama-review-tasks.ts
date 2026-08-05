@@ -7,9 +7,9 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-08-05
- * Built at: 2026-08-05T17:00:44Z
+ * Built at: 2026-08-05T18:00:38Z
  *
- * 14 ON_REVIEW + 405 ACCEPTED + 0 REJECTED across 13 shops.
+ * 15 ON_REVIEW + 405 ACCEPTED + 0 REJECTED across 13 shops.
  *
  * Регенерируется:
  *   - daily (cron-daily.sh) после fetch-snapshot-async.py
@@ -19,6 +19,7 @@ import type { Task } from "@/lib/types";
 
 export const REAL_LAMA_REVIEW_TASKS: Task[] = [
   { id: "task-lama-review-548602", external_id: 548602, title: "КСО", description: "КСО", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 209, store_name: "У-05 Лазарева 1 (ИР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 3, work_type_name: "КСО", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 317, assignee_name: "Иванова Татьяна Валерьевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 420, time_start: "10:00:00", time_end: "17:00:00", shift_id: 5873757, created_at: "2026-08-05T10:00:00+07:00", updated_at: "2026-08-05T17:00:00+07:00" },
+  { id: "task-lama-review-548605", external_id: 548605, title: "Выкладка", description: "Выкладка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 209, store_name: "У-05 Лазарева 1 (ИР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 4, work_type_name: "Выкладка", priority: 4, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 317, assignee_name: "Иванова Татьяна Валерьевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 97, time_start: "20:15:02", time_end: "21:52:19", shift_id: 5873757, created_at: "2026-08-05T20:15:02+07:00", updated_at: "2026-08-05T21:52:19+07:00" },
   { id: "task-lama-review-548525", external_id: 548525, title: "КСО", description: "КСО", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 209, store_name: "У-05 Лазарева 1 (ИР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 3, work_type_name: "КСО", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 334, assignee_name: "Ковалёва Елена Борисовна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 60, time_start: "09:00:00", time_end: "10:00:00", shift_id: 5873879, created_at: "2026-08-05T09:00:00+07:00", updated_at: "2026-08-05T10:00:00+07:00" },
   { id: "task-lama-review-548516", external_id: 548516, title: "Менеджерские операции", description: "Менеджерские операции", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 209, store_name: "У-05 Лазарева 1 (ИР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 1, work_type_name: "Менеджерские операции", priority: 2, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 620, assignee_name: "Обликова Наталья Валерьевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 300, time_start: "08:59:00", time_end: "13:59:00", shift_id: 5873739, created_at: "2026-08-05T08:59:00+07:00", updated_at: "2026-08-05T13:59:00+07:00" },
   { id: "task-lama-review-548580", external_id: 548580, title: "КСО", description: "КСО", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 209, store_name: "У-05 Лазарева 1 (ИР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 3, work_type_name: "КСО", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 726, assignee_name: "Мальцева Юлия Анатольевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 540, time_start: "07:30:00", time_end: "16:30:00", shift_id: 5873713, created_at: "2026-08-05T07:30:00+07:00", updated_at: "2026-08-05T16:30:00+07:00" },
@@ -439,5 +440,5 @@ export const REAL_LAMA_REVIEW_TASKS: Task[] = [
   { id: "task-lama-review-543421", external_id: 543421, title: "Другие работы", description: "Другие работы", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 242, store_name: "УФ-9 Сибирская, 60 (ТР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 7, work_type_name: "Другие работы", priority: 4, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 827, assignee_name: "Маматова Светлана Викторовна", assigned_to_permission: null, state: "COMPLETED", review_state: "ACCEPTED", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 60, time_start: "17:15:59", time_end: "18:15:59", shift_id: 5869771, created_at: "2026-08-05T17:15:59+07:00", updated_at: "2026-08-05T18:15:59+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-08-05T17:00:44Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-08-05T18:00:38Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-08-05";
