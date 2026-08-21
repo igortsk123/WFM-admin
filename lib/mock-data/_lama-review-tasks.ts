@@ -7,9 +7,9 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-08-21
- * Built at: 2026-08-20T23:00:54Z
+ * Built at: 2026-08-21T00:01:14Z
  *
- * 0 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 0 shops.
+ * 4 ON_REVIEW + 1 ACCEPTED + 0 REJECTED across 4 shops.
  *
  * Регенерируется:
  *   - daily (cron-daily.sh) после fetch-snapshot-async.py
@@ -18,7 +18,12 @@
 import type { Task } from "@/lib/types";
 
 export const REAL_LAMA_REVIEW_TASKS: Task[] = [
+  { id: "task-lama-review-596180", external_id: 596180, title: "Инвентаризация", description: "Инвентаризация", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 207, store_name: "У-22 Коммунистический 143 (ИР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 6, work_type_name: "Инвентаризация", priority: 3, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 415, assignee_name: "Иванкова Светлана Васильевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 30, time_start: "18:30:00", time_end: "19:00:00", shift_id: 5871899, created_at: "2026-08-21T18:30:00+07:00", updated_at: "2026-08-21T19:00:00+07:00" },
+  { id: "task-lama-review-597684", external_id: 597684, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 219, store_name: "У-08 Киевская 13", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 760, assignee_name: "Малышенко Людмила Яковлевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 60, time_start: "07:00:00", time_end: "08:00:00", shift_id: 5865025, created_at: "2026-08-21T07:00:00+07:00", updated_at: "2026-08-21T08:00:00+07:00" },
+  { id: "task-lama-review-597699", external_id: 597699, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 222, store_name: "У-18 Кулагина 6а", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 373, assignee_name: "Марьясова Екатерина Дмитриевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 10, time_start: "08:00:00", time_end: "08:10:00", shift_id: 5874904, created_at: "2026-08-21T08:00:00+07:00", updated_at: "2026-08-21T08:10:00+07:00" },
+  { id: "task-lama-review-597720", external_id: 597720, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 222, store_name: "У-18 Кулагина 6а", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 681, assignee_name: "Перевозчикова Виктория Вячеславовна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 20, time_start: "07:00:00", time_end: "07:20:00", shift_id: 5874945, created_at: "2026-08-21T07:00:00+07:00", updated_at: "2026-08-21T07:20:00+07:00" },
+  { id: "task-lama-review-593002", external_id: 593002, title: "Переоценка", description: "Переоценка", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 211, store_name: "У-03 Фрунзе 120 (ИР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 5, work_type_name: "Переоценка", priority: 2, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 457, assignee_name: "Житенова Зинаида Александровна", assigned_to_permission: null, state: "COMPLETED", review_state: "ACCEPTED", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 15, time_start: "09:15:00", time_end: "09:30:00", shift_id: 5863112, created_at: "2026-08-21T09:15:00+07:00", updated_at: "2026-08-21T09:30:00+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-08-20T23:00:54Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-08-21T00:01:14Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-08-21";
