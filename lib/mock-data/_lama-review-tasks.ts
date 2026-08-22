@@ -7,9 +7,9 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-08-22
- * Built at: 2026-08-22T17:00:51Z
+ * Built at: 2026-08-22T18:00:47Z
  *
- * 1 ON_REVIEW + 366 ACCEPTED + 0 REJECTED across 12 shops.
+ * 2 ON_REVIEW + 366 ACCEPTED + 0 REJECTED across 12 shops.
  *
  * Регенерируется:
  *   - daily (cron-daily.sh) после fetch-snapshot-async.py
@@ -18,6 +18,7 @@
 import type { Task } from "@/lib/types";
 
 export const REAL_LAMA_REVIEW_TASKS: Task[] = [
+  { id: "task-lama-review-564751", external_id: 564751, title: "Касса", description: "Касса", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 225, store_name: "У-19 Сибирская 104а", zone_id: 112, zone_name: "Без зоны", work_type_id: 2, work_type_name: "Касса", priority: 4, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 590, assignee_name: "Соколова Ирина Александровна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 40, time_start: "12:10:00", time_end: "12:50:00", shift_id: 5859774, created_at: "2026-08-22T12:10:00+07:00", updated_at: "2026-08-22T12:50:00+07:00" },
   { id: "task-lama-review-564752", external_id: 564752, title: "Менеджерские операции", description: "Менеджерские операции", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 225, store_name: "У-19 Сибирская 104а", zone_id: 112, zone_name: "Без зоны", work_type_id: 1, work_type_name: "Менеджерские операции", priority: 5, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 590, assignee_name: "Соколова Ирина Александровна", assigned_to_permission: null, state: "COMPLETED", review_state: "ON_REVIEW", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 470, time_start: "12:50:00", time_end: "20:40:00", shift_id: 5859774, created_at: "2026-08-22T12:50:00+07:00", updated_at: "2026-08-22T20:40:00+07:00" },
   { id: "task-lama-review-599595", external_id: 599595, title: "Менеджерские операции", description: "Менеджерские операции", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 205, store_name: "У-20 Вокзальная 41 (ИР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 1, work_type_name: "Менеджерские операции", priority: 1, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 365, assignee_name: "Ягодина Татьяна Викторовна", assigned_to_permission: null, state: "COMPLETED", review_state: "ACCEPTED", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 120, time_start: "10:00:00", time_end: "12:00:00", shift_id: 5877993, created_at: "2026-08-22T10:00:00+07:00", updated_at: "2026-08-22T12:00:00+07:00" },
   { id: "task-lama-review-599596", external_id: 599596, title: "КСО", description: "КСО", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 205, store_name: "У-20 Вокзальная 41 (ИР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 3, work_type_name: "КСО", priority: 2, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 365, assignee_name: "Ягодина Татьяна Викторовна", assigned_to_permission: null, state: "COMPLETED", review_state: "ACCEPTED", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 120, time_start: "12:00:00", time_end: "14:00:00", shift_id: 5877993, created_at: "2026-08-22T12:00:00+07:00", updated_at: "2026-08-22T14:00:00+07:00" },
@@ -387,5 +388,5 @@ export const REAL_LAMA_REVIEW_TASKS: Task[] = [
   { id: "task-lama-review-603190", external_id: 603190, title: "Выкладка: Фреш 2", description: "Выкладка в зоне «Фреш 2»", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 229, store_name: "У-14 Иркутский 96 (ТР)", zone_id: 101, zone_name: "Фреш 2", work_type_id: 4, work_type_name: "Выкладка", priority: 14, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 839, assignee_name: "Русских Яна Александровна", assigned_to_permission: null, state: "COMPLETED", review_state: "ACCEPTED", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 45, time_start: "18:15:00", time_end: "19:00:00", shift_id: 5859316, created_at: "2026-08-22T18:15:00+07:00", updated_at: "2026-08-22T19:00:00+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-08-22T17:00:51Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-08-22T18:00:47Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-08-22";
