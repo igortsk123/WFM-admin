@@ -7,7 +7,7 @@
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
  * Source snapshot: 2026-09-03
- * Built at: 2026-09-03T13:03:15Z
+ * Built at: 2026-09-03T14:03:16Z
  *
  * 42 ON_REVIEW + 10 ACCEPTED + 0 REJECTED across 10 shops.
  *
@@ -72,5 +72,5 @@ export const REAL_LAMA_REVIEW_TASKS: Task[] = [
   { id: "task-lama-review-636641", external_id: 636641, title: "Инвентаризация", description: "Инвентаризация", type: "PLANNED", kind: "SINGLE", source: "PLANNED", store_id: 228, store_name: "УФ-7 Вершинина 44 (ТР)", zone_id: 112, zone_name: "Без зоны", work_type_id: 6, work_type_name: "Инвентаризация", priority: 5, editable_by_store: false, creator_id: 1, creator_name: "Директор магазина", assignee_id: 702, assignee_name: "Табулович Анастасия Сергеевна", assigned_to_permission: null, state: "COMPLETED", review_state: "ACCEPTED", acceptance_policy: "MANUAL", requires_photo: false, archived: false, planned_minutes: 60, time_start: "13:52:01", time_end: "14:52:01", shift_id: 5925299, created_at: "2026-09-03T13:52:01+07:00", updated_at: "2026-09-03T14:52:01+07:00" },
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-09-03T13:03:15Z";
+export const REVIEW_TASKS_BUILT_AT = "2026-09-03T14:03:16Z";
 export const REVIEW_TASKS_SOURCE_DATE = "2026-09-03";
