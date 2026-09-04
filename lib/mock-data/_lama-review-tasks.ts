@@ -6,8 +6,8 @@
  * отклонённых. Подключается в `lib/mock-data/tasks.ts` через spread,
  * поэтому `getTasks({review_state: "ON_REVIEW"})` сразу видит их.
  *
- * Source snapshot: 2026-09-04
- * Built at: 2026-09-04T22:00:03Z
+ * Source snapshot: 2026-09-05
+ * Built at: 2026-09-04T22:05:21Z
  *
  * 0 ON_REVIEW + 0 ACCEPTED + 0 REJECTED across 0 shops.
  *
@@ -20,5 +20,5 @@ import type { Task } from "@/lib/types";
 export const REAL_LAMA_REVIEW_TASKS: Task[] = [
 ];
 
-export const REVIEW_TASKS_BUILT_AT = "2026-09-04T22:00:03Z";
-export const REVIEW_TASKS_SOURCE_DATE = "2026-09-04";
+export const REVIEW_TASKS_BUILT_AT = "2026-09-04T22:05:21Z";
+export const REVIEW_TASKS_SOURCE_DATE = "2026-09-05";
