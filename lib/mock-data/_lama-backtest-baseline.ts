@@ -8,8 +8,8 @@
  * (shop_code / work_type / zone / status) → ~6x compression vs flat array.
  * Use {@link LAMA_BACKTEST_BASELINE} to materialize records as objects.
  *
- * Built at: 2026-10-06T22:05:48Z
- * Date range: 2026-09-08 to 2026-10-07 (30 day(s))
+ * Built at: 2026-10-07T22:05:49Z
+ * Date range: 2026-09-09 to 2026-10-08 (30 day(s))
  *
  * 0 records, 0 shops, 0 work_types,
  * 0 zones, 0 statuses.
@@ -55,8 +55,6 @@ export const BACKTEST_STATUSES: readonly string[] = [];
 
 /** date → tuples (compact storage; используйте {@link LAMA_BACKTEST_BASELINE}). */
 export const BACKTEST_BY_DATE: Readonly<Record<string, readonly BacktestTuple[]>> = {
-  "2026-09-08": [
-  ],
   "2026-09-09": [
   ],
   "2026-09-10": [
@@ -115,6 +113,8 @@ export const BACKTEST_BY_DATE: Readonly<Record<string, readonly BacktestTuple[]>
   ],
   "2026-10-07": [
   ],
+  "2026-10-08": [
+  ],
 };
 
 function _materializeBacktestBaseline(): BacktestTaskRecord[] {
@@ -143,6 +143,6 @@ function _materializeBacktestBaseline(): BacktestTaskRecord[] {
 /** Полностью развёрнутый массив записей (декодирован из {@link BACKTEST_BY_DATE}). */
 export const LAMA_BACKTEST_BASELINE: readonly BacktestTaskRecord[] = _materializeBacktestBaseline();
 
-export const BACKTEST_BUILT_AT = "2026-10-06T22:05:48Z";
-export const BACKTEST_DATE_RANGE: { from: string; to: string; days: number } = { from: "2026-09-08", to: "2026-10-07", days: 30 };
+export const BACKTEST_BUILT_AT = "2026-10-07T22:05:49Z";
+export const BACKTEST_DATE_RANGE: { from: string; to: string; days: number } = { from: "2026-09-09", to: "2026-10-08", days: 30 };
 export const BACKTEST_TOTAL_RECORDS = 0;
