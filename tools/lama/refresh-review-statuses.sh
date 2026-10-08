@@ -1,6 +1,11 @@
 #!/bin/bash
-# Hourly LAMA refresh для review queue.
-# Запускается через crontab: 0 * * * * /opt/wfm-admin/tools/lama/refresh-review-statuses.sh
+# Daily LAMA refresh для review queue.
+# Запускается через crontab: 30 1 * * * /opt/wfm-admin/tools/lama/refresh-review-statuses.sh
+#
+# ⚠️ 2026-10-08: было `0 * * * *` (ежечасно). Скрипт коммитит и пушит в main, а на push в main
+# висит деплой с полной пересборкой образа ⇒ ежечасно = 24 сборки в сутки = ~14 ГБ docker build
+# cache в сутки, диск сервера доходил до 94%. Переведено на раз в сутки (через 30 мин после
+# cron-daily.sh). Подробности — .memory_bank/_claude/DEPLOY.md.
 #
 # Lightweight — только перетягивает task statuses (для свежих ON_REVIEW),
 # не делает полный fetch shop+employees+tasks. Daily fetch остаётся
