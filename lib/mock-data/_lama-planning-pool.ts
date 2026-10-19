@@ -7,8 +7,8 @@
  * employee_id / employee_name / eis_id и группируем по магазину. Сравнить
  * с реальным распределением можно через `_lama-real.ts` и связанные моки.
  *
- * Source snapshot: 2026-10-19
- * Built at: 2026-10-18T22:05:25Z
+ * Source snapshot: 2026-10-20
+ * Built at: 2026-10-19T22:05:26Z
  *
  * 0 shops, 0 tasks-to-distribute, 0 available-employees.
  */
@@ -46,5 +46,5 @@ export interface ShopPlanningPool {
 export const LAMA_PLANNING_POOL: Record<string, ShopPlanningPool> = {
 };
 
-export const PLANNING_POOL_BUILT_AT = "2026-10-18T22:05:25Z";
-export const PLANNING_POOL_SOURCE_DATE = "2026-10-19";
+export const PLANNING_POOL_BUILT_AT = "2026-10-19T22:05:26Z";
+export const PLANNING_POOL_SOURCE_DATE = "2026-10-20";
